@@ -13,3 +13,6 @@ Settings → Pages → Deploy from a branch → main / (root) を選択。非公
 
 ## 素材
 ユーザー提供のポケモン画像9点をサンプルとして使用。非公式ファンプロトタイプ。
+
+## バージョンと制作クレジット
+現在は Ver. 0.1.0。ブランド：Ray Edu Labo。制作/原案：株式会社ムリなもんはムリ。素材収集：パパ。原画：ポケモン。テスト：山田。バージョン表示は `version.js` に集約し、更新内容は [CHANGELOG.md](CHANGELOG.md) に記録します。

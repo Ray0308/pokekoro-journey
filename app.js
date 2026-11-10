@@ -43,3 +43,15 @@ function pulse(el,cls){el.classList.remove(cls);void el.offsetWidth;el.classList
 function attackFX(cells,type,damage,weak,count){const layer=$('#battle-fx');let html='';for(const cell of cells){const x=(cell%6+.5)/6*100,y=(Math.floor(cell/6)+.5)/6*100;for(let j=0;j<(reduceMotion?1:5);j++){const angle=j*1.2566;html+=`<b class="burst-particle" style="left:${x}%;top:${y}%;--dx:${Math.cos(angle)*45}px;--dy:${Math.sin(angle)*45}px;--spark:${colors[type]}">${j%2?'✦':'●'}</b>`}html+=`<b class="pop-ring" style="left:${x}%;top:${y}%;--spark:${colors[type]}"></b>`}layer.innerHTML=html;const token=++fxToken;setTimeout(()=>{if(token===fxToken)layer.innerHTML=''},650);$('#callout').innerHTML=`<strong>${cells.length>=7?'すごい!!':cells.length>=5?'いいね！':'ナイス！'}</strong><span>${count} コンボ!</span>`;pulse($('#callout'),'callout-pop');const enemy=$('.enemy');pulse(enemy,'enemy-hit');let old=$('#damage-number');if(old)old.remove();const d=document.createElement('b');d.id='damage-number';d.className=weak?'damage-number super-effective':'damage-number';d.innerHTML=`${damage}<small>${weak?'こうかばつぐん！':'ダメージ！'}</small>`;enemy.append(d);setTimeout(()=>d.remove(),850);$('#puzzle-tip').textContent='つづけて消すと コンボ！';tone(520+Math.min(count,10)*50,.11);if(cells.length>=7&&!reduceMotion)pulse($('.puzzle-stage'),'big-hit');}
 let fxToken=0;
 function celebrate(){const box=$('#resultBody');box.querySelector('.confetti')?.remove();const layer=document.createElement('div');layer.className='confetti';layer.setAttribute('aria-hidden','true');layer.innerHTML=Array.from({length:reduceMotion?0:30},(_,i)=>`<i style="--x:${(i*37)%100}%;--delay:${i%6*.07}s;--rot:${i*43}deg;--c:${['#ffcf45','#af83f5','#6bd6cd','#ff8c99'][i%4]}"></i>`).join('');box.append(layer);}
+
+document.querySelectorAll('[data-version]').forEach(el=>el.textContent=`Ver. ${GAME_VERSION}`);
+$('#open-credits').onclick=()=>$('#credits').showModal();
+$('#close-credits').onclick=()=>$('#credits').close();
+
+// Match the Ray Edu Labo introduction used in Micra Rails.
+(function studioIntro(){
+ const splash=$('#boot-screen'),logo=$('#boot-logo');splash.hidden=false;
+ let started=false;
+ function reveal(){if(started)return;started=true;setTimeout(()=>{splash.classList.add('is-leaving');setTimeout(()=>{splash.hidden=true},reduceMotion?0:2100)},reduceMotion?800:2800)}
+ if(logo.complete)reveal();else{logo.addEventListener('load',reveal,{once:true});logo.addEventListener('error',reveal,{once:true});setTimeout(reveal,4000)}
+})();
