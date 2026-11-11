@@ -26,6 +26,34 @@
     if (saved && typeof saved.sound === 'boolean') settings.sound = saved.sound;
   } catch { /* Storage is optional; gameplay and settings still work in memory. */ }
 
+  const bgm = document.createElement('audio');
+  bgm.id = 'title-bgm';
+  bgm.src = config.audio.titleBgm;
+  bgm.loop = true;
+  bgm.preload = 'metadata';
+  bgm.volume = config.audio.volume;
+  document.body.append(bgm);
+  function canPlayBgm() {
+    return settings.sound && !starting && !root.hidden && !document.hidden &&
+      document.querySelector('#boot-screen').hidden;
+  }
+  function syncBgm() {
+    if (!canPlayBgm()) { bgm.pause(); return; }
+    if (bgm.paused) {
+      // Mobile browsers unlock audio on a tap; rejection leaves the next gesture free to retry.
+      bgm.play()?.then(() => { if (!canPlayBgm()) bgm.pause(); }).catch(() => {});
+    }
+  }
+  function unlockBgm(event) {
+    if (event.target.closest?.('#enter-game, #sound-toggle')) return;
+    syncBgm();
+  }
+  document.addEventListener('pointerdown', unlockBgm, { capture: true, passive: true });
+  document.addEventListener('keydown', unlockBgm, { capture: true });
+  window.addEventListener('pagehide', () => bgm.pause());
+  window.addEventListener('pageshow', syncBgm);
+  document.addEventListener('title:start', () => bgm.pause());
+
   root.style.setProperty('--cloud-duration', `${config.motion.cloudsSeconds}s`);
   root.style.setProperty('--hero-idle-duration', `${config.motion.idleSeconds}s`);
   root.style.setProperty('--departure-duration', `${config.motion.departureMs}ms`);
@@ -106,6 +134,7 @@
     }, delay);
   }
   function refreshTitleActivity() {
+    syncBgm();
     refreshIdleScene();
     refreshLeaves();
   }
@@ -172,6 +201,7 @@
   });
 
   function applySettings(persist = false) {
+    syncBgm();
     sound.querySelector('.sound-status').textContent = settings.sound ? 'ON' : 'OFF';
     sound.setAttribute('aria-pressed', String(settings.sound));
     sound.setAttribute('aria-label', `サウンド ${settings.sound ? 'ON' : 'OFF'}`);
@@ -200,6 +230,7 @@
     stopLeaves();
     stopIdleScene();
     starting = true;
+    syncBgm();
     companionTap.disabled = true;
     const token = ++sequence;
     root.setAttribute('aria-busy', 'true');
