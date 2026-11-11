@@ -116,3 +116,7 @@ body:not(.at-title) .app-version{color:#b6c7b1;text-shadow:none;font-size:7px}
 #resultBody .ball-options #master{border-color:#aa82b7}
 #resultBody .ball-options .ball-choice:disabled{opacity:.45;filter:none}
 @media(max-width:350px){#map .inventory span{padding:2px 3px}#map aside .panel:first-child #message{font-size:8px}.ball-options{gap:6px}#resultBody .ball-options .ball-choice{padding:6px 4px;gap:4px}#resultBody .ball-options .ball-choice img{width:26px;height:26px;flex-basis:26px}#resultBody .ball-options .ball-choice>span{font-size:9px}}
+
+/* Map-specific trainer sprite, with the current square showing the player instead. */
+#map .tile img.trainer-portrait{position:absolute;inset:4%;width:92%;height:92%;object-fit:contain;image-rendering:pixelated;mix-blend-mode:normal;border:0;border-radius:0;background:none;box-shadow:none;max-width:none}
+#map .board-legend img{width:15px;height:15px;object-fit:contain;image-rendering:pixelated}

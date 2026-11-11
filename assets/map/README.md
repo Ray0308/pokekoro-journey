@@ -9,3 +9,6 @@
 
 ## forest.webp
 トキワの森をイメージした新規生成の森背景。1080 × 1080 の正方形 WebP。空・崖のない地面と外周の樹木で構成し、道やマスは app.js で描画。MAP_ASSETS.forest で管理。旧 island.webp は未使用の旧素材として保持。
+
+## viridian-trainer.webp
+ユーザー提示のグリッド入り画像を画像編集ツールで整形し、細い格子を除去・外側を透過したトキワの森専用トレーナーアイコン。128×128・可逆WebP。原画像ファイルは今回未取得。MAPS.viridian.trainerIcon で指定し、未指定マップは標準SVGを使用。
