@@ -30,7 +30,6 @@
   root.style.setProperty('--hero-idle-duration', `${config.motion.idleSeconds}s`);
   root.style.setProperty('--departure-duration', `${config.motion.departureMs}ms`);
   for (const image of root.querySelectorAll('[data-title-image]')) {
-    image.src = config.assets[image.dataset.titleImage];
     image.addEventListener('error', () => {
       image.hidden = true;
       if (image === action) root.classList.add('action-unavailable');
@@ -39,7 +38,19 @@
         refreshIdleScene();
       }
     });
+    image.src = config.assets[image.dataset.titleImage];
   }
+  const poseFrames = [root.querySelector('.companion-eat'), root.querySelector('.hero-glance')];
+  const posePreparation = Promise.all(poseFrames.map(async image => {
+    try {
+      if (typeof image.decode === 'function') await image.decode();
+      else if (!image.complete) await new Promise((resolve, reject) => {
+        image.addEventListener('load', resolve, { once: true });
+        image.addEventListener('error', reject, { once: true });
+      });
+      return image.complete && image.naturalWidth > 0;
+    } catch { return false; }
+  })).then(results => results.every(Boolean));
   for (const layer of root.querySelectorAll('[data-title-background]')) {
     layer.style.backgroundImage = `url("${config.assets[layer.dataset.titleBackground]}")`;
   }
@@ -121,16 +132,23 @@
     const eligible = () => fromTap ? canPlayScene() : canIdle();
     if (idlePlaying || token !== idleGeneration || !eligible()) return;
     idleTimer = 0;
-    const frames = [root.querySelector('.companion-eat'), root.querySelector('.hero-glance')];
-    if (!frames.every(image => image.complete && image.naturalWidth)) {
-      refreshIdleScene();
-      return;
-    }
+    // Lock on the first tap, including while the first pose is still loading/decoding.
     idlePlaying = true;
     companionTap.disabled = true;
     companionTap.setAttribute('aria-busy', 'true');
-    const wait = ms => new Promise(resolve => { idleTimer = setTimeout(resolve, ms); });
+    root.dataset.idlePhase = 'preparing';
     const valid = () => token === idleGeneration && eligible();
+    const ready = await posePreparation;
+    if (!valid()) return;
+    if (!ready) {
+      root.classList.add('idle-poses-unavailable');
+      refreshIdleScene();
+      return;
+    }
+    // Give the decoded, precomposited frames a paint opportunity before the first swap.
+    await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    if (!valid()) return;
+    const wait = ms => new Promise(resolve => { idleTimer = setTimeout(resolve, ms); });
     root.classList.add('companion-is-eating');
     root.dataset.idlePhase = 'eating';
     await wait(config.idleScene.eatMs);

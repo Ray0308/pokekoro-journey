@@ -79,15 +79,16 @@ body.at-title{min-height:0;height:var(--app-height,100dvh);background:radial-gra
 .companion-is-eating .companion-eat{opacity:1}
 
 /* The companion is a real touch/keyboard target; the full scene owns its busy lock. */
-#title-screen .companion-anchor{animation:none;pointer-events:auto;cursor:pointer;touch-action:manipulation;padding:0;border:0;background:transparent;box-shadow:none;color:inherit;-webkit-tap-highlight-color:transparent}
+#title-screen .companion-anchor{appearance:none;-webkit-appearance:none;animation:none;pointer-events:auto;cursor:pointer;touch-action:manipulation;padding:0;border:0;background:transparent;box-shadow:none;color:inherit;-webkit-tap-highlight-color:transparent}
 #title-screen .companion-anchor:before{content:'';position:absolute;inset:-6px}
 #title-screen .companion-anchor:hover{filter:none}
 #title-screen .companion-anchor:disabled{opacity:1;cursor:default}
 #title-screen .companion-anchor:focus-visible{outline:2px solid #fff7af;outline-offset:5px;border-radius:10px}
 
-#title-screen .companion-frame{transform-origin:center bottom;animation:title-companion-idle calc(var(--hero-idle-duration) * 1.2) ease-in-out infinite}
-#title-screen.is-departing .companion-frame{animation:none}
-@media(prefers-reduced-motion:reduce){#title-screen .companion-frame{transform-origin:center bottom;animation:none}}
+#title-screen .companion-visual{position:absolute;inset:0;display:block;pointer-events:none;transform-origin:center bottom;animation:title-companion-idle calc(var(--hero-idle-duration) * 1.2) ease-in-out infinite}
+#title-screen .companion-frame{animation:none;will-change:opacity;backface-visibility:hidden;pointer-events:none}
+#title-screen.is-departing .companion-visual{animation:none}
+@media(prefers-reduced-motion:reduce){#title-screen .companion-visual{animation:none}}
 
 /* Contact shadows stay at the feet, not under the whole cast. */
 .hero-anchor:before{content:'';position:absolute;left:44%;bottom:calc(1.875% - 3px);width:54%;height:6px;border-radius:50%;background:#244e324d;filter:blur(1px);transform:translateX(-50%);pointer-events:none}
