@@ -30,9 +30,9 @@
 @media(max-width:350px){#game-shell .map-brand>span{font-size:11px}#game-shell .map-brand small{font-size:7px}#game-shell .map-brand{gap:7px}#map .player-pawn{width:37px;height:46px}#map .player-marker{bottom:calc(100% + 33px);font-size:8px}#map #roll>span{font-size:12px}}
 @media(max-height:440px) and (orientation:landscape){#map #route,#map .island-backdrop{top:62px}#map .player-pawn{width:26px;height:32px}#map .player-marker{display:none}}
 /* One square coordinate system for scenery, roads and counters. */
-#map .island-board{background:linear-gradient(#a8e7f5,#e4f7ed)}
+#map .island-board{background:linear-gradient(#b6d9bd,#e1ecce)}
 #map .scene-frame{position:absolute;inset:58px 6px 30px;container-type:size;display:grid;place-items:center}
-#map .map-scene{position:relative;width:min(100cqw,100cqh);height:min(100cqw,100cqh);isolation:isolate;overflow:hidden;border-radius:24px;box-shadow:0 8px 22px #286f7430}
+#map .map-scene{position:relative;width:min(100cqw,100cqh);height:min(100cqw,100cqh);isolation:isolate;overflow:hidden;border-radius:24px;box-shadow:0 8px 22px #284b3130}
 #map .map-scene .island-backdrop{display:none}
 #map .map-scene #route{position:absolute;inset:0;width:100%;height:100%;transform:none;display:block;padding:0}
 #map .map-art{position:absolute;inset:0;width:100%;height:auto;max-width:none;pointer-events:none}
