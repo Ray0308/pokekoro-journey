@@ -25,9 +25,19 @@ const squares=['start','wild','item','wild','trainer','wild','item','trainer','w
 const label={start:'出発',wild:'草むら',item:'道具',trainer:'トレーナー',goal:'ゴール'},symbol={start:'🏕️',wild:'🌿',item:'🎁',trainer:'⚔️',goal:'⚑'};
 function save(){localStorage.setItem('pokekoro-v1',JSON.stringify(state))}function img(id){return `assets/${id}.jpg`}
 const routePoints=[[17,77],[34,84],[54,84],[74,77],[84,61],[84,44],[75,28],[57,21],[37,22],[20,31],[15,49],[31,60],[50,65],[66,53],[50,41]];
+// Use the entire route for tangents, including the travelled prefix, so both roads align.
+function routePath(last=routePoints.length-1){
+ const points=routePoints.map(([x,y])=>[x*9,y*9]);
+ let d=`M ${points[0][0]} ${points[0][1]}`;
+ for(let i=0;i<last;i++){
+  const a=points[Math.max(0,i-1)],b=points[i],c=points[i+1],e=points[Math.min(points.length-1,i+2)];
+  d+=` C ${b[0]+(c[0]-a[0])/6} ${b[1]+(c[1]-a[1])/6} ${c[0]-(e[0]-b[0])/6} ${c[1]-(e[1]-b[1])/6} ${c[0]} ${c[1]}`;
+ }
+ return d;
+}
 function drawRoute(){
- const d=routePoints.map((p,i)=>`${i?'L':'M'} ${p[0]*9} ${p[1]*9}`).join(' ');
- let svg=`<svg class="route-lines" viewBox="0 0 900 900" preserveAspectRatio="none" aria-hidden="true"><path d="${d}" fill="none" stroke="var(--map-roadEdge)" stroke-opacity=".5" stroke-width="38" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="var(--map-road)" stroke-width="27" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="#ad935f" stroke-width="2" stroke-dasharray="3 10"/><path d="${routePoints.slice(0,state.pos+1).map((p,i)=>`${i?'L':'M'} ${p[0]*9} ${p[1]*9}`).join(' ')}" fill="none" stroke="#f6bf4e" stroke-width="12" stroke-linejoin="round"/></svg>`;
+ const d=routePath();
+ let svg=`<svg class="route-lines" viewBox="0 0 900 900" preserveAspectRatio="none" aria-hidden="true"><path d="${d}" fill="none" stroke="var(--map-roadEdge)" stroke-opacity=".5" stroke-width="33" stroke-linecap="round" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="var(--map-road)" stroke-width="25" stroke-linecap="round" stroke-linejoin="round"/><path d="${routePath(state.pos)}" fill="none" stroke="#f6bf4e" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
  return `<img class="map-art" src="${activeMap().background}" alt="">`+svg+squares.map((s,i)=>{const p=routePoints[i],portrait=s==='wild'?`<span class="node-portrait"><img src="${img([1,4,7,2,5,8,3,6,9][i%9])}" alt=""></span>`:`<svg class="node-symbol" aria-hidden="true"><use href="assets/ui-icons.svg#${s==='wild'?'grass':s}"/></svg>`;return `<div class="tile node-${s} ${i===state.pos?'current':''} ${i<state.pos?'visited':''}" style="left:${p[0]}%;top:${p[1]}%" aria-label="${i+1}マス目 ${label[s]}${i===state.pos?' 現在地':''}"><span class="node-number">${String(i+1).padStart(2,'0')}</span>${portrait}<small>${label[s]}</small>${i===state.pos?`<span class="player-marker">ここ！</span><img class="player-pawn" src="${MAP_ASSETS.player}" alt="主人公のコマ">`:''}</div>`}).join('');
 }
 function render(){ applyMapTheme(); $('#lap').textContent=`${state.lap} 周目 · ${state.pos+1}/15`;$('#route').innerHTML=drawRoute();$('#inventory').innerHTML=BALLS.map(b=>`<span aria-label="${b.name} ${state[b.key]}個"><img class="ball-icon" src="${b.image}" alt=""> ${state[b.key]}</span>`).join('');$('#miniParty').innerHTML=Array.from({length:PARTY_SIZE},(_,i)=>state.party[i]?`<img src="${img(state.party[i])}" alt="${mons[state.party[i]-1].name}">`:`<span class="party-empty" aria-label="空き枠">＋</span>`).join('');$('#count').textContent=`${state.owned.length} / 9`;$('#cards').innerHTML=mons.map(m=>{let own=state.owned.includes(m.id),sel=state.party.includes(m.id);return `<button class="card ${!own?'locked':''} ${sel?'selected':''}" data-id="${m.id}" ${!own?'disabled':''}><img src="${img(m.id)}" alt="${own?m.name:'未発見'}"><small>No. ${String(m.id).padStart(3,'0')} · ${icons[m.type]} ${types[m.type]}</small><strong>${own?m.name:'？？？'}</strong><span class="badge">${own?`攻撃 ${m.power} · ${sel?'✓ 編成中':'編成する'}`:'森で見つけよう'}</span></button>`}).join('');$('#roll').disabled=busy;save()}
