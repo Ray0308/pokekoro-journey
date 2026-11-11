@@ -13,6 +13,8 @@
   const settingsKey = 'pokekoro-title-v1';
   let starting = false;
   let sequence = 0;
+  let idleTimer = 0;
+  let idleGeneration = 0;
   let settings = { ...config.defaults };
   try {
     const saved = JSON.parse(localStorage.getItem(settingsKey));
@@ -28,10 +30,59 @@
     image.addEventListener('error', () => {
       image.hidden = true;
       if (image === action) root.classList.add('action-unavailable');
+      if (image.matches('.hero-glance, .companion-eat')) {
+        root.classList.add('idle-poses-unavailable');
+        refreshIdleScene();
+      }
     });
   }
   for (const layer of root.querySelectorAll('[data-title-background]')) {
     layer.style.backgroundImage = `url("${config.assets[layer.dataset.titleBackground]}")`;
+  }
+
+  function canIdle() {
+    return !starting && !root.hidden && !document.hidden && settings.companion &&
+      !motionPreference.matches && !root.classList.contains('idle-poses-unavailable') &&
+      document.querySelector('#boot-screen').hidden && !document.querySelector('dialog[open]');
+  }
+  function stopIdleScene() {
+    idleGeneration++;
+    clearTimeout(idleTimer);
+    idleTimer = 0;
+    root.classList.remove('companion-is-eating', 'hero-is-glancing');
+    root.dataset.idlePhase = 'waiting';
+  }
+  function refreshIdleScene() {
+    stopIdleScene();
+    if (!canIdle()) return;
+    const { minDelayMs, maxDelayMs } = config.idleScene;
+    const delay = minDelayMs + Math.random() * (maxDelayMs - minDelayMs);
+    const token = idleGeneration;
+    idleTimer = setTimeout(() => playIdleScene(token), delay);
+  }
+  async function playIdleScene(token) {
+    idleTimer = 0;
+    if (token !== idleGeneration || !canIdle()) return;
+    const frames = [root.querySelector('.companion-eat'), root.querySelector('.hero-glance')];
+    if (!frames.every(image => image.complete && image.naturalWidth)) {
+      refreshIdleScene();
+      return;
+    }
+    const wait = ms => new Promise(resolve => { idleTimer = setTimeout(resolve, ms); });
+    const valid = () => token === idleGeneration && canIdle();
+    root.classList.add('companion-is-eating');
+    root.dataset.idlePhase = 'eating';
+    await wait(config.idleScene.eatMs);
+    if (!valid()) return;
+    root.classList.remove('companion-is-eating');
+    root.dataset.idlePhase = 'returned';
+    await wait(config.idleScene.lookDelayMs);
+    if (!valid()) return;
+    root.classList.add('hero-is-glancing');
+    root.dataset.idlePhase = 'glancing';
+    await wait(config.idleScene.lookMs);
+    if (!valid()) return;
+    refreshIdleScene();
   }
 
   function applySettings(persist = false) {
@@ -43,6 +94,7 @@
     companion.setAttribute('aria-pressed', String(settings.companion));
     companion.setAttribute('aria-label', `青い相棒 ${settings.companion ? 'ON' : 'OFF'}`);
     document.dispatchEvent(new CustomEvent('title:soundchange', { detail: { enabled: settings.sound, userGesture: persist } }));
+    refreshIdleScene();
     if (persist) {
       try { localStorage.setItem(settingsKey, JSON.stringify(settings)); } catch { /* Optional storage. */ }
     }
@@ -53,14 +105,17 @@
   document.querySelector('#close-title-options').addEventListener('click', () => options.close());
 
   function reset() {
+    stopIdleScene();
     sequence++;
     starting = false;
     root.classList.remove('is-departing', 'hero-is-active');
     root.removeAttribute('aria-busy');
     for (const button of [start, rules, optionsButton]) button.disabled = false;
+    refreshIdleScene();
   }
   start.addEventListener('click', async () => {
     if (starting) return;
+    stopIdleScene();
     starting = true;
     const token = ++sequence;
     root.setAttribute('aria-busy', 'true');
@@ -75,5 +130,12 @@
     document.dispatchEvent(new CustomEvent('title:start'));
   });
   window.PokekoroTitle = Object.freeze({ reset });
+  // Suspend the scene whenever title visibility, a dialog, or system motion settings change.
+  const idleObserver = new MutationObserver(refreshIdleScene);
+  for (const element of [root, document.querySelector('#boot-screen'), ...document.querySelectorAll('dialog')]) {
+    idleObserver.observe(element, { attributes: true, attributeFilter: ['hidden', 'open'] });
+  }
+  document.addEventListener('visibilitychange', refreshIdleScene);
+  motionPreference.addEventListener?.('change', refreshIdleScene);
   applySettings();
 })();

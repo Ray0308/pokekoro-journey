@@ -68,3 +68,13 @@ body.at-title{min-height:0;height:var(--app-height,100dvh);background:radial-gra
 @media(min-width:850px){#title-screen{border-inline:1px solid #b4e1ee66}.adventure-tagline{font-size:17px}}
 @media(max-height:440px) and (orientation:landscape){#title-screen{width:min(100vw,760px)}#title-screen>.title-content{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto auto 1fr;gap:7px 20px;padding:12px 24px 18px}.adventure-logo{grid-column:1;grid-row:1 / 3;max-height:none;width:100%;height:100%}.adventure-logo img{max-height:44dvh}.adventure-tagline{grid-column:2;grid-row:1;font-size:11px}.title-characters{grid-column:1;grid-row:3;height:100%;max-height:none;min-height:90px}.title-menu{grid-column:2;grid-row:2 / 4;align-self:center}.title-attribution{position:absolute;bottom:4px;left:0;right:0}.adventure-submenu{gap:8px}.adventure-secondary{font-size:12px}.adventure-primary{font-size:17px}}
 @media(prefers-reduced-motion:reduce){.cloud-belt,.hero-anchor,.companion-anchor,.title-dice-cube,#title-screen.is-departing #enter-game,#title-screen.is-departing .hero-anchor,#title-screen.is-departing .companion-anchor,#title-screen.is-departing .title-dice-cube{animation:none!important}.adventure-button{transition:none}}
+
+/* Occasional linked poses. Image frames stay in the existing character anchors. */
+.hero-glance{opacity:0;transform:translateY(-1.875%)}
+.hero-is-glancing .hero-idle{opacity:0}
+.hero-is-glancing .hero-glance{opacity:1}
+.hero-is-active .hero-glance{opacity:0}
+.companion-anchor .companion-frame{position:absolute;left:0;bottom:0;width:100%;height:100%;object-fit:contain;object-position:center bottom}
+.companion-anchor .companion-eat{left:.7%;width:111%;height:97.2257%;max-width:none;object-position:left bottom;opacity:0}
+.companion-is-eating .companion-idle{opacity:0}
+.companion-is-eating .companion-eat{opacity:1}
