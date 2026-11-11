@@ -101,3 +101,9 @@ body.at-title{min-height:0;height:var(--app-height,100dvh);background:radial-gra
 @keyframes title-leaf-flight{0%{opacity:0;transform:translate(0,0)}6%{opacity:.9}30%{transform:translate(calc(var(--leaf-x) * .28),calc(var(--leaf-drop) * .18))}58%{transform:translate(calc(var(--leaf-x) * .56),calc(var(--leaf-drop) * .65))}90%{opacity:.85}100%{opacity:0;transform:translate(var(--leaf-x),var(--leaf-drop))}}
 @keyframes title-leaf-flutter{0%{transform:rotate(-25deg) scaleX(1)}50%{transform:rotate(32deg) scaleX(.7)}100%{transform:rotate(85deg) scaleX(.95)}}
 @media(prefers-reduced-motion:reduce){.title-leaves{display:none}.wind-leaf,.wind-leaf-shape{animation:none}}
+
+/* Gentle start cue: animate only the play icon, without moving the label. */
+#enter-game>svg{animation:title-start-cue 1.6s ease-in-out infinite}
+#title-screen.is-departing #enter-game>svg{animation:none;opacity:1}
+@keyframes title-start-cue{0%,20%,100%{opacity:1}50%,65%{opacity:.1}}
+@media(prefers-reduced-motion:reduce){#enter-game>svg{animation:none;opacity:1}}
