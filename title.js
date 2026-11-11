@@ -8,12 +8,14 @@
   const options = document.querySelector('#title-options');
   const sound = document.querySelector('#sound-toggle');
   const action = root.querySelector('.hero-action');
+  const companionTap = root.querySelector('.companion-anchor');
   const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
   const settingsKey = 'pokekoro-title-v1';
   let starting = false;
   let sequence = 0;
   let idleTimer = 0;
   let idleGeneration = 0;
+  let idlePlaying = false;
   let settings = { ...config.defaults };
   try {
     const saved = JSON.parse(localStorage.getItem(settingsKey));
@@ -38,15 +40,19 @@
     layer.style.backgroundImage = `url("${config.assets[layer.dataset.titleBackground]}")`;
   }
 
-  function canIdle() {
+  function canPlayScene() {
     return !starting && !root.hidden && !document.hidden &&
-      !motionPreference.matches && !root.classList.contains('idle-poses-unavailable') &&
+      !root.classList.contains('idle-poses-unavailable') &&
       document.querySelector('#boot-screen').hidden && !document.querySelector('dialog[open]');
   }
+  function canIdle() { return canPlayScene() && !motionPreference.matches; }
   function stopIdleScene() {
     idleGeneration++;
     clearTimeout(idleTimer);
     idleTimer = 0;
+    idlePlaying = false;
+    companionTap.disabled = starting;
+    companionTap.removeAttribute('aria-busy');
     root.classList.remove('companion-is-eating', 'hero-is-glancing');
     root.dataset.idlePhase = 'waiting';
   }
@@ -58,16 +64,20 @@
     const token = idleGeneration;
     idleTimer = setTimeout(() => playIdleScene(token), delay);
   }
-  async function playIdleScene(token) {
+  async function playIdleScene(token, fromTap = false) {
+    const eligible = () => fromTap ? canPlayScene() : canIdle();
+    if (idlePlaying || token !== idleGeneration || !eligible()) return;
     idleTimer = 0;
-    if (token !== idleGeneration || !canIdle()) return;
     const frames = [root.querySelector('.companion-eat'), root.querySelector('.hero-glance')];
     if (!frames.every(image => image.complete && image.naturalWidth)) {
       refreshIdleScene();
       return;
     }
+    idlePlaying = true;
+    companionTap.disabled = true;
+    companionTap.setAttribute('aria-busy', 'true');
     const wait = ms => new Promise(resolve => { idleTimer = setTimeout(resolve, ms); });
-    const valid = () => token === idleGeneration && canIdle();
+    const valid = () => token === idleGeneration && eligible();
     root.classList.add('companion-is-eating');
     root.dataset.idlePhase = 'eating';
     await wait(config.idleScene.eatMs);
@@ -82,6 +92,13 @@
     if (!valid()) return;
     refreshIdleScene();
   }
+
+  companionTap.addEventListener('click', () => {
+    // A tap never restarts or queues a scene that is already playing, even if it was automatic.
+    if (idlePlaying || !canPlayScene()) return;
+    stopIdleScene();
+    void playIdleScene(idleGeneration, true);
+  });
 
   function applySettings(persist = false) {
     sound.querySelector('.sound-status').textContent = settings.sound ? 'ON' : 'OFF';
@@ -110,6 +127,7 @@
     if (starting) return;
     stopIdleScene();
     starting = true;
+    companionTap.disabled = true;
     const token = ++sequence;
     root.setAttribute('aria-busy', 'true');
     for (const button of [start, rules, optionsButton]) button.disabled = true;
