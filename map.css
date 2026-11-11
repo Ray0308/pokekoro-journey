@@ -166,3 +166,18 @@ body:not(.at-title) .app-version{color:#b6c7b1;text-shadow:none;font-size:7px}
 @keyframes capture-check{0%,100%{transform:translateY(85px) rotate(0) scale(1.25)}30%{transform:translate(-5px,85px) rotate(-15deg) scale(1.25)}70%{transform:translate(5px,85px) rotate(15deg) scale(1.25)}}
 @media(max-height:600px){.capture-scene{height:210px;min-height:180px}#resultBody #capture-status{font-size:16px}}
 @media(prefers-reduced-motion:reduce){.capture-scene *{animation:none!important}.capture-scene[data-phase="throw"] .capture-ball{opacity:1}.capture-scene[data-phase="impact"] .capture-target{opacity:0}.capture-scene[data-phase="impact"] .capture-flash{display:none}.capture-scene[data-phase="settle"] .capture-ball{transform:translateY(85px) scale(1.25)}}
+
+#map .boss-portrait{position:absolute;inset:0;overflow:hidden;border-radius:50%;background:#fff8d9}
+#map .boss-portrait img{position:static;width:100%;height:100%;object-fit:contain;mix-blend-mode:normal}
+#map .current .boss-portrait{opacity:0}
+#encounter #encounter-trainer{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;visibility:hidden;filter:none;mix-blend-mode:normal;z-index:2}
+#encounter #encounter-send-ball{position:absolute;left:50%;top:50%;width:32px;height:32px;margin:-16px;object-fit:contain;border-radius:50%;visibility:hidden;z-index:3}
+#encounter[data-phase="boss-trainer"] #encounter-img,#encounter[data-phase="boss-send"] #encounter-img{visibility:hidden;animation:none}
+#encounter[data-phase="boss-trainer"] #encounter-trainer{visibility:visible;animation:boss-arrive .35s ease-out both}
+#encounter[data-phase="boss-send"] #encounter-trainer{visibility:visible;animation:boss-step-back .35s ease-out both}
+#encounter[data-phase="boss-send"] #encounter-send-ball{visibility:visible;animation:boss-send-ball .85s ease-out both}
+#encounter.boss-encounter{border-color:#fff0a8;background:radial-gradient(at 50% 40%,#fff6d8,#d2e5bf 65%,#9cbd97)}
+@keyframes boss-arrive{from{transform:translateX(-30px);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes boss-step-back{from{transform:translateX(0) scale(1);opacity:1}to{transform:translateX(-45px) scale(.8);opacity:.35}}
+@keyframes boss-send-ball{0%{transform:translate(-65px,35px) rotate(-180deg);opacity:0}15%{opacity:1}55%{transform:translate(0,-45px) rotate(180deg);opacity:1}78%{transform:translate(15px,0) rotate(300deg);opacity:1}100%{transform:translate(15px,0) scale(2);opacity:0}}
+@media(prefers-reduced-motion:reduce){#encounter #encounter-trainer,#encounter #encounter-send-ball{animation:none!important}}
