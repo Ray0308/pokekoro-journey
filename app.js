@@ -88,7 +88,7 @@ async function resolveAttack(){
 // Pointer capture keeps release reliable even when a finger leaves the button.
 let diceHold=null;
 function diceLayer(){
- const layer=document.createElement('div');layer.className='map-dice-event';layer.setAttribute('aria-hidden','true');layer.innerHTML=`<div class="dice-ground"></div><div class="dice-drop"><div class="dice-face map-die" data-value="5">${'<i></i>'.repeat(9)}</div></div><strong class="dice-announcement"></strong>`;$('.island-board').append(layer);return layer;
+ const layer=document.createElement('div');layer.className='map-dice-event';layer.setAttribute('aria-hidden','true');layer.innerHTML=`<div class="dice-ground"></div><div class="dice-drop"><div class="map-die" data-value="5"><div class="dice-cube">${[1,6,3,4,2,5].map((n,i)=>`<div class="dice-face cube-side side-${i}" data-value="${n}">${'<i></i>'.repeat(9)}</div>`).join('')}</div></div></div><strong class="dice-announcement"></strong>`;$('.island-board').append(layer);return layer;
 }
 function cancelDiceHold(){
  if(!diceHold)return;diceHold=null;$('.map-dice-event')?.remove();$('#roll').classList.remove('dice-holding');$('#roll small').textContent='おして はなして ころがそう！';busy=false;
@@ -97,7 +97,7 @@ const rollButton=$('#roll');
 rollButton.onpointerdown=e=>{
  if(busy||e.button!==0||!e.isPrimary)return;e.preventDefault();
  diceHold={pointer:e.pointerId};busy=true;rollButton.setPointerCapture(e.pointerId);
- diceLayer().classList.add('dice-held');rollButton.classList.add('dice-holding');$('#roll small').textContent='はなすと ころがるよ！';
+ diceLayer().classList.add('dice-held');rollButton.classList.add('dice-holding');$('#roll small').textContent='はなして ストップ！';
 };
 rollButton.onpointerup=e=>{
  if(!diceHold||diceHold.pointer!==e.pointerId)return;e.preventDefault();diceHold=null;

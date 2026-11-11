@@ -53,17 +53,37 @@
 #map .board-legend{bottom:5px;box-shadow:0 2px 6px #39735b17;font-size:9px}
 @media(min-width:850px){#map .player-pawn{width:39px;height:49px}#map .player-marker{bottom:calc(100% + 29px)}}
 @media(max-height:440px) and (orientation:landscape){#map .scene-frame{top:60px;bottom:26px}#map .tile small{font-size:6px;bottom:-9px;line-height:9px}#map .player-pawn{width:22px;height:28px}}
-/* Hold to shake; release to throw across the grass. */
+/* Hold to spin a six-sided cube; release to roll and settle. */
 #map #roll{touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 #map #roll.dice-holding{transform:translateY(2px);background:linear-gradient(#ffe06c,#ffb938);box-shadow:0 1px 0 #bc903a}
 #map .map-dice-event{overflow:hidden}
-#map .map-die{width:64px;height:64px;padding:11px;gap:5px;border-radius:13px;transform:translate(-50%,-50%)}
-#map .dice-held .dice-drop{left:28%;top:72%;animation:dice-in-hand .18s ease-in-out infinite alternate}
-#map .dice-held .dice-ground{left:28%;top:72%;animation:none;transform:translate(-50%,30px);width:72px;opacity:.45}
+#map .map-die{width:64px;height:64px;padding:0;transform:translate(-50%,-50%);perspective:420px;background:none;border:0;box-shadow:none}
+#map .dice-held .dice-drop{left:50%;top:45%;animation:none}
+#map .dice-held .dice-ground{left:50%;top:45%;animation:none;transform:translate(-50%,30px);width:72px;opacity:.45}
 #map .dice-thrown .dice-drop{animation:dice-roll-across 1.2s linear both}
 #map .dice-thrown .dice-ground{animation:dice-roll-shadow 1.2s linear both;width:76px}
 #map .dice-landed .dice-drop{animation:none;transform:translate(0,0) rotate(0)}
-@keyframes dice-in-hand{from{transform:translate(-7px,4px) rotate(-16deg)}to{transform:translate(7px,-5px) rotate(18deg)}}
+
 @keyframes dice-roll-across{0%{transform:translate(-95px,110px) rotate(-250deg)}25%{transform:translate(-60px,-45px) rotate(-150deg)}46%{transform:translate(-22px,0) rotate(-75deg)}62%{transform:translate(13px,-28px) rotate(-35deg)}76%{transform:translate(23px,0) rotate(15deg)}88%{transform:translate(10px,-9px) rotate(-8deg)}100%{transform:translate(0,0) rotate(0)}}
 @keyframes dice-roll-shadow{0%{transform:translate(calc(-50% - 95px),140px);opacity:.3}25%{transform:translate(calc(-50% - 60px),30px) scale(.6);opacity:.15}46%{transform:translate(calc(-50% - 22px),30px);opacity:.5}76%{transform:translate(calc(-50% + 23px),30px);opacity:.5}100%{transform:translate(-50%,30px);opacity:.5}}
 @media(prefers-reduced-motion:reduce){#map .dice-held .dice-drop,#map .dice-thrown .dice-drop,#map .dice-thrown .dice-ground{animation:none}}
+
+#map .dice-cube{position:relative;width:64px;height:64px;transform-style:preserve-3d;transform:rotateX(-18deg) rotateY(-24deg)}
+#map .cube-side{position:absolute;inset:0;width:64px;height:64px;padding:11px;gap:5px;border:2px solid #fff;border-radius:9px;box-shadow:inset 0 0 8px #8198ae33;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+#map .side-0{transform:translateZ(32px)}
+#map .side-1{transform:rotateY(180deg) translateZ(32px)}
+#map .side-2{transform:rotateY(90deg) translateZ(32px)}
+#map .side-3{transform:rotateY(-90deg) translateZ(32px)}
+#map .side-4{transform:rotateX(90deg) translateZ(32px)}
+#map .side-5{transform:rotateX(-90deg) translateZ(32px)}
+#map .dice-held .dice-cube{animation:dice-cube-spin .7s linear infinite}
+#map .dice-thrown:not(.dice-landed) .dice-cube{animation:dice-cube-spin .45s linear infinite}
+#map .dice-landed .dice-cube{transition:transform .18s ease-out}
+#map .dice-landed [data-value="1"]>.dice-cube{transform:rotateX(0deg) rotateY(0deg)}
+#map .dice-landed [data-value="6"]>.dice-cube{transform:rotateY(180deg)}
+#map .dice-landed [data-value="3"]>.dice-cube{transform:rotateY(-90deg)}
+#map .dice-landed [data-value="4"]>.dice-cube{transform:rotateY(90deg)}
+#map .dice-landed [data-value="2"]>.dice-cube{transform:rotateX(-90deg)}
+#map .dice-landed [data-value="5"]>.dice-cube{transform:rotateX(90deg)}
+@keyframes dice-cube-spin{from{transform:rotateX(-18deg) rotateY(-24deg)}to{transform:rotateX(702deg) rotateY(696deg)}}
+@media(prefers-reduced-motion:reduce){#map .dice-held .dice-cube,#map .dice-thrown .dice-cube{animation:none}#map .dice-landed .dice-cube{transition:none}}
