@@ -30,7 +30,7 @@
 @media(max-width:350px){#game-shell .map-brand>span{font-size:11px}#game-shell .map-brand small{font-size:7px}#game-shell .map-brand{gap:7px}#map .player-pawn{width:37px;height:46px}#map .player-marker{bottom:calc(100% + 33px);font-size:8px}#map #roll>span{font-size:12px}}
 @media(max-height:440px) and (orientation:landscape){#map #route,#map .island-backdrop{top:62px}#map .player-pawn{width:26px;height:32px}#map .player-marker{display:none}}
 /* One square coordinate system for scenery, roads and counters. */
-#map .island-board{background:linear-gradient(#b6d9bd,#e1ecce)}
+#map .island-board{background:linear-gradient(var(--map-surface,#b6d9bd),var(--map-surfaceEnd,#e1ecce))}
 #map .scene-frame{position:absolute;inset:58px 6px 30px;container-type:size;display:grid;place-items:center}
 #map .map-scene{position:relative;width:min(100cqw,100cqh);height:min(100cqw,100cqh);isolation:isolate;overflow:hidden;border-radius:24px;box-shadow:0 8px 22px #284b3130}
 #map .map-scene .island-backdrop{display:none}
@@ -80,9 +80,9 @@
 @keyframes dice-cube-spin{from{transform:rotateX(-18deg) rotateY(-24deg)}to{transform:rotateX(702deg) rotateY(696deg)}}
 @media(prefers-reduced-motion:reduce){#map .dice-held .dice-cube,#map .dice-thrown .dice-cube{animation:none}#map .dice-landed .dice-cube{transition:none}}
 /* Forest adventure console: status, one main action, six party slots. */
-#map aside{height:132px;min-height:132px;padding:5px max(12px,env(safe-area-inset-left)) max(7px,env(safe-area-inset-bottom));background:linear-gradient(125deg,#244c40,#183d35);border-top:3px solid #c6d6a0;box-shadow:0 -3px 0 #406650,0 -7px 18px #24432e22;grid-template-rows:78px 32px;row-gap:4px}
+#map aside{height:132px;min-height:132px;padding:5px max(12px,env(safe-area-inset-left)) max(7px,env(safe-area-inset-bottom));background:linear-gradient(125deg,var(--map-dock,#244c40),var(--map-dockEnd,#183d35));border-top:3px solid var(--map-edge,#c6d6a0);box-shadow:0 -3px 0 var(--map-rim,#406650),0 -7px 18px #24432e22;grid-template-rows:78px 32px;row-gap:4px}
 #map aside .panel:first-child{padding:0;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:20px 54px;gap:4px 7px}
-#map aside .panel:first-child #message{grid-column:1;grid-row:1;margin:0;color:#e0edcf;font-size:10px;font-weight:600;line-height:20px;height:20px}
+#map aside .panel:first-child #message{grid-column:1;grid-row:1;margin:0;color:var(--map-ink,#e0edcf);font-size:10px;font-weight:600;line-height:20px;height:20px}
 #map .inventory{grid-column:2;grid-row:1;gap:4px;align-self:center}
 #map .inventory span{padding:2px 6px;gap:3px;font-size:10px;line-height:15px;background:#102e2780;border:1px solid #91b49a66;border-radius:6px;color:#fff4d2;font-weight:800}
 #map .inventory .ball-icon{width:14px;height:14px;background:white}
@@ -96,9 +96,23 @@
 #map #roll .roll-arrow{font-size:16px;color:#8f681c}
 #map #roll.dice-holding{background:linear-gradient(#ffdf74,#ffb934);transform:translateY(2px);box-shadow:0 1px 0 #ac7a2f}
 #map aside .panel:nth-child(2){padding:3px 38px 0 2px;gap:8px;height:32px;align-items:center}
-#map aside .panel:nth-child(2)>small{flex:0 0 48px;max-width:48px;font-size:8px;line-height:1.4;color:#c6d9b7;letter-spacing:.3px;font-weight:700}
+#map aside .panel:nth-child(2)>small{flex:0 0 48px;max-width:48px;font-size:8px;line-height:1.4;color:var(--map-muted,#c6d9b7);letter-spacing:.3px;font-weight:700}
 #map #miniParty{display:flex;flex:0 1 auto;gap:6px;justify-content:flex-start;padding:0;margin:0;min-width:0}
-#map #miniParty img,#map #miniParty .party-empty{width:27px!important;height:27px!important;border:2px solid #a6c39b;border-radius:8px;background:#fffef0;box-shadow:0 2px 0 #0d2c25;object-fit:contain}
+#map #miniParty img,#map #miniParty .party-empty{width:27px!important;height:27px!important;border:2px solid var(--map-slot,#a6c39b);border-radius:8px;background:#fffef0;box-shadow:0 2px 0 #0d2c25;object-fit:contain}
 body:not(.at-title) .app-version{color:#b6c7b1;text-shadow:none;font-size:7px}
 @media(max-width:350px){#map aside{padding-left:10px;padding-right:10px}#map aside .panel:first-child #message{font-size:9px}#map .inventory span{padding:2px 4px;font-size:9px}#map #miniParty{gap:5px}#map #miniParty img,#map #miniParty .party-empty{width:24px!important;height:24px!important}#map aside .panel:nth-child(2)>small{flex-basis:42px}#map #roll .roll-copy{font-size:16px}}
 @media(max-height:650px){#map aside{height:124px;min-height:124px;grid-template-rows:74px 29px}#map aside .panel:first-child{grid-template-rows:18px 52px}#map #roll{height:52px;min-height:52px}}
+
+#map .inventory{gap:3px}
+#map .inventory span{padding:2px 4px;gap:2px;font-size:9px}
+#map .inventory .ball-icon{width:13px;height:13px}
+#map aside .panel:nth-child(2)>small{flex-basis:48px;font-size:8px;white-space:nowrap}
+.ball-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;width:100%}
+#resultBody .ball-options .ball-choice{display:flex;align-items:center;gap:6px;min-height:65px;padding:8px 6px;border:2px solid #bdcddd;border-radius:11px;background:#fff;color:#304658;box-shadow:0 2px 0 #a3b6c5;letter-spacing:0;width:100%;margin:0}
+#resultBody .ball-options .ball-choice img{width:32px;height:32px;flex:0 0 32px;object-fit:contain;border-radius:50%;mix-blend-mode:normal}
+#resultBody .ball-options .ball-choice>span{font-size:10px;line-height:1.5;text-align:left;min-width:0}
+#resultBody .ball-options .ball-choice small{display:block;font-size:8px;color:#657b8d;white-space:normal;letter-spacing:0}
+#resultBody .ball-options #hyper{border-color:#d4b95e}
+#resultBody .ball-options #master{border-color:#aa82b7}
+#resultBody .ball-options .ball-choice:disabled{opacity:.45;filter:none}
+@media(max-width:350px){#map .inventory span{padding:2px 3px}#map aside .panel:first-child #message{font-size:8px}.ball-options{gap:6px}#resultBody .ball-options .ball-choice{padding:6px 4px;gap:4px}#resultBody .ball-options .ball-choice img{width:26px;height:26px;flex-basis:26px}#resultBody .ball-options .ball-choice>span{font-size:9px}}
