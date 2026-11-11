@@ -29,3 +29,27 @@
 @media(min-width:850px){#map .player-pawn{width:45px;height:56px}#map .player-marker{bottom:calc(100% + 43px)}}
 @media(max-width:350px){#game-shell .map-brand>span{font-size:11px}#game-shell .map-brand small{font-size:7px}#game-shell .map-brand{gap:7px}#map .player-pawn{width:37px;height:46px}#map .player-marker{bottom:calc(100% + 33px);font-size:8px}#map #roll>span{font-size:12px}}
 @media(max-height:440px) and (orientation:landscape){#map #route,#map .island-backdrop{top:62px}#map .player-pawn{width:26px;height:32px}#map .player-marker{display:none}}
+/* One square coordinate system for scenery, roads and counters. */
+#map .island-board{background:linear-gradient(#a8e7f5,#e4f7ed)}
+#map .scene-frame{position:absolute;inset:58px 6px 30px;container-type:size;display:grid;place-items:center}
+#map .map-scene{position:relative;width:min(100cqw,100cqh);height:min(100cqw,100cqh);isolation:isolate;overflow:hidden;border-radius:24px;box-shadow:0 8px 22px #286f7430}
+#map .map-scene .island-backdrop{display:none}
+#map .map-scene #route{position:absolute;inset:0;width:100%;height:100%;transform:none;display:block;padding:0}
+#map .map-art{position:absolute;inset:0;width:100%;height:auto;max-width:none;pointer-events:none}
+#map .route-lines{z-index:1;filter:drop-shadow(0 2px 0 #416a3a44)}
+#map .tile{z-index:2;width:9%;height:9%;border:2px solid #fff9dc;border-radius:50%;background:linear-gradient(#f9ffed,#d2eac4);box-shadow:0 3px 0 #547e4f,0 4px 5px #224d3c55;overflow:visible}
+#map .tile.node-item{background:linear-gradient(#fff2a7,#f6c85b)}
+#map .tile.node-trainer{background:linear-gradient(#dcecff,#a9caed)}
+#map .tile.node-goal{width:10%;height:10%;background:linear-gradient(#fff1a0,#f8bf3f)}
+#map .node-portrait{position:absolute;inset:2px;border-radius:50%;overflow:hidden;background:#fff}
+#map .node-portrait img{position:static;width:100%;height:100%;object-fit:contain;mix-blend-mode:normal;max-width:none}
+#map .tile .node-symbol{position:absolute;inset:7%;width:86%;height:86%}
+#map .tile small{bottom:-12px;font-size:8px;line-height:12px;padding:0 3px;color:#294e36;background:#fffff1f2;border-radius:4px;box-shadow:0 1px 2px #25442a25;white-space:nowrap}
+#map .node-number{top:-6px;left:-5px;font-size:8px;color:#356344;border:1px solid #d2e5be;z-index:2}
+#map .current .node-portrait{opacity:0}
+#map .tile.current{z-index:6}
+#map .player-pawn{width:34px;height:43px;bottom:22%}
+#map .player-marker{bottom:calc(100% + 23px);font-size:8px}
+#map .board-legend{bottom:5px;box-shadow:0 2px 6px #39735b17;font-size:9px}
+@media(min-width:850px){#map .player-pawn{width:39px;height:49px}#map .player-marker{bottom:calc(100% + 29px)}}
+@media(max-height:440px) and (orientation:landscape){#map .scene-frame{top:60px;bottom:26px}#map .tile small{font-size:6px;bottom:-9px;line-height:9px}#map .player-pawn{width:22px;height:28px}}
