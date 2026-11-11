@@ -33,6 +33,59 @@
   bgm.preload = 'auto';
   bgm.volume = config.audio.volume;
   document.body.append(bgm);
+  const cry = document.createElement('audio');
+  cry.id = 'title-start-cry';cry.src = config.audio.startCry;cry.preload = 'auto';
+  document.body.append(cry);
+  let musicContext = null, musicGain = null, finishCry = null;
+  function unlockMusicGraph() {
+    try {
+      if (!musicContext) {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return;
+        musicContext = new AC();musicGain = musicContext.createGain();
+        musicGain.gain.value = config.audio.volume;
+        musicContext.createMediaElementSource(bgm).connect(musicGain).connect(musicContext.destination);
+        musicContext.createMediaElementSource(cry).connect(musicContext.destination);
+        bgm.volume = 1;
+      }
+      if (musicContext.state === 'suspended') musicContext.resume().catch(() => {});
+    } catch { /* Media-element volume remains the fallback. */ }
+  }
+  function restoreMusicVolume() {
+    if (musicGain) { musicGain.gain.cancelScheduledValues(musicContext.currentTime);musicGain.gain.setValueAtTime(config.audio.volume, musicContext.currentTime); }
+    else bgm.volume = config.audio.volume;
+  }
+  function fadeMusic() {
+    const duration = config.audio.fadeMs;
+    if (musicGain) {
+      const now = musicContext.currentTime;musicGain.gain.cancelScheduledValues(now);
+      musicGain.gain.setValueAtTime(musicGain.gain.value, now);
+      musicGain.gain.linearRampToValueAtTime(0, now + duration / 1000);
+    }
+    return new Promise(resolve => {
+      const began = performance.now(), token = sequence, volume = bgm.volume;
+      function tick(now) {
+        if (token !== sequence) { resolve();return; }
+        const progress = Math.min(1, (now - began) / duration);
+        if (!musicGain) bgm.volume = volume * (1 - progress);
+        if (progress < 1) requestAnimationFrame(tick);
+        else { bgm.pause();resolve(); }
+      }
+      requestAnimationFrame(tick);
+    });
+  }
+  function stopCry() { cry.pause();cry.currentTime = 0;finishCry?.(); }
+  function playStartCry() {
+    return new Promise(resolve => {
+      let timer;
+      function finish() { clearTimeout(timer);cry.removeEventListener('ended', finish);cry.removeEventListener('error', finish);finishCry = null;resolve(); }
+      finishCry = finish;
+      if (!settings.sound) { timer = setTimeout(finish, config.audio.cryMs);return; }
+      cry.currentTime = 0;cry.addEventListener('ended', finish);cry.addEventListener('error', finish);
+      timer = setTimeout(finish, config.audio.cryMs + 500);
+      cry.play()?.catch(finish);
+    });
+  }
   function canPlayBgm() {
     return settings.sound && !starting && !root.hidden && !document.hidden &&
       document.querySelector('#boot-screen').hidden;
@@ -46,13 +99,13 @@
   }
   function unlockBgm(event) {
     if (event.target.closest?.('#enter-game, #sound-toggle')) return;
-    syncBgm();
+    unlockMusicGraph();syncBgm();
   }
   document.addEventListener('pointerdown', unlockBgm, { capture: true, passive: true });
   document.addEventListener('keydown', unlockBgm, { capture: true });
-  window.addEventListener('pagehide', () => bgm.pause());
+  window.addEventListener('pagehide', () => { if (starting) reset();bgm.pause();stopCry(); });
   window.addEventListener('pageshow', syncBgm);
-  document.addEventListener('title:start', () => bgm.pause());
+  document.addEventListener('title:start', () => { bgm.pause();stopCry(); });
   document.addEventListener('studio:ready', syncBgm);
 
   root.style.setProperty('--cloud-duration', `${config.motion.cloudsSeconds}s`);
@@ -202,6 +255,7 @@
   });
 
   function applySettings(persist = false) {
+    if (persist) unlockMusicGraph();
     syncBgm();
     sound.querySelector('.sound-status').textContent = settings.sound ? 'ON' : 'OFF';
     sound.setAttribute('aria-pressed', String(settings.sound));
@@ -220,9 +274,11 @@
     stopLeaves();
     stopIdleScene();
     sequence++;
+    stopCry();restoreMusicVolume();
     starting = false;
     root.classList.remove('is-departing', 'hero-is-active');
     root.removeAttribute('aria-busy');
+    delete root.dataset.startPhase;
     for (const button of [start, rules, optionsButton]) button.disabled = false;
     refreshTitleActivity();
   }
@@ -230,12 +286,18 @@
     if (starting) return;
     stopLeaves();
     stopIdleScene();
+    unlockMusicGraph();
     starting = true;
-    syncBgm();
     companionTap.disabled = true;
     const token = ++sequence;
     root.setAttribute('aria-busy', 'true');
     for (const button of [start, rules, optionsButton]) button.disabled = true;
+    root.dataset.startPhase = 'cry';
+    const cryPlayed = playStartCry();
+    await Promise.all([fadeMusic(), cryPlayed]);
+    if (token !== sequence) return;
+    cry.pause();
+    root.dataset.startPhase = 'walking';
     root.classList.add('is-departing');
     const duration = motionPreference.matches ? 120 : config.motion.departureMs;
     await new Promise(resolve => setTimeout(resolve, duration * .24));
@@ -251,7 +313,7 @@
   for (const element of [root, document.querySelector('#boot-screen'), ...document.querySelectorAll('dialog')]) {
     idleObserver.observe(element, { attributes: true, attributeFilter: ['hidden', 'open'] });
   }
-  document.addEventListener('visibilitychange', refreshTitleActivity);
+  document.addEventListener('visibilitychange', () => { if (document.hidden && starting) reset();refreshTitleActivity(); });
   motionPreference.addEventListener?.('change', refreshTitleActivity);
   applySettings();
   refreshLeaves();
