@@ -128,9 +128,18 @@ body:not(.at-title) .app-version{color:#b6c7b1;text-shadow:none;font-size:7px}
 .encounter-grass img{width:100%;display:block;image-rendering:pixelated}
 #encounter[data-phase="grass"] .encounter-grass{opacity:1;animation:encounter-rustle .15s ease-in-out infinite alternate}
 #encounter[data-phase="grass"] #encounter-img{visibility:hidden;animation:none}
-#encounter[data-phase="silhouette"] #encounter-img{filter:grayscale(1) brightness(.52) contrast(100);animation:none}
+#encounter[data-phase="silhouette"] #encounter-img{visibility:hidden;animation:none}
 #encounter[data-phase="revealed"] #encounter-img{animation:encounter-reveal .35s ease-out both}
 #encounter-go:disabled{opacity:.45;pointer-events:none}
 @keyframes encounter-rustle{from{transform:translate(-54%,-50%) rotate(-6deg)}to{transform:translate(-46%,-50%) rotate(6deg)}}
 @keyframes encounter-reveal{from{transform:scale(.92);opacity:.5}to{transform:scale(1);opacity:1}}
 @media(prefers-reduced-motion:reduce){#encounter .encounter-grass,#encounter #encounter-img{animation:none!important}}
+
+/* Separate foreground-only layers avoid Safari retaining a silhouette filter on reveal. */
+#encounter .encounter-portrait{position:relative;width:min(60vw,240px);height:min(60vw,240px);margin:20px auto 6px}
+#encounter #encounter-img,#encounter #encounter-silhouette{position:absolute;inset:0;width:100%;height:100%;margin:0;object-fit:contain;mix-blend-mode:normal;background:transparent;box-shadow:none;border:0}
+#encounter #encounter-img{filter:none;visibility:visible}
+#encounter #encounter-silhouette{filter:brightness(0);visibility:hidden;animation:none;pointer-events:none}
+#encounter[data-phase="grass"] #encounter-img,#encounter[data-phase="silhouette"] #encounter-img{visibility:hidden}
+#encounter[data-phase="silhouette"] #encounter-silhouette{visibility:visible}
+#encounter[data-phase="revealed"] #encounter-img{visibility:visible;filter:none}
