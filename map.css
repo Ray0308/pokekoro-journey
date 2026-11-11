@@ -53,3 +53,17 @@
 #map .board-legend{bottom:5px;box-shadow:0 2px 6px #39735b17;font-size:9px}
 @media(min-width:850px){#map .player-pawn{width:39px;height:49px}#map .player-marker{bottom:calc(100% + 29px)}}
 @media(max-height:440px) and (orientation:landscape){#map .scene-frame{top:60px;bottom:26px}#map .tile small{font-size:6px;bottom:-9px;line-height:9px}#map .player-pawn{width:22px;height:28px}}
+/* Hold to shake; release to throw across the grass. */
+#map #roll{touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+#map #roll.dice-holding{transform:translateY(2px);background:linear-gradient(#ffe06c,#ffb938);box-shadow:0 1px 0 #bc903a}
+#map .map-dice-event{overflow:hidden}
+#map .map-die{width:64px;height:64px;padding:11px;gap:5px;border-radius:13px;transform:translate(-50%,-50%)}
+#map .dice-held .dice-drop{left:28%;top:72%;animation:dice-in-hand .18s ease-in-out infinite alternate}
+#map .dice-held .dice-ground{left:28%;top:72%;animation:none;transform:translate(-50%,30px);width:72px;opacity:.45}
+#map .dice-thrown .dice-drop{animation:dice-roll-across 1.2s linear both}
+#map .dice-thrown .dice-ground{animation:dice-roll-shadow 1.2s linear both;width:76px}
+#map .dice-landed .dice-drop{animation:none;transform:translate(0,0) rotate(0)}
+@keyframes dice-in-hand{from{transform:translate(-7px,4px) rotate(-16deg)}to{transform:translate(7px,-5px) rotate(18deg)}}
+@keyframes dice-roll-across{0%{transform:translate(-95px,110px) rotate(-250deg)}25%{transform:translate(-60px,-45px) rotate(-150deg)}46%{transform:translate(-22px,0) rotate(-75deg)}62%{transform:translate(13px,-28px) rotate(-35deg)}76%{transform:translate(23px,0) rotate(15deg)}88%{transform:translate(10px,-9px) rotate(-8deg)}100%{transform:translate(0,0) rotate(0)}}
+@keyframes dice-roll-shadow{0%{transform:translate(calc(-50% - 95px),140px);opacity:.3}25%{transform:translate(calc(-50% - 60px),30px) scale(.6);opacity:.15}46%{transform:translate(calc(-50% - 22px),30px);opacity:.5}76%{transform:translate(calc(-50% + 23px),30px);opacity:.5}100%{transform:translate(-50%,30px);opacity:.5}}
+@media(prefers-reduced-motion:reduce){#map .dice-held .dice-drop,#map .dice-thrown .dice-drop,#map .dice-thrown .dice-ground{animation:none}}
