@@ -181,3 +181,7 @@ body:not(.at-title) .app-version{color:#b6c7b1;text-shadow:none;font-size:7px}
 @keyframes boss-step-back{from{transform:translateX(0) scale(1);opacity:1}to{transform:translateX(-45px) scale(.8);opacity:.35}}
 @keyframes boss-send-ball{0%{transform:translate(-65px,35px) rotate(-180deg);opacity:0}15%{opacity:1}55%{transform:translate(0,-45px) rotate(180deg);opacity:1}78%{transform:translate(15px,0) rotate(300deg);opacity:1}100%{transform:translate(15px,0) scale(2);opacity:0}}
 @media(prefers-reduced-motion:reduce){#encounter #encounter-trainer,#encounter #encounter-send-ball{animation:none!important}}
+
+#map .mapcard.map-arriving{animation:map-arrival .55s ease-out both}
+@keyframes map-arrival{from{opacity:.25;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){#map .mapcard.map-arriving{animation:none}}
