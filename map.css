@@ -195,3 +195,33 @@ body:not(.at-title) .app-version{color:#b6c7b1;text-shadow:none;font-size:7px}
 #map .node-start small{font-size:7px;padding:1px 3px;bottom:-14px}
 @media(max-width:350px){#map .node-start small{font-size:6px}#map .node-start.current .player-pawn{width:25px;height:32px}}
 @media(max-height:440px) and (orientation:landscape){#map .node-start.current .player-pawn{width:20px;height:25px}#map .node-start small{font-size:6px}}
+
+/* Campaign navigation and badges; art remains replaceable per map. */
+#game-shell nav button{padding-left:7px;padding-right:7px;gap:5px;min-width:0;white-space:nowrap}
+#map .maphead>div{min-width:0}
+#map .maphead h2{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px}
+#map .maphead #lap{flex-shrink:0;font-size:9px;padding:5px 7px;white-space:nowrap}
+#journey{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;padding:18px max(14px,calc((100% - 700px)/2)) max(28px,env(safe-area-inset-bottom));background:#f3f3e9;color:#344a48}
+.journey-heading{margin-bottom:14px}
+.journey-heading>small{font-size:9px;letter-spacing:2px;color:#7f907d}
+.journey-heading h2{margin:4px 0 7px;font-size:22px;color:#345a4d}
+#journey-summary{font-size:12px;line-height:1.6;margin:0;color:#5c726b}
+#journey-badges{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-bottom:18px}
+.journey-badge{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 2px;font-size:8px;border:1px solid #d4ddd3;border-radius:10px;background:#e7ebe3;color:#7e8a7d;text-align:center}
+.journey-badge b{font-size:21px;line-height:1.1;color:#aab4a4}
+.journey-badge.earned{background:#fff2b9;border-color:#e4c876;color:#715723;box-shadow:0 2px 0 #dbc792}
+.journey-badge.earned b{color:#d5a134}
+#journey-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
+#journey-list li{display:flex;align-items:center;gap:11px;padding:12px 11px;background:#fffef7;border:1px solid #dde4d5;border-radius:12px;min-height:60px}
+.journey-step{display:grid;place-items:center;flex:0 0 30px;height:30px;background:#edf0e7;border-radius:50%;font-size:11px;font-weight:800;color:#7d8d75}
+#journey-list li>div{flex:1;min-width:0}
+#journey-list strong{display:block;font-size:13px;line-height:1.5}
+#journey-list small{display:block;font-size:10px;color:#7b8b80;line-height:1.5}
+.journey-status{flex-shrink:0;font-size:9px;color:#9aa394}
+#journey-list li.journey-current{border:2px solid #e6c35e;background:#fff5cb;box-shadow:0 2px 0 #d8c68a}
+.journey-current .journey-step{background:#f0c75e;color:#6c4f0c}
+.journey-current .journey-status{color:#876414;font-weight:800}
+.journey-cleared .journey-status{color:#478261}
+body[data-game-view="journey"] .app-version,body[data-game-view="party"] .app-version{color:#68796c}
+@media(max-width:350px){#game-shell nav button{font-size:10px;padding:5px 4px;gap:3px}#game-shell nav button svg{width:13px;height:13px}#map .maphead{padding-left:10px;padding-right:10px}#map .maphead h2{font-size:12px}#map .maphead #lap{font-size:8px;padding:5px}#journey-list strong{font-size:12px}.journey-status{font-size:8px}.journey-badge{font-size:7px}}
+#battle .battlehead #kind{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px;padding-right:6px}
