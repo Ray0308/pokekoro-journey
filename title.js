@@ -30,7 +30,7 @@
   bgm.id = 'title-bgm';
   bgm.src = config.audio.titleBgm;
   bgm.loop = true;
-  bgm.preload = 'metadata';
+  bgm.preload = 'auto';
   bgm.volume = config.audio.volume;
   document.body.append(bgm);
   function canPlayBgm() {
@@ -53,6 +53,7 @@
   window.addEventListener('pagehide', () => bgm.pause());
   window.addEventListener('pageshow', syncBgm);
   document.addEventListener('title:start', () => bgm.pause());
+  document.addEventListener('studio:ready', syncBgm);
 
   root.style.setProperty('--cloud-duration', `${config.motion.cloudsSeconds}s`);
   root.style.setProperty('--hero-idle-duration', `${config.motion.idleSeconds}s`);

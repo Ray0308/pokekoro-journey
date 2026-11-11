@@ -116,7 +116,7 @@ $('#close-credits').onclick=()=>$('#credits').close();
 (function studioIntro(){
  const splash=$('#boot-screen'),logo=$('#boot-logo');splash.hidden=false;
  let started=false;
- function reveal(){if(started)return;started=true;setTimeout(()=>{splash.classList.add('is-leaving');setTimeout(()=>{splash.hidden=true},reduceMotion?0:2100)},reduceMotion?800:2800)}
+ function reveal(){if(started)return;started=true;setTimeout(()=>{splash.classList.add('is-leaving');setTimeout(()=>{splash.hidden=true;document.dispatchEvent(new CustomEvent('studio:ready'))},reduceMotion?0:2100)},reduceMotion?800:2800)}
  if(logo.complete)reveal();else{logo.addEventListener('load',reveal,{once:true});logo.addEventListener('error',reveal,{once:true});setTimeout(reveal,4000)}
 })();
 
