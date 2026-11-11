@@ -91,3 +91,13 @@ body.at-title{min-height:0;height:var(--app-height,100dvh);background:radial-gra
 .hero-anchor:before{content:'';position:absolute;left:44%;bottom:calc(1.875% - 3px);width:54%;height:6px;border-radius:50%;background:#244e324d;filter:blur(1px);transform:translateX(-50%);pointer-events:none}
 #title-screen .companion-anchor:after{content:'';position:absolute;left:50%;bottom:-3px;width:74%;height:6px;border-radius:50%;background:#244e324d;filter:blur(1px);transform:translateX(-50%);pointer-events:none;z-index:-1}
 @media(max-height:440px) and (orientation:landscape){.foreground-hill{bottom:-34px;left:-8%;right:-8%}}
+
+/* Occasional quiet gusts: decorative only, beneath the menu controls. */
+.title-leaves{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:4}
+.title-leaves *{pointer-events:none}
+.wind-leaf{position:absolute;left:calc(100% + 18px);top:var(--leaf-y);width:var(--leaf-size);height:calc(var(--leaf-size) * .72);opacity:0;animation:title-leaf-flight var(--leaf-life) cubic-bezier(.25,.2,.6,.9) var(--leaf-delay) both}
+.wind-leaf-shape{position:relative;display:block;width:100%;height:100%;background:var(--leaf-color);clip-path:polygon(0 44%,12% 44%,12% 25%,25% 25%,25% 12%,56% 12%,56% 0,100% 0,100% 44%,88% 44%,88% 63%,75% 63%,75% 81%,44% 81%,44% 94%,12% 94%,12% 75%,0 75%);animation:title-leaf-flutter 1.2s ease-in-out infinite alternate;transform-origin:center}
+.wind-leaf-shape:after{content:'';position:absolute;width:1px;height:85%;left:50%;top:7%;background:#4d85385c;transform:rotate(44deg)}
+@keyframes title-leaf-flight{0%{opacity:0;transform:translate(0,0)}6%{opacity:.9}30%{transform:translate(calc(var(--leaf-x) * .28),calc(var(--leaf-drop) * .18))}58%{transform:translate(calc(var(--leaf-x) * .56),calc(var(--leaf-drop) * .65))}90%{opacity:.85}100%{opacity:0;transform:translate(var(--leaf-x),var(--leaf-drop))}}
+@keyframes title-leaf-flutter{0%{transform:rotate(-25deg) scaleX(1)}50%{transform:rotate(32deg) scaleX(.7)}100%{transform:rotate(85deg) scaleX(.95)}}
+@media(prefers-reduced-motion:reduce){.title-leaves{display:none}.wind-leaf,.wind-leaf-shape{animation:none}}

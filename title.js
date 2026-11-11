@@ -9,6 +9,7 @@
   const sound = document.querySelector('#sound-toggle');
   const action = root.querySelector('.hero-action');
   const companionTap = root.querySelector('.companion-anchor');
+  const leafLayer = root.querySelector('.title-leaves');
   const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
   const settingsKey = 'pokekoro-title-v1';
   let starting = false;
@@ -16,6 +17,9 @@
   let idleTimer = 0;
   let idleGeneration = 0;
   let idlePlaying = false;
+  let leafTimer = 0;
+  let leafCleanupTimer = 0;
+  let leafGeneration = 0;
   let settings = { ...config.defaults };
   try {
     const saved = JSON.parse(localStorage.getItem(settingsKey));
@@ -40,10 +44,59 @@
     layer.style.backgroundImage = `url("${config.assets[layer.dataset.titleBackground]}")`;
   }
 
-  function canPlayScene() {
+  function canShowTitle() {
     return !starting && !root.hidden && !document.hidden &&
-      !root.classList.contains('idle-poses-unavailable') &&
       document.querySelector('#boot-screen').hidden && !document.querySelector('dialog[open]');
+  }
+  function canPlayScene() {
+    return canShowTitle() && !root.classList.contains('idle-poses-unavailable');
+  }
+  function stopLeaves() {
+    leafGeneration++;
+    clearTimeout(leafTimer);
+    clearTimeout(leafCleanupTimer);
+    leafTimer = leafCleanupTimer = 0;
+    leafLayer.replaceChildren();
+  }
+  function refreshLeaves() {
+    stopLeaves();
+    if (!canShowTitle() || motionPreference.matches) return;
+    const breeze = config.breeze;
+    const token = leafGeneration;
+    const delay = breeze.minDelayMs + Math.random() * (breeze.maxDelayMs - breeze.minDelayMs);
+    leafTimer = setTimeout(() => {
+      if (token !== leafGeneration || !canShowTitle() || motionPreference.matches) return;
+      leafTimer = 0;
+      const count = breeze.minLeaves + Math.floor(Math.random() * (breeze.maxLeaves - breeze.minLeaves + 1));
+      let cleanupAfter = 0;
+      for (let i = 0; i < count; i++) {
+        const leaf = document.createElement('span');
+        const shape = document.createElement('i');
+        leaf.className = 'wind-leaf';
+        shape.className = 'wind-leaf-shape';
+        const life = breeze.minLifeMs + Math.random() * (breeze.maxLifeMs - breeze.minLifeMs);
+        const stagger = i * breeze.staggerMs;
+        leaf.style.setProperty('--leaf-y', `${37 + Math.random() * 11}%`);
+        leaf.style.setProperty('--leaf-size', `${10 + Math.random() * 6}px`);
+        leaf.style.setProperty('--leaf-x', `${-(root.clientWidth + 65)}px`);
+        leaf.style.setProperty('--leaf-drop', `${root.clientHeight * (.12 + Math.random() * .12)}px`);
+        leaf.style.setProperty('--leaf-life', `${life}ms`);
+        leaf.style.setProperty('--leaf-delay', `${stagger}ms`);
+        leaf.style.setProperty('--leaf-color', ['#b6d44b', '#88b74f', '#d3dc6a'][i % 3]);
+        shape.style.animationDelay = `${-Math.random() * 1200}ms`;
+        leaf.append(shape);
+        leafLayer.append(leaf);
+        leaf.addEventListener('animationend', event => { if (event.target === leaf) leaf.remove(); });
+        cleanupAfter = Math.max(cleanupAfter, life + stagger);
+      }
+      leafCleanupTimer = setTimeout(() => {
+        if (token === leafGeneration) refreshLeaves();
+      }, cleanupAfter + 120);
+    }, delay);
+  }
+  function refreshTitleActivity() {
+    refreshIdleScene();
+    refreshLeaves();
   }
   function canIdle() { return canPlayScene() && !motionPreference.matches; }
   function stopIdleScene() {
@@ -115,16 +168,18 @@
   document.querySelector('#close-title-options').addEventListener('click', () => options.close());
 
   function reset() {
+    stopLeaves();
     stopIdleScene();
     sequence++;
     starting = false;
     root.classList.remove('is-departing', 'hero-is-active');
     root.removeAttribute('aria-busy');
     for (const button of [start, rules, optionsButton]) button.disabled = false;
-    refreshIdleScene();
+    refreshTitleActivity();
   }
   start.addEventListener('click', async () => {
     if (starting) return;
+    stopLeaves();
     stopIdleScene();
     starting = true;
     companionTap.disabled = true;
@@ -142,11 +197,12 @@
   });
   window.PokekoroTitle = Object.freeze({ reset });
   // Suspend the scene whenever title visibility, a dialog, or system motion settings change.
-  const idleObserver = new MutationObserver(refreshIdleScene);
+  const idleObserver = new MutationObserver(refreshTitleActivity);
   for (const element of [root, document.querySelector('#boot-screen'), ...document.querySelectorAll('dialog')]) {
     idleObserver.observe(element, { attributes: true, attributeFilter: ['hidden', 'open'] });
   }
-  document.addEventListener('visibilitychange', refreshIdleScene);
-  motionPreference.addEventListener?.('change', refreshIdleScene);
+  document.addEventListener('visibilitychange', refreshTitleActivity);
+  motionPreference.addEventListener?.('change', refreshTitleActivity);
   applySettings();
+  refreshLeaves();
 })();
