@@ -79,3 +79,26 @@
 #map .dice-held .dice-cube{animation:dice-cube-spin .7s linear infinite}
 @keyframes dice-cube-spin{from{transform:rotateX(-18deg) rotateY(-24deg)}to{transform:rotateX(702deg) rotateY(696deg)}}
 @media(prefers-reduced-motion:reduce){#map .dice-held .dice-cube,#map .dice-thrown .dice-cube{animation:none}#map .dice-landed .dice-cube{transition:none}}
+/* Forest adventure console: status, one main action, six party slots. */
+#map aside{height:132px;min-height:132px;padding:5px max(12px,env(safe-area-inset-left)) max(7px,env(safe-area-inset-bottom));background:linear-gradient(125deg,#244c40,#183d35);border-top:3px solid #c6d6a0;box-shadow:0 -3px 0 #406650,0 -7px 18px #24432e22;grid-template-rows:78px 32px;row-gap:4px}
+#map aside .panel:first-child{padding:0;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:20px 54px;gap:4px 7px}
+#map aside .panel:first-child #message{grid-column:1;grid-row:1;margin:0;color:#e0edcf;font-size:10px;font-weight:600;line-height:20px;height:20px}
+#map .inventory{grid-column:2;grid-row:1;gap:4px;align-self:center}
+#map .inventory span{padding:2px 6px;gap:3px;font-size:10px;line-height:15px;background:#102e2780;border:1px solid #91b49a66;border-radius:6px;color:#fff4d2;font-weight:800}
+#map .inventory .ball-icon{width:14px;height:14px;background:white}
+#map .roll-control{grid-column:1/-1;grid-row:2;display:block;min-width:0}
+#map #roll{display:flex;align-items:center;justify-content:space-between;gap:10px;max-width:none;width:100%;height:54px;min-height:54px;padding:5px 13px 5px 9px;border:2px solid #fff3b2;border-radius:12px;background:linear-gradient(#ffe899,#ffc64d);box-shadow:0 3px 0 #ac7a2f,inset 0 1px #fff9de;color:#604414}
+#map #roll #dice{width:36px;height:36px;padding:6px;gap:3px;border-radius:7px;box-shadow:0 3px 0 #a88f58,0 0 0 1px #c29a4d;background:linear-gradient(#fffef4,#f2ebd4);border:1px solid #fff;transform:rotate(-7deg)}
+#map #roll #dice i{background:#345144}
+#map #roll .roll-copy{flex:1;display:block;line-height:1.15;font-size:17px;font-weight:900;text-align:center}
+#map #roll .roll-copy>span{display:block}
+#map #roll small{font-size:9px;letter-spacing:.5px;margin-top:3px;color:#83642b;font-weight:600}
+#map #roll .roll-arrow{font-size:16px;color:#8f681c}
+#map #roll.dice-holding{background:linear-gradient(#ffdf74,#ffb934);transform:translateY(2px);box-shadow:0 1px 0 #ac7a2f}
+#map aside .panel:nth-child(2){padding:3px 38px 0 2px;gap:8px;height:32px;align-items:center}
+#map aside .panel:nth-child(2)>small{flex:0 0 48px;max-width:48px;font-size:8px;line-height:1.4;color:#c6d9b7;letter-spacing:.3px;font-weight:700}
+#map #miniParty{display:flex;flex:0 1 auto;gap:6px;justify-content:flex-start;padding:0;margin:0;min-width:0}
+#map #miniParty img,#map #miniParty .party-empty{width:27px!important;height:27px!important;border:2px solid #a6c39b;border-radius:8px;background:#fffef0;box-shadow:0 2px 0 #0d2c25;object-fit:contain}
+body:not(.at-title) .app-version{color:#b6c7b1;text-shadow:none;font-size:7px}
+@media(max-width:350px){#map aside{padding-left:10px;padding-right:10px}#map aside .panel:first-child #message{font-size:9px}#map .inventory span{padding:2px 4px;font-size:9px}#map #miniParty{gap:5px}#map #miniParty img,#map #miniParty .party-empty{width:24px!important;height:24px!important}#map aside .panel:nth-child(2)>small{flex-basis:42px}#map #roll .roll-copy{font-size:16px}}
+@media(max-height:650px){#map aside{height:124px;min-height:124px;grid-template-rows:74px 29px}#map aside .panel:first-child{grid-template-rows:18px 52px}#map #roll{height:52px;min-height:52px}}
