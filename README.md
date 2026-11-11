@@ -15,7 +15,7 @@ Settings → Pages → Deploy from a branch → main / (root) を選択。非公
 ユーザー提供のポケモン画像9点をサンプルとして使用。非公式ファンプロトタイプ。
 
 ## バージョンと制作クレジット
-現在は Ver. 0.2.26。ブランド：Ray Edu Labo。制作/原案：株式会社ムリなもんはムリ。素材収集：パパ。原画：ポケモン。テスト：山田。バージョン表示は `version.js` に集約し、更新内容は [CHANGELOG.md](CHANGELOG.md) に記録します。
+現在は Ver. 0.2.27。ブランド：Ray Edu Labo。制作/原案：株式会社ムリなもんはムリ。素材収集：パパ。原画：ポケモン。テスト：山田。バージョン表示は `version.js` に集約し、更新内容は [CHANGELOG.md](CHANGELOG.md) に記録します。
 
 ## タイトル画面
 `title-config.js` が素材パス、初期設定、アニメーション速度を管理します。`title.js` が雲・主人公・開始演出とオプションを扱い、`title.css` はゲーム本体から独立しています。
