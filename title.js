@@ -7,7 +7,6 @@
   const optionsButton = document.querySelector('#open-options');
   const options = document.querySelector('#title-options');
   const sound = document.querySelector('#sound-toggle');
-  const companion = document.querySelector('#companion-toggle');
   const action = root.querySelector('.hero-action');
   const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
   const settingsKey = 'pokekoro-title-v1';
@@ -19,7 +18,6 @@
   try {
     const saved = JSON.parse(localStorage.getItem(settingsKey));
     if (saved && typeof saved.sound === 'boolean') settings.sound = saved.sound;
-    if (saved && typeof saved.companion === 'boolean') settings.companion = saved.companion;
   } catch { /* Storage is optional; gameplay and settings still work in memory. */ }
 
   root.style.setProperty('--cloud-duration', `${config.motion.cloudsSeconds}s`);
@@ -41,7 +39,7 @@
   }
 
   function canIdle() {
-    return !starting && !root.hidden && !document.hidden && settings.companion &&
+    return !starting && !root.hidden && !document.hidden &&
       !motionPreference.matches && !root.classList.contains('idle-poses-unavailable') &&
       document.querySelector('#boot-screen').hidden && !document.querySelector('dialog[open]');
   }
@@ -86,13 +84,9 @@
   }
 
   function applySettings(persist = false) {
-    root.classList.toggle('without-companion', !settings.companion);
     sound.querySelector('.sound-status').textContent = settings.sound ? 'ON' : 'OFF';
     sound.setAttribute('aria-pressed', String(settings.sound));
     sound.setAttribute('aria-label', `サウンド ${settings.sound ? 'ON' : 'OFF'}`);
-    companion.querySelector('span').textContent = settings.companion ? 'ON' : 'OFF';
-    companion.setAttribute('aria-pressed', String(settings.companion));
-    companion.setAttribute('aria-label', `青い相棒 ${settings.companion ? 'ON' : 'OFF'}`);
     document.dispatchEvent(new CustomEvent('title:soundchange', { detail: { enabled: settings.sound, userGesture: persist } }));
     refreshIdleScene();
     if (persist) {
@@ -100,7 +94,6 @@
     }
   }
   sound.addEventListener('click', () => { settings.sound = !settings.sound; applySettings(true); });
-  companion.addEventListener('click', () => { settings.companion = !settings.companion; applySettings(true); });
   optionsButton.addEventListener('click', () => { if (!starting) options.showModal(); });
   document.querySelector('#close-title-options').addEventListener('click', () => options.close());
 

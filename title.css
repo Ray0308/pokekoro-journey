@@ -4,13 +4,10 @@ body.at-title{min-height:0;height:var(--app-height,100dvh);background:radial-gra
 #title-screen:before,#title-screen:after{display:none}
 .title-world{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:-1}
 .world-sky{position:absolute;inset:0;background:linear-gradient(#1689de,#72cceb 43%,#bcebcf 75%,#91c473)}
-.world-layer{position:absolute;left:0;right:0;background-repeat:no-repeat;background-size:100% 100%;image-rendering:pixelated}
-.world-mountains{inset:0;height:100%;opacity:1}
-.cloud-window{position:absolute;left:0;right:0;top:7%;height:32%;overflow:hidden}
+.world-layer{position:absolute;inset:0;background-repeat:no-repeat}
+.world-scene{background-size:cover;background-position:center center;image-rendering:auto}
+.cloud-window{position:absolute;left:0;right:55%;top:3%;height:23%;overflow:hidden;opacity:.7}
 .cloud-belt{position:absolute;inset:0 auto 0 0;width:200%;height:100%;background-repeat:repeat-x;background-size:50% 100%;image-rendering:pixelated;animation:title-cloud-drift var(--cloud-duration) linear infinite;will-change:transform}
-.world-forest{inset:0;height:100%}
-.world-river{inset:0;height:100%}
-.world-foreground{inset:0;height:100%}
 #title-screen>.title-content{position:relative;inset:auto;transform:none;display:flex;flex-direction:column;align-items:center;width:100%;max-width:none;height:100%;padding:clamp(10px,2vh,20px) 5% max(18px,env(safe-area-inset-bottom));gap:clamp(8px,1.5vh,14px);text-align:center}
 .adventure-logo{margin:0;width:100%;line-height:0;flex:0 1 auto;min-height:0;max-height:29%;display:flex;align-items:center;justify-content:center;font-size:0;font-style:normal}
 .adventure-logo img{width:100%;height:auto;max-height:29dvh;object-fit:contain;image-rendering:auto;filter:drop-shadow(0 4px 0 #28628c33)}
@@ -25,7 +22,6 @@ body.at-title{min-height:0;height:var(--app-height,100dvh);background:radial-gra
 .action-unavailable .hero-idle{opacity:1}
 .companion-anchor{position:absolute;left:50%;bottom:6%;height:42%;max-height:105px;aspect-ratio:620/800;z-index:2;animation:title-companion-idle calc(var(--hero-idle-duration) * 1.2) ease-in-out infinite}
 .companion-anchor img{width:100%;height:100%;object-fit:contain;object-position:bottom;image-rendering:pixelated;mix-blend-mode:normal;-webkit-user-drag:none}
-.without-companion .companion-anchor{display:none}
 .title-dice-anchor{position:absolute;right:10%;bottom:12%;height:24%;min-height:38px;max-height:52px;aspect-ratio:1;z-index:4;perspective:400px}
 .title-dice-cube{position:relative;width:100%;height:100%;transform:rotate(-11deg);transform-style:preserve-3d;animation:title-dice-idle 5s ease-in-out infinite}
 #title-screen .title-dice-cube>.dice-face{position:relative;width:100%;height:100%;padding:18%;gap:10%;border:2px solid #f5ffff;border-radius:12%;background:linear-gradient(140deg,#fff,#e3effb);box-shadow:5px 6px 0 #7599b8,8px 11px 0 #315b5e2b;transform:none;z-index:2}

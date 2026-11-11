@@ -15,8 +15,8 @@ Settings → Pages → Deploy from a branch → main / (root) を選択。非公
 ユーザー提供のポケモン画像9点をサンプルとして使用。非公式ファンプロトタイプ。
 
 ## バージョンと制作クレジット
-現在は Ver. 0.2.2。ブランド：Ray Edu Labo。制作/原案：株式会社ムリなもんはムリ。素材収集：パパ。原画：ポケモン。テスト：山田。バージョン表示は `version.js` に集約し、更新内容は [CHANGELOG.md](CHANGELOG.md) に記録します。
+現在は Ver. 0.2.3。ブランド：Ray Edu Labo。制作/原案：株式会社ムリなもんはムリ。素材収集：パパ。原画：ポケモン。テスト：山田。バージョン表示は `version.js` に集約し、更新内容は [CHANGELOG.md](CHANGELOG.md) に記録します。
 
 ## タイトル画面
 `title-config.js` が素材パス、初期設定、アニメーション速度を管理します。`title.js` が雲・主人公・開始演出とオプションを扱い、`title.css` はゲーム本体から独立しています。
-背景レイヤーは差し替え用のコード製仮素材です。素材の詳細は [assets/title/README.md](assets/title/README.md) を参照。青い相棒はオプションで表示切替できます。設定はゲームセーブとは別の `pokekoro-title-v1` に保存します。
+タイトル背景はユーザー提供の背景画像です。雲は独立したレイヤーでゆっくり動かします。素材の詳細は [assets/title/README.md](assets/title/README.md) を参照。青い相棒は正式な相棒として常に表示します。オプションはサウンド切替のみです。設定はゲームセーブとは別の `pokekoro-title-v1` に保存します。
