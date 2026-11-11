@@ -10,6 +10,7 @@ window.POKEKORO_TITLE = Object.freeze({
     companionEat: 'assets/title/sprites/companion-eat.webp',
     clouds: 'assets/title/placeholders/clouds.webp',
     scene: 'assets/title/background.webp',
+    foregroundHill: 'assets/title/foreground-hill.webp',
   }),
   defaults: Object.freeze({ sound: true }),
   motion: Object.freeze({ cloudsSeconds: 85, idleSeconds: 3.2, departureMs: 950 }),
