@@ -13,8 +13,8 @@ window.POKEKORO_TITLE = Object.freeze({
     foregroundHill: 'assets/title/foreground-hill-v2.webp',
   }),
   defaults: Object.freeze({ sound: true }),
-  audio: Object.freeze({ titleBgm: 'assets/audio/title-opening.mp3', volume: 0.35, startCry: 'assets/audio/munchlax-cry.mp3', cryMs: 2100, fadeMs: 700 }),
-  motion: Object.freeze({ cloudsSeconds: 85, idleSeconds: 3.2, departureMs: 1800 }),
+  audio: Object.freeze({ titleBgm: 'assets/audio/title-opening.mp3', volume: 0.35, startCry: 'assets/audio/munchlax-cry.mp3', cryMs: 2100 }),
+  motion: Object.freeze({ cloudsSeconds: 85, idleSeconds: 3.2, departureMs: 2400 }),
   breeze: Object.freeze({ minDelayMs: 6500, maxDelayMs: 13000, minLeaves: 2, maxLeaves: 4, minLifeMs: 5500, maxLifeMs: 7500, staggerMs: 350 }),
   idleScene: Object.freeze({ minDelayMs: 10000, maxDelayMs: 18000, eatMs: 2000, lookDelayMs: 150, lookMs: 850 }),
 });

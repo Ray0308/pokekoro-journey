@@ -55,8 +55,7 @@
     if (musicGain) { musicGain.gain.cancelScheduledValues(musicContext.currentTime);musicGain.gain.setValueAtTime(config.audio.volume, musicContext.currentTime); }
     else bgm.volume = config.audio.volume;
   }
-  function fadeMusic() {
-    const duration = config.audio.fadeMs;
+  function fadeMusic(duration) {
     if (musicGain) {
       const now = musicContext.currentTime;musicGain.gain.cancelScheduledValues(now);
       musicGain.gain.setValueAtTime(musicGain.gain.value, now);
@@ -69,7 +68,7 @@
         const progress = Math.min(1, (now - began) / duration);
         if (!musicGain) bgm.volume = volume * (1 - progress);
         if (progress < 1) requestAnimationFrame(tick);
-        else { bgm.pause();resolve(); }
+        else { resolve(); }
       }
       requestAnimationFrame(tick);
     });
@@ -87,7 +86,7 @@
     });
   }
   function canPlayBgm() {
-    return settings.sound && !starting && !root.hidden && !document.hidden &&
+    return settings.sound && !root.hidden && !document.hidden &&
       document.querySelector('#boot-screen').hidden;
   }
   function syncBgm() {
@@ -286,24 +285,24 @@
     if (starting) return;
     stopLeaves();
     stopIdleScene();
-    unlockMusicGraph();
+    unlockMusicGraph();syncBgm();
     starting = true;
     companionTap.disabled = true;
     const token = ++sequence;
     root.setAttribute('aria-busy', 'true');
     for (const button of [start, rules, optionsButton]) button.disabled = true;
-    root.dataset.startPhase = 'cry';
-    const cryPlayed = playStartCry();
-    await Promise.all([fadeMusic(), cryPlayed]);
-    if (token !== sequence) return;
-    cry.pause();
     root.dataset.startPhase = 'walking';
     root.classList.add('is-departing');
-    const duration = motionPreference.matches ? 120 : config.motion.departureMs;
+    if (action.complete && action.naturalWidth) root.classList.add('hero-is-active');
+    const duration = motionPreference.matches ? config.audio.cryMs : config.motion.departureMs;
+    void playStartCry();
+    const fading = fadeMusic(duration);
     await new Promise(resolve => setTimeout(resolve, duration * .24));
     if (token !== sequence) return;
     if (action.complete && action.naturalWidth) root.classList.add('hero-is-active');
     await new Promise(resolve => setTimeout(resolve, duration * .76));
+    if (token !== sequence) return;
+    await fading;
     if (token !== sequence) return;
     document.dispatchEvent(new CustomEvent('title:start'));
   });
