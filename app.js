@@ -110,10 +110,23 @@ rollButton.oncontextmenu=e=>e.preventDefault();
 window.addEventListener('blur',cancelDiceHold);
 document.addEventListener('visibilitychange',()=>{if(document.hidden)cancelDiceHold()});
 async function mapDiceDrop(value){
- const layer=$('.map-dice-event')||diceLayer();layer.classList.remove('dice-held');layer.classList.add('dice-thrown');
- const die=layer.querySelector('.map-die'),text=layer.querySelector('.dice-announcement');
- for(let i=0;i<12;i++){die.dataset.value=1+Math.floor(Math.random()*6);await new Promise(resolve=>setTimeout(resolve,reduceMotion?15:100))}
- die.dataset.value=value;$('#dice').dataset.value=value;$('#dice').setAttribute('aria-label',`サイコロ ${value}`);text.textContent=`${value} マス すすむ！`;layer.classList.add('dice-landed');tone(400,.1);await new Promise(resolve=>setTimeout(resolve,reduceMotion?250:650));layer.remove();tone(660,.12);
+ const layer=$('.map-dice-event')||diceLayer(),cube=layer.querySelector('.dice-cube');
+ // Continue from the exact held rotation rather than restarting a new spin.
+ const spin=cube.getAnimations()[0],phase=spin?((Number(spin.currentTime)||0)%700)/700:0;
+ const x=-18+720*phase,y=-24+720*phase;
+ const face={1:[0,0],2:[-90,0],3:[0,-90],4:[0,90],5:[90,0],6:[0,180]}[value];
+ const endX=Math.ceil((x-face[0])/360)*360+face[0]+720;
+ const endY=Math.ceil((y-face[1])/360)*360+face[1]+720;
+ cube.style.animation='none';cube.style.transition='none';
+ cube.style.transform=`rotateX(${x}deg) rotateY(${y}deg)`;
+ layer.classList.remove('dice-held');layer.classList.add('dice-thrown');
+ const duration=reduceMotion?120:1200;
+ const rotation=cube.animate([{transform:`rotateX(${x}deg) rotateY(${y}deg)`},{transform:`rotateX(${endX}deg) rotateY(${endY}deg)`}],{duration,easing:'cubic-bezier(.12,.45,.25,1)',fill:'forwards'});
+ await rotation.finished;
+ cube.style.transform=`rotateX(${endX}deg) rotateY(${endY}deg)`;rotation.cancel();
+ $('#dice').dataset.value=value;$('#dice').setAttribute('aria-label',`サイコロ ${value}`);layer.querySelector('.map-die').dataset.value=value;
+ layer.querySelector('.dice-announcement').textContent=`${value} マス すすむ！`;layer.classList.add('dice-landed');tone(400,.1);
+ await new Promise(resolve=>setTimeout(resolve,reduceMotion?250:650));layer.remove();tone(660,.12);
 }
 function energyLayer(){let layer=$('#energy-layer');if(!layer){layer=document.createElement('div');layer.id='energy-layer';layer.setAttribute('aria-hidden','true');$('#battle').append(layer)}return layer}
 function flyCharge(cells,type,amount){
