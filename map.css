@@ -143,3 +143,26 @@ body:not(.at-title) .app-version{color:#b6c7b1;text-shadow:none;font-size:7px}
 #encounter[data-phase="grass"] #encounter-img,#encounter[data-phase="silhouette"] #encounter-img{visibility:hidden}
 #encounter[data-phase="silhouette"] #encounter-silhouette{visibility:visible}
 #encounter[data-phase="revealed"] #encounter-img{visibility:visible;filter:none}
+
+/* One continuous throw: approach, impact, absorption, landing and shakes. */
+.capture-scene{position:relative;width:100%;height:min(44dvh,280px);min-height:180px;overflow:hidden;border-radius:18px;background:radial-gradient(ellipse at 50% 25%,#f5ffe3,#dfefd7 65%,#bdd8b5)}
+.capture-ground{position:absolute;left:20%;right:20%;top:78%;height:10%;border-radius:50%;background:#668c6940;filter:blur(3px)}
+#resultBody .capture-target{position:absolute;left:50%;top:38%;width:180px;height:180px;max-width:65%;max-height:70%;object-fit:contain;transform:translate(-50%,-50%);mix-blend-mode:normal}
+.capture-ball{position:absolute;left:50%;top:42%;width:44px;height:44px;margin:-22px;z-index:3;opacity:0;transform:translate(0,0)}
+#resultBody .capture-ball img{display:block;width:100%;height:100%;object-fit:contain;border-radius:50%;background:#fff;mix-blend-mode:normal;box-shadow:0 3px 5px #294a4433}
+.capture-flash{position:absolute;left:50%;top:42%;width:100px;height:100px;margin:-50px;border-radius:50%;background:radial-gradient(#fff,#ffe59588 45%,transparent 70%);opacity:0;z-index:4;pointer-events:none}
+.capture-scene[data-phase="throw"] .capture-ball{opacity:1;animation:capture-throw .65s ease-out both}
+.capture-scene[data-phase="impact"] .capture-ball{opacity:1}
+.capture-scene[data-phase="impact"] .capture-flash{animation:capture-impact .45s ease-out both}
+.capture-scene[data-phase="impact"] .capture-target{animation:capture-absorb .45s ease-in both;transform-origin:center}
+.capture-scene[data-phase="settle"] .capture-target,.capture-scene[data-phase="check"] .capture-target{opacity:0}
+.capture-scene[data-phase="settle"] .capture-ball{opacity:1;animation:capture-land .35s ease-out both}
+.capture-scene[data-phase="check"] .capture-ball{opacity:1;transform:translateY(85px) scale(1.25);animation:capture-check .35s ease-in-out 3}
+#resultBody #capture-status{font-size:18px;min-height:26px}
+@keyframes capture-throw{0%{transform:translate(-125px,145px) rotate(-540deg) scale(1.45)}45%{transform:translate(-58px,-55px) rotate(-270deg) scale(1.1)}100%{transform:translate(0,0) rotate(0) scale(1)}}
+@keyframes capture-impact{0%{opacity:0;transform:scale(.4)}25%{opacity:1;transform:scale(1.3)}100%{opacity:0;transform:scale(2)}}
+@keyframes capture-absorb{0%{transform:translate(-50%,-50%) scale(1);filter:brightness(1)}35%{filter:brightness(3)}100%{transform:translate(-50%,-43%) scale(0);filter:brightness(3);opacity:0}}
+@keyframes capture-land{0%{transform:translateY(0)}65%{transform:translateY(85px) scale(1.25,.95)}82%{transform:translateY(68px) scale(1.15)}100%{transform:translateY(85px) scale(1.25)}}
+@keyframes capture-check{0%,100%{transform:translateY(85px) rotate(0) scale(1.25)}30%{transform:translate(-5px,85px) rotate(-15deg) scale(1.25)}70%{transform:translate(5px,85px) rotate(15deg) scale(1.25)}}
+@media(max-height:600px){.capture-scene{height:210px;min-height:180px}#resultBody #capture-status{font-size:16px}}
+@media(prefers-reduced-motion:reduce){.capture-scene *{animation:none!important}.capture-scene[data-phase="throw"] .capture-ball{opacity:1}.capture-scene[data-phase="impact"] .capture-target{opacity:0}.capture-scene[data-phase="impact"] .capture-flash{display:none}.capture-scene[data-phase="settle"] .capture-ball{transform:translateY(85px) scale(1.25)}}
