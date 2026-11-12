@@ -36,3 +36,6 @@
 
 ## cerulean-gym.webp
 ユーザー提供のハナダジム背景。原本はoriginals/cerulean-gym.jpg。全体構図・縦横比を維持してWebP化。MAPSのaspectRatio・routeInsetでルートを外壁内側へ配置。
+
+## cerulean-city.webp
+ユーザー提供のハナダシティ背景。1254×1254の構図を維持してWebP化。原本はoriginals/cerulean-city.jpg。aspectRatio:1、routeInset:{x:4,y:4,scaleX:.92,scaleY:.92}で外壁内に配置。
