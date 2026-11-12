@@ -43,3 +43,7 @@ MAPSのboss.imageVariantsで3種を指定。各遭遇で1/3ずつ選び、battle
 - originals/sabrina.jpg・originals/sabrina-field.jpg：提供されたナツメ素材の原本。
 - sabrina.webp：外周の白背景のみ透過した全身画像。
 - sabrina-field.webp：格子中央から16×16ドットを復元し、グリッド線・外側白背景を除去した128pxアイコン。ヤマブキジムに使用。
+
+- originals/blaine.jpg・originals/blaine-field.jpg：提供されたカツラ素材の原本。
+- blaine.webp：外周の白背景のみ透過した全身画像。
+- blaine-field.webp：格子中央から16×16ドットを復元し、グリッド線・外側白背景を除去した128pxアイコン。グレンジムに使用。
