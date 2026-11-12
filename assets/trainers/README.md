@@ -13,3 +13,7 @@ MAPS["pewter-gym"].boss の image と icon に設定。手持ちの仮設定は�
 
 - originals/youngster-field.jpg：ユーザー提供のグリッド付きフィールドアイコン原本。
 - youngster-field.webp：16×16マスの中央色を採取し、グリッド線・白背景を除いた128px透過アイコン。ニビシティ・ハナダシティのボスコマに使用。拡大はnearestで輪郭を保持。全身画像はyoungster.webpを継続。
+
+- originals/hiker.jpg・originals/hiker-field.jpg：ユーザー提供のやまおとこ原本。
+- hiker.webp：外周につながる白背景だけを透過した全身画像。
+- hiker-field.webp：20px格子の各マス中央から16×16ドットを復元したフィールド画像。外周の白のみ透過し、顔・手の白は保持。ディグダのあな・イワヤマトンネルのボスに使用。
