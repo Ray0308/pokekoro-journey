@@ -1,0 +1,3 @@
+# タイプの見た目
+
+reference.jpgはユーザー提供の18タイプ参考画像。symbols.pngはそこから白いマークを抽出した6列×3行の透過アトラス。puzzle-visuals.jsのTYPE_SYMBOL_CELLSでゲームのタイプ番号へ対応。色はparty-rules.jsに一元管理。マークは絵文字ではなく画像で描画し、端末による見た目の差を防ぐ。

@@ -1,16 +1,18 @@
 'use strict';
-// Canvas coordinates stay at 420 × 420; pointer hit areas remain unchanged.
-function drawTypeGem(context,x,y,color,icon,selected){
+// Atlas cells follow the supplied reference: six columns, three rows.
+const TYPE_SYMBOL_CELLS=[7,1,2,13,3,0,6,8,12,14,4,5,9,10,11,15,16,17];
+const typeSymbolAtlas=new Image();typeSymbolAtlas.src='assets/types/symbols.png';
+typeSymbolAtlas.onload=()=>{if(typeof draw==='function'&&typeof battle!=='undefined'&&battle)draw()};
+function drawTypeGem(context,x,y,color,icon,selected,type){
  const r=selected?30:27;
  context.save();context.translate(x,y);
- function outline(){context.beginPath();for(let i=0;i<8;i++){const angle=(i*45-112.5)*Math.PI/180,px=Math.cos(angle)*r,py=Math.sin(angle)*r;i?context.lineTo(px,py):context.moveTo(px,py)}context.closePath()}
- outline();context.shadowColor=selected?'#ffe17d':'#173b4866';context.shadowBlur=selected?12:4;context.shadowOffsetY=3;
- const gem=context.createRadialGradient(-10,-13,2,3,10,42);gem.addColorStop(0,'#f6ffff');gem.addColorStop(.32,color);gem.addColorStop(.75,color);gem.addColorStop(1,'#203a58');context.fillStyle=gem;context.fill();context.shadowBlur=0;context.shadowOffsetY=0;
- outline();context.save();context.clip();
- context.fillStyle='#ffffff55';context.beginPath();context.moveTo(-26,-12);context.lineTo(-11,-25);context.lineTo(15,-25);context.lineTo(9,-11);context.lineTo(-10,-9);context.closePath();context.fill();
- context.fillStyle='#14334a38';context.beginPath();context.moveTo(10,-10);context.lineTo(26,-12);context.lineTo(26,13);context.lineTo(11,25);context.lineTo(-11,25);context.lineTo(-9,11);context.lineTo(10,10);context.closePath();context.fill();
- context.strokeStyle='#ffffff50';context.lineWidth=1;context.beginPath();context.moveTo(-10,-10);context.lineTo(10,-10);context.lineTo(14,6);context.lineTo(0,16);context.lineTo(-14,6);context.closePath();context.stroke();context.restore();
- outline();context.strokeStyle=selected?'#ffe57e':'#f4ffffbb';context.lineWidth=selected?3:1.8;context.stroke();
- context.fillStyle='#ffffffbf';context.beginPath();context.ellipse(-11,-16,7,2,-.65,0,Math.PI*2);context.fill();
- context.font='23px sans-serif';context.textAlign='center';context.textBaseline='middle';context.shadowColor='#ffffffa0';context.shadowBlur=3;context.fillText(icon,0,2);context.restore();
+ context.beginPath();context.arc(0,0,r,0,Math.PI*2);
+ context.shadowColor=selected?'#ffe17d':color;context.shadowBlur=selected?12:5;context.shadowOffsetY=selected?0:2;
+ const body=context.createRadialGradient(-7,-10,2,3,8,40);body.addColorStop(0,color);body.addColorStop(.58,color);body.addColorStop(1,'#24344c');context.fillStyle=body;context.fill();context.shadowBlur=0;context.shadowOffsetY=0;
+ context.strokeStyle=selected?'#ffe57e':'#ffffffb0';context.lineWidth=selected?3:1.5;context.stroke();
+ // Keep specular reflections at the rim, away from the large white symbol.
+ context.beginPath();context.arc(-1,-1,r-4,Math.PI*1.08,Math.PI*1.63);context.strokeStyle='#ffffff90';context.lineWidth=2.5;context.lineCap='round';context.stroke();
+ const halo=context.createRadialGradient(0,10,1,0,10,22);halo.addColorStop(0,'#ffffff18');halo.addColorStop(1,'#ffffff00');context.fillStyle=halo;context.beginPath();context.arc(0,0,r-3,0,Math.PI*2);context.fill();
+ if(typeSymbolAtlas.complete&&typeSymbolAtlas.naturalWidth){const cell=TYPE_SYMBOL_CELLS[type];context.shadowColor='#1b34455c';context.shadowBlur=2;context.shadowOffsetY=1;context.drawImage(typeSymbolAtlas,cell%6*130,Math.floor(cell/6)*130,130,130,-22,-22,44,44)}
+ context.restore();
 }
