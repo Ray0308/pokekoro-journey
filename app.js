@@ -82,7 +82,7 @@ let diceHold=null,diceEpoch=0;
 let busy=false,battle=null,raf=0,grid=[],path=[],drag=false,lastClear=0,combo=0,maxCombo=0,startAt=0,running=false,elapsed=0;
 const squares=['start','wild','item','wild','trainer','wild','item','trainer','wild','wild','item','trainer','wild','wild','goal'];
 const label={start:'ポケモンセンター',wild:'草むら',item:'道具',trainer:'トレーナー',goal:'ボス'},symbol={start:'🏕️',wild:'🌿',item:'🎁',trainer:'⚔️',goal:'⚑'};
-function save(){localStorage.setItem('pokekoro-v1',JSON.stringify(state))}function img(id){return pokemonImage(id)}
+function save(){localStorage.setItem(window.PokekoroDebug?.saveKey?.()||'pokekoro-v1',JSON.stringify(state))}function img(id){return pokemonImage(id)}
 const routePoints=[[17,77],[34,84],[54,84],[74,77],[84,61],[84,44],[75,28],[57,21],[37,22],[20,31],[15,49],[31,60],[50,65],[66,53],[50,41]];
 const dungeonRoutePoints=[[16,80],[34,84],[54,82],[75,76],[83,59],[65,54],[46,58],[25,54],[15,38],[31,24],[50,21],[70,25],[83,40],[66,40],[49,40]];
 function mapRoutePoints(){return activeMap().route==='dungeon'?dungeonRoutePoints:routePoints}
@@ -174,7 +174,7 @@ function endBattle(win){
  const earnedBadge=normalBoss&&!state.clearedMaps.includes(state.mapId)?activeMap().badge:null;
  if(normalBoss){if(!state.clearedMaps.includes(state.mapId))state.clearedMaps.push(state.mapId);state.pendingMapId=activeMap().nextMap||MAP_ORDER[0]}
  const masterDrop=battle.boss&&Math.random()<BALL_DROPS.bossMaster;if(masterDrop)state.master++;
- const ticket=normalBoss&&Math.random()<RAINBOW_CONFIG.ticketRate?grantRainbowTicket():null;
+ const ticket=normalBoss&&(window.PokekoroDebug?.forceRainbowTicket?.()||Math.random()<RAINBOW_CONFIG.ticketRate)?grantRainbowTicket():null;
  if(battle.trainer){
   state.super+=battle.boss?3:1;state.balls+=2;render();
   result(`<h2>${battle.boss?(activeMap().leagueFinal?'ワタルに勝利！':activeMap().name+'クリア！'):'トレーナーに勝利！'}</h2><p>アイテムを てにいれた！</p>${rewardItemsHtml([{id:'super',count:battle.boss?3:1},{id:'normal',count:2},...(masterDrop?[{id:'master',count:1}]:[]),...(ticket?[{id:'rainbow',count:1}]:[])])}${earnedBadge?`<div class="reward-badge"><svg aria-hidden="true"><use href="assets/ui-icons.svg#goal"/></svg><span><small>バッジを てにいれた！</small><strong>${earnedBadge}</strong></span></div>`:''}${ticket?'<button id="reward-rainbow" class="rainbow-action">虹の雲へ 行く</button>':''}<button id="done" class="primary">次のマップへ</button>`);
