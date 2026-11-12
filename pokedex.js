@@ -17,7 +17,7 @@
   document.querySelector('#device-number').textContent='No.'+pokemonNumber(selected);
   document.querySelector('#device-name').textContent=seen?mon.label:'────';
   const image=document.querySelector('#device-image');image.hidden=!seen;if(seen)image.src=pokemonPortrait(selected);else image.removeAttribute('src');image.alt=seen?mon.label:'';
-  document.querySelector('#device-type').textContent=!seen?'タイプ：—':mon.type===null?'タイプ：—':types[mon.type]+'タイプ';
+  document.querySelector('#device-type').textContent=!seen?'タイプ：—':mon.type===null?'タイプ：—':pokemonTypes(mon).map(t=>types[t]).join('・')+'タイプ';
   document.querySelector('#device-description').textContent=!seen?'まだ であっていません。':mon.description||'せつめいは まだ とうろくされていません。';
   document.querySelector('#device-owned').textContent=owned?'✓ つかまえた！':'まだ つかまえていません';
   const party=document.querySelector('#device-party');party.disabled=!owned;party.textContent=state.party.includes(selected)?'パーティーから はずす':'パーティーに いれる';
@@ -49,7 +49,7 @@
   const slot=replaceSlot,next=[...state.party],old=next[slot],existing=next.indexOf(id);
   if(existing>=0){if(old){next[slot]=id;next[existing]=old}else{dialog.close();return}}
   else if(old)next[slot]=id;else next.push(id);
-  state.party=next;render();dialog.close();
+  const error=partyTypeError(next);if(error){document.querySelector('#device-list-count').textContent=error;return}state.party=next;render();dialog.close();
  }
  function read(){
   if(utterance){stopReading();status('よみあげを とめました');return}
