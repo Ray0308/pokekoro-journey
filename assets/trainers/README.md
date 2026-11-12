@@ -21,3 +21,6 @@ MAPS["pewter-gym"].boss の image と icon に設定。手持ちの仮設定は�
 - rocket-trio.webp・rocket-female.webp・rocket-male.webp：提供画像の外周白背景を透過し最適化。原本はoriginals/に保持。
 - rocket-field.webp：提供ドット絵のグリッド線・外側の白を除去した共通フィールドアイコン。
 MAPSのboss.imageVariantsで3種を指定。各遭遇で1/3ずつ選び、battle.trainerAppearanceに固定する。手持ち・報酬は既存のまま。
+
+- originals/misty.jpg・misty.webp：提供されたカスミ全身画像と外周白を透過した登場用素材。
+- originals/misty-field-side.jpg：届いた横向き静止JPEGの原本。正面のコマを含まないためフィールドには未使用。元アニメーション入手後に正面のみ切り出す。
