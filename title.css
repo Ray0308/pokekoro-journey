@@ -119,4 +119,4 @@ body.at-title{min-height:0;height:var(--app-height,100dvh);background:radial-gra
 #title-screen.is-starting #enter-game{animation:title-button-press .25s both}#title-screen.is-starting .title-attribution{pointer-events:none}
 
 /* The die enters from off-screen only after Start is pressed. */
-#title-screen .title-dice-anchor{visibility:hidden}#title-screen.is-starting .title-dice-anchor{visibility:visible}
+#title-screen .title-dice-anchor{display:none}#title-screen.is-starting .title-dice-anchor{display:block}
