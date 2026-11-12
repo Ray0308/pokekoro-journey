@@ -35,3 +35,7 @@ MAPSのboss.imageVariantsで3種を指定。各遭遇で1/3ずつ選び、battle
 - originals/erika.jpg・originals/erika-field.jpg：提供されたエリカ素材の原本。
 - erika.webp：外周の白背景のみ透過した全身画像。花びらを維持し高さ760pxに最適化。
 - erika-field.webp：格子中央から16×16ドットを復元し、グリッド線・外側白背景を除去した128pxアイコン。タマムシジムに使用。
+
+- originals/koga.jpg・originals/koga-field.jpg：提供されたキョウ素材の原本。
+- koga.webp：外周の白背景のみ透過した全身画像。
+- koga-field.webp：格子中央から16×16ドットを復元し、グリッド線・外側白背景を除去した128pxアイコン。顔・手の白は保持。セキチクジムに使用。
