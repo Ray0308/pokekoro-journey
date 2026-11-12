@@ -219,9 +219,15 @@ $('#close-credits').onclick=()=>$('#credits').close();
 // Match the Ray Edu Labo introduction used in Micra Rails.
 (function studioIntro(){
  const splash=$('#boot-screen'),logo=$('#boot-logo');splash.hidden=false;
- let started=false;
- function reveal(){if(started)return;started=true;setTimeout(()=>{splash.classList.add('is-leaving');setTimeout(()=>{splash.hidden=true;document.dispatchEvent(new CustomEvent('studio:ready'))},reduceMotion?0:2100)},reduceMotion?800:2800)}
- if(logo.complete)reveal();else{logo.addEventListener('load',reveal,{once:true});logo.addEventListener('error',reveal,{once:true});setTimeout(reveal,4000)}
+ let started=false,minimumStarted=false,minimumElapsed=false,assetsReady=!!window.PokekoroTitleAssetsReady;
+ function revealWhenReady(){
+  if(started||!minimumElapsed||!assetsReady)return;started=true;
+  // Let decoded title layers reach the compositor before exposing the screen.
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{splash.classList.add('is-leaving');setTimeout(()=>{splash.hidden=true;document.dispatchEvent(new CustomEvent('studio:ready'))},reduceMotion?0:2100)}));
+ }
+ function holdMinimum(){if(minimumStarted)return;minimumStarted=true;setTimeout(()=>{minimumElapsed=true;revealWhenReady()},reduceMotion?800:2800)}
+ document.addEventListener('title:assetsready',()=>{assetsReady=true;revealWhenReady()},{once:true});
+ if(logo.complete)holdMinimum();else{logo.addEventListener('load',holdMinimum,{once:true});logo.addEventListener('error',holdMinimum,{once:true});setTimeout(holdMinimum,4000)}
 })();
 
 async function showBossEncounter(){

@@ -148,6 +148,15 @@
     layer.style.backgroundImage = `url("${config.assets[layer.dataset.titleBackground]}")`;
   }
 
+  // Readiness includes decoded CSS backgrounds, not just <img> download events.
+  async function decoded(image){
+    try{if(typeof image.decode==='function')await image.decode();else if(!image.complete)await new Promise((resolve,reject)=>{image.addEventListener('load',resolve,{once:true});image.addEventListener('error',reject,{once:true})});return image.naturalWidth>0}catch{return false}
+  }
+  const backgroundPreparation=[...new Set([...root.querySelectorAll('[data-title-background]')].map(layer=>config.assets[layer.dataset.titleBackground]))].map(src=>{const image=new Image();image.src=src;return decoded(image)});
+  Promise.all([...root.querySelectorAll('[data-title-image]')].map(decoded).concat(backgroundPreparation)).then(()=>document.fonts?.ready).catch(()=>{}).then(()=>{
+    window.PokekoroTitleAssetsReady=true;document.dispatchEvent(new CustomEvent('title:assetsready'));
+  });
+
   function canShowTitle() {
     return titleReady && !starting && !root.hidden && !document.hidden &&
       document.querySelector('#boot-screen').hidden && !document.querySelector('dialog[open]');
