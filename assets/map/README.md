@@ -45,3 +45,6 @@
 
 ## ss-anne.webp
 ユーザー提供のサントアンヌ号背景。1254×1254を維持してWebP化。原本はoriginals/ss-anne.jpg。専用のroutePointsで桟橋からスタートし、船の外周を右回りして中央へ入る15マスの渦巻きルートを配置。
+
+## vermilion-gym.webp
+ユーザー提供のクチバジム背景。1254×1254の構図を維持してWebP化。原本はoriginals/vermilion-gym.jpg。専用routePointsで入口から巡り、奥中央のマチスへ到達する15マスを配置。
