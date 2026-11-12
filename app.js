@@ -92,7 +92,7 @@ const label={start:'ポケモンセンター',wild:'草むら',item:'道具',tra
 function save(){localStorage.setItem(window.PokekoroDebug?.saveKey?.()||'pokekoro-v1',JSON.stringify(state))}function img(id){return pokemonImage(id)}
 const routePoints=[[17,77],[34,84],[54,84],[74,77],[84,61],[84,44],[75,28],[57,21],[37,22],[20,31],[15,49],[31,60],[50,65],[66,53],[50,41]];
 const dungeonRoutePoints=[[16,80],[34,84],[54,82],[75,76],[83,59],[65,54],[46,58],[25,54],[15,38],[31,24],[50,21],[70,25],[83,40],[66,40],[49,40]];
-function mapRoutePoints(){const points=activeMap().route==='dungeon'?dungeonRoutePoints:routePoints,inset=activeMap().routeInset;return inset?points.map(([x,y])=>[x*inset.scaleX+inset.x,y*inset.scaleY+inset.y]):points}
+function mapRoutePoints(){const points=activeMap().routePoints||(activeMap().route==='dungeon'?dungeonRoutePoints:routePoints),inset=activeMap().routeInset;return inset?points.map(([x,y])=>[x*inset.scaleX+inset.x,y*inset.scaleY+inset.y]):points}
 function tileLabel(kind){if(isSafari()&&kind==='goal')return '特別な出会い';return kind==='wild'?(activeMap().wildLabel||label.wild):label[kind]}
 // Use the entire route for tangents, including the travelled prefix, so both roads align.
 function routePath(last=routePoints.length-1){

@@ -44,4 +44,4 @@
 ユーザー提供の方眼付きドット絵を元に、方眼と外側の白地を除いた透過アイコン。原本はoriginals/item-ball.jpg。アイテムマスと凡例専用。
 
 ## ss-anne.webp
-ユーザー提供のサントアンヌ号背景。1254×1254を維持してWebP化。原本はoriginals/ss-anne.jpg。routeInset:{x:4,y:30,scaleX:.92,scaleY:.46}で船上にルートを配置。
+ユーザー提供のサントアンヌ号背景。1254×1254を維持してWebP化。原本はoriginals/ss-anne.jpg。専用のroutePointsで桟橋からスタートし、船の外周を右回りして中央へ入る15マスの渦巻きルートを配置。
