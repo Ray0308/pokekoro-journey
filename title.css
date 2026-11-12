@@ -110,3 +110,6 @@ body.at-title{min-height:0;height:var(--app-height,100dvh);background:radial-gra
 #title-screen.is-departing #enter-game>svg{animation:none;opacity:1}
 @keyframes title-start-cue{0%,20%,100%{opacity:1}50%,65%{opacity:.1}}
 @media(prefers-reduced-motion:reduce){#enter-game>svg{animation:none;opacity:1}}
+
+#title-screen .title-menu{transition:opacity .45s ease,transform .45s ease}#title-screen.is-menu-waiting .title-menu{opacity:.35;transform:translateY(7px);pointer-events:none}#title-screen.is-menu-waiting #enter-game>svg{animation:none;opacity:1}
+@media(prefers-reduced-motion:reduce){#title-screen .title-menu{transition:none}#title-screen.is-menu-waiting .title-menu{transform:none}}

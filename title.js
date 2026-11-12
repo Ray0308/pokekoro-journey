@@ -13,6 +13,11 @@
   const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
   const settingsKey = 'pokekoro-title-v1';
   let starting = false;
+  let titleReady=false,menuReadyTimer=0,primedDuringIntro=false;
+  const titleButtons=[start,rules,optionsButton];
+  titleButtons.forEach(button=>button.disabled=true);
+  root.classList.add('is-menu-waiting');
+  function revealMenu(){clearTimeout(menuReadyTimer);if(document.hidden||root.hidden||!document.querySelector('#boot-screen').hidden)return;menuReadyTimer=setTimeout(()=>{if(document.hidden||root.hidden)return;titleReady=true;root.classList.remove('is-menu-waiting');titleButtons.forEach(button=>button.disabled=starting);refreshTitleActivity()},config.motion.menuDelayMs)}
   let sequence = 0;
   let idleTimer = 0;
   let idleGeneration = 0;
@@ -90,22 +95,29 @@
       document.querySelector('#boot-screen').hidden;
   }
   function syncBgm() {
-    if (!canPlayBgm()) { bgm.pause(); return; }
+    if (!canPlayBgm()) { if(!(primedDuringIntro&&settings.sound&&!root.hidden&&!document.hidden))bgm.pause(); return; }
     if (bgm.paused) {
       // Mobile browsers unlock audio on a tap; rejection leaves the next gesture free to retry.
       bgm.play()?.then(() => { if (!canPlayBgm()) bgm.pause(); }).catch(() => {});
     }
   }
   function unlockBgm(event) {
-    if (event.target.closest?.('#enter-game, #sound-toggle')) return;
-    unlockMusicGraph();syncBgm();
+    if(!event.isTrusted||root.hidden||document.hidden||!settings.sound)return;
+    if (event.target.closest?.('#enter-game, #sound-toggle')&&titleReady) return;
+    unlockMusicGraph();
+    if(!document.querySelector('#boot-screen').hidden&&musicGain){
+      musicGain.gain.setValueAtTime(0,musicContext.currentTime);primedDuringIntro=true;
+      bgm.play()?.catch(()=>{primedDuringIntro=false});
+    }else syncBgm();
   }
   document.addEventListener('pointerdown', unlockBgm, { capture: true, passive: true });
   document.addEventListener('keydown', unlockBgm, { capture: true });
+  document.addEventListener('touchend', unlockBgm, { capture:true,passive:true });
+  document.addEventListener('click', unlockBgm, { capture:true });
   window.addEventListener('pagehide', () => { if (starting) reset();bgm.pause();stopCry(); });
   window.addEventListener('pageshow', syncBgm);
   document.addEventListener('title:start', () => { bgm.pause();stopCry(); });
-  document.addEventListener('studio:ready', syncBgm);
+  document.addEventListener('studio:ready',()=>{if(primedDuringIntro)bgm.currentTime=0;primedDuringIntro=false;restoreMusicVolume();syncBgm();revealMenu()});
 
   root.style.setProperty('--cloud-duration', `${config.motion.cloudsSeconds}s`);
   root.style.setProperty('--hero-idle-duration', `${config.motion.idleSeconds}s`);
@@ -137,7 +149,7 @@
   }
 
   function canShowTitle() {
-    return !starting && !root.hidden && !document.hidden &&
+    return titleReady && !starting && !root.hidden && !document.hidden &&
       document.querySelector('#boot-screen').hidden && !document.querySelector('dialog[open]');
   }
   function canPlayScene() {
@@ -197,7 +209,7 @@
     clearTimeout(idleTimer);
     idleTimer = 0;
     idlePlaying = false;
-    companionTap.disabled = starting;
+    companionTap.disabled = starting||!titleReady;
     companionTap.removeAttribute('aria-busy');
     root.classList.remove('companion-is-eating', 'hero-is-glancing');
     root.dataset.idlePhase = 'waiting';
@@ -266,7 +278,7 @@
     }
   }
   sound.addEventListener('click', () => { settings.sound = !settings.sound; applySettings(true); });
-  optionsButton.addEventListener('click', () => { if (!starting) options.showModal(); });
+  optionsButton.addEventListener('click', () => { if (!starting&&titleReady) options.showModal(); });
   document.querySelector('#close-title-options').addEventListener('click', () => options.close());
 
   function reset() {
@@ -278,11 +290,11 @@
     root.classList.remove('is-departing', 'hero-is-active');
     root.removeAttribute('aria-busy');
     delete root.dataset.startPhase;
-    for (const button of [start, rules, optionsButton]) button.disabled = false;
+    titleReady=false;root.classList.add('is-menu-waiting');for (const button of titleButtons) button.disabled = true;revealMenu();
     refreshTitleActivity();
   }
   start.addEventListener('click', async () => {
-    if (starting) return;
+    if (starting||!titleReady) return;
     stopLeaves();
     stopIdleScene();
     unlockMusicGraph();syncBgm();
@@ -312,7 +324,7 @@
   for (const element of [root, document.querySelector('#boot-screen'), ...document.querySelectorAll('dialog')]) {
     idleObserver.observe(element, { attributes: true, attributeFilter: ['hidden', 'open'] });
   }
-  document.addEventListener('visibilitychange', () => { if (document.hidden && starting) reset();refreshTitleActivity(); });
+  document.addEventListener('visibilitychange', () => { if (document.hidden && starting) reset();if(document.hidden)clearTimeout(menuReadyTimer);else if(!titleReady)revealMenu();refreshTitleActivity(); });
   motionPreference.addEventListener?.('change', refreshTitleActivity);
   applySettings();
   refreshLeaves();
