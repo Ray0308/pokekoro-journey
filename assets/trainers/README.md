@@ -67,3 +67,7 @@ MAPSのboss.imageVariantsで3種を指定。各遭遇で1/3ずつ選び、battle
 - originals/lance.jpg・originals/lance-field.jpg：提供されたワタル素材の原本。
 - lance.webp：外周の白背景のみ透過した全身画像。
 - lance-field.webp：格子中央から16×16ドットを復元し、グリッド線・外側白背景を除去した128pxアイコン。顔・手の白は保持。四天王ワタルに使用。
+
+- originals/rival.jpg・originals/rival-field.jpg：提供されたライバル素材の原本。
+- rival.webp：外周につながる白・薄灰の市松背景を透過した全身画像。
+- rival-field.webp：格子中央から16×16ドットを復元し、グリッド線・外側白背景を除去した128pxアイコン。サントアンヌ号に使用。
