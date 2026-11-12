@@ -11,5 +11,8 @@ map-adventure.mp3：本作用のオリジナル16小節ループ曲「A Little A
 - map-hideout.mp3：120BPM、短調の反復。アジト、シルフ、タワー、やしき。
 - map-league.mp3：152BPM、緊張感のある明るい旋律。チャンピオンロード・四天王。
 - map-water.mp3：88BPM、打楽器なしの穏やかな旋律。サントアンヌ号・虹の雲。
-- その他は従来のmap-adventure.mp3。サファリもこちら。
+- その他はユーザー提供のforest-adventure.mp3（旧map-adventure.mp3は未使用素材として保持）。サファリもこちら。
 割り当てはmap-music-config.js、音量はMAP_AUDIO.volume、制御はmap-audio.js。単一audio要素を再利用し、同じテーマ内のマップ移動では先頭に戻さない。曲変更時に音量を下げ、再生開始時に0.25秒で戻す。読み込み失敗時は既存曲へフォールバック。
+
+forest-adventure.mp3：ユーザー提供My Movie 1.mp3を原音のまま保存。58.584秒。トキワの森・街・通常の屋外・サファリに適用するfieldテーマ。MAP_AUDIO.srcで管理し、既存の音量・ループ・サウンド設定へ連動。
+提供曲は従来曲より平均音量が低いため、fieldの再生音量を0.50に調整（他テーマは従来0.35）。音源ファイルは加工していない。

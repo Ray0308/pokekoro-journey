@@ -35,7 +35,7 @@
       if (priming && enabled && !document.hidden && ['throwing','settled','walking'].includes(document.querySelector('#title-screen').dataset.startPhase)) return;
       priming = false;audio.pause();return;
     }
-    unlock();level(MAP_AUDIO.volume, true);
+    unlock();level(mapMusicVolume(currentTheme), true);
     if (audio.paused) audio.play()?.catch(() => {});
   }
   document.addEventListener('click', event => {

@@ -9,3 +9,6 @@ function mapMusicTheme(mapId){
  if(mapId==='ss-anne'||mapId==='rainbow-cloud')return 'water';
  return 'field';
 }
+
+// The supplied field recording is quieter than the synthesized themes.
+function mapMusicVolume(theme){return theme==='field'?.5:MAP_AUDIO.volume}
