@@ -120,3 +120,8 @@ body.at-title{min-height:0;height:var(--app-height,100dvh);background:radial-gra
 
 /* The die enters from off-screen only after Start is pressed. */
 #title-screen .title-dice-anchor{display:none}#title-screen.is-starting .title-dice-anchor{display:block}
+.volume-setting {display:block;padding:14px 0 6px;font-size:16px;font-weight:800}
+.volume-setting>span {display:flex;justify-content:space-between;align-items:center}
+.volume-setting output {font-variant-numeric:tabular-nums;font-size:14px;color:#366a8b}
+.volume-setting input {display:block;width:100%;height:44px;margin:2px 0 0;accent-color:#168ac1;cursor:pointer;touch-action:pan-x}
+.volume-setting input:focus-visible {outline:3px solid #168ac1;outline-offset:2px;border-radius:8px}

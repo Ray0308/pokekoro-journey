@@ -45,12 +45,12 @@
   bgm.src = config.audio.titleBgm;
   bgm.loop = true;
   bgm.preload = 'auto';
-  bgm.volume = config.audio.volume;
+  bgm.volume = (config.audio.volume*(window.PokekoroAudioMix?.get('bgm')??.75));
   document.body.append(bgm);
   const cry = document.createElement('audio');
   cry.id = 'title-start-cry';cry.src = config.audio.startCry;cry.preload = 'auto';
   document.body.append(cry);
-  let musicContext = null, musicGain = null, finishCry = null,crySource=null,cryBuffer=null;
+  let musicContext = null, musicGain = null, finishCry = null,crySource=null,cryBuffer=null,cryGain=null;
   const cryPreparation=(async()=>{
     try{const Offline=window.OfflineAudioContext||window.webkitOfflineAudioContext;if(!Offline)return;const response=await fetch(config.audio.startCry);if(!response.ok)return;const decoder=new Offline(2,1,48000);cryBuffer=await decoder.decodeAudioData(await response.arrayBuffer())}catch{/* HTML audio remains the fallback. */}
   })();
@@ -60,7 +60,7 @@
         const AC = window.AudioContext || window.webkitAudioContext;
         if (!AC) return;
         musicContext = new AC({latencyHint:'interactive'});musicGain = musicContext.createGain();
-        musicGain.gain.value = config.audio.volume;
+        musicGain.gain.value = (config.audio.volume*(window.PokekoroAudioMix?.get('bgm')??.75));
         musicContext.createMediaElementSource(bgm).connect(musicGain).connect(musicContext.destination);
         bgm.volume = 1;
       }
@@ -68,8 +68,8 @@
     } catch { /* Media-element volume remains the fallback. */ }
   }
   function restoreMusicVolume() {
-    if (musicGain) { musicGain.gain.cancelScheduledValues(musicContext.currentTime);musicGain.gain.setValueAtTime(config.audio.volume, musicContext.currentTime); }
-    else bgm.volume = config.audio.volume;
+    if (musicGain) { musicGain.gain.cancelScheduledValues(musicContext.currentTime);musicGain.gain.setValueAtTime((config.audio.volume*(window.PokekoroAudioMix?.get('bgm')??.75)), musicContext.currentTime); }
+    else bgm.volume = (config.audio.volume*(window.PokekoroAudioMix?.get('bgm')??.75));
   }
   function stopCry() { if(crySource){try{crySource.stop()}catch{}crySource.disconnect();crySource=null}cry.pause();cry.currentTime = 0;finishCry?.(); }
   function playStartCry() {
@@ -79,11 +79,11 @@
       finishCry = finish;
       if (!settings.sound) { timer = setTimeout(finish, config.audio.cryMs);return; }
       if(cryBuffer&&musicContext){
-        const source=musicContext.createBufferSource();source.buffer=cryBuffer;source.connect(musicContext.destination);crySource=source;
-        source.onended=()=>{if(crySource===source)crySource=null;source.disconnect();finish()};
+        const source=musicContext.createBufferSource();source.buffer=cryBuffer;cryGain=musicContext.createGain();cryGain.gain.value=window.PokekoroAudioMix?.get('se')??1;source.connect(cryGain).connect(musicContext.destination);crySource=source;
+        source.onended=()=>{if(crySource===source)crySource=null;source.disconnect();cryGain?.disconnect();finish()};
         timer=setTimeout(finish,config.audio.cryMs+500);source.start(0,config.audio.cryOffsetSeconds||0);return;
       }
-      cry.currentTime = 0;cry.addEventListener('ended', finish);cry.addEventListener('error', finish);
+      cry.volume=window.PokekoroAudioMix?.get('se')??1;cry.currentTime = 0;cry.addEventListener('ended', finish);cry.addEventListener('error', finish);
       timer = setTimeout(finish, config.audio.cryMs + 500);
       cry.play()?.catch(finish);
     });
@@ -268,6 +268,7 @@
     void playIdleScene(idleGeneration, true);
   });
 
+  document.addEventListener('audio:mixchange',()=>{restoreMusicVolume();cry.volume=window.PokekoroAudioMix?.get('se')??1;if(cryGain&&musicContext)cryGain.gain.setTargetAtTime(cry.volume,musicContext.currentTime,.015)});
   function applySettings(persist = false) {
     if (persist) unlockMusicGraph();
     syncBgm();

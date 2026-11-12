@@ -716,3 +716,23 @@ body:not(.at-title) .app-version { color: rgb(105, 125, 142); font-size: 8px; }
 #battle.safari-puzzle .enemy .hp{display:none}#battle.safari-puzzle .attack-charge{border-color:#8bbd90;background:#f1fae6}#battle.safari-puzzle .attack-charge>div>strong{color:#487c50}
 
 #map .board-legend span[hidden]{display:none}
+/* 0.9.2: readable combo rewards and a continuous two-second power build. */
+#callout[data-level="3"],#callout[data-level="4"],#callout[data-level="5"],#callout[data-level="6"] {color:#fff0a0;text-shadow:0 3px #713c9c,0 0 14px #ff9e30}
+#callout[data-level="6"] strong {font-size:1.2em}
+.chain-pop {animation:chain-reward .32s ease-out}
+@keyframes chain-reward {40%{transform:scale(1.25);color:#e17b08}100%{transform:scale(1)}}
+#battle.gathering-power #ready-overlay {background:rgba(26,20,65,.86)}
+#battle.gathering-power .attack-charge {animation:power-tension .22s ease-in-out infinite alternate}
+#battle .energy-orb {animation:power-build 2s cubic-bezier(.4,0,.8,1) both}
+#battle .energy-orb::before,#battle .energy-orb::after {animation:energy-in .45s ease-in infinite}
+#battle .energy-orb.energy-launch {animation:energy-shoot .45s ease-in both}
+#battle.power-full #ready-overlay strong {color:#fff1a1;text-shadow:0 3px #ac4b13,0 0 18px #ffa722;transform:scale(1.08)}
+#battle.attack-release .enemy::after {content:"";position:absolute;inset:0;pointer-events:none;border-radius:50%;border:6px solid #ffd767;animation:impact-wave .55s ease-out both}
+#battle.attack-release .enemy {position:relative}
+@keyframes power-build {0%{transform:scale(.2);opacity:.3}60%{transform:scale(1);opacity:1}85%{transform:scale(1.5)}100%{transform:scale(1.8);box-shadow:0 0 28px 12px #fff4bb,0 0 70px 28px #ffb532}}
+@keyframes power-tension {from{transform:translateX(-1px)}to{transform:translateX(1px);filter:brightness(1.15)}}
+@keyframes impact-wave {from{transform:scale(.25);opacity:1}to{transform:scale(1.8);opacity:0}}
+@media (prefers-reduced-motion:reduce) {
+#battle.gathering-power .attack-charge,.chain-pop,#battle .energy-orb,#battle .energy-orb::before,#battle .energy-orb::after,#battle .energy-orb.energy-launch {animation:none!important}
+#battle.attack-release .enemy::after {display:none}
+}
