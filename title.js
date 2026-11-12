@@ -41,16 +41,18 @@
   const cry = document.createElement('audio');
   cry.id = 'title-start-cry';cry.src = config.audio.startCry;cry.preload = 'auto';
   document.body.append(cry);
-  let musicContext = null, musicGain = null, finishCry = null;
+  let musicContext = null, musicGain = null, finishCry = null,crySource=null,cryBuffer=null;
+  const cryPreparation=(async()=>{
+    try{const Offline=window.OfflineAudioContext||window.webkitOfflineAudioContext;if(!Offline)return;const response=await fetch(config.audio.startCry);if(!response.ok)return;const decoder=new Offline(2,1,48000);cryBuffer=await decoder.decodeAudioData(await response.arrayBuffer())}catch{/* HTML audio remains the fallback. */}
+  })();
   function unlockMusicGraph() {
     try {
       if (!musicContext) {
         const AC = window.AudioContext || window.webkitAudioContext;
         if (!AC) return;
-        musicContext = new AC();musicGain = musicContext.createGain();
+        musicContext = new AC({latencyHint:'interactive'});musicGain = musicContext.createGain();
         musicGain.gain.value = config.audio.volume;
         musicContext.createMediaElementSource(bgm).connect(musicGain).connect(musicContext.destination);
-        musicContext.createMediaElementSource(cry).connect(musicContext.destination);
         bgm.volume = 1;
       }
       if (musicContext.state === 'suspended') musicContext.resume().catch(() => {});
@@ -60,31 +62,18 @@
     if (musicGain) { musicGain.gain.cancelScheduledValues(musicContext.currentTime);musicGain.gain.setValueAtTime(config.audio.volume, musicContext.currentTime); }
     else bgm.volume = config.audio.volume;
   }
-  function fadeMusic(duration) {
-    if (musicGain) {
-      const now = musicContext.currentTime;musicGain.gain.cancelScheduledValues(now);
-      musicGain.gain.setValueAtTime(musicGain.gain.value, now);
-      musicGain.gain.linearRampToValueAtTime(0, now + duration / 1000);
-    }
-    return new Promise(resolve => {
-      const began = performance.now(), token = sequence, volume = bgm.volume;
-      function tick(now) {
-        if (token !== sequence) { resolve();return; }
-        const progress = Math.min(1, (now - began) / duration);
-        if (!musicGain) bgm.volume = volume * (1 - progress);
-        if (progress < 1) requestAnimationFrame(tick);
-        else { resolve(); }
-      }
-      requestAnimationFrame(tick);
-    });
-  }
-  function stopCry() { cry.pause();cry.currentTime = 0;finishCry?.(); }
+  function stopCry() { if(crySource){try{crySource.stop()}catch{}crySource.disconnect();crySource=null}cry.pause();cry.currentTime = 0;finishCry?.(); }
   function playStartCry() {
     return new Promise(resolve => {
       let timer;
       function finish() { clearTimeout(timer);cry.removeEventListener('ended', finish);cry.removeEventListener('error', finish);finishCry = null;resolve(); }
       finishCry = finish;
       if (!settings.sound) { timer = setTimeout(finish, config.audio.cryMs);return; }
+      if(cryBuffer&&musicContext){
+        const source=musicContext.createBufferSource();source.buffer=cryBuffer;source.connect(musicContext.destination);crySource=source;
+        source.onended=()=>{if(crySource===source)crySource=null;source.disconnect();finish()};
+        timer=setTimeout(finish,config.audio.cryMs+500);source.start(0,config.audio.cryOffsetSeconds||0);return;
+      }
       cry.currentTime = 0;cry.addEventListener('ended', finish);cry.addEventListener('error', finish);
       timer = setTimeout(finish, config.audio.cryMs + 500);
       cry.play()?.catch(finish);
@@ -153,7 +142,7 @@
     try{if(typeof image.decode==='function')await image.decode();else if(!image.complete)await new Promise((resolve,reject)=>{image.addEventListener('load',resolve,{once:true});image.addEventListener('error',reject,{once:true})});return image.naturalWidth>0}catch{return false}
   }
   const backgroundPreparation=[...new Set([...root.querySelectorAll('[data-title-background]')].map(layer=>config.assets[layer.dataset.titleBackground]))].map(src=>{const image=new Image();image.src=src;return decoded(image)});
-  Promise.all([...root.querySelectorAll('[data-title-image]')].map(decoded).concat(backgroundPreparation)).then(()=>document.fonts?.ready).catch(()=>{}).then(()=>{
+  Promise.all([...root.querySelectorAll('[data-title-image]')].map(decoded).concat(backgroundPreparation,[cryPreparation])).then(()=>document.fonts?.ready).catch(()=>{}).then(()=>{
     window.PokekoroTitleAssetsReady=true;document.dispatchEvent(new CustomEvent('title:assetsready'));
   });
 
@@ -306,7 +295,8 @@
     if (starting||!titleReady) return;
     stopLeaves();
     stopIdleScene();
-    unlockMusicGraph();syncBgm();
+    unlockMusicGraph();restoreMusicVolume();syncBgm();
+    void playStartCry();
     starting = true;
     companionTap.disabled = true;
     const token = ++sequence;
@@ -316,14 +306,10 @@
     root.classList.add('is-departing');
     if (action.complete && action.naturalWidth) root.classList.add('hero-is-active');
     const duration = motionPreference.matches ? config.audio.cryMs : config.motion.departureMs;
-    void playStartCry();
-    const fading = fadeMusic(duration);
     await new Promise(resolve => setTimeout(resolve, duration * .24));
     if (token !== sequence) return;
     if (action.complete && action.naturalWidth) root.classList.add('hero-is-active');
     await new Promise(resolve => setTimeout(resolve, duration * .76));
-    if (token !== sequence) return;
-    await fading;
     if (token !== sequence) return;
     document.dispatchEvent(new CustomEvent('title:start'));
   });
