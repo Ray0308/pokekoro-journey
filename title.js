@@ -152,7 +152,7 @@
   });
 
   function canShowTitle() {
-    return titleReady && !starting && !root.hidden && !document.hidden &&
+    return !starting && !root.hidden && !document.hidden &&
       document.querySelector('#boot-screen').hidden && !document.querySelector('dialog[open]');
   }
   function canPlayScene() {
