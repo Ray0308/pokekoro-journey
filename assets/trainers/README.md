@@ -79,3 +79,7 @@ MAPSのboss.imageVariantsで3種を指定。各遭遇で1/3ずつ選び、battle
 - originals/swimmer.jpg・originals/swimmer-field.jpg：提供されたかいパンやろう素材。
 - swimmer.webp：外周白を透過して高さ760pxに最適化した全身画像。
 - swimmer-field.webp：16×16の白黒ドットを二値化しJPEGノイズ・外側白を除去。顔の白を維持。ふたごじまに使用。
+
+- originals/firebreather.jpg・originals/firebreather-field.jpg：提供されたひふきやろう素材の原本。
+- firebreather.webp：外側の白を透過した全身画像。炎を保持。
+- firebreather-field.webp：14×16ドットの左右に1ドット余白を追加し、白黒化・JPEGノイズ・外側白除去後に128pxへ最近傍拡大。ポケモンやしきに使用。
