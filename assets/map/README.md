@@ -30,3 +30,6 @@
 
 ## pewter-gym.webp
 ユーザー提供のニビジム背景。元の1280×1169を維持してWebP化。原本はoriginals/pewter-gym.jpg。MAPS["pewter-gym"]のaspectRatioで画像の比率を維持し、routeInsetで道とマスを岩壁の内側へ配置する。描き直し・トリミングは行っていない。
+
+## mt-moon.webp
+ユーザー提供のおつきみやま背景。原本はoriginals/mt-moon.jpg。元の比率・全体構図を維持してWebP化し、MAPSのaspectRatio・routeInsetで外壁の内側にルートを配置。
