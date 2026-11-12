@@ -63,3 +63,7 @@ MAPSのboss.imageVariantsで3種を指定。各遭遇で1/3ずつ選び、battle
 - originals/agatha.jpg・originals/agatha-field.jpg：提供されたキクコ素材の原本。
 - agatha.webp：外周の白背景のみ透過した全身画像。
 - agatha-field.webp：格子中央から16×16ドットを復元し、グリッド線・外側白背景を除去した128pxアイコン。顔・手の白は保持。四天王キクコに使用。
+
+- originals/lance.jpg・originals/lance-field.jpg：提供されたワタル素材の原本。
+- lance.webp：外周の白背景のみ透過した全身画像。
+- lance-field.webp：格子中央から16×16ドットを復元し、グリッド線・外側白背景を除去した128pxアイコン。顔・手の白は保持。四天王ワタルに使用。
