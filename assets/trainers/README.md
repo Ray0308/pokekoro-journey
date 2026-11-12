@@ -24,3 +24,6 @@ MAPSのboss.imageVariantsで3種を指定。各遭遇で1/3ずつ選び、battle
 
 - originals/misty.jpg・misty.webp：提供されたカスミ全身画像と外周白を透過した登場用素材。
 - originals/misty-field-side.jpg：届いた横向き静止JPEGの原本。正面のコマを含まないためフィールドには未使用。元アニメーション入手後に正面のみ切り出す。
+
+- originals/misty-field.jpg：ユーザーが切り出した正面ドット絵原本。
+- misty-field.webp：各20pxマスの中央色から16×16ドットを復元し、グリッド線と外側の白背景を除去した128pxアイコン。ハナダジムのボスコマに設定。横向き原本は未使用のまま保管。
