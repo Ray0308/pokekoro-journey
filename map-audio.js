@@ -4,12 +4,15 @@
   audio.id = 'map-bgm';audio.src = MAP_AUDIO.src;audio.loop = true;audio.preload = 'metadata';audio.volume = MAP_AUDIO.volume;
   document.body.append(audio);
   let enabled = true, priming = false, context = null, gain = null,currentTheme='field';
-  const failedTracks=new Set();
+  const failedTracks=new Set(),positions=new Map();
+  function isWildScene(){return !!battle&&!battle.trainer&&(document.querySelector('#encounter').open||document.querySelector('#battle').open)}
   audio.dataset.theme=currentTheme;
-  function selectTrack(){const requested=mapMusicTheme(state.mapId),next=failedTracks.has(requested)?'field':requested;if(next===currentTheme)return;level(0);audio.pause();currentTheme=next;audio.dataset.theme=next;audio.src=MAP_MUSIC_TRACKS[next];audio.load()}
+  function selectTrack(){const requested=isWildScene()?'wild':mapMusicTheme(state.mapId),next=failedTracks.has(requested)?'field':requested;if(next===currentTheme)return;positions.set(currentTheme,Number.isFinite(audio.currentTime)?audio.currentTime:0);level(0);audio.pause();currentTheme=next;audio.dataset.theme=next;const position=next==='wild'?0:positions.get(next)||0;audio.onloadedmetadata=()=>{if(currentTheme===next&&position>0&&Number.isFinite(audio.duration))audio.currentTime=Math.min(position,Math.max(0,audio.duration-.1))};audio.src=MAP_MUSIC_TRACKS[next];audio.load()}
+
   audio.addEventListener('error',()=>{if(currentTheme==='field')return;failedTracks.add(currentTheme);selectTrack();sync()});
   try { const saved = JSON.parse(localStorage.getItem('pokekoro-title-v1'));if (typeof saved?.sound === 'boolean') enabled = saved.sound; } catch {}
-  function canPlay() { return enabled && !document.hidden && !document.querySelector('#game-shell').hidden && !document.querySelector('dialog[open]:not(#game-menu):not(#item-bag):not(#title-options)'); }
+  function canPlay() {if(!enabled||document.hidden||document.querySelector('#game-shell').hidden)return false;const excluded=isWildScene()?':not(#encounter):not(#battle)':'';return !document.querySelector('dialog[open]:not(#game-menu):not(#item-bag):not(#title-options)'+excluded)}
+
   function unlock() {
     try {
       if (!context) {
