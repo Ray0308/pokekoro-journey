@@ -71,3 +71,7 @@ MAPSのboss.imageVariantsで3種を指定。各遭遇で1/3ずつ選び、battle
 - originals/rival.jpg・originals/rival-field.jpg：提供されたライバル素材の原本。
 - rival.webp：外周につながる白・薄灰の市松背景を透過した全身画像。
 - rival-field.webp：格子中央から16×16ドットを復元し、グリッド線・外側白背景を除去した128pxアイコン。サントアンヌ号に使用。
+
+- originals/lady.jpg・originals/lady-field.jpg：提供されたおじょうさま素材の原本。
+- lady.webp：外周の白背景のみ透過し、高さ760pxへ最適化した全身画像。衣装の白は保持。
+- lady-field.webp：格子中央から16×16ドットを復元し、グリッド線・外側白背景を除去した128pxアイコン。タマムシシティのおじょうさまに使用。
