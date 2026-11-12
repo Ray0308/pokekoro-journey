@@ -5,6 +5,8 @@
   document.body.append(audio);
   let enabled = true, priming = false, context = null, gain = null,currentTheme='field';
   const failedTracks=new Set(),positions=new Map();
+  let battlePrefetch=null;
+  document.addEventListener('battle:prepare',()=>{if(battle?.trainer&&!battlePrefetch)battlePrefetch=fetch(MAP_MUSIC_TRACKS.trainerBattle,{cache:'force-cache'}).then(r=>{if(!r.ok)throw Error('audio');return r.arrayBuffer()}).catch(()=>{battlePrefetch=null})});
   function isVictoryScene(){return !!battle?.victory&&(document.querySelector('#battle').open||document.querySelector('#result').open)}
   function isTrainerScene(){return !!battle?.trainer&&(document.querySelector('#encounter').open||document.querySelector('#battle').open)}
   function isWildScene(){return !!battle&&!battle.trainer&&(document.querySelector('#encounter').open||document.querySelector('#battle').open)}
@@ -32,7 +34,7 @@
     if (ramp) gain.gain.linearRampToValueAtTime(value, now + .25);
     else gain.gain.setValueAtTime(value, now);
   }
-  function sync() {
+  function sync(immediate=false) {
     selectTrack();
     if (!canPlay()) {
       level(0);
@@ -40,7 +42,7 @@
       if (priming && enabled && !document.hidden && ['throwing','settled','walking'].includes(document.querySelector('#title-screen').dataset.startPhase)) return;
       priming = false;audio.pause();return;
     }
-    unlock();level(mapMusicVolume(currentTheme), true);
+    unlock();level(mapMusicVolume(currentTheme), immediate!==true);
     if (audio.paused) audio.play()?.catch(() => {});
   }
   document.addEventListener('click', event => {
@@ -52,6 +54,7 @@
   document.addEventListener('keydown', userGesture, true);
   document.addEventListener('title:start', () => { if (priming) audio.currentTime = 0;priming = false;sync(); });
   document.addEventListener('title:soundchange', event => { enabled = !!event.detail.enabled;sync(); });
+  document.addEventListener('battle:enter',()=>{unlock();sync(true)});
   document.addEventListener('battle:victory',sync);
   document.addEventListener('visibilitychange', sync);
   window.addEventListener('pagehide', () => { priming = false;audio.pause(); });

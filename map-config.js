@@ -1,4 +1,5 @@
 'use strict';
+const ENCOUNTER_TIMING=Object.freeze({trainerMs:950,sendMs:850,gymTrainerMs:1800,gymSendMs:1150});
 const MAP_AUDIO=Object.freeze({"src":"assets/audio/forest-adventure.mp3","volume":0.35});
 const MAP_ORDER=Object.freeze(["viridian","pewter-city","pewter-gym","mt-moon","cerulean-city","cerulean-gym","ss-anne","vermilion-gym","diglett-cave","rock-tunnel","celadon-city","celadon-gym","rocket-hideout","pokemon-tower","safari-zone","fuchsia-gym","silph-co","saffron-gym","seafoam-islands","pokemon-mansion","cinnabar-gym","viridian-gym","route-23","victory-road","indigo-lorelei","indigo-bruno","indigo-agatha","indigo-lance","cerulean-cave"]);
 const MAP_ALIASES=Object.freeze({"meadow":"pewter-city"});
