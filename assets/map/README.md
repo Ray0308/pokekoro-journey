@@ -33,3 +33,6 @@
 
 ## mt-moon.webp
 ユーザー提供のおつきみやま背景。原本はoriginals/mt-moon.jpg。元の比率・全体構図を維持してWebP化し、MAPSのaspectRatio・routeInsetで外壁の内側にルートを配置。
+
+## cerulean-gym.webp
+ユーザー提供のハナダジム背景。原本はoriginals/cerulean-gym.jpg。全体構図・縦横比を維持してWebP化。MAPSのaspectRatio・routeInsetでルートを外壁内側へ配置。
