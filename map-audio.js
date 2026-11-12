@@ -29,5 +29,5 @@
  document.addEventListener('title:start',()=>{warmScene();sync()});document.addEventListener('title:soundchange',event=>{enabled=!!event.detail.enabled;if(enabled&&event.detail.userGesture)unlock();sync()});
  document.addEventListener('visibilitychange',sync);window.addEventListener('pagehide',pause);window.addEventListener('pageshow',sync);
  const observer=new MutationObserver(sync);for(const node of [document.querySelector('#game-shell'),document.querySelector('#title-screen'),...document.querySelectorAll('dialog')])observer.observe(node,{attributes:true,attributeFilter:['hidden','open']});observer.observe(document.querySelector('#map'),{attributes:true,attributeFilter:['data-map']});
- window.PokekoroMapAudio=Object.freeze({inspect:()=>({theme:visibleTheme,wanted,playing:!!active||!audio.paused,position:position(),backend:audio.dataset.backend,cached:[...buffers.keys()]}),sync});sync();
+ window.PokekoroMapAudio=Object.freeze({prepareScene:async key=>{if(!enabled||!MAP_MUSIC_TRACKS[key])return;try{await load(key);sync();await Promise.resolve()}catch{}},inspect:()=>({theme:visibleTheme,wanted,playing:!!active||!audio.paused,position:position(),backend:audio.dataset.backend,cached:[...buffers.keys()]}),sync});sync();
 })();

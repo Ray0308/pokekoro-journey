@@ -282,3 +282,5 @@ body[data-game-view="journey"] .app-version,body[data-game-view="party"] .app-ve
 
 .journey-badge img{display:block;width:60px;height:60px;max-width:100%;object-fit:contain;filter:grayscale(1);opacity:.3}.journey-badge.earned img{filter:none;opacity:1}.journey-badge small{font-size:8px;line-height:1.3}.reward-badge img{display:block;flex:0 0 46px;width:46px;height:46px;object-fit:contain}#resultBody .reward-badge img{margin:0;max-height:46px}
 @media(max-height:450px){.reward-badge img,#resultBody .reward-badge img{width:28px;height:28px;max-height:28px;flex-basis:28px}}
+
+#encounter[data-phase="boss-music"] #encounter-img,#encounter[data-phase="boss-music"] #encounter-silhouette,#encounter[data-phase="boss-music"] #encounter-trainer,#encounter[data-phase="boss-music"] #encounter-send-ball{visibility:hidden;animation:none}

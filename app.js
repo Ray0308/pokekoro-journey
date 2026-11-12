@@ -235,8 +235,12 @@ $('#close-credits').onclick=()=>$('#credits').close();
 async function showBossEncounter(){
  const boss=battle.trainerAppearance||activeMap().boss,dialog=$('#encounter'),epoch=battleEpoch,go=$('#encounter-go');
  const trainer=$('#encounter-trainer'),ball=$('#encounter-send-ball');trainer.src=boss.image;trainer.alt=boss.name;ball.src=boss.ball;
- dialog.classList.add('boss-encounter');dialog.dataset.phase='boss-trainer';go.disabled=true;$('#encounter-label').textContent=(boss.role||'ボストレーナー')+'が あらわれた！';$('#encounter-name').textContent=boss.name;$('#encounter-img').alt='';dialog.showModal();
- await Promise.all([trainer,$('#encounter-img'),ball].map(image=>image.decode().catch(()=>{})));
+ dialog.classList.add('boss-encounter');dialog.dataset.phase='boss-music';go.disabled=true;$('#encounter-label').textContent='強いトレーナーの けはい…！';$('#encounter-name').textContent='';$('#encounter-img').alt='';dialog.showModal();
+ await Promise.all([trainer,$('#encounter-img'),ball].map(image=>image.decode().catch(()=>{})).concat([window.PokekoroMapAudio?.prepareScene('trainer')]));
+ if(epoch!==battleEpoch||!dialog.open)return;
+ await new Promise(resolve=>setTimeout(resolve,ENCOUNTER_TIMING.bossMusicLeadMs));
+ if(epoch!==battleEpoch||!dialog.open)return;
+ dialog.dataset.phase='boss-trainer';$('#encounter-label').textContent=(boss.role||'ボストレーナー')+'が あらわれた！';$('#encounter-name').textContent=boss.name;
  const wait=ms=>new Promise(resolve=>setTimeout(resolve,reduceMotion?120:ms));
  await wait(activeMap().badge?ENCOUNTER_TIMING.gymTrainerMs:ENCOUNTER_TIMING.trainerMs);if(epoch!==battleEpoch||!dialog.open)return;
  dialog.dataset.phase='boss-send';$('#encounter-label').textContent=boss.name+'が ボールを なげた！';$('#encounter-name').textContent='いけ！ '+battle.m.label+'！';tone(520,.12);
