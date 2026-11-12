@@ -14,3 +14,6 @@ function mapMusicTheme(mapId){
 function mapMusicVolume(theme){return theme==='field'?.5:theme==='wild'?.36:MAP_AUDIO.volume}
 
 
+
+// Measured first musical onset: keep the tiny pre-attack, skip the export lead-in.
+const MAP_MUSIC_CUE=Object.freeze({trainerBattle:.62});

@@ -284,3 +284,7 @@ body[data-game-view="journey"] .app-version,body[data-game-view="party"] .app-ve
 @media(max-height:450px){.reward-badge img,#resultBody .reward-badge img{width:28px;height:28px;max-height:28px;flex-basis:28px}}
 
 #encounter[data-phase="boss-music"] #encounter-img,#encounter[data-phase="boss-music"] #encounter-silhouette,#encounter[data-phase="boss-music"] #encounter-trainer,#encounter[data-phase="boss-music"] #encounter-send-ball{visibility:hidden;animation:none}
+
+#encounter[data-phase="boss-music"] #encounter-trainer{visibility:visible;filter:brightness(0);opacity:.7}#encounter[data-phase="boss-trainer"] #encounter-trainer{filter:none;opacity:1;animation:boss-reveal .35s ease-out both}#encounter[data-phase="boss-line"] #encounter-trainer{visibility:visible;filter:none;opacity:1}#encounter[data-phase="boss-line"] #encounter-img{visibility:hidden}#encounter-speech{display:none}#encounter[data-phase="boss-line"] #encounter-speech{display:block;margin:0;padding:9px 12px;border:2px solid #bca46d;border-radius:9px;background:#fffdf0;color:#364b43;font-size:14px;line-height:1.6;text-align:left}
+@keyframes boss-reveal{from{filter:brightness(0)}to{filter:brightness(1)}}
+@media(prefers-reduced-motion:reduce){#encounter[data-phase="boss-trainer"] #encounter-trainer{animation:none}}

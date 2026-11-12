@@ -243,8 +243,10 @@ async function showBossEncounter(){
  dialog.dataset.phase='boss-trainer';$('#encounter-label').textContent=(boss.role||'ボストレーナー')+'が あらわれた！';$('#encounter-name').textContent=boss.name;
  const wait=ms=>new Promise(resolve=>setTimeout(resolve,reduceMotion?120:ms));
  await wait(activeMap().badge?ENCOUNTER_TIMING.gymTrainerMs:ENCOUNTER_TIMING.trainerMs);if(epoch!==battleEpoch||!dialog.open)return;
+ $('#encounter-speech').textContent='「'+(boss.quote||ENCOUNTER_DIALOGUE[boss.name]||'きみの ちからを みせてもらおう！')+'」';dialog.dataset.phase='boss-line';
+ await wait(ENCOUNTER_TIMING.lineMs);if(epoch!==battleEpoch||!dialog.open)return;
  dialog.dataset.phase='boss-send';$('#encounter-label').textContent=boss.name+'が ボールを なげた！';$('#encounter-name').textContent='いけ！ '+battle.m.label+'！';tone(520,.12);
- await wait(activeMap().badge?ENCOUNTER_TIMING.gymSendMs:ENCOUNTER_TIMING.sendMs);if(epoch!==battleEpoch||!dialog.open)return;
+ await Promise.all([wait(activeMap().badge?ENCOUNTER_TIMING.gymSendMs:ENCOUNTER_TIMING.sendMs),window.PokekoroMapAudio?.prepareScene('trainerBattle')]);if(epoch!==battleEpoch||!dialog.open)return;
  dialog.dataset.phase='revealed';$('#encounter-label').textContent=boss.name+'の ポケモン！';$('#encounter-name').textContent=battle.m.label;$('#encounter-img').alt=battle.m.label;go.disabled=false;tone(740,.15);
 }
 async function showEncounter(immediate){
@@ -256,12 +258,13 @@ async function showEncounter(immediate){
  image.alt=go.disabled?'':battle.m.label;
  if(go.disabled)$('#encounter-label').textContent='くさむらが ゆれている…';
  dialog.showModal();
+ if(battle.trainer&&immediate){go.disabled=true;await window.PokekoroMapAudio?.prepareScene('trainerBattle');if(epoch===battleEpoch&&dialog.open)go.disabled=false;return}
  if(!go.disabled)return;
  try{await image.decode()}catch{}
  const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
  await wait(600);if(epoch!==battleEpoch||!dialog.open)return;
  dialog.dataset.phase='silhouette';$('#encounter-label').textContent='ポケモンの けはい！';tone(440,.08);
- await wait(activeMap().badge?ENCOUNTER_TIMING.gymSendMs:ENCOUNTER_TIMING.sendMs);if(epoch!==battleEpoch||!dialog.open)return;
+ await Promise.all([wait(activeMap().badge?ENCOUNTER_TIMING.gymSendMs:ENCOUNTER_TIMING.sendMs),window.PokekoroMapAudio?.prepareScene('trainerBattle')]);if(epoch!==battleEpoch||!dialog.open)return;
  dialog.dataset.phase='revealed';$('#encounter-label').textContent='野生のポケモンが あらわれた！';name.textContent=battle.m.label;image.alt=battle.m.label;go.disabled=false;tone(660,.12);
 }
 $('#encounter-go').onclick=()=>{if($('#encounter-go').disabled)return;$('#encounter').close();$('#battle').showModal();document.dispatchEvent(new CustomEvent('battle:enter'));fitBattle()};

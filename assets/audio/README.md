@@ -31,3 +31,5 @@ trainer-victory.mp3：ユーザー提供My Movie 1 6.mp3を原音のまま保存
 
 ## BGM切り替え（0.9.1.46）
 通常は24kHzのOfflineAudioContextで事前デコードし、AudioBufferSourceNodeを使う。次曲が準備できるまで前曲を維持し、約10msの重なりでつなぐ。0.25秒フェードと固定先頭スキップは撤去。原曲は0秒から再生し、マップ復帰・音声設定では再生位置を保持。キャッシュ目安64MiB、Web Audio非対応時はHTML audioにフォールバック。検証用PokekoroMapAudio.inspect()で実際の再生状態を参照可能。
+
+トレーナー戦闘曲のみMAP_MUSIC_CUE.trainerBattle=0.62から開始（先頭の音が立つ前の区間）。他曲は0秒から維持。バトルへ有効化前にバッファ準備を待ち、クリック処理内で同期開始する。
