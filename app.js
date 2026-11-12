@@ -109,14 +109,26 @@ function renderDex(){
  let entries=mons.filter(m=>(!dexOwnedOnly||owned.has(m.id))&&(!query||/^\d+$/.test(query)&&m.id===Number(query)));
  const pages=Math.max(1,Math.ceil(entries.length/DEX_PAGE_SIZE));dexPage=Math.max(0,Math.min(dexPage,pages-1));
  const visible=entries.slice(dexPage*DEX_PAGE_SIZE,(dexPage+1)*DEX_PAGE_SIZE);
- $('#cards').innerHTML=visible.length?visible.map(m=>{const own=owned.has(m.id),sel=selected.has(m.id);return `<button class="card ${!own?'locked':''} ${sel?'selected':''}" data-id="${m.id}" ${!own?'disabled':''}><img src="${img(m.id)}" alt="${own?m.label:'No.'+pokemonNumber(m.id)}" loading="lazy"><small>No.${pokemonNumber(m.id)} · ${m.type===null?'タイプ：—':icons[m.type]+' '+types[m.type]}</small><strong>${m.placeholder?m.label:own?m.label:'？？？'}</strong><span class="badge">${own?`攻撃 ${m.power} · ${sel?'✓ 編成中':'編成する'}`:'まだ であっていません'}</span></button>`}).join(''):'<p class="dex-empty">その番号のポケモンは いません</p>';
+ $('#cards').innerHTML=visible.length?visible.map(m=>{const own=owned.has(m.id),sel=selected.has(m.id);return `<button class="card ${!own?'locked':''} ${sel?'selected':''}" data-id="${m.id}"><img src="${img(m.id)}" alt="${own?m.label:'No.'+pokemonNumber(m.id)}" loading="lazy"><small>No.${pokemonNumber(m.id)} · ${m.type===null?'タイプ：—':icons[m.type]+' '+types[m.type]}</small><strong>${m.placeholder?m.label:own?m.label:'？？？'}</strong><span class="badge">${own?`攻撃 ${m.power} · ${sel?'✓ 編成中':'図鑑をひらく'}`:'まだ であっていません'}</span></button>`}).join(''):'<p class="dex-empty">その番号のポケモンは いません</p>';
  $('#dex-page').textContent=`${dexPage+1} / ${pages}`;$('#dex-prev').disabled=dexPage===0;$('#dex-next').disabled=dexPage>=pages-1;
 }
 $('#dex-search').addEventListener('input',e=>{dexQuery=e.target.value;dexPage=0;renderDex()});
 $('#dex-owned').addEventListener('change',e=>{dexOwnedOnly=e.target.checked;dexPage=0;renderDex()});
 $('#dex-prev').onclick=()=>{dexPage--;renderDex();$('#party').scrollTop=0};
 $('#dex-next').onclick=()=>{dexPage++;renderDex();$('#party').scrollTop=0};
-$('#cards').onclick=e=>{let b=e.target.closest('[data-id]');if(!b||busy)return;let id=+b.dataset.id;if(state.party.includes(id)){if(state.party.length===1){alert('パーティには1匹以上必要です。');return}state.party=state.party.filter(x=>x!==id)}else{if(state.party.length>=PARTY_SIZE){alert('最大6匹です。仲間を外してから選んでください。');return}state.party.push(id)}render()};
+function togglePokemonParty(id){
+ if(busy)return 'いまは へんせいできません';
+ if(!state.owned.includes(id))return 'まだ つかまえていません';
+ if(state.party.includes(id)){
+  if(state.party.length===1)return 'パーティーには 1匹以上 必要です';
+  state.party=state.party.filter(value=>value!==id);
+ }else{
+  if(state.party.length>=PARTY_SIZE)return 'パーティーは 6匹までです';
+  state.party.push(id);
+ }
+ render();return '';
+}
+$('#cards').onclick=e=>{const card=e.target.closest('[data-id]');if(card&&!busy)window.PokekoroDex?.open(Number(card.dataset.id))};
 function showTab(name){
  if(!['map','party','journey'].includes(name))return;
  document.querySelectorAll('[data-tab]').forEach(button=>button.classList.toggle('active',button.dataset.tab===name));
