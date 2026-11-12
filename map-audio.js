@@ -6,12 +6,15 @@
   let enabled = true, priming = false, context = null, gain = null,currentTheme='field';
   const failedTracks=new Set(),positions=new Map();
   let battlePrefetch=null;
+  const victoryPrefetch=new Map();
+  function prepareVictory(){if(battle?.safari)return;const theme=battle?.trainer?'trainerVictory':'victory';if(victoryPrefetch.has(theme))return;victoryPrefetch.set(theme,fetch(MAP_MUSIC_TRACKS[theme],{cache:'force-cache'}).then(r=>{if(!r.ok)throw Error('victory audio');return r.arrayBuffer()}).catch(()=>{victoryPrefetch.delete(theme)}))}
+  document.addEventListener('battle:prepare',prepareVictory);
   document.addEventListener('battle:prepare',()=>{if(battle?.trainer&&!battlePrefetch)battlePrefetch=fetch(MAP_MUSIC_TRACKS.trainerBattle,{cache:'force-cache'}).then(r=>{if(!r.ok)throw Error('audio');return r.arrayBuffer()}).catch(()=>{battlePrefetch=null})});
   function isVictoryScene(){return !!battle?.victory&&(document.querySelector('#battle').open||document.querySelector('#result').open)}
   function isTrainerScene(){return !!battle?.trainer&&(document.querySelector('#encounter').open||document.querySelector('#battle').open)}
   function isWildScene(){return !!battle&&!battle.trainer&&(document.querySelector('#encounter').open||document.querySelector('#battle').open)}
   audio.dataset.theme=currentTheme;
-  function selectTrack(){const requested=isVictoryScene()?(battle.trainer?'trainerVictory':'victory'):isTrainerScene()?(document.querySelector('#battle').open?'trainerBattle':'trainer'):isWildScene()?'wild':mapMusicTheme(state.mapId),next=failedTracks.has(requested)?'field':requested;if(next===currentTheme)return;positions.set(currentTheme,Number.isFinite(audio.currentTime)?audio.currentTime:0);level(0);audio.pause();currentTheme=next;audio.dataset.theme=next;const position=['wild','trainer','trainerBattle','victory','trainerVictory'].includes(next)?0:positions.get(next)||0;audio.onloadedmetadata=()=>{if(currentTheme===next&&position>0&&Number.isFinite(audio.duration))audio.currentTime=Math.min(position,Math.max(0,audio.duration-.1))};audio.src=MAP_MUSIC_TRACKS[next];audio.load()}
+  function selectTrack(){const requested=isVictoryScene()?(battle.trainer?'trainerVictory':'victory'):isTrainerScene()?(document.querySelector('#battle').open?'trainerBattle':'trainer'):isWildScene()?'wild':mapMusicTheme(state.mapId),next=failedTracks.has(requested)?'field':requested;if(next===currentTheme)return;positions.set(currentTheme,Number.isFinite(audio.currentTime)?audio.currentTime:0);level(0);audio.pause();currentTheme=next;audio.dataset.theme=next;const position=MAP_MUSIC_START[next]??(['wild','trainer','trainerBattle'].includes(next)?0:positions.get(next)||0);audio.onloadedmetadata=()=>{if(currentTheme===next&&position>0&&Number.isFinite(audio.duration))audio.currentTime=Math.min(position,Math.max(0,audio.duration-.1))};audio.src=MAP_MUSIC_TRACKS[next];audio.load();if(MAP_MUSIC_START[next]){try{audio.currentTime=position}catch{}}}
 
   audio.addEventListener('error',()=>{if(currentTheme==='field')return;failedTracks.add(currentTheme);selectTrack();sync()});
   try { const saved = JSON.parse(localStorage.getItem('pokekoro-title-v1'));if (typeof saved?.sound === 'boolean') enabled = saved.sound; } catch {}
@@ -55,7 +58,7 @@
   document.addEventListener('title:start', () => { if (priming) audio.currentTime = 0;priming = false;sync(); });
   document.addEventListener('title:soundchange', event => { enabled = !!event.detail.enabled;sync(); });
   document.addEventListener('battle:enter',()=>{unlock();sync(true)});
-  document.addEventListener('battle:victory',sync);
+  document.addEventListener('battle:victory',()=>sync(true));
   document.addEventListener('visibilitychange', sync);
   window.addEventListener('pagehide', () => { priming = false;audio.pause(); });
   window.addEventListener('pageshow', sync);

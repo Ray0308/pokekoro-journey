@@ -282,8 +282,8 @@ async function resolveAttack(){
  await wait(450);if(epoch!==battleEpoch)return;orb.remove();
  $('#ready-overlay').innerHTML=`<strong>いっけー！！</strong><span>${battle.damage.toLocaleString()} パワー解放！</span>`;$('#battle').classList.add('attack-release');pulse($('.enemy'),'enemy-hit');sfx('hit');
  const d=document.createElement('b');d.className='damage-number final-damage';d.innerHTML=`${battle.damage.toLocaleString()}<small>まとめて ダメージ！</small>`;$('.enemy').append(d);
- const remaining=Math.max(0,battle.total-battle.damage);battle.hp=remaining;updateHP();$('#chargebar').style.width='0%';
- await wait(1200);if(epoch!==battleEpoch)return;d.remove();$('#ready-overlay').innerHTML=`<strong>${remaining===0?'やった！ 勝利！':'あと一歩…！'}</strong><span>${remaining===0?'みんなのパワーが とどいた！':'次はもっと パワーをためよう！'}</span>`;if(remaining===0){markBattleVictory();tone(1040,.2)}
+ const remaining=Math.max(0,battle.total-battle.damage);battle.hp=remaining;updateHP();$('#chargebar').style.width='0%';if(remaining===0)markBattleVictory();
+ await wait(1200);if(epoch!==battleEpoch)return;d.remove();$('#ready-overlay').innerHTML=`<strong>${remaining===0?'やった！ 勝利！':'あと一歩…！'}</strong><span>${remaining===0?'みんなのパワーが とどいた！':'次はもっと パワーをためよう！'}</span>`;if(remaining===0)tone(1040,.2)
  await wait(800);if(epoch!==battleEpoch)return;battle.phase='finished';endBattle(remaining===0);
 }
 

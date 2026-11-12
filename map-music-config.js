@@ -12,3 +12,5 @@ function mapMusicTheme(mapId){
 
 // The supplied field recording is quieter than the synthesized themes.
 function mapMusicVolume(theme){return theme==='field'?.5:theme==='wild'?.36:MAP_AUDIO.volume}
+
+const MAP_MUSIC_START=Object.freeze({victory:.60,trainerVictory:.78});
