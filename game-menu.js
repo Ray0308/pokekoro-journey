@@ -16,7 +16,7 @@
  menu.querySelectorAll('[data-menu-action]').forEach(button=>button.onclick=()=>{
   const action=button.dataset.menuAction;close();
   if(action==='dex')window.PokekoroDex?.open();
-  else if(action==='party'){showTab('party');dexOwnedOnly=true;dexQuery='';dexPage=0;document.querySelector('#dex-owned').checked=true;document.querySelector('#dex-search').value='';renderDex()}
+  else if(action==='party'){showTab('party');renderDex()}
   else if(action==='bag')showBag();
   else if(action==='badges'){showTab('journey');document.querySelector('#journey').scrollTop=0}
   else if(action==='settings')document.querySelector('#title-options').showModal();

@@ -3,7 +3,7 @@
  const dialog=document.querySelector('#pokedex-device'),synth=window.speechSynthesis;
  const supported=!!synth&&typeof window.SpeechSynthesisUtterance==='function';
  let selected=1,utterance=null,speechToken=0,openingTimer=0,soundEnabled=true,listPage=0;
- const LIST_SIZE=24;
+ const LIST_SIZE=24;let replaceSlot=null;
  try{const saved=JSON.parse(localStorage.getItem('pokekoro-title-v1'));if(typeof saved?.sound==='boolean')soundEnabled=saved.sound}catch{}
  function status(text){document.querySelector('#device-status').textContent=text}
  function updateSpeechButton(){
@@ -28,8 +28,8 @@
  function select(id){if(!validPokemonId(id))return;stopReading();selected=id;renderEntry()}
  function renderList(){
   const owned=new Set(state.owned),seen=new Set([...(state.seen||[]),...state.owned]),start=listPage*LIST_SIZE;
-  document.querySelector('#device-list-count').textContent=`みつけた ${seen.size}　つかまえた ${owned.size}`;
-  document.querySelector('#device-list-rows').innerHTML=POKEDEX.slice(start,start+LIST_SIZE).map(mon=>`<button class="device-list-row" data-dex-id="${mon.id}" ${seen.has(mon.id)?'':'disabled'}><span class="dex-caught">${owned.has(mon.id)?'<img src="assets/poke-ball.jpg" alt="つかまえた">':''}</span><span>No.${pokemonNumber(mon.id)}</span><strong>${seen.has(mon.id)?mon.label:'────'}</strong></button>`).join('');
+  document.querySelector('#device-list-count').textContent=replaceSlot===null?`みつけた ${seen.size}　つかまえた ${owned.size}`:'入れ替える ポケモンを えらぼう';
+  document.querySelector('#device-list-rows').innerHTML=POKEDEX.slice(start,start+LIST_SIZE).map(mon=>`<button class="device-list-row" data-dex-id="${mon.id}" ${(replaceSlot===null?seen.has(mon.id):owned.has(mon.id))?'':'disabled'}><span class="dex-caught">${owned.has(mon.id)?'<img src="assets/poke-ball.jpg" alt="つかまえた">':''}</span><span>No.${pokemonNumber(mon.id)}</span><strong>${seen.has(mon.id)?mon.label:'────'}</strong></button>`).join('');
   document.querySelector('#device-list-page').textContent=`${start+1}–${Math.min(start+LIST_SIZE,POKEDEX_SIZE)} / ${POKEDEX_SIZE}`;
   document.querySelector('#device-list-prev').disabled=listPage===0;
   document.querySelector('#device-list-next').disabled=start+LIST_SIZE>=POKEDEX_SIZE;
@@ -37,8 +37,19 @@
  }
  function view(mode){stopReading();dialog.dataset.view=mode;document.querySelector('#device-list-view').hidden=mode!=='list';document.querySelector('#device-list-tab').setAttribute('aria-pressed',mode==='list');document.querySelector('#device-detail-tab').setAttribute('aria-pressed',mode==='detail');if(mode==='list')renderList()}
  function open(id){
-  if(busy||id!==undefined&&!validPokemonId(id))return;select(id===undefined?selected:id);if(id!==undefined)listPage=Math.floor((id-1)/LIST_SIZE);view(id===undefined?'list':'detail');
+  if(busy||id!==undefined&&!validPokemonId(id))return;replaceSlot=null;dialog.classList.remove('is-picking');select(id===undefined?selected:id);if(id!==undefined)listPage=Math.floor((id-1)/LIST_SIZE);view(id===undefined?'list':'detail');
   if(!dialog.open){dialog.showModal();clearTimeout(openingTimer);if(!matchMedia('(prefers-reduced-motion: reduce)').matches){dialog.classList.add('is-opening');openingTimer=setTimeout(()=>dialog.classList.remove('is-opening'),550)}}
+ }
+ function openPicker(slot){
+  if(busy||!Number.isInteger(slot)||slot<0||slot>=PARTY_SIZE)return;
+  open();replaceSlot=slot;listPage=0;dialog.classList.add('is-picking');view('list');
+ }
+ function replaceWith(id){
+  if(busy||replaceSlot===null||!state.owned.includes(id))return;
+  const slot=replaceSlot,next=[...state.party],old=next[slot],existing=next.indexOf(id);
+  if(existing>=0){if(old){next[slot]=id;next[existing]=old}else{dialog.close();return}}
+  else if(old)next[slot]=id;else next.push(id);
+  state.party=next;render();dialog.close();
  }
  function read(){
   if(utterance){stopReading();status('よみあげを とめました');return}
@@ -55,7 +66,7 @@
  document.querySelector('#device-detail-tab').onclick=()=>view('detail');
  document.querySelector('#device-list-prev').onclick=()=>{listPage=Math.max(0,listPage-1);renderList()};
  document.querySelector('#device-list-next').onclick=()=>{listPage=Math.min(Math.ceil(POKEDEX_SIZE/LIST_SIZE)-1,listPage+1);renderList()};
- document.querySelector('#device-list-rows').onclick=event=>{const row=event.target.closest('[data-dex-id]');if(row&&!row.disabled){select(Number(row.dataset.dexId));view('detail')}};
+ document.querySelector('#device-list-rows').onclick=event=>{const row=event.target.closest('[data-dex-id]');if(row&&!row.disabled){if(replaceSlot!==null)replaceWith(Number(row.dataset.dexId));else{select(Number(row.dataset.dexId));view('detail')}}};
  document.querySelector('#open-pokedex').onclick=()=>open();
  document.querySelector('#device-close').onclick=()=>dialog.close();
  document.querySelector('#device-speak').onclick=read;
@@ -63,9 +74,9 @@
  document.querySelector('#device-next').onclick=()=>select(selected+1);
  document.querySelector('#device-jump').addEventListener('change',event=>{const id=Number(event.target.value);if(validPokemonId(id))select(id);else{event.target.value=String(selected);status('1〜1025の 番号をいれてね')}});
  document.querySelector('#device-party').onclick=()=>{const message=togglePokemonParty(selected);renderEntry();if(message)status(message)};
- dialog.addEventListener('close',()=>{stopReading();clearTimeout(openingTimer);dialog.classList.remove('is-opening')});
+ dialog.addEventListener('close',()=>{replaceSlot=null;dialog.classList.remove('is-picking');stopReading();clearTimeout(openingTimer);dialog.classList.remove('is-opening')});
  document.addEventListener('visibilitychange',()=>{if(document.hidden)stopReading()});
  window.addEventListener('pagehide',stopReading);
  document.addEventListener('title:soundchange',event=>{soundEnabled=!!event.detail.enabled;if(!soundEnabled)stopReading();updateSpeechButton()});
- window.PokekoroDex=Object.freeze({open});
+ window.PokekoroDex=Object.freeze({open,openPicker});
 })();

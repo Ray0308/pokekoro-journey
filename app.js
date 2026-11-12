@@ -3,8 +3,6 @@ const $=s=>document.querySelector(s), types=['くさ','ほのお','みず'],icon
 const PARTY_SIZE=6;
 const MAP_ASSETS=Object.freeze({player:'assets/map/player.webp',grass:'assets/map/grass.webp',center:'assets/map/pokemon-center.webp'});
 const mons=POKEDEX;
-const DEX_PAGE_SIZE=24;
-let dexPage=0,dexQuery='',dexOwnedOnly=false;
 let state={owned:[1,4,7],party:[1,4,7],pos:0,lap:1,balls:8,super:2};try{let s=JSON.parse(localStorage.getItem('pokekoro-v1'));if(s&&Array.isArray(s.owned)&&Array.isArray(s.party)&&s.party.length&&s.party.length<=PARTY_SIZE&&s.party.every(id=>validPokemonId(id)&&s.owned.includes(id))&&Number.isInteger(s.pos)&&s.pos>=0&&s.pos<15&&Number.isFinite(s.balls)&&Number.isFinite(s.super)&&s.balls>=0&&s.super>=0)state=s}catch{}
 state.owned=[...new Set(state.owned.filter(validPokemonId))];
 state.seen=[...new Set([...(Array.isArray(state.seen)?state.seen.filter(validPokemonId):[]),...state.owned])];
@@ -107,18 +105,9 @@ function drawRoute(){
 }
 function render(){ applyMapTheme();$('#roll .roll-copy>span').textContent=rainbowExitReady()?'旅に戻る':state.pendingMapId?'次のマップへ':'サイコロを振る';if(!$('#roll').classList.contains('dice-holding'))$('#roll small').textContent=rainbowExitReady()?'タップして 元の旅へ！':state.pendingMapId?'タップして つぎの ぼうけんへ！':'おして はなして ころがそう！'; $('#lap').textContent=`${state.tour}周目 · ${state.pos+1}/15`;$('#route').innerHTML=drawRoute();$('#inventory').innerHTML=BALLS.map(b=>`<span aria-label="${b.name} ${state[b.key]}個"><img class="ball-icon" src="${b.image}" alt=""> ${state[b.key]}</span>`).join('');$('#miniParty').innerHTML=Array.from({length:PARTY_SIZE},(_,i)=>state.party[i]?`<img src="${img(state.party[i])}" alt="${mons[state.party[i]-1].label}">`:`<span class="party-empty" aria-label="空き枠">＋</span>`).join('');renderDex();$('#roll').disabled=busy;renderJourney();save()}
 function renderDex(){
- $('#count').textContent=`${state.owned.length} / ${POKEDEX_SIZE}`;
- const owned=new Set(state.owned),selected=new Set(state.party),query=dexQuery.trim();
- let entries=mons.filter(m=>(!dexOwnedOnly||owned.has(m.id))&&(!query||/^\d+$/.test(query)&&m.id===Number(query)));
- const pages=Math.max(1,Math.ceil(entries.length/DEX_PAGE_SIZE));dexPage=Math.max(0,Math.min(dexPage,pages-1));
- const visible=entries.slice(dexPage*DEX_PAGE_SIZE,(dexPage+1)*DEX_PAGE_SIZE);
- $('#cards').innerHTML=visible.length?visible.map(m=>{const own=owned.has(m.id),sel=selected.has(m.id);return `<button class="card ${!own?'locked':''} ${sel?'selected':''}" data-id="${m.id}"><img src="${img(m.id)}" alt="${own?m.label:'No.'+pokemonNumber(m.id)}" loading="lazy"><small>No.${pokemonNumber(m.id)} · ${m.type===null?'タイプ：—':icons[m.type]+' '+types[m.type]}</small><strong>${m.placeholder?m.label:own?m.label:'？？？'}</strong><span class="badge">${own?`攻撃 ${m.power} · ${sel?'✓ 編成中':'図鑑をひらく'}`:'まだ であっていません'}</span></button>`}).join(''):'<p class="dex-empty">その番号のポケモンは いません</p>';
- $('#dex-page').textContent=`${dexPage+1} / ${pages}`;$('#dex-prev').disabled=dexPage===0;$('#dex-next').disabled=dexPage>=pages-1;
+ $('#count').textContent=`${state.party.length} / ${PARTY_SIZE}匹`;
+ $('#cards').innerHTML=Array.from({length:PARTY_SIZE},(_,slot)=>{const id=state.party[slot],mon=id?mons[id-1]:null;return `<article class="party-slot ${mon?'':'is-empty'}"><button class="party-member" data-id="${id||''}" ${mon?'':'disabled'}>${mon?`<img src="${img(id)}" alt=""><span><small>No.${pokemonNumber(id)}</small><strong>${mon.label}</strong></span>`:'<span class="party-vacant">＋ あき</span>'}</button><button class="party-replace" data-party-slot="${slot}">${mon?'入れ替える':'えらぶ'}</button></article>`}).join('');
 }
-$('#dex-search').addEventListener('input',e=>{dexQuery=e.target.value;dexPage=0;renderDex()});
-$('#dex-owned').addEventListener('change',e=>{dexOwnedOnly=e.target.checked;dexPage=0;renderDex()});
-$('#dex-prev').onclick=()=>{dexPage--;renderDex();$('#party').scrollTop=0};
-$('#dex-next').onclick=()=>{dexPage++;renderDex();$('#party').scrollTop=0};
 function togglePokemonParty(id){
  if(busy)return 'いまは へんせいできません';
  if(!state.owned.includes(id))return 'まだ つかまえていません';
@@ -131,7 +120,7 @@ function togglePokemonParty(id){
  }
  render();return '';
 }
-$('#cards').onclick=e=>{const card=e.target.closest('[data-id]');if(card&&!busy)window.PokekoroDex?.open(Number(card.dataset.id))};
+$('#cards').onclick=e=>{const swap=e.target.closest('[data-party-slot]');if(swap&&!busy){window.PokekoroDex?.openPicker(Number(swap.dataset.partySlot));return}const card=e.target.closest('[data-id]');if(card&&card.dataset.id&&!busy)window.PokekoroDex?.open(Number(card.dataset.id))};
 function showTab(name){
  if(!['map','party','journey'].includes(name))return;
  document.querySelectorAll('[data-tab]').forEach(button=>button.classList.toggle('active',button.dataset.tab===name));
