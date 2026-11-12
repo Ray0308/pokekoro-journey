@@ -225,3 +225,19 @@ body:not(.at-title) .app-version{color:#b6c7b1;text-shadow:none;font-size:7px}
 body[data-game-view="journey"] .app-version,body[data-game-view="party"] .app-version{color:#68796c}
 @media(max-width:350px){#game-shell nav button{font-size:10px;padding:5px 4px;gap:3px}#game-shell nav button svg{width:13px;height:13px}#map .maphead{padding-left:10px;padding-right:10px}#map .maphead h2{font-size:12px}#map .maphead #lap{font-size:8px;padding:5px}#journey-list strong{font-size:12px}.journey-status{font-size:8px}.journey-badge{font-size:7px}}
 #battle .battlehead #kind{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px;padding-right:6px}
+
+/* Illustrated rewards share the same item art as the inventory and capture screen. */
+.reward-items{display:grid;grid-template-columns:repeat(var(--reward-count),minmax(0,1fr));gap:9px;width:100%;margin:5px 0 3px}
+#resultBody .reward-card{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-width:0;padding:12px 5px 8px;border:2px solid #dbd5b8;border-radius:14px;background:linear-gradient(#fffef6,#f7efd3);box-shadow:0 3px 0 #d5cda9}
+#resultBody .reward-card[data-ball="super"]{border-color:#b6cedf;background:linear-gradient(#fcfeff,#e5f1f8);box-shadow:0 3px 0 #b0c6d5}
+#resultBody .reward-card[data-ball="master"]{border-color:#d6b85d;background:linear-gradient(#fff6d5,#ece0f4);box-shadow:0 3px 0 #b9a06b}
+#resultBody .reward-card img{display:block;width:56px;height:56px;max-width:100%;object-fit:contain;mix-blend-mode:normal;background:#fff;border-radius:50%;border:0;box-shadow:0 3px 6px #52657820;filter:none;animation:none}
+.reward-name{display:block;min-height:28px;font-size:10px;line-height:1.4;text-align:center;color:#466074;font-weight:700;overflow-wrap:anywhere}
+.reward-count{display:block;padding:2px 12px;border-radius:12px;background:#fff9e8;color:#936322;font-size:22px;line-height:1.2;white-space:nowrap}
+.reward-rare{position:absolute;top:-10px;left:50%;transform:translateX(-50%);padding:2px 9px;border:1px solid #f8da76;border-radius:10px;background:#9b679f;color:#fffbe1;font-size:9px;font-weight:800;white-space:nowrap}
+.reward-badge{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;padding:8px;background:#fff3bd;border:1px solid #e4cc7f;border-radius:11px;color:#7b5f22}
+.reward-badge svg{width:35px;height:35px;flex-shrink:0}
+.reward-badge small{display:block;font-size:9px;line-height:1.6}
+.reward-badge strong{display:block;font-size:14px;line-height:1.5}
+@media(max-width:350px){.reward-items{gap:6px}#resultBody .reward-card{padding:11px 4px 7px}#resultBody .reward-card img{width:47px;height:47px}.reward-name{font-size:9px;min-height:26px}.reward-count{font-size:20px;padding:2px 8px}}
+@media(max-height:450px){#resultBody .reward-card{padding:5px 4px;gap:2px}#resultBody .reward-card img{width:32px;height:32px}.reward-name{min-height:0;font-size:9px}.reward-count{font-size:16px}.reward-badge{padding:3px}.reward-badge svg{width:25px;height:25px}.reward-items{margin:0}}
