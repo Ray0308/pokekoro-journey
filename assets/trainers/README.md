@@ -51,3 +51,7 @@ MAPSのboss.imageVariantsで3種を指定。各遭遇で1/3ずつ選び、battle
 - originals/giovanni.jpg・originals/giovanni-field.jpg：提供されたサカキ素材の原本。
 - giovanni.webp：外周の白背景のみ透過した全身画像。
 - giovanni-field.webp：格子中央から16×16ドットを復元し、グリッド線・外側白背景を除去した128pxアイコン。顔の白は保持。アジト・シルフ・トキワジムに使用。
+
+- originals/lorelei.jpg・originals/lorelei-field.jpg：提供されたカンナ素材の原本。
+- lorelei.webp：外周の白背景のみ透過した全身画像。
+- lorelei-field.webp：格子中央から16×16ドットを復元し、グリッド線・外側白背景を除去した128pxアイコン。顔・眼鏡の白は保持。四天王カンナに使用。
