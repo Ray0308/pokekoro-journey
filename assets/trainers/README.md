@@ -83,3 +83,7 @@ MAPSのboss.imageVariantsで3種を指定。各遭遇で1/3ずつ選び、battle
 - originals/firebreather.jpg・originals/firebreather-field.jpg：提供されたひふきやろう素材の原本。
 - firebreather.webp：外側の白を透過した全身画像。炎を保持。
 - firebreather-field.webp：14×16ドットの左右に1ドット余白を追加し、白黒化・JPEGノイズ・外側白除去後に128pxへ最近傍拡大。ポケモンやしきに使用。
+
+- originals/black-belt.jpg・originals/black-belt-field.jpg：提供されたからておう素材の原本。
+- black-belt.webp：外周白のみ透過し高さ760pxへ最適化した全身画像。
+- black-belt-field.webp：格子中央から16×16ドットを復元しグリッド線・外側白を除去した128pxアイコン。顔・道着の白は保持。23番道路・チャンピオンロードに使用。
