@@ -35,7 +35,7 @@
 |29|ハナダの洞窟|No.0150（野生ボス）|—|
 
 ## 仮素材と差し替え
-第2マップ以降の人物画像・手持ちは既存素材を使った代役。ジムリーダー名と進行順は設定済みだが、原作の手持ち再現は未実装。背景は森・草原を流用するエリアと、assets/map/placeholders の仮SVGを使用するエリアがある。ユーザー提供素材が届いたら map-config.js の各エリアの background、boss.image、boss.icon、boss.pokemonId を置き換える。
+第2マップ以降の人物画像・手持ちは、ニビジムのタケシ本人画像を除いて既存素材を使った代役。タケシの手持ちも現時点では仮設定。ジムリーダー名と進行順は設定済みだが、原作の手持ち再現は未実装。背景は森・草原を流用するエリアと、assets/map/placeholders の仮SVGを使用するエリアがある。ユーザー提供素材が届いたら map-config.js の各エリアの background、boss.image、boss.icon、boss.pokemonId を置き換える。
 
 8バッジと最終クリアは clearedMaps から判定する。旧 meadow セーブと移動待ちIDは pewter-city へ移行し、パーティー・図鑑・所持数・位置を保持。
 
