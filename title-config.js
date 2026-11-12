@@ -2,7 +2,7 @@
 // Final assets and replaceable scenery are declared here, never inside title.js.
 window.POKEKORO_TITLE = Object.freeze({
   assets: Object.freeze({
-    logo: 'assets/title-logo.webp',
+    logo: 'assets/title-logo-fixed.webp',
     heroIdle: 'assets/title/sprites/hero-idle.webp',
     heroAction: 'assets/title/sprites/hero-action.webp',
     heroGlance: 'assets/title/sprites/hero-glance.webp',
