@@ -27,3 +27,7 @@ MAPSのboss.imageVariantsで3種を指定。各遭遇で1/3ずつ選び、battle
 
 - originals/misty-field.jpg：ユーザーが切り出した正面ドット絵原本。
 - misty-field.webp：各20pxマスの中央色から16×16ドットを復元し、グリッド線と外側の白背景を除去した128pxアイコン。ハナダジムのボスコマに設定。横向き原本は未使用のまま保管。
+
+- originals/lt-surge.jpg・originals/lt-surge-field.jpg：提供されたマチス素材の原本。
+- lt-surge.webp：外周の白背景のみ透過した全身画像。
+- lt-surge-field.webp：格子の中央色から16×16ドットを復元し、グリッド線・外側白背景を除いた128pxアイコン。クチバジムのマチスに使用。
