@@ -75,7 +75,7 @@ function renderRainbowHub(){
  if(ticket&&!isRainbow())$('#use-rainbow-ticket').onclick=()=>enterRainbow(ticket.id);
 }
 function activeMap(){return MAPS[state.mapId]||MAPS.viridian}
-function applyMapTheme(){const map=activeMap();$('#map .board-legend span:first-child').innerHTML=`<img src="${MAP_ASSETS.grass}" alt="">野生`;$('#map').dataset.map=state.mapId;$('#map').classList.toggle('rainbow-map',isRainbow());for(const [key,color] of Object.entries(map.colors))$('#map').style.setProperty('--map-'+key,color);$('#map .maphead h2').textContent=map.name;$('#route').setAttribute('aria-label',map.name+'の双六マップ');$('#map .board-legend span:nth-child(2)').innerHTML=(map.trainerIcon?`<img src="${map.trainerIcon}" alt="">`:'<svg><use href="assets/ui-icons.svg#trainer"/></svg>')+'トレーナー'}
+function applyMapTheme(){const map=activeMap();$('#map').style.setProperty('--map-aspect',map.aspectRatio||1);$('#map .board-legend span:first-child').innerHTML=`<img src="${MAP_ASSETS.grass}" alt="">野生`;$('#map').dataset.map=state.mapId;$('#map').classList.toggle('rainbow-map',isRainbow());for(const [key,color] of Object.entries(map.colors))$('#map').style.setProperty('--map-'+key,color);$('#map .maphead h2').textContent=map.name;$('#route').setAttribute('aria-label',map.name+'の双六マップ');$('#map .board-legend span:nth-child(2)').innerHTML=(map.trainerIcon?`<img src="${map.trainerIcon}" alt="">`:'<svg><use href="assets/ui-icons.svg#trainer"/></svg>')+'トレーナー'}
 let activePuzzlePointer=null;
 let preparing=false,battleEpoch=0,capturePending=false;
 let diceHold=null,diceEpoch=0;
@@ -85,7 +85,7 @@ const label={start:'ポケモンセンター',wild:'草むら',item:'道具',tra
 function save(){localStorage.setItem(window.PokekoroDebug?.saveKey?.()||'pokekoro-v1',JSON.stringify(state))}function img(id){return pokemonImage(id)}
 const routePoints=[[17,77],[34,84],[54,84],[74,77],[84,61],[84,44],[75,28],[57,21],[37,22],[20,31],[15,49],[31,60],[50,65],[66,53],[50,41]];
 const dungeonRoutePoints=[[16,80],[34,84],[54,82],[75,76],[83,59],[65,54],[46,58],[25,54],[15,38],[31,24],[50,21],[70,25],[83,40],[66,40],[49,40]];
-function mapRoutePoints(){return activeMap().route==='dungeon'?dungeonRoutePoints:routePoints}
+function mapRoutePoints(){const points=activeMap().route==='dungeon'?dungeonRoutePoints:routePoints,inset=activeMap().routeInset;return inset?points.map(([x,y])=>[x*inset.scaleX+inset.x,y*inset.scaleY+inset.y]):points}
 function tileLabel(kind){return kind==='wild'?(activeMap().wildLabel||label.wild):label[kind]}
 // Use the entire route for tangents, including the travelled prefix, so both roads align.
 function routePath(last=routePoints.length-1){

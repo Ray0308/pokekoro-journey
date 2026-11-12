@@ -27,3 +27,6 @@
 
 ## placeholders/
 カントー編の差し替え用仮背景。SVGの床・外壁・色で洞窟、船、アジト、塔、ジムなどを区別。ユーザー素材到着後は各MAPSエントリのbackgroundを差し替える。正式素材と区別するため専用ディレクトリに配置。
+
+## pewter-gym.webp
+ユーザー提供のニビジム背景。元の1280×1169を維持してWebP化。原本はoriginals/pewter-gym.jpg。MAPS["pewter-gym"]のaspectRatioで画像の比率を維持し、routeInsetで道とマスを岩壁の内側へ配置する。描き直し・トリミングは行っていない。

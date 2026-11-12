@@ -29,10 +29,10 @@
 @media(min-width:850px){#map .player-pawn{width:45px;height:56px}#map .player-marker{bottom:calc(100% + 43px)}}
 @media(max-width:350px){#game-shell .map-brand>span{font-size:11px}#game-shell .map-brand small{font-size:7px}#game-shell .map-brand{gap:7px}#map .player-pawn{width:37px;height:46px}#map .player-marker{bottom:calc(100% + 33px);font-size:8px}#map #roll>span{font-size:12px}}
 @media(max-height:440px) and (orientation:landscape){#map #route,#map .island-backdrop{top:62px}#map .player-pawn{width:26px;height:32px}#map .player-marker{display:none}}
-/* One square coordinate system for scenery, roads and counters. */
+/* Shared normalized coordinates for scenery, roads and counters. */
 #map .island-board{background:linear-gradient(var(--map-surface,#b6d9bd),var(--map-surfaceEnd,#e1ecce))}
 #map .scene-frame{position:absolute;inset:58px 6px 30px;container-type:size;display:grid;place-items:center}
-#map .map-scene{position:relative;width:min(100cqw,100cqh);height:min(100cqw,100cqh);isolation:isolate;overflow:hidden;border-radius:24px;box-shadow:0 8px 22px #284b3130}
+#map .map-scene{position:relative;width:min(100cqw,calc(100cqh * var(--map-aspect,1)));height:min(100cqh,calc(100cqw / var(--map-aspect,1)));isolation:isolate;overflow:hidden;border-radius:24px;box-shadow:0 8px 22px #284b3130}
 #map .map-scene .island-backdrop{display:none}
 #map .map-scene #route{position:absolute;inset:0;width:100%;height:100%;transform:none;display:block;padding:0}
 #map .map-art{position:absolute;inset:0;width:100%;height:auto;max-width:none;pointer-events:none}
@@ -272,3 +272,6 @@ body[data-game-view="journey"] .app-version,body[data-game-view="party"] .app-ve
 .reward-items:has([data-ball="rainbow"]) .reward-count{font-size:18px;padding:2px 8px}
 @media(max-height:450px){.reward-items:has([data-ball="rainbow"]) .reward-card{padding:3px;gap:2px}.reward-items:has([data-ball="rainbow"]) .reward-card img{width:24px!important;height:24px!important}.reward-items:has([data-ball="rainbow"]) .reward-count{font-size:14px}#resultBody .rainbow-action{min-height:31px;padding:5px;font-size:11px}}
 @media(max-height:450px){#result{padding:10px}#resultBody{gap:5px}#resultBody>h2{font-size:16px;line-height:1.3}#resultBody>p{font-size:10px;line-height:1.4}#resultBody>#done{min-height:34px;padding:6px 10px;font-size:14px}.reward-badge small{font-size:8px;line-height:1.2}.reward-badge strong{font-size:12px;line-height:1.2}.reward-badge svg{width:22px;height:22px}}
+
+#map .tile{height:calc(9% * var(--map-aspect,1))}
+#map .tile.node-goal,#map .tile.node-start{height:calc(10% * var(--map-aspect,1))}
