@@ -164,9 +164,10 @@ function result(html){$('#resultBody').innerHTML=html;$('#result').showModal();i
 function rewardItemsHtml(items){
  return `<div class="reward-items" style="--reward-count:${items.length}" aria-label="獲得したアイテム">${items.map(item=>{const ball=item.id==='rainbow'?{id:'rainbow',name:'虹のチケット',image:RAINBOW_CONFIG.ticketImage}:BALLS.find(b=>b.id===item.id);return `<div class="reward-card" data-ball="${ball.id}">${['master','rainbow'].includes(ball.id)?'<span class="reward-rare">レア！</span>':''}<img src="${ball.image}" alt=""><span class="reward-name">${ball.name}</span><strong class="reward-count" aria-label="${item.count}個">× ${item.count}</strong></div>`}).join('')}</div>`;
 }
+function markBattleVictory(){if(!battle||battle.safari||battle.victory)return;battle.victory=true;document.dispatchEvent(new CustomEvent('battle:victory'))}
 function endBattle(win){
  if(battle?.safari){endSafari(win);return}
- if(!battle||battle.rewardResolved)return;battle.rewardResolved=true;
+ if(!battle||battle.rewardResolved)return;if(battle.victory)win=true;if(win)markBattleVictory();battle.rewardResolved=true;
  battleEpoch++;preparing=false;running=false;drag=false;cancelAnimationFrame(raf);$('#battle').close();
  const cloudBoss=isRainbow()&&battle.boss;
  if(cloudBoss)state.rainbowVisit.exitPending=true;
@@ -282,7 +283,7 @@ async function resolveAttack(){
  $('#ready-overlay').innerHTML=`<strong>いっけー！！</strong><span>${battle.damage.toLocaleString()} パワー解放！</span>`;$('#battle').classList.add('attack-release');pulse($('.enemy'),'enemy-hit');sfx('hit');
  const d=document.createElement('b');d.className='damage-number final-damage';d.innerHTML=`${battle.damage.toLocaleString()}<small>まとめて ダメージ！</small>`;$('.enemy').append(d);
  const remaining=Math.max(0,battle.total-battle.damage);battle.hp=remaining;updateHP();$('#chargebar').style.width='0%';
- await wait(1200);if(epoch!==battleEpoch)return;d.remove();$('#ready-overlay').innerHTML=`<strong>${remaining===0?'やった！ 勝利！':'あと一歩…！'}</strong><span>${remaining===0?'みんなのパワーが とどいた！':'次はもっと パワーをためよう！'}</span>`;if(remaining===0)tone(1040,.2);
+ await wait(1200);if(epoch!==battleEpoch)return;d.remove();$('#ready-overlay').innerHTML=`<strong>${remaining===0?'やった！ 勝利！':'あと一歩…！'}</strong><span>${remaining===0?'みんなのパワーが とどいた！':'次はもっと パワーをためよう！'}</span>`;if(remaining===0){markBattleVictory();tone(1040,.2)}
  await wait(800);if(epoch!==battleEpoch)return;battle.phase='finished';endBattle(remaining===0);
 }
 

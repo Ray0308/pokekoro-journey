@@ -1,5 +1,5 @@
 'use strict';
-const MAP_MUSIC_TRACKS=Object.freeze({field:MAP_AUDIO.src,wild:'assets/audio/grass-encounter.mp3',gym:'assets/audio/map-gym.mp3',cave:'assets/audio/map-cave.mp3',hideout:'assets/audio/map-hideout.mp3',league:'assets/audio/map-league.mp3',water:'assets/audio/map-water.mp3'});
+const MAP_MUSIC_TRACKS=Object.freeze({field:MAP_AUDIO.src,wild:'assets/audio/grass-encounter.mp3',victory:'assets/audio/battle-victory.mp3',gym:'assets/audio/map-gym.mp3',cave:'assets/audio/map-cave.mp3',hideout:'assets/audio/map-hideout.mp3',league:'assets/audio/map-league.mp3',water:'assets/audio/map-water.mp3'});
 function mapMusicTheme(mapId){
  const map=MAPS[mapId];if(!map)return 'field';
  if(mapId.startsWith('indigo-')||mapId==='victory-road')return 'league';
