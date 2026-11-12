@@ -241,3 +241,16 @@ body[data-game-view="journey"] .app-version,body[data-game-view="party"] .app-ve
 .reward-badge strong{display:block;font-size:14px;line-height:1.5}
 @media(max-width:350px){.reward-items{gap:6px}#resultBody .reward-card{padding:11px 4px 7px}#resultBody .reward-card img{width:47px;height:47px}.reward-name{font-size:9px;min-height:26px}.reward-count{font-size:20px;padding:2px 8px}}
 @media(max-height:450px){#resultBody .reward-card{padding:5px 4px;gap:2px}#resultBody .reward-card img{width:32px;height:32px}.reward-name{min-height:0;font-size:9px}.reward-count{font-size:16px}.reward-badge{padding:3px}.reward-badge svg{width:25px;height:25px}.reward-items{margin:0}}
+.dex-toolbar{position:sticky;top:-15px;z-index:2;display:flex;align-items:center;flex-wrap:wrap;gap:9px;margin:12px 0;padding:10px;border:1px solid #d3dfda;border-radius:12px;background:#f4faf7;box-shadow:0 3px 8px #3d635414}
+.dex-search-label{display:flex;align-items:center;gap:6px;font-size:11px;color:#496559;flex:1;min-width:145px}
+#dex-search{min-width:0;width:100%;max-width:170px;padding:7px 9px;border:1px solid #b7cbc0;border-radius:7px;background:white;font-size:16px;color:#36564b}
+.dex-owned-label{display:flex;align-items:center;gap:4px;font-size:11px;color:#496559;white-space:nowrap}
+.dex-pages{display:flex;align-items:center;justify-content:center;gap:9px;margin-left:auto}
+.dex-pages button{min-width:36px;min-height:36px;padding:5px;background:#e2eee6;border:1px solid #bad1c2;border-radius:7px;color:#426653;box-shadow:none}
+#dex-page{font-size:11px;min-width:44px;text-align:center;color:#4b6558}
+.dex-empty{grid-column:1/-1;padding:20px;text-align:center;color:#667d73}
+#encounter[data-number-only="true"] #encounter-silhouette{filter:none}
+.capture-bonus{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;padding:4px;background:#f3e7fa;border:1px solid #c8aad8;border-radius:8px;font-size:10px;color:#745287}
+.capture-bonus img{width:22px;height:22px;object-fit:contain}
+@media(max-height:450px){#resultBody:has(.ball-options){gap:4px}#resultBody:has(.ball-options)>img{height:55px;width:70px}#resultBody:has(.ball-options)>h2{font-size:15px}#resultBody .ball-options .ball-choice{min-height:48px;padding:4px}#resultBody .ball-options .ball-choice img{width:25px;height:25px;flex-basis:25px}#resultBody:has(.ball-options)>p{font-size:10px}.capture-bonus{font-size:9px;padding:2px}}
+.dex-search-label{white-space:nowrap}
