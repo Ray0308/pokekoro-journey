@@ -10,3 +10,6 @@ MAPS["pewter-gym"].boss の image と icon に設定。手持ちの仮設定は�
 - youngster.webp：外周の白背景のみ透過した全身画像。
 - youngster-icon.webp：原本の頭部から作成した128pxアイコン。
 ニビシティ・ハナダシティのボストレーナー画像に設定。手持ちは引き続き仮設定。
+
+- originals/youngster-field.jpg：ユーザー提供のグリッド付きフィールドアイコン原本。
+- youngster-field.webp：16×16マスの中央色を採取し、グリッド線・白背景を除いた128px透過アイコン。ニビシティ・ハナダシティのボスコマに使用。拡大はnearestで輪郭を保持。全身画像はyoungster.webpを継続。
