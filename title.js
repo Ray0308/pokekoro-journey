@@ -13,11 +13,20 @@
   const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
   const settingsKey = 'pokekoro-title-v1';
   let starting = false;
-  let titleReady=false,menuReadyTimer=0,primedDuringIntro=false;
+  let titleReady=false;
+  const tapPrompt=document.querySelector('#title-tap-prompt');
   const titleButtons=[start,rules,optionsButton];
   titleButtons.forEach(button=>button.disabled=true);
   root.classList.add('is-menu-waiting');
-  function revealMenu(){clearTimeout(menuReadyTimer);if(document.hidden||root.hidden||!document.querySelector('#boot-screen').hidden)return;menuReadyTimer=setTimeout(()=>{if(document.hidden||root.hidden)return;titleReady=true;root.classList.remove('is-menu-waiting');titleButtons.forEach(button=>button.disabled=starting);refreshTitleActivity()},config.motion.menuDelayMs)}
+  function revealMenu(){if(root.hidden||!document.querySelector('#boot-screen').hidden)return;tapPrompt.disabled=false}
+  function activateTitle(){
+    if(titleReady||starting||tapPrompt.disabled||root.hidden||document.hidden||!document.querySelector('#boot-screen').hidden)return;
+    titleReady=true;tapPrompt.disabled=true;root.classList.remove('is-menu-waiting');titleButtons.forEach(button=>button.disabled=false);
+    unlockMusicGraph();restoreMusicVolume();syncBgm();refreshTitleActivity();start.focus({preventScroll:true});
+  }
+  tapPrompt.addEventListener('click',activateTitle);
+  root.addEventListener('click',event=>{if(titleReady||event.target.closest('a,#title-debug'))return;event.preventDefault();event.stopImmediatePropagation();activateTitle()},true);
+
   let sequence = 0;
   let idleTimer = 0;
   let idleGeneration = 0;
@@ -80,24 +89,20 @@
     });
   }
   function canPlayBgm() {
-    return settings.sound && !root.hidden && !document.hidden &&
+    return titleReady && settings.sound && !root.hidden && !document.hidden &&
       document.querySelector('#boot-screen').hidden;
   }
   function syncBgm() {
-    if (!canPlayBgm()) { if(!(primedDuringIntro&&settings.sound&&!root.hidden&&!document.hidden))bgm.pause(); return; }
+    if (!canPlayBgm()) { bgm.pause(); return; }
     if (bgm.paused) {
       // Mobile browsers unlock audio on a tap; rejection leaves the next gesture free to retry.
       bgm.play()?.then(() => { if (!canPlayBgm()) bgm.pause(); }).catch(() => {});
     }
   }
   function unlockBgm(event) {
-    if(!event.isTrusted||root.hidden||document.hidden||!settings.sound)return;
-    if (event.target.closest?.('#enter-game, #sound-toggle')&&titleReady) return;
-    unlockMusicGraph();
-    if(!document.querySelector('#boot-screen').hidden&&musicGain){
-      musicGain.gain.setValueAtTime(0,musicContext.currentTime);primedDuringIntro=true;
-      bgm.play()?.catch(()=>{primedDuringIntro=false});
-    }else syncBgm();
+    if(!titleReady||!event.isTrusted||root.hidden||document.hidden||!settings.sound)return;
+    if(event.target.closest?.('#enter-game, #sound-toggle'))return;
+    unlockMusicGraph();syncBgm();
   }
   document.addEventListener('pointerdown', unlockBgm, { capture: true, passive: true });
   document.addEventListener('keydown', unlockBgm, { capture: true });
@@ -106,7 +111,7 @@
   window.addEventListener('pagehide', () => { if (starting) reset();bgm.pause();stopCry(); });
   window.addEventListener('pageshow', syncBgm);
   document.addEventListener('title:start', () => { bgm.pause();stopCry(); });
-  document.addEventListener('studio:ready',()=>{if(primedDuringIntro)bgm.currentTime=0;primedDuringIntro=false;restoreMusicVolume();syncBgm();revealMenu()});
+  document.addEventListener('studio:ready',()=>{revealMenu();syncBgm()});
 
   root.style.setProperty('--cloud-duration', `${config.motion.cloudsSeconds}s`);
   root.style.setProperty('--hero-idle-duration', `${config.motion.idleSeconds}s`);
@@ -288,7 +293,7 @@
     root.classList.remove('is-departing', 'hero-is-active');
     root.removeAttribute('aria-busy');
     delete root.dataset.startPhase;
-    titleReady=false;root.classList.add('is-menu-waiting');for (const button of titleButtons) button.disabled = true;revealMenu();
+    titleReady=false;bgm.pause();tapPrompt.disabled=true;root.classList.add('is-menu-waiting');for (const button of titleButtons) button.disabled = true;revealMenu();
     refreshTitleActivity();
   }
   start.addEventListener('click', async () => {
@@ -319,7 +324,7 @@
   for (const element of [root, document.querySelector('#boot-screen'), ...document.querySelectorAll('dialog')]) {
     idleObserver.observe(element, { attributes: true, attributeFilter: ['hidden', 'open'] });
   }
-  document.addEventListener('visibilitychange', () => { if (document.hidden && starting) reset();if(document.hidden)clearTimeout(menuReadyTimer);else if(!titleReady)revealMenu();refreshTitleActivity(); });
+  document.addEventListener('visibilitychange', () => { if (document.hidden && starting) reset();if(!document.hidden&&!titleReady)revealMenu();refreshTitleActivity(); });
   motionPreference.addEventListener?.('change', refreshTitleActivity);
   applySettings();
   refreshLeaves();

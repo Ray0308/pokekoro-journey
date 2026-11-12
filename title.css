@@ -113,3 +113,6 @@ body.at-title{min-height:0;height:var(--app-height,100dvh);background:radial-gra
 
 #title-screen .title-menu{opacity:1;visibility:visible;transition:none}#title-screen.is-menu-waiting .title-menu{opacity:0;visibility:hidden;pointer-events:none}#title-screen.is-menu-waiting #enter-game>svg{animation:none;opacity:1}
 @media(prefers-reduced-motion:reduce){#title-screen .title-menu{transition:none}#title-screen.is-menu-waiting .title-menu{transform:none}}
+
+#title-screen #title-tap-prompt{display:none;position:absolute;left:6%;right:6%;bottom:17%;z-index:8;width:88%;min-height:78px;padding:18px 8px;border:0;border-radius:0;background:none;box-shadow:none;color:#fffef2;font-size:clamp(20px,5vw,28px);font-weight:900;letter-spacing:2px;text-shadow:0 2px 0 #254f3d,2px 0 0 #254f3d,-2px 0 0 #254f3d,0 -1px 0 #254f3d,0 3px 7px #153c3b;opacity:1;cursor:pointer;touch-action:manipulation}#title-screen.is-menu-waiting #title-tap-prompt{display:block}#title-tap-prompt:focus-visible{outline:3px solid #fff6a4;outline-offset:0}#title-tap-prompt:disabled{cursor:default}
+@media(max-height:450px){#title-screen #title-tap-prompt{left:50%;right:3%;width:47%;bottom:22%;font-size:20px}}
