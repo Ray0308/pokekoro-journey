@@ -55,3 +55,7 @@ MAPSのboss.imageVariantsで3種を指定。各遭遇で1/3ずつ選び、battle
 - originals/lorelei.jpg・originals/lorelei-field.jpg：提供されたカンナ素材の原本。
 - lorelei.webp：外周の白背景のみ透過した全身画像。
 - lorelei-field.webp：格子中央から16×16ドットを復元し、グリッド線・外側白背景を除去した128pxアイコン。顔・眼鏡の白は保持。四天王カンナに使用。
+
+- originals/bruno.jpg・originals/bruno-field.jpg：提供されたシバ素材の原本。
+- bruno.webp：外周の白背景のみ透過し高さ760pxへ最適化した全身画像。
+- bruno-field.webp：格子中央から16×16ドットを復元し、グリッド線・外側白背景を除去した128pxアイコン。顔・手の白は保持。四天王シバに使用。
