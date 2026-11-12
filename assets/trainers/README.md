@@ -17,3 +17,7 @@ MAPS["pewter-gym"].boss の image と icon に設定。手持ちの仮設定は�
 - originals/hiker.jpg・originals/hiker-field.jpg：ユーザー提供のやまおとこ原本。
 - hiker.webp：外周につながる白背景だけを透過した全身画像。
 - hiker-field.webp：20px格子の各マス中央から16×16ドットを復元したフィールド画像。外周の白のみ透過し、顔・手の白は保持。ディグダのあな・イワヤマトンネルのボスに使用。
+
+- rocket-trio.webp・rocket-female.webp・rocket-male.webp：提供画像の外周白背景を透過し最適化。原本はoriginals/に保持。
+- rocket-field.webp：提供ドット絵のグリッド線・外側の白を除去した共通フィールドアイコン。
+MAPSのboss.imageVariantsで3種を指定。各遭遇で1/3ずつ選び、battle.trainerAppearanceに固定する。手持ち・報酬は既存のまま。
