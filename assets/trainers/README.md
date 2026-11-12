@@ -31,3 +31,7 @@ MAPSのboss.imageVariantsで3種を指定。各遭遇で1/3ずつ選び、battle
 - originals/lt-surge.jpg・originals/lt-surge-field.jpg：提供されたマチス素材の原本。
 - lt-surge.webp：外周の白背景のみ透過した全身画像。
 - lt-surge-field.webp：格子の中央色から16×16ドットを復元し、グリッド線・外側白背景を除いた128pxアイコン。クチバジムのマチスに使用。
+
+- originals/erika.jpg・originals/erika-field.jpg：提供されたエリカ素材の原本。
+- erika.webp：外周の白背景のみ透過した全身画像。花びらを維持し高さ760pxに最適化。
+- erika-field.webp：格子中央から16×16ドットを復元し、グリッド線・外側白背景を除去した128pxアイコン。タマムシジムに使用。
