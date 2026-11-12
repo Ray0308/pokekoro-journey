@@ -275,3 +275,7 @@ body[data-game-view="journey"] .app-version,body[data-game-view="party"] .app-ve
 
 #map .tile{height:calc(9% * var(--map-aspect,1))}
 #map .tile.node-goal,#map .tile.node-start{height:calc(10% * var(--map-aspect,1))}
+
+/* Filter fractional downscaling consistently; preserve space around sprite outlines. */
+#map .tile img.trainer-portrait,#map .boss-portrait img[src*="-field.webp"]{position:absolute;inset:auto;left:50%;top:50%;width:80%;height:80%;max-width:32px;max-height:32px;transform:translate(-50%,-50%);object-fit:contain;image-rendering:auto;filter:none}
+#map .board-legend img{image-rendering:auto}

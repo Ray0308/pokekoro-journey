@@ -75,3 +75,7 @@ MAPSのboss.imageVariantsで3種を指定。各遭遇で1/3ずつ選び、battle
 - originals/lady.jpg・originals/lady-field.jpg：提供されたおじょうさま素材の原本。
 - lady.webp：外周の白背景のみ透過し、高さ760pxへ最適化した全身画像。衣装の白は保持。
 - lady-field.webp：格子中央から16×16ドットを復元し、グリッド線・外側白背景を除去した128pxアイコン。タマムシシティのおじょうさまに使用。
+
+- originals/swimmer.jpg・originals/swimmer-field.jpg：提供されたかいパンやろう素材。
+- swimmer.webp：外周白を透過して高さ760pxに最適化した全身画像。
+- swimmer-field.webp：16×16の白黒ドットを二値化しJPEGノイズ・外側白を除去。顔の白を維持。ふたごじまに使用。
