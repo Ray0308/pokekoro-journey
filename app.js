@@ -25,6 +25,7 @@ function activeMap(){return MAPS[state.mapId]||MAPS.viridian}
 function applyMapTheme(){const map=activeMap();$('#map .board-legend span:first-child').innerHTML=`<img src="${MAP_ASSETS.grass}" alt="">野生`;$('#map').dataset.map=state.mapId;for(const [key,color] of Object.entries(map.colors))$('#map').style.setProperty('--map-'+key,color);$('#map .maphead h2').textContent=map.name;$('#route').setAttribute('aria-label',map.name+'の双六マップ');$('#map .board-legend span:nth-child(2)').innerHTML=(map.trainerIcon?`<img src="${map.trainerIcon}" alt="">`:'<svg><use href="assets/ui-icons.svg#trainer"/></svg>')+'トレーナー'}
 let activePuzzlePointer=null;
 let preparing=false,battleEpoch=0,capturePending=false;
+let diceHold=null,diceEpoch=0;
 let busy=false,battle=null,raf=0,grid=[],path=[],drag=false,lastClear=0,combo=0,maxCombo=0,startAt=0,running=false,elapsed=0;
 const squares=['start','wild','item','wild','trainer','wild','item','trainer','wild','wild','item','trainer','wild','wild','goal'];
 const label={start:'ポケモンセンター',wild:'草むら',item:'道具',trainer:'トレーナー',goal:'ボス'},symbol={start:'🏕️',wild:'🌿',item:'🎁',trainer:'⚔️',goal:'⚑'};
@@ -58,8 +59,8 @@ function showTab(name){
 }
 document.querySelectorAll('[data-tab]').forEach(button=>button.onclick=()=>{if(capturePending)return;showTab(button.dataset.tab)});
 $('#help').onclick=()=>$('#guide').showModal();
-async function rollDice(){if(busy)return;if(state.pendingMapId){advanceMap();return}if(state.pos===14&&!state.clearedMaps.includes(state.mapId)){busy=true;render();openBattle(true,true);return}busy=true;render();let n=1+Math.floor(Math.random()*6);await mapDiceDrop(n);if(state.pos===14){state.pos=0;state.lap++;render()}let target=Math.min(14,state.pos+n);$('#message').textContent=`${n}が出た！ マスを進んでいます…`;while(state.pos<target){await new Promise(resolve=>setTimeout(resolve,300));state.pos++;render()}let s=squares[state.pos];$('#message').textContent=`${n}が出た！ ${tileLabel(s)}に到着。`;tone(520,.06);await new Promise(resolve=>setTimeout(resolve,450));if(s==='item'){const drop=itemBallDrop();state[drop.key]+=drop.count;busy=false;$('#message').textContent=drop.name+'を'+drop.count+'個見つけた！';render()}else openBattle(s==='trainer'||s==='goal',s==='goal')}
-function openBattle(trainer,boss){activePuzzlePointer=null;clearPuzzleSelection();battleEpoch++;preparing=false;capturePending=false;lastSecond=-1;$('#battle').classList.remove('hurry','resolving','attack-release','gathering-power');$('#energy-layer')?.remove();$('#leave').disabled=false;$('#battle-fx').innerHTML='';$('#callout').textContent='';$('#ready-overlay').hidden=false;$('#ready-overlay').innerHTML='<strong>3つ つないで<br>パワーをためよう！</strong><span>30秒後に まとめてアタック！</span>';$('#timebar').style.width='100%';$('#combobar').style.width='0%';$('#puzzle-tip').textContent='同じマークを3つ以上なぞろう！';let m=mons[boss?(activeMap().boss?.pokemonId||9)-1:Math.floor(Math.random()*9)];battle={m,trainer,boss,damage:0,shownDamage:0,phase:'ready',hp:boss?620:trainer?460:300+(m.id-1)%3*65,total:boss?620:trainer?460:300+(m.id-1)%3*65};combo=maxCombo=0;lastClear=0;elapsed=0;running=false;path=[];grid=Array.from({length:36},()=>Math.floor(Math.random()*3));$('#kind').textContent=boss?'⚑ '+(activeMap().boss?.role||'ボストレーナー')+'：'+(activeMap().boss?.name||'ボス'):trainer?'⚔ トレーナーバトル':'🌿 野生のポケモン';$('#weakness-tip').textContent=`${icons[[1,2,0][m.type]]} ${types[[1,2,0][m.type]]}で こうかばつぐん！`;$('#enemyname').textContent=m.name;$('#enemyimg').src=img(m.id);$('#enemyimg').alt=m.name;$('#clock').textContent='30.0';$('#combo').textContent='属性を3個以上つなごう';$('#chain').textContent='0 CHAIN';$('#start').hidden=false;updateHP();updateCharge();draw();$('#encounter-label').textContent=boss?'ボスが あらわれた！':trainer?'トレーナーと しょうぶ！':'野生のポケモンが あらわれた！';$('#encounter-name').textContent=m.name;$('#encounter-img').src=`assets/pokemon/${m.id}.webp`;$('#encounter-silhouette').src=`assets/pokemon/${m.id}.webp`;$('#encounter-img').alt=m.name;showEncounter(trainer||boss);tone(520,.15)}
+async function rollDice(){if(busy)return;if(state.pendingMapId){advanceMap();return}if(state.pos===14&&!state.clearedMaps.includes(state.mapId)){resetDicePresentation();busy=true;render();openBattle(true,true);return}busy=true;render();const epoch=diceEpoch,mapId=state.mapId;let n=1+Math.floor(Math.random()*6);if(!await mapDiceDrop(n)||epoch!==diceEpoch||mapId!==state.mapId)return;if(state.pos===14){state.pos=0;state.lap++;render()}let target=Math.min(14,state.pos+n);$('#message').textContent=`${n}が出た！ マスを進んでいます…`;while(state.pos<target){await new Promise(resolve=>setTimeout(resolve,300));if(epoch!==diceEpoch||mapId!==state.mapId)return;state.pos++;render()}let s=squares[state.pos];$('#message').textContent=`${n}が出た！ ${tileLabel(s)}に到着。`;tone(520,.06);await new Promise(resolve=>setTimeout(resolve,450));if(epoch!==diceEpoch||mapId!==state.mapId)return;if(s==='item'){const drop=itemBallDrop();state[drop.key]+=drop.count;busy=false;$('#message').textContent=drop.name+'を'+drop.count+'個見つけた！';render()}else openBattle(s==='trainer'||s==='goal',s==='goal')}
+function openBattle(trainer,boss){resetDicePresentation();activePuzzlePointer=null;clearPuzzleSelection();battleEpoch++;preparing=false;capturePending=false;lastSecond=-1;$('#battle').classList.remove('hurry','resolving','attack-release','gathering-power');$('#energy-layer')?.remove();$('#leave').disabled=false;$('#battle-fx').innerHTML='';$('#callout').textContent='';$('#ready-overlay').hidden=false;$('#ready-overlay').innerHTML='<strong>3つ つないで<br>パワーをためよう！</strong><span>30秒後に まとめてアタック！</span>';$('#timebar').style.width='100%';$('#combobar').style.width='0%';$('#puzzle-tip').textContent='同じマークを3つ以上なぞろう！';let m=mons[boss?(activeMap().boss?.pokemonId||9)-1:Math.floor(Math.random()*9)];battle={m,trainer,boss,damage:0,shownDamage:0,phase:'ready',hp:boss?620:trainer?460:300+(m.id-1)%3*65,total:boss?620:trainer?460:300+(m.id-1)%3*65};combo=maxCombo=0;lastClear=0;elapsed=0;running=false;path=[];grid=Array.from({length:36},()=>Math.floor(Math.random()*3));$('#kind').textContent=boss?'⚑ '+(activeMap().boss?.role||'ボストレーナー')+'：'+(activeMap().boss?.name||'ボス'):trainer?'⚔ トレーナーバトル':'🌿 野生のポケモン';$('#weakness-tip').textContent=`${icons[[1,2,0][m.type]]} ${types[[1,2,0][m.type]]}で こうかばつぐん！`;$('#enemyname').textContent=m.name;$('#enemyimg').src=img(m.id);$('#enemyimg').alt=m.name;$('#clock').textContent='30.0';$('#combo').textContent='属性を3個以上つなごう';$('#chain').textContent='0 CHAIN';$('#start').hidden=false;updateHP();updateCharge();draw();$('#encounter-label').textContent=boss?'ボスが あらわれた！':trainer?'トレーナーと しょうぶ！':'野生のポケモンが あらわれた！';$('#encounter-name').textContent=m.name;$('#encounter-img').src=`assets/pokemon/${m.id}.webp`;$('#encounter-silhouette').src=`assets/pokemon/${m.id}.webp`;$('#encounter-img').alt=m.name;showEncounter(trainer||boss);tone(520,.15)}
 function updateHP(){$('#hpbar').style.width=`${100*battle.hp/battle.total}%`;$('#hptext').textContent=`HP ${Math.ceil(battle.hp)} / ${battle.total} · ${types[battle.m.type]}タイプ`}
 const canvas=$('#board'),ctx=canvas.getContext('2d');function draw(){ctx.clearRect(0,0,420,420);for(let i=0;i<36;i++){let x=(i%6)*70+35,y=Math.floor(i/6)*70+35;ctx.beginPath();ctx.shadowColor=path.includes(i)?'#ffe36a':'#51317344';ctx.shadowBlur=path.includes(i)?16:0;ctx.shadowOffsetY=4;ctx.arc(x,y,path.includes(i)?31:28,0,Math.PI*2);ctx.fillStyle=colors[grid[i]];ctx.fill();ctx.shadowBlur=0;ctx.shadowOffsetY=0;ctx.beginPath();ctx.ellipse(x-5,y-15,15,6,-.3,0,Math.PI*2);ctx.fillStyle='#ffffff66';ctx.fill();ctx.beginPath();ctx.arc(x,y,path.includes(i)?31:28,0,Math.PI*2);ctx.strokeStyle=path.includes(i)?'#6a35ab':'#ffffffaa';ctx.lineWidth=path.includes(i)?5:2;ctx.stroke();ctx.font='29px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(icons[grid[i]],x,y+1);if(path.includes(i)){ctx.font='bold 12px sans-serif';ctx.fillStyle='#4d2b73';ctx.fillText(String(path.indexOf(i)+1),x+18,y-20)}}if(path.length){ctx.strokeStyle='#fff5b5';ctx.lineWidth=6;ctx.lineJoin='round';ctx.beginPath();path.forEach((i,j)=>{let x=i%6*70+35,y=Math.floor(i/6)*70+35;j?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.stroke()}}
 function cell(e){let r=canvas.getBoundingClientRect(),x=(e.clientX-r.left)*420/r.width,y=(e.clientY-r.top)*420/r.height;if(x<0||y<0||x>=420||y>=420)return -1;return Math.floor(y/70)*6+Math.floor(x/70)}
@@ -76,11 +77,11 @@ function renderJourney(){
 }
 function advanceMap(){
  const next=state.pendingMapId;if(!next||!Object.hasOwn(MAPS,next)||capturePending)return;
- state.pendingMapId=null;state.mapId=next;state.pos=0;state.lap=1;busy=false;battle=null;
+ resetDicePresentation();state.pendingMapId=null;state.mapId=next;state.pos=0;state.lap=1;busy=false;battle=null;
  $('#result').close();render();$('#message').textContent=activeMap().name+'に とうちゃく！';
  const card=$('#map .mapcard');card.classList.remove('map-arriving');void card.offsetWidth;card.classList.add('map-arriving');
 }
-function result(html){$('#resultBody').innerHTML=html;$('#result').showModal();if(battle&&battle.hp===0){celebrate();tone(660,.1);setTimeout(()=>tone(880,.15),130)}}function done(){if(capturePending)return;if(state.pendingMapId){advanceMap();return}busy=false;render();$('#result').close();$('#message').textContent='次の出会いを探しにいこう。';if(activeMap().final&&state.clearedMaps.includes(state.mapId))showTab('journey')}
+function result(html){$('#resultBody').innerHTML=html;$('#result').showModal();if(battle&&battle.hp===0){celebrate();tone(660,.1);setTimeout(()=>tone(880,.15),130)}}function done(){if(capturePending)return;if(state.pendingMapId){advanceMap();return}resetDicePresentation();busy=false;render();$('#result').close();$('#message').textContent='次の出会いを探しにいこう。';if(activeMap().final&&state.clearedMaps.includes(state.mapId))showTab('journey')}
 function rewardItemsHtml(items){
  return `<div class="reward-items" style="--reward-count:${items.length}" aria-label="獲得したアイテム">${items.map(item=>{const ball=BALLS.find(b=>b.id===item.id);return `<div class="reward-card" data-ball="${ball.id}">${ball.id==='master'?'<span class="reward-rare">レア！</span>':''}<img src="${ball.image}" alt=""><span class="reward-name">${ball.name}</span><strong class="reward-count" aria-label="${item.count}個">× ${item.count}</strong></div>`}).join('')}</div>`;
 }
@@ -100,7 +101,7 @@ $('#leave').onclick=()=>{if(confirm('バトルを撤退しますか？')){battle
 
 document.addEventListener('title:start',()=>{ $('#title-screen').hidden=true;$('#game-shell').hidden=false;document.body.classList.remove('at-title');window.scrollTo(0,0);$('#roll').focus({preventScroll:true})});
 
-$('#back-title').onclick=()=>{if(busy)return;$('#game-shell').hidden=true;$('#title-screen').hidden=false;document.body.classList.add('at-title');window.PokekoroTitle?.reset();window.scrollTo(0,0);$('#enter-game').focus({preventScroll:true})};
+$('#back-title').onclick=()=>{if(busy)return;resetDicePresentation();$('#game-shell').hidden=true;$('#title-screen').hidden=false;document.body.classList.add('at-title');window.PokekoroTitle?.reset();window.scrollTo(0,0);$('#enter-game').focus({preventScroll:true})};
 
 let soundOn=true,audioContext=null,lastSecond=-1;
 const reduceMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -178,16 +179,26 @@ async function resolveAttack(){
 }
 
 // Pointer capture keeps release reliable even when a finger leaves the button.
-let diceHold=null;
 function diceLayer(){
  const layer=document.createElement('div');layer.className='map-dice-event';layer.setAttribute('aria-hidden','true');layer.innerHTML=`<div class="dice-ground"></div><div class="dice-drop"><div class="map-die" data-value="5"><div class="dice-cube">${[1,6,3,4,2,5].map((n,i)=>`<div class="dice-face cube-side side-${i}" data-value="${n}">${'<i></i>'.repeat(9)}</div>`).join('')}</div></div></div><strong class="dice-announcement"></strong>`;$('.island-board').append(layer);return layer;
 }
+function resetDicePresentation(){
+ diceEpoch++;
+ const pointer=diceHold?.pointer;diceHold=null;
+ for(const layer of document.querySelectorAll('.map-dice-event')){
+  for(const element of [layer,...layer.querySelectorAll('*')])element.getAnimations?.().forEach(animation=>animation.cancel());
+  layer.remove();
+ }
+ const button=$('#roll');button.classList.remove('dice-holding');
+ if(pointer!==undefined&&button.hasPointerCapture?.(pointer)){try{button.releasePointerCapture(pointer)}catch{}}
+ $('#roll small').textContent=state.pendingMapId?'タップして つぎの ぼうけんへ！':'おして はなして ころがそう！';
+}
 function cancelDiceHold(){
- if(!diceHold)return;diceHold=null;$('.map-dice-event')?.remove();$('#roll').classList.remove('dice-holding');$('#roll small').textContent='おして はなして ころがそう！';busy=false;
+ if(!diceHold)return;resetDicePresentation();busy=false;
 }
 const rollButton=$('#roll');
 rollButton.onpointerdown=e=>{
- if(busy||e.button!==0||!e.isPrimary)return;e.preventDefault();if(state.pendingMapId){advanceMap();return}
+ if(busy||e.button!==0||!e.isPrimary)return;e.preventDefault();if(state.pendingMapId||state.pos===14&&!state.clearedMaps.includes(state.mapId)){rollDice();return}
  diceHold={pointer:e.pointerId};busy=true;rollButton.setPointerCapture(e.pointerId);
  diceLayer().classList.add('dice-held');rollButton.classList.add('dice-holding');$('#roll small').textContent='はなして ストップ！';
 };
@@ -202,6 +213,7 @@ rollButton.oncontextmenu=e=>e.preventDefault();
 window.addEventListener('blur',cancelDiceHold);
 document.addEventListener('visibilitychange',()=>{if(document.hidden)cancelDiceHold()});
 async function mapDiceDrop(value){
+ const epoch=diceEpoch,mapId=state.mapId;
  const layer=$('.map-dice-event')||diceLayer(),cube=layer.querySelector('.dice-cube');
  // Continue from the exact held rotation rather than restarting a new spin.
  const spin=cube.getAnimations()[0],phase=spin?((Number(spin.currentTime)||0)%700)/700:0;
@@ -214,11 +226,15 @@ async function mapDiceDrop(value){
  layer.classList.remove('dice-held');layer.classList.add('dice-thrown');
  const duration=reduceMotion?120:1200;
  const rotation=cube.animate([{transform:`rotateX(${x}deg) rotateY(${y}deg)`},{transform:`rotateX(${endX}deg) rotateY(${endY}deg)`}],{duration,easing:'cubic-bezier(.12,.45,.25,1)',fill:'forwards'});
+ try{
  await rotation.finished;
+ if(epoch!==diceEpoch||mapId!==state.mapId)return false;
  cube.style.transform=`rotateX(${endX}deg) rotateY(${endY}deg)`;rotation.cancel();
  $('#dice').dataset.value=value;$('#dice').setAttribute('aria-label',`サイコロ ${value}`);layer.querySelector('.map-die').dataset.value=value;
  layer.querySelector('.dice-announcement').textContent=`${value} マス すすむ！`;layer.classList.add('dice-landed');tone(400,.1);
- await new Promise(resolve=>setTimeout(resolve,reduceMotion?250:650));layer.remove();tone(660,.12);
+ await new Promise(resolve=>setTimeout(resolve,reduceMotion?250:650));if(epoch!==diceEpoch||mapId!==state.mapId)return false;tone(660,.12);return true;
+ }catch{if(epoch===diceEpoch){busy=false;render()}return false}
+ finally{rotation.cancel();layer.remove()}
 }
 function energyLayer(){let layer=$('#energy-layer');if(!layer){layer=document.createElement('div');layer.id='energy-layer';layer.setAttribute('aria-hidden','true');$('#battle').append(layer)}return layer}
 function flyCharge(cells,type,amount){
