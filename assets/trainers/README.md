@@ -47,3 +47,7 @@ MAPSのboss.imageVariantsで3種を指定。各遭遇で1/3ずつ選び、battle
 - originals/blaine.jpg・originals/blaine-field.jpg：提供されたカツラ素材の原本。
 - blaine.webp：外周の白背景のみ透過した全身画像。
 - blaine-field.webp：格子中央から16×16ドットを復元し、グリッド線・外側白背景を除去した128pxアイコン。グレンジムに使用。
+
+- originals/giovanni.jpg・originals/giovanni-field.jpg：提供されたサカキ素材の原本。
+- giovanni.webp：外周の白背景のみ透過した全身画像。
+- giovanni-field.webp：格子中央から16×16ドットを復元し、グリッド線・外側白背景を除去した128pxアイコン。顔の白は保持。アジト・シルフ・トキワジムに使用。
