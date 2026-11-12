@@ -200,7 +200,7 @@ $('#leave').onclick=()=>{if(confirm('バトルを撤退しますか？')){if(isR
 
 document.addEventListener('title:start',()=>{ $('#title-screen').hidden=true;$('#game-shell').hidden=false;document.body.classList.remove('at-title');window.scrollTo(0,0);$('#roll').focus({preventScroll:true})});
 
-$('#back-title').onclick=()=>{if(busy)return;resetDicePresentation();$('#game-shell').hidden=true;$('#title-screen').hidden=false;document.body.classList.add('at-title');window.PokekoroTitle?.reset();window.scrollTo(0,0);$('#enter-game').focus({preventScroll:true})};
+$('#back-title').onclick=()=>{if(busy)return;$('#title-options').close();resetDicePresentation();$('#game-shell').hidden=true;$('#title-screen').hidden=false;document.body.classList.add('at-title');window.PokekoroTitle?.reset();window.scrollTo(0,0);$('#enter-game').focus({preventScroll:true})};
 
 let soundOn=true,audioContext=null,lastSecond=-1;
 const reduceMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;

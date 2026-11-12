@@ -5,7 +5,7 @@
   document.body.append(audio);
   let enabled = true, priming = false, context = null, gain = null;
   try { const saved = JSON.parse(localStorage.getItem('pokekoro-title-v1'));if (typeof saved?.sound === 'boolean') enabled = saved.sound; } catch {}
-  function canPlay() { return enabled && !document.hidden && !document.querySelector('#game-shell').hidden && !document.querySelector('dialog[open]'); }
+  function canPlay() { return enabled && !document.hidden && !document.querySelector('#game-shell').hidden && !document.querySelector('dialog[open]:not(#game-menu):not(#item-bag):not(#title-options)'); }
   function unlock() {
     try {
       if (!context) {
