@@ -5,3 +5,8 @@
 - brock-icon.webp：同じ画像から頭部を切り出した128pxアイコン。
 
 MAPS["pewter-gym"].boss の image と icon に設定。手持ちの仮設定は維持。
+
+- originals/youngster.jpg：ユーザー提供のたんぱんこぞう原本。
+- youngster.webp：外周の白背景のみ透過した全身画像。
+- youngster-icon.webp：原本の頭部から作成した128pxアイコン。
+ニビシティ・ハナダシティのボストレーナー画像に設定。手持ちは引き続き仮設定。
