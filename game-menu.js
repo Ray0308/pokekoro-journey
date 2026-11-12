@@ -2,8 +2,8 @@
 (() => {
  const toggle=document.querySelector('#game-menu-toggle'),menu=document.querySelector('#game-menu'),bag=document.querySelector('#item-bag');
  function position(){const rect=toggle.getBoundingClientRect();menu.style.top=Math.max(8,rect.bottom+6)+'px';menu.style.maxHeight=Math.max(120,(window.visualViewport?.height||innerHeight)-rect.bottom-18)+'px'}
- function close(){menu.close();toggle.setAttribute('aria-expanded','false')}
- toggle.onclick=()=>{if(menu.open){close();return}if(busy||capturePending)return;position();menu.showModal();toggle.setAttribute('aria-expanded','true')};
+ function close(feedback=true){if(feedback)window.PokekoroSfx?.play('menuClose');menu.close();toggle.setAttribute('aria-expanded','false')}
+ toggle.onclick=()=>{if(menu.open){close();return}if(busy||capturePending)return;position();menu.showModal();window.PokekoroSfx?.play('menuOpen');toggle.setAttribute('aria-expanded','true')};
  menu.addEventListener('close',()=>toggle.setAttribute('aria-expanded','false'));
  menu.addEventListener('cancel',event=>{event.preventDefault();close()});
  menu.addEventListener('click',event=>{const rect=menu.getBoundingClientRect();if(event.target===menu&&(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom))close()});
@@ -14,7 +14,7 @@
   document.querySelector('#bag-use-ticket').onclick=()=>{if(!ticket||isRainbow())return;bag.close();enterRainbow(ticket.id)};bag.showModal();
  }
  menu.querySelectorAll('[data-menu-action]').forEach(button=>button.onclick=()=>{
-  const action=button.dataset.menuAction;close();
+  const action=button.dataset.menuAction;close(false);
   if(action==='dex')window.PokekoroDex?.open();
   else if(action==='party'){showTab('party');renderDex()}
   else if(action==='bag')showBag();

@@ -136,7 +136,7 @@ function showTab(name){
 }
 document.querySelectorAll('[data-tab]').forEach(button=>button.onclick=()=>{if(capturePending)return;showTab(button.dataset.tab)});
 $('#help').onclick=()=>$('#guide').showModal();
-async function rollDice(){if(busy)return;if(rainbowExitReady()){leaveRainbow();return}if(state.pendingMapId){advanceMap();return}if(state.pos===14){resetDicePresentation();busy=true;render();openBattle(true,true);return}busy=true;render();const epoch=diceEpoch,mapId=state.mapId;let n=1+Math.floor(Math.random()*6);if(!await mapDiceDrop(n)||epoch!==diceEpoch||mapId!==state.mapId)return;if(state.pos===14){state.pos=0;state.lap++;render()}let target=Math.min(14,state.pos+n);$('#message').textContent=`${n}が出た！ マスを進んでいます…`;while(state.pos<target){await new Promise(resolve=>setTimeout(resolve,300));if(epoch!==diceEpoch||mapId!==state.mapId)return;state.pos++;render()}let s=currentSquares()[state.pos];$('#message').textContent=`${n}が出た！ ${tileLabel(s)}に到着。`;tone(520,.06);await new Promise(resolve=>setTimeout(resolve,450));if(epoch!==diceEpoch||mapId!==state.mapId)return;if(s==='item'){const drop=itemBallDrop();state[drop.key]+=drop.count;busy=false;$('#message').textContent=drop.name+'を'+drop.count+'個見つけた！';render()}else openBattle(s==='trainer'||s==='goal',s==='goal')}
+async function rollDice(){if(busy)return;if(rainbowExitReady()){leaveRainbow();return}if(state.pendingMapId){advanceMap();return}if(state.pos===14){resetDicePresentation();busy=true;render();openBattle(true,true);return}busy=true;render();const epoch=diceEpoch,mapId=state.mapId;let n=1+Math.floor(Math.random()*6);if(!await mapDiceDrop(n)||epoch!==diceEpoch||mapId!==state.mapId)return;if(state.pos===14){state.pos=0;state.lap++;render()}let target=Math.min(14,state.pos+n);$('#message').textContent=`${n}が出た！ マスを進んでいます…`;while(state.pos<target){await new Promise(resolve=>setTimeout(resolve,300));if(epoch!==diceEpoch||mapId!==state.mapId)return;state.pos++;sfx('step');render()}let s=currentSquares()[state.pos];$('#message').textContent=`${n}が出た！ ${tileLabel(s)}に到着。`;tone(520,.06);await new Promise(resolve=>setTimeout(resolve,450));if(epoch!==diceEpoch||mapId!==state.mapId)return;if(s==='item'){const drop=itemBallDrop();state[drop.key]+=drop.count;busy=false;$('#message').textContent=drop.name+'を'+drop.count+'個見つけた！';render()}else openBattle(s==='trainer'||s==='goal',s==='goal')}
 function pickTrainerAppearance(config,rng=Math.random){const variants=config?.imageVariants;return variants?.length?{...config,...variants[Math.floor(rng()*variants.length)]}:config}
 function openBattle(trainer,boss){if(partyTypeError(state.party)){showTab('party');$('.party-hint').textContent='3属性以上の パーティーを くもう！';return}resetDicePresentation();activePuzzlePointer=null;clearPuzzleSelection();battleEpoch++;preparing=false;capturePending=false;lastSecond=-1;$('#battle').classList.remove('hurry','resolving','attack-release','gathering-power');$('#energy-layer')?.remove();$('#leave').disabled=false;$('#battle-fx').innerHTML='';$('#callout').textContent='';$('#ready-overlay').hidden=false;$('#ready-overlay').innerHTML='<strong>3つ つないで<br>パワーをためよう！</strong><span>30秒後に まとめてアタック！</span>';$('#timebar').style.width='100%';$('#combobar').style.width='0%';$('#puzzle-tip').textContent='同じマークを3つ以上なぞろう！';if(isSafari()||boss&&activeMap().boss?.wild)trainer=false;const id=isSafari()&&boss?SAFARI_RULES.finalIds[Math.floor(Math.random()*SAFARI_RULES.finalIds.length)]:boss?activeBossId():pickEncounterId();let m=mons[id-1];if(isSafari()&&boss)m={...m,label:{115:'ガルーラ',113:'ラッキー',128:'ケンタロス'}[id]};markPokemonSeen(id);battle={m,trainer,boss,safari:isSafari(),trainerAppearance:(trainer||boss)&&activeMap().boss?.imageVariants?pickTrainerAppearance(activeMap().boss):null,puzzleTypes:partyTypes(state.party),damage:0,shownDamage:0,phase:'ready',hp:boss?620:trainer?460:300+(m.id-1)%3*65,total:boss?620:trainer?460:300+(m.id-1)%3*65};combo=maxCombo=0;lastClear=0;elapsed=0;running=false;path=[];grid=Array.from({length:36},()=>randomPartyType());$('#kind').textContent=boss&&activeMap().boss?.wild?'⚑ '+activeMap().name+'・最深部':boss?'⚑ '+(activeMap().boss?.role||'ボストレーナー')+'：'+(activeMap().boss?.name||'ボス'):trainer?'⚔ トレーナーバトル':'🌿 野生のポケモン';$('#weakness-tip').textContent=m.type===null||m.type>2?'パーティーの属性を つなごう！':`${icons[[1,2,0][m.type]]} ${types[[1,2,0][m.type]]}で こうかばつぐん！`;$('#weakness-tip').textContent+=` · ${battle.puzzleTypes.length}属性 ×${typeDiversityBonus(battle.puzzleTypes.length).toFixed(2)}`;$('#enemyname').textContent=m.label;$('#enemyimg').src=img(m.id);$('#enemyimg').alt=m.label;$('#clock').textContent='30.0';$('#combo').textContent='属性を3個以上つなごう';$('#chain').textContent='0 CHAIN';$('#start').hidden=false;updateHP();updateCharge();draw();$('#encounter-label').textContent=boss?'ボスが あらわれた！':trainer?'トレーナーと しょうぶ！':'野生のポケモンが あらわれた！';$('#encounter-name').textContent=m.label;$('#encounter-img').src=pokemonPortrait(m.id);$('#encounter-silhouette').src=pokemonPortrait(m.id);$('#encounter-img').alt=m.label;configureSafariUI();showEncounter(trainer||boss&&!activeMap().boss?.wild);tone(520,.15)}
 function updateHP(){$('#hpbar').style.width=`${100*battle.hp/battle.total}%`;$('#hptext').textContent=`HP ${Math.ceil(battle.hp)} / ${battle.total} · ${battle.m.type===null?'タイプ：—':types[battle.m.type]+'タイプ'}`}
@@ -157,7 +157,7 @@ function renderJourney(){
 function advanceMap(){
  const next=state.pendingMapId;if(!next||!Object.hasOwn(MAPS,next)||capturePending)return;
  resetDicePresentation();if(state.mapId===MAP_ORDER.at(-1)&&next===MAP_ORDER[0])state.tour++;state.pendingMapId=null;state.mapId=next;state.pos=0;state.lap=1;busy=false;battle=null;
- $('#result').close();render();$('#message').textContent=activeMap().name+'に とうちゃく！';
+ $('#result').close();render();$('#message').textContent=activeMap().name+'に とうちゃく！';sfx('arrive');
  const card=$('#map .mapcard');card.classList.remove('map-arriving');void card.offsetWidth;card.classList.add('map-arriving');
 }
 function result(html){$('#resultBody').innerHTML=html;$('#result').showModal();if(battle&&battle.hp===0){celebrate();tone(660,.1);setTimeout(()=>tone(880,.15),130)}}function done(){if(capturePending)return;if(rainbowExitReady()){leaveRainbow();return}if(state.pendingMapId){advanceMap();return}resetDicePresentation();busy=false;render();$('#result').close();$('#message').textContent='次の出会いを探しにいこう。';}
@@ -179,7 +179,7 @@ function endBattle(win){
  if(battle.trainer){
   state.super+=battle.boss?3:1;state.balls+=2;render();
   result(`<h2>${battle.boss?(activeMap().leagueFinal?'ワタルに勝利！':activeMap().name+'クリア！'):'トレーナーに勝利！'}</h2><p>アイテムを てにいれた！</p>${rewardItemsHtml([{id:'super',count:battle.boss?3:1},{id:'normal',count:2},...(masterDrop?[{id:'master',count:1}]:[]),...(ticket?[{id:'rainbow',count:1}]:[])])}${earnedBadge?`<div class="reward-badge"><img src="${activeMap().badgeImage}" alt="${earnedBadge}"><span><small>バッジを てにいれた！</small><strong>${earnedBadge}</strong></span></div>`:''}${ticket?'<button id="reward-rainbow" class="rainbow-action">虹の雲へ 行く</button>':''}<button id="done" class="primary">次のマップへ</button>`);
-  $('#done').onclick=done;if(ticket)$('#reward-rainbow').onclick=()=>enterRainbow(ticket.id);return;
+  if(earnedBadge)sfx('badge');else sfx('success');$('#done').onclick=done;if(ticket)$('#reward-rainbow').onclick=()=>enterRainbow(ticket.id);return;
  }
  render();const base=Math.min(.8,.4+Math.min(1,battle.damage/battle.total-1)*.15+maxCombo*.015);
  result(`<small>${cloudBoss?'虹の雲のボス クリア！':battle.boss?'最深部クリア！':'CATCH CHANCE'}</small><h2>${battle.m.label}を捕まえよう！</h2><img src="${img(battle.m.id)}" alt="${battle.m.label}"><p>ボールを選んで捕獲に挑戦。<br>ためたパワー・最大コンボで確率アップ！</p>${masterDrop?'<div class="capture-bonus"><img src="assets/master-ball.webp" alt="">マスターボール ×1 獲得！</div>':''}${ticket?`<div class="capture-bonus"><img src="${RAINBOW_CONFIG.ticketImage}" alt="">虹のチケット ×1 獲得！</div>`:''}<div class="ball-options">${BALLS.map(b=>`<button id="${b.id}" class="primary ball-choice" ${state[b.key]?'':'disabled'}><img src="${b.image}" alt=""><span>${b.name}<small>成功 ${Math.round(Math.min(b.cap,base+b.bonus)*100)}%・残り ${state[b.key]}個</small></span></button>`).join('')}</div><button id="skip">${cloudBoss?'捕まえず 旅に戻る':'見送る'}</button>`);
@@ -190,25 +190,26 @@ async function playCaptureThrow(ball,mon){
  const body=$('#resultBody');body.innerHTML=`<small>つかまえる チャンス！</small><div class="capture-scene" data-phase="ready" aria-hidden="true"><div class="capture-ground"></div><img class="capture-target" src="${pokemonPortrait(mon.id)}" alt=""><div class="capture-flash"></div><div class="capture-ball"><img src="${ball.image}" alt=""></div></div><h2 id="capture-status" aria-live="polite">${ball.name}を なげた！</h2><p>ポケモンを つかまえよう！</p>`;
  const scene=$('.capture-scene'),wait=ms=>new Promise(resolve=>setTimeout(resolve,reduceMotion?Math.min(ms,120):ms));
  await Promise.all([...scene.querySelectorAll('img')].map(image=>image.decode().catch(()=>{})));
- scene.dataset.phase='throw';tone(520,.08);await wait(650);
- scene.dataset.phase='impact';$('#capture-status').textContent='あたった！';tone(880,.1);await wait(450);
+ scene.dataset.phase='throw';sfx('ballThrow');await wait(650);
+ scene.dataset.phase='impact';$('#capture-status').textContent='あたった！';sfx('ballHit');await wait(450);
  scene.dataset.phase='settle';$('#capture-status').textContent='ボールの なかへ！';await wait(350);
- scene.dataset.phase='check';$('#capture-status').textContent='つかまるかな…？';body.querySelector('p').textContent='ドキドキ…';tone(330,.12);await wait(1100);
+ scene.dataset.phase='check';$('#capture-status').textContent='つかまるかな…？';body.querySelector('p').textContent='ドキドキ…';sfx('ballShake');await wait(350);sfx('ballShake');await wait(350);sfx('ballShake');await wait(400);
 }
 $('#result').addEventListener('cancel',e=>{if(capturePending||state.pendingMapId||rainbowExitReady())e.preventDefault()});
-async function catchMon(ballId,chance){if(capturePending)return;const selected=BALLS.find(b=>b.id===ballId);if(!selected||state[selected.key]<1)return;state[selected.key]--;capturePending=true;save();let ok=Math.random()<chance;busy=true;await playCaptureThrow(selected,battle.m);let duplicate=state.owned.includes(battle.m.id);if(ok){if(duplicate)state.balls+=2;else state.owned.push(battle.m.id)}render();$('#resultBody').innerHTML=`<h2>${ok?'やった！ 捕獲成功！':'あっ！ 逃げられた…'}</h2><img src="${img(battle.m.id)}" alt="${battle.m.label}"><p>${ok?(duplicate?'すでに仲間のポケモンです。<br>モンスターボール2個に交換しました。':`${battle.m.label}のカードを獲得！<br>図鑑からパーティに編成できます。`):'また草むらで探してみよう。'}</p><button class="primary" id="done">${rainbowExitReady()?'旅に戻る':battle.safari&&battle.boss?'次のマップへ':'旅を続ける'}</button>`;$('#done').onclick=done;if(ok){celebrate();tone(880,.2)}else tone(220,.2);capturePending=false}
+async function catchMon(ballId,chance){if(capturePending)return;const selected=BALLS.find(b=>b.id===ballId);if(!selected||state[selected.key]<1)return;state[selected.key]--;capturePending=true;save();let ok=Math.random()<chance;busy=true;await playCaptureThrow(selected,battle.m);let duplicate=state.owned.includes(battle.m.id);if(ok){if(duplicate)state.balls+=2;else state.owned.push(battle.m.id)}render();$('#resultBody').innerHTML=`<h2>${ok?'やった！ 捕獲成功！':'あっ！ 逃げられた…'}</h2><img src="${img(battle.m.id)}" alt="${battle.m.label}"><p>${ok?(duplicate?'すでに仲間のポケモンです。<br>モンスターボール2個に交換しました。':`${battle.m.label}のカードを獲得！<br>図鑑からパーティに編成できます。`):'また草むらで探してみよう。'}</p><button class="primary" id="done">${rainbowExitReady()?'旅に戻る':battle.safari&&battle.boss?'次のマップへ':'旅を続ける'}</button>`;$('#done').onclick=done;if(ok){celebrate();sfx('success')}else sfx('fail');capturePending=false}
 $('#leave').onclick=()=>{if(confirm(battle?.safari?'なかよしチャレンジを やめますか？':'バトルを撤退しますか？')){if(battle?.safari){endBattle(false);return}if(isRainbow()&&battle?.boss){endBattle(false);return}battleEpoch++;preparing=false;running=false;cancelAnimationFrame(raf);$('#battle').close();busy=false;render()}};$('#battle').addEventListener('cancel',e=>e.preventDefault());$('#result').addEventListener('cancel',e=>e.preventDefault());document.addEventListener('visibilitychange',()=>{if(document.hidden&&(running||preparing)){elapsed=(performance.now()-startAt)/1000;endBattle(false)}});render();
 
 document.addEventListener('title:start',()=>{ $('#title-screen').hidden=true;$('#game-shell').hidden=false;document.body.classList.remove('at-title');window.scrollTo(0,0);$('#roll').focus({preventScroll:true})});
 
 $('#back-title').onclick=()=>{if(busy)return;$('#title-options').close();resetDicePresentation();$('#game-shell').hidden=true;$('#title-screen').hidden=false;document.body.classList.add('at-title');window.PokekoroTitle?.reset();window.scrollTo(0,0);$('#enter-game').focus({preventScroll:true})};
 
-let soundOn=true,audioContext=null,lastSecond=-1;
+let soundOn=true,lastSecond=-1;
 const reduceMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-function tone(frequency,duration){if(!soundOn)return;try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;audioContext??=new AC();if(audioContext.state==='suspended')audioContext.resume();const o=audioContext.createOscillator(),g=audioContext.createGain();o.type='sine';o.frequency.setValueAtTime(frequency,audioContext.currentTime);g.gain.setValueAtTime(.045,audioContext.currentTime);g.gain.exponentialRampToValueAtTime(.001,audioContext.currentTime+duration);o.connect(g);g.connect(audioContext.destination);o.start();o.stop(audioContext.currentTime+duration)}catch{}}
+function tone(frequency,duration){if(soundOn)window.PokekoroSfx?.tone(frequency,duration)}
+function sfx(name,value){window.PokekoroSfx?.play(name,value)}
 document.addEventListener('title:soundchange',e=>{soundOn=!!e.detail.enabled;if(soundOn&&e.detail.userGesture)tone(660,.1)});
 function pulse(el,cls){el.classList.remove(cls);void el.offsetWidth;el.classList.add(cls)}
-function attackFX(cells,type,damage,weak,count){const layer=$('#battle-fx');let html='';for(const cell of cells){const x=(cell%6+.5)/6*100,y=(Math.floor(cell/6)+.5)/6*100;for(let j=0;j<(reduceMotion?1:5);j++){const angle=j*1.2566;html+=`<i class="gem-shard" style="left:${x}%;top:${y}%;--dx:${Math.cos(angle)*(26+j*5)}px;--dy:${Math.sin(angle)*(26+j*5)}px;--turn:${70+j*65}deg;--spark:${colors[type]}"></i>`}html+=`<b class="pop-ring" style="left:${x}%;top:${y}%;--spark:${colors[type]}"></b>`}layer.innerHTML=html;const token=++fxToken;setTimeout(()=>{if(token===fxToken)layer.innerHTML=''},650);$('#callout').innerHTML=`<strong>${cells.length>=7?'すごい!!':cells.length>=5?'いいね！':'ナイス！'}</strong><span>${count} コンボ!</span>`;pulse($('#callout'),'callout-pop');$('#puzzle-tip').textContent=battle.safari?'つづけて消して なかよく なろう！':'つづけて消して パワーアップ！';tone(520+Math.min(count,10)*50,.11);if(cells.length>=7&&!reduceMotion)pulse($('.puzzle-stage'),'big-hit');}
+function attackFX(cells,type,damage,weak,count){const layer=$('#battle-fx');let html='';for(const cell of cells){const x=(cell%6+.5)/6*100,y=(Math.floor(cell/6)+.5)/6*100;for(let j=0;j<(reduceMotion?1:5);j++){const angle=j*1.2566;html+=`<i class="gem-shard" style="left:${x}%;top:${y}%;--dx:${Math.cos(angle)*(26+j*5)}px;--dy:${Math.sin(angle)*(26+j*5)}px;--turn:${70+j*65}deg;--spark:${colors[type]}"></i>`}html+=`<b class="pop-ring" style="left:${x}%;top:${y}%;--spark:${colors[type]}"></b>`}layer.innerHTML=html;const token=++fxToken;setTimeout(()=>{if(token===fxToken)layer.innerHTML=''},650);$('#callout').innerHTML=`<strong>${cells.length>=7?'すごい!!':cells.length>=5?'いいね！':'ナイス！'}</strong><span>${count} コンボ!</span>`;pulse($('#callout'),'callout-pop');$('#puzzle-tip').textContent=battle.safari?'つづけて消して なかよく なろう！':'つづけて消して パワーアップ！';sfx('gem',count);if(cells.length>=7&&!reduceMotion)pulse($('.puzzle-stage'),'big-hit');}
 let fxToken=0;
 function celebrate(){const box=$('#resultBody');box.querySelector('.confetti')?.remove();const layer=document.createElement('div');layer.className='confetti';layer.setAttribute('aria-hidden','true');layer.innerHTML=Array.from({length:reduceMotion?0:30},(_,i)=>`<i style="--x:${(i*37)%100}%;--delay:${i%6*.07}s;--rot:${i*43}deg;--c:${['#ffcf45','#af83f5','#6bd6cd','#ff8c99'][i%4]}"></i>`).join('');box.append(layer);}
 
@@ -274,11 +275,11 @@ async function resolveAttack(){
  $('#clock').textContent='0.0';$('#timebar').style.width='0%';$('#combobar').style.width='0%';$('#battle').classList.remove('hurry');$('#battle').classList.add('resolving');$('#ready-overlay').hidden=false;$('#ready-overlay').innerHTML='<strong>タイムアップ！</strong><span>ためたパワーで 一斉攻撃！</span>';$('#puzzle-tip').textContent='いくぞ！ みんなでアタック！';tone(440,.15);
  const wait=ms=>new Promise(resolve=>setTimeout(resolve,reduceMotion?Math.min(250,ms):ms));
  await wait(1200);if(epoch!==battleEpoch)return;updateCharge();
- $('#battle').classList.add('gathering-power');$('#ready-overlay').innerHTML='<strong>ぐぐぐ…！</strong><span>みんなの力を ひとつに！</span>';const orb=makeEnergyOrb();tone(280,.35);
- await wait(1000);if(epoch!==battleEpoch)return;$('#battle').classList.remove('gathering-power');orb.classList.add('energy-launch');tone(1200,.25);
+ $('#battle').classList.add('gathering-power');$('#ready-overlay').innerHTML='<strong>ぐぐぐ…！</strong><span>みんなの力を ひとつに！</span>';const orb=makeEnergyOrb();sfx('gather');
+ await wait(1000);if(epoch!==battleEpoch)return;$('#battle').classList.remove('gathering-power');orb.classList.add('energy-launch');sfx('release');
  $('#ready-overlay').innerHTML='<strong>はっしゃ！！</strong><span>ポケモンに めいちゅう！</span>';
  await wait(450);if(epoch!==battleEpoch)return;orb.remove();
- $('#ready-overlay').innerHTML=`<strong>いっけー！！</strong><span>${battle.damage.toLocaleString()} パワー解放！</span>`;$('#battle').classList.add('attack-release');pulse($('.enemy'),'enemy-hit');tone(880,.3);
+ $('#ready-overlay').innerHTML=`<strong>いっけー！！</strong><span>${battle.damage.toLocaleString()} パワー解放！</span>`;$('#battle').classList.add('attack-release');pulse($('.enemy'),'enemy-hit');sfx('hit');
  const d=document.createElement('b');d.className='damage-number final-damage';d.innerHTML=`${battle.damage.toLocaleString()}<small>まとめて ダメージ！</small>`;$('.enemy').append(d);
  const remaining=Math.max(0,battle.total-battle.damage);battle.hp=remaining;updateHP();$('#chargebar').style.width='0%';
  await wait(1200);if(epoch!==battleEpoch)return;d.remove();$('#ready-overlay').innerHTML=`<strong>${remaining===0?'やった！ 勝利！':'あと一歩…！'}</strong><span>${remaining===0?'みんなのパワーが とどいた！':'次はもっと パワーをためよう！'}</span>`;if(remaining===0)tone(1040,.2);
@@ -290,6 +291,7 @@ function diceLayer(){
  const layer=document.createElement('div');layer.className='map-dice-event';layer.setAttribute('aria-hidden','true');layer.innerHTML=`<div class="dice-ground"></div><div class="dice-drop"><div class="map-die" data-value="5"><div class="dice-cube">${[1,6,3,4,2,5].map((n,i)=>`<div class="dice-face cube-side side-${i}" data-value="${n}">${'<i></i>'.repeat(9)}</div>`).join('')}</div></div></div><strong class="dice-announcement"></strong>`;$('.island-board').append(layer);return layer;
 }
 function resetDicePresentation(){
+ window.PokekoroSfx?.stopRoll();
  diceEpoch++;
  const pointer=diceHold?.pointer;diceHold=null;
  for(const layer of document.querySelectorAll('.map-dice-event')){
@@ -307,7 +309,7 @@ const rollButton=$('#roll');
 rollButton.onpointerdown=e=>{
  if(busy||e.button!==0||!e.isPrimary)return;e.preventDefault();if(rainbowExitReady()||state.pendingMapId||state.pos===14){rollDice();return}
  diceHold={pointer:e.pointerId};busy=true;rollButton.setPointerCapture(e.pointerId);
- diceLayer().classList.add('dice-held');rollButton.classList.add('dice-holding');$('#roll small').textContent='はなして ストップ！';
+ window.PokekoroSfx?.startRoll();diceLayer().classList.add('dice-held');rollButton.classList.add('dice-holding');$('#roll small').textContent='はなして ストップ！';
 };
 rollButton.onpointerup=e=>{
  if(!diceHold||diceHold.pointer!==e.pointerId)return;e.preventDefault();diceHold=null;
@@ -320,6 +322,7 @@ rollButton.oncontextmenu=e=>e.preventDefault();
 window.addEventListener('blur',cancelDiceHold);
 document.addEventListener('visibilitychange',()=>{if(document.hidden)cancelDiceHold()});
 async function mapDiceDrop(value){
+ sfx('throw');window.PokekoroSfx?.startRoll('throw');
  const epoch=diceEpoch,mapId=state.mapId;
  const layer=$('.map-dice-event')||diceLayer(),cube=layer.querySelector('.dice-cube');
  // Continue from the exact held rotation rather than restarting a new spin.
@@ -338,16 +341,16 @@ async function mapDiceDrop(value){
  if(epoch!==diceEpoch||mapId!==state.mapId)return false;
  cube.style.transform=`rotateX(${endX}deg) rotateY(${endY}deg)`;rotation.cancel();
  $('#dice').dataset.value=value;$('#dice').setAttribute('aria-label',`サイコロ ${value}`);layer.querySelector('.map-die').dataset.value=value;
- layer.querySelector('.dice-announcement').textContent=`${value} マス すすむ！`;layer.classList.add('dice-landed');tone(400,.1);
- await new Promise(resolve=>setTimeout(resolve,reduceMotion?250:650));if(epoch!==diceEpoch||mapId!==state.mapId)return false;tone(660,.12);return true;
+ layer.querySelector('.dice-announcement').textContent=`${value} マス すすむ！`;layer.classList.add('dice-landed');window.PokekoroSfx?.stopRoll();sfx('land');
+ await new Promise(resolve=>setTimeout(resolve,reduceMotion?250:650));if(epoch!==diceEpoch||mapId!==state.mapId)return false;sfx('diceResult');return true;
  }catch{if(epoch===diceEpoch){busy=false;render()}return false}
- finally{rotation.cancel();layer.remove()}
+ finally{window.PokekoroSfx?.stopRoll();rotation.cancel();layer.remove()}
 }
 function energyLayer(){let layer=$('#energy-layer');if(!layer){layer=document.createElement('div');layer.id='energy-layer';layer.setAttribute('aria-hidden','true');$('#battle').append(layer)}return layer}
 function flyCharge(cells,type,amount){
  const epoch=battleEpoch,layer=energyLayer(),dialog=$('#battle').getBoundingClientRect(),board=canvas.getBoundingClientRect(),gauge=$('.attack-charge-track').getBoundingClientRect();const tx=gauge.left-dialog.left+gauge.width/2,ty=gauge.top-dialog.top+gauge.height/2;
  for(const [j,cell] of cells.entries()){const x=board.left-dialog.left+(cell%6+.5)*board.width/6,y=board.top-dialog.top+(Math.floor(cell/6)+.5)*board.height/6,light=document.createElement('i');light.className='charge-light';light.style.cssText=`left:${x}px;top:${y}px;--dx:${tx-x}px;--dy:${ty-y}px;--spark:${colors[type]};animation-delay:${reduceMotion?0:110+j*12}ms`;layer.append(light);setTimeout(()=>light.remove(),910+j*12)}
- setTimeout(()=>{if(epoch!==battleEpoch||battle.phase==='finished')return;battle.shownDamage+=amount;updateCharge(battle.shownDamage);pulse($('.attack-charge'),'charge-pop');tone(740,.05)},reduceMotion?100:760+cells.length*12);
+ setTimeout(()=>{if(epoch!==battleEpoch||battle.phase==='finished')return;battle.shownDamage+=amount;updateCharge(battle.shownDamage);pulse($('.attack-charge'),'charge-pop');sfx('charge')},reduceMotion?100:760+cells.length*12);
 }
 function makeEnergyOrb(){const layer=energyLayer(),dialog=$('#battle').getBoundingClientRect(),g=$('.attack-charge').getBoundingClientRect(),enemy=$('.enemy').getBoundingClientRect();const orb=document.createElement('div');orb.className='energy-orb';orb.style.cssText=`left:${g.left-dialog.left+g.width/2}px;top:${g.top-dialog.top+g.height/2}px;--target-y:${enemy.top+enemy.height/2-(g.top+g.height/2)}px`;layer.append(orb);return orb}
 
