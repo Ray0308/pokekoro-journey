@@ -254,3 +254,21 @@ body[data-game-view="journey"] .app-version,body[data-game-view="party"] .app-ve
 .capture-bonus img{width:22px;height:22px;object-fit:contain}
 @media(max-height:450px){#resultBody:has(.ball-options){gap:4px}#resultBody:has(.ball-options)>img{height:55px;width:70px}#resultBody:has(.ball-options)>h2{font-size:15px}#resultBody .ball-options .ball-choice{min-height:48px;padding:4px}#resultBody .ball-options .ball-choice img{width:25px;height:25px;flex-basis:25px}#resultBody:has(.ball-options)>p{font-size:10px}.capture-bonus{font-size:9px;padding:2px}}
 .dex-search-label{white-space:nowrap}
+.rainbow-map .board-legend span:nth-child(2),.rainbow-map .board-legend span:nth-child(3){display:none!important}
+.rainbow-hub-card{display:flex;align-items:center;flex-wrap:wrap;gap:10px;padding:13px;margin:0 0 16px;border:2px solid #d6c1e9;border-radius:14px;background:linear-gradient(120deg,#fff5dd,#f2e7fa,#e6f5fb);color:#65507d}
+.rainbow-hub-card>img{width:58px;height:42px;object-fit:contain}
+.rainbow-hub-card>div{flex:1;min-width:140px}
+.rainbow-hub-card strong{font-size:13px}
+.rainbow-hub-card p{font-size:10px;line-height:1.7;margin:4px 0}
+.rainbow-hub-card button,.rainbow-action{padding:10px 14px;border:2px solid #faf0ff;border-radius:10px;background:linear-gradient(#b99bdd,#9277c2);color:white;font-weight:800;box-shadow:0 3px 0 #765b9c}
+.rainbow-hub-card button:disabled{opacity:.45;box-shadow:none}
+#resultBody .rainbow-action{font-size:13px;min-height:42px}
+#resultBody .reward-card[data-ball="rainbow"]{border-color:#baa2d0;background:linear-gradient(135deg,#fff0be,#e3f3e4,#e9def6);box-shadow:0 3px 0 #b4a0c7}
+#resultBody .reward-card[data-ball="rainbow"] img{background:none;border-radius:0;box-shadow:none}
+.reward-items:has([data-ball="rainbow"]){grid-template-columns:repeat(2,minmax(0,1fr))}
+.reward-items:has([data-ball="rainbow"]) .reward-card{flex-direction:row;flex-wrap:wrap;padding:8px 5px;gap:4px}
+.reward-items:has([data-ball="rainbow"]) .reward-card img{width:37px!important;height:37px!important}
+.reward-items:has([data-ball="rainbow"]) .reward-name{min-height:0;font-size:9px;flex:1}
+.reward-items:has([data-ball="rainbow"]) .reward-count{font-size:18px;padding:2px 8px}
+@media(max-height:450px){.reward-items:has([data-ball="rainbow"]) .reward-card{padding:3px;gap:2px}.reward-items:has([data-ball="rainbow"]) .reward-card img{width:24px!important;height:24px!important}.reward-items:has([data-ball="rainbow"]) .reward-count{font-size:14px}#resultBody .rainbow-action{min-height:31px;padding:5px;font-size:11px}}
+@media(max-height:450px){#result{padding:10px}#resultBody{gap:5px}#resultBody>h2{font-size:16px;line-height:1.3}#resultBody>p{font-size:10px;line-height:1.4}#resultBody>#done{min-height:34px;padding:6px 10px;font-size:14px}.reward-badge small{font-size:8px;line-height:1.2}.reward-badge strong{font-size:12px;line-height:1.2}.reward-badge svg{width:22px;height:22px}}

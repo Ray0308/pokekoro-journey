@@ -15,9 +15,22 @@ const remapMapId=id=>Object.hasOwn(MAP_ALIASES,id)?MAP_ALIASES[id]:id;
 state.mapId=remapMapId(state.mapId);
 state.mapId=Object.hasOwn(MAPS,state.mapId)?state.mapId:'viridian';
 state.clearedMaps=Array.isArray(state.clearedMaps)?[...new Set(state.clearedMaps.map(remapMapId).filter(id=>Object.hasOwn(MAPS,id)))]:[];
+state.tour=Number.isSafeInteger(state.tour)&&state.tour>0?state.tour:1;
+function normalizeRainbowTicket(ticket){
+ if(!ticket||!Number.isSafeInteger(ticket.id)||ticket.id<1||!MAP_ORDER.includes(ticket.sourceMapId))return null;
+ const returnMapId=MAP_ORDER.includes(ticket.returnMapId)?ticket.returnMapId:MAPS[ticket.sourceMapId].nextMap||MAP_ORDER[0];
+ return {id:ticket.id,sourceMapId:ticket.sourceMapId,returnMapId,returnTour:Number.isSafeInteger(ticket.returnTour)&&ticket.returnTour>0?ticket.returnTour:state.tour};
+}
+state.rainbowTickets=Array.isArray(state.rainbowTickets)?state.rainbowTickets.map(normalizeRainbowTicket).filter(Boolean):[];
+state.rainbowTickets=state.rainbowTickets.filter((ticket,i,list)=>list.findIndex(t=>t.id===ticket.id)===i);
+const visitTicket=normalizeRainbowTicket(state.rainbowVisit);
+state.rainbowVisit=state.mapId===RAINBOW_CONFIG.mapId&&visitTicket?{...visitTicket,bossId:RAINBOW_CONFIG.bossIds.includes(state.rainbowVisit.bossId)?state.rainbowVisit.bossId:RAINBOW_CONFIG.bossIds[0],exitPending:!!state.rainbowVisit.exitPending}:null;
+if(state.mapId===RAINBOW_CONFIG.mapId&&!state.rainbowVisit){state.mapId=MAP_ORDER[0];state.pos=0}
+state.nextRainbowTicketId=Math.max(Number.isSafeInteger(state.nextRainbowTicketId)?state.nextRainbowTicketId:1,1,...state.rainbowTickets.map(t=>t.id+1),state.rainbowVisit?state.rainbowVisit.id+1:1);
 state.pendingMapId=remapMapId(state.pendingMapId);
-state.pendingMapId=state.clearedMaps.includes(state.mapId)&&MAPS[state.mapId].nextMap===state.pendingMapId&&Object.hasOwn(MAPS,state.pendingMapId)?state.pendingMapId:null;
-if(!state.pendingMapId&&state.clearedMaps.includes(state.mapId)&&MAPS[state.mapId].nextMap&&!state.clearedMaps.includes(MAPS[state.mapId].nextMap))state.pendingMapId=MAPS[state.mapId].nextMap;
+state.pendingMapId=!state.rainbowVisit&&state.clearedMaps.includes(state.mapId)&&MAPS[state.mapId].nextMap===state.pendingMapId&&MAP_ORDER.includes(state.pendingMapId)?state.pendingMapId:null;
+if(!state.loopVersion&&!state.rainbowVisit&&!state.pendingMapId&&state.pos===14&&state.clearedMaps.includes(state.mapId)&&MAPS[state.mapId].nextMap)state.pendingMapId=MAPS[state.mapId].nextMap;
+state.loopVersion=1;
 const BALLS=Object.freeze([
  {id:'normal',key:'balls',name:'モンスターボール',image:'assets/poke-ball.jpg',bonus:0,cap:.8},
  {id:'super',key:'super',name:'スーパーボール',image:'assets/great-ball.jpg',bonus:.2,cap:.95},
@@ -26,8 +39,43 @@ const BALLS=Object.freeze([
 ]);
 const BALL_DROPS=Object.freeze({normal:.80,super:.17,hyper:.03,bossMaster:.03});
 function itemBallDrop(){const r=Math.random();return r<BALL_DROPS.normal?{key:'balls',name:'モンスターボール',count:3}:r<1-BALL_DROPS.hyper?{key:'super',name:'スーパーボール',count:1}:{key:'hyper',name:'ハイパーボール',count:1}}
+function isRainbow(){return state.mapId===RAINBOW_CONFIG.mapId}
+function currentSquares(){return activeMap().squares||squares}
+function rainbowExitReady(){return isRainbow()&&state.rainbowVisit?.exitPending}
+function activeBossId(){return isRainbow()?state.rainbowVisit?.bossId||RAINBOW_CONFIG.bossIds[0]:activeMap().boss?.pokemonId||9}
+function pickEncounterId(){
+ let pool=activeMap().encounterIds?.filter(validPokemonId);
+ if(isRainbow()){
+  const roll=Math.random()*100,w=RAINBOW_CONFIG.weights;
+  pool=roll<w[0]?RAINBOW_POOLS.subLegendary:roll<w[0]+w[1]?RAINBOW_POOLS.legendary:RAINBOW_POOLS.mythical;
+ }
+ if(!pool?.length)pool=NORMAL_ENCOUNTER_IDS;
+ return pool[Math.floor(Math.random()*pool.length)];
+}
+function grantRainbowTicket(){
+ const next=activeMap().nextMap||MAP_ORDER[0];
+ const ticket={id:state.nextRainbowTicketId++,sourceMapId:state.mapId,returnMapId:next,returnTour:state.tour+(state.mapId===MAP_ORDER.at(-1)&&next===MAP_ORDER[0]?1:0)};
+ state.rainbowTickets.push(ticket);return ticket;
+}
+function enterRainbow(ticketId){
+ if(isRainbow()||capturePending||$('#battle').open||$('#encounter').open)return;
+ if(busy&&!($('#result').open&&battle?.trainer&&battle?.rewardResolved))return;
+ const index=state.rainbowTickets.findIndex(ticket=>ticket.id===ticketId);if(index<0)return;
+ const ticket=state.rainbowTickets.splice(index,1)[0];
+ resetDicePresentation();battleEpoch++;state.rainbowVisit={...ticket,bossId:RAINBOW_CONFIG.bossIds[Math.floor(Math.random()*RAINBOW_CONFIG.bossIds.length)],exitPending:false};
+ state.mapId=RAINBOW_CONFIG.mapId;state.pos=0;state.lap=1;state.pendingMapId=null;busy=false;battle=null;$('#result').close();showTab('map');render();$('#message').textContent='虹の雲に とうちゃく！';
+}
+function leaveRainbow(){
+ const visit=state.rainbowVisit;if(!visit||!visit.exitPending||capturePending)return;
+ resetDicePresentation();battleEpoch++;state.mapId=visit.returnMapId;state.tour=Math.max(state.tour,visit.returnTour);state.rainbowVisit=null;state.pendingMapId=null;state.pos=0;state.lap=1;busy=false;battle=null;$('#result').close();showTab('map');render();$('#message').textContent=activeMap().name+'に もどった！';
+}
+function renderRainbowHub(){
+ const hub=$('#rainbow-hub'),ticket=state.rainbowTickets[0];
+ hub.innerHTML=isRainbow()?`<div class="rainbow-hub-card"><strong>虹の雲を ぼうけん中</strong><p>ボス戦のあと：${MAPS[state.rainbowVisit.returnMapId].name}へ</p></div>`:`<div class="rainbow-hub-card"><img src="${RAINBOW_CONFIG.ticketImage}" alt="虹のチケット"><div><strong>虹のチケット ×${state.rainbowTickets.length}</strong><p>${ticket?'獲得：'+MAPS[ticket.sourceMapId].name+'<br>帰り：'+MAPS[ticket.returnMapId].name:'通常マップのボスから まれに手に入るよ'}</p></div><button id="use-rainbow-ticket" ${ticket?'':'disabled'}>虹の雲へ</button></div>`;
+ if(ticket&&!isRainbow())$('#use-rainbow-ticket').onclick=()=>enterRainbow(ticket.id);
+}
 function activeMap(){return MAPS[state.mapId]||MAPS.viridian}
-function applyMapTheme(){const map=activeMap();$('#map .board-legend span:first-child').innerHTML=`<img src="${MAP_ASSETS.grass}" alt="">野生`;$('#map').dataset.map=state.mapId;for(const [key,color] of Object.entries(map.colors))$('#map').style.setProperty('--map-'+key,color);$('#map .maphead h2').textContent=map.name;$('#route').setAttribute('aria-label',map.name+'の双六マップ');$('#map .board-legend span:nth-child(2)').innerHTML=(map.trainerIcon?`<img src="${map.trainerIcon}" alt="">`:'<svg><use href="assets/ui-icons.svg#trainer"/></svg>')+'トレーナー'}
+function applyMapTheme(){const map=activeMap();$('#map .board-legend span:first-child').innerHTML=`<img src="${MAP_ASSETS.grass}" alt="">野生`;$('#map').dataset.map=state.mapId;$('#map').classList.toggle('rainbow-map',isRainbow());for(const [key,color] of Object.entries(map.colors))$('#map').style.setProperty('--map-'+key,color);$('#map .maphead h2').textContent=map.name;$('#route').setAttribute('aria-label',map.name+'の双六マップ');$('#map .board-legend span:nth-child(2)').innerHTML=(map.trainerIcon?`<img src="${map.trainerIcon}" alt="">`:'<svg><use href="assets/ui-icons.svg#trainer"/></svg>')+'トレーナー'}
 let activePuzzlePointer=null;
 let preparing=false,battleEpoch=0,capturePending=false;
 let diceHold=null,diceEpoch=0;
@@ -52,9 +100,9 @@ function routePath(last=routePoints.length-1){
 function drawRoute(){
  const d=routePath();
  let svg=`<svg class="route-lines" viewBox="0 0 900 900" preserveAspectRatio="none" aria-hidden="true"><path d="${d}" fill="none" stroke="var(--map-roadEdge)" stroke-opacity=".5" stroke-width="33" stroke-linecap="round" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="var(--map-road)" stroke-width="25" stroke-linecap="round" stroke-linejoin="round"/><path d="${routePath(state.pos)}" fill="none" stroke="#f6bf4e" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
- return `<img class="map-art" src="${activeMap().background}" alt="">`+svg+squares.map((s,i)=>{const p=mapRoutePoints()[i],portrait=s==='goal'&&activeMap().boss?.wild?`<span class="boss-portrait"><img src="${pokemonPortrait(activeMap().boss.pokemonId)}" alt=""></span>`:s==='start'?`<img class="center-icon" src="${MAP_ASSETS.center}" alt="">`:s==='goal'&&activeMap().boss?.icon?`<span class="boss-portrait"><img src="${activeMap().boss.icon}" alt=""></span>`:s==='trainer'&&activeMap().trainerIcon?`<img class="trainer-portrait" src="${activeMap().trainerIcon}" alt="">`:s==='wild'?`<img class="map-grass" src="${MAP_ASSETS.grass}" alt="">`:`<svg class="node-symbol" aria-hidden="true"><use href="assets/ui-icons.svg#${s==='wild'?'grass':s}"/></svg>`;return `<div class="tile node-${s} ${i===state.pos?'current':''} ${i<state.pos?'visited':''}" style="left:${p[0]}%;top:${p[1]}%" aria-label="${i+1}マス目 ${tileLabel(s)}${i===state.pos?' 現在地':''}"><span class="node-number">${String(i+1).padStart(2,'0')}</span>${portrait}<small>${tileLabel(s)}</small>${i===state.pos?`<span class="player-marker">ここ！</span><img class="player-pawn" src="${MAP_ASSETS.player}" alt="主人公のコマ">`:''}</div>`}).join('');
+ return `<img class="map-art" src="${activeMap().background}" alt="">`+svg+currentSquares().map((s,i)=>{const p=mapRoutePoints()[i],portrait=s==='goal'&&activeMap().boss?.wild?`<span class="boss-portrait"><img src="${pokemonPortrait(activeBossId())}" alt=""></span>`:s==='start'?`<img class="center-icon" src="${MAP_ASSETS.center}" alt="">`:s==='goal'&&activeMap().boss?.icon?`<span class="boss-portrait"><img src="${activeMap().boss.icon}" alt=""></span>`:s==='trainer'&&activeMap().trainerIcon?`<img class="trainer-portrait" src="${activeMap().trainerIcon}" alt="">`:s==='wild'?`<img class="map-grass" src="${MAP_ASSETS.grass}" alt="">`:`<svg class="node-symbol" aria-hidden="true"><use href="assets/ui-icons.svg#${s==='wild'?'grass':s}"/></svg>`;return `<div class="tile node-${s} ${i===state.pos?'current':''} ${i<state.pos?'visited':''}" style="left:${p[0]}%;top:${p[1]}%" aria-label="${i+1}マス目 ${tileLabel(s)}${i===state.pos?' 現在地':''}"><span class="node-number">${String(i+1).padStart(2,'0')}</span>${portrait}<small>${tileLabel(s)}</small>${i===state.pos?`<span class="player-marker">ここ！</span><img class="player-pawn" src="${MAP_ASSETS.player}" alt="主人公のコマ">`:''}</div>`}).join('');
 }
-function render(){ applyMapTheme();$('#roll .roll-copy>span').textContent=state.pendingMapId?'次のマップへ':'サイコロを振る';if(!$('#roll').classList.contains('dice-holding'))$('#roll small').textContent=state.pendingMapId?'タップして つぎの ぼうけんへ！':'おして はなして ころがそう！'; $('#lap').textContent=`エリア ${MAPS[state.mapId].chapter} · ${state.pos+1}/15`;$('#route').innerHTML=drawRoute();$('#inventory').innerHTML=BALLS.map(b=>`<span aria-label="${b.name} ${state[b.key]}個"><img class="ball-icon" src="${b.image}" alt=""> ${state[b.key]}</span>`).join('');$('#miniParty').innerHTML=Array.from({length:PARTY_SIZE},(_,i)=>state.party[i]?`<img src="${img(state.party[i])}" alt="${mons[state.party[i]-1].label}">`:`<span class="party-empty" aria-label="空き枠">＋</span>`).join('');renderDex();$('#roll').disabled=busy;renderJourney();save()}
+function render(){ applyMapTheme();$('#roll .roll-copy>span').textContent=rainbowExitReady()?'旅に戻る':state.pendingMapId?'次のマップへ':'サイコロを振る';if(!$('#roll').classList.contains('dice-holding'))$('#roll small').textContent=rainbowExitReady()?'タップして 元の旅へ！':state.pendingMapId?'タップして つぎの ぼうけんへ！':'おして はなして ころがそう！'; $('#lap').textContent=`${state.tour}周目 · ${state.pos+1}/15`;$('#route').innerHTML=drawRoute();$('#inventory').innerHTML=BALLS.map(b=>`<span aria-label="${b.name} ${state[b.key]}個"><img class="ball-icon" src="${b.image}" alt=""> ${state[b.key]}</span>`).join('');$('#miniParty').innerHTML=Array.from({length:PARTY_SIZE},(_,i)=>state.party[i]?`<img src="${img(state.party[i])}" alt="${mons[state.party[i]-1].label}">`:`<span class="party-empty" aria-label="空き枠">＋</span>`).join('');renderDex();$('#roll').disabled=busy;renderJourney();save()}
 function renderDex(){
  $('#count').textContent=`${state.owned.length} / ${POKEDEX_SIZE}`;
  const owned=new Set(state.owned),selected=new Set(state.party),query=dexQuery.trim();
@@ -77,8 +125,8 @@ function showTab(name){
 }
 document.querySelectorAll('[data-tab]').forEach(button=>button.onclick=()=>{if(capturePending)return;showTab(button.dataset.tab)});
 $('#help').onclick=()=>$('#guide').showModal();
-async function rollDice(){if(busy)return;if(state.pendingMapId){advanceMap();return}if(state.pos===14&&!state.clearedMaps.includes(state.mapId)){resetDicePresentation();busy=true;render();openBattle(true,true);return}busy=true;render();const epoch=diceEpoch,mapId=state.mapId;let n=1+Math.floor(Math.random()*6);if(!await mapDiceDrop(n)||epoch!==diceEpoch||mapId!==state.mapId)return;if(state.pos===14){state.pos=0;state.lap++;render()}let target=Math.min(14,state.pos+n);$('#message').textContent=`${n}が出た！ マスを進んでいます…`;while(state.pos<target){await new Promise(resolve=>setTimeout(resolve,300));if(epoch!==diceEpoch||mapId!==state.mapId)return;state.pos++;render()}let s=squares[state.pos];$('#message').textContent=`${n}が出た！ ${tileLabel(s)}に到着。`;tone(520,.06);await new Promise(resolve=>setTimeout(resolve,450));if(epoch!==diceEpoch||mapId!==state.mapId)return;if(s==='item'){const drop=itemBallDrop();state[drop.key]+=drop.count;busy=false;$('#message').textContent=drop.name+'を'+drop.count+'個見つけた！';render()}else openBattle(s==='trainer'||s==='goal',s==='goal')}
-function openBattle(trainer,boss){resetDicePresentation();activePuzzlePointer=null;clearPuzzleSelection();battleEpoch++;preparing=false;capturePending=false;lastSecond=-1;$('#battle').classList.remove('hurry','resolving','attack-release','gathering-power');$('#energy-layer')?.remove();$('#leave').disabled=false;$('#battle-fx').innerHTML='';$('#callout').textContent='';$('#ready-overlay').hidden=false;$('#ready-overlay').innerHTML='<strong>3つ つないで<br>パワーをためよう！</strong><span>30秒後に まとめてアタック！</span>';$('#timebar').style.width='100%';$('#combobar').style.width='0%';$('#puzzle-tip').textContent='同じマークを3つ以上なぞろう！';if(boss&&activeMap().boss?.wild)trainer=false;const pool=activeMap().encounterIds?.filter(validPokemonId);const id=boss?(activeMap().boss?.pokemonId||9):pool?.length?pool[Math.floor(Math.random()*pool.length)]:1+Math.floor(Math.random()*POKEDEX_SIZE);let m=mons[id-1];battle={m,trainer,boss,damage:0,shownDamage:0,phase:'ready',hp:boss?620:trainer?460:300+(m.id-1)%3*65,total:boss?620:trainer?460:300+(m.id-1)%3*65};combo=maxCombo=0;lastClear=0;elapsed=0;running=false;path=[];grid=Array.from({length:36},()=>Math.floor(Math.random()*3));$('#kind').textContent=boss&&activeMap().boss?.wild?'⚑ '+activeMap().name+'・最深部':boss?'⚑ '+(activeMap().boss?.role||'ボストレーナー')+'：'+(activeMap().boss?.name||'ボス'):trainer?'⚔ トレーナーバトル':'🌿 野生のポケモン';$('#weakness-tip').textContent=m.type===null?'属性の相性は なし':`${icons[[1,2,0][m.type]]} ${types[[1,2,0][m.type]]}で こうかばつぐん！`;$('#enemyname').textContent=m.label;$('#enemyimg').src=img(m.id);$('#enemyimg').alt=m.label;$('#clock').textContent='30.0';$('#combo').textContent='属性を3個以上つなごう';$('#chain').textContent='0 CHAIN';$('#start').hidden=false;updateHP();updateCharge();draw();$('#encounter-label').textContent=boss?'ボスが あらわれた！':trainer?'トレーナーと しょうぶ！':'野生のポケモンが あらわれた！';$('#encounter-name').textContent=m.label;$('#encounter-img').src=pokemonPortrait(m.id);$('#encounter-silhouette').src=pokemonPortrait(m.id);$('#encounter-img').alt=m.label;showEncounter(trainer||boss&&!activeMap().boss?.wild);tone(520,.15)}
+async function rollDice(){if(busy)return;if(rainbowExitReady()){leaveRainbow();return}if(state.pendingMapId){advanceMap();return}if(state.pos===14){resetDicePresentation();busy=true;render();openBattle(true,true);return}busy=true;render();const epoch=diceEpoch,mapId=state.mapId;let n=1+Math.floor(Math.random()*6);if(!await mapDiceDrop(n)||epoch!==diceEpoch||mapId!==state.mapId)return;if(state.pos===14){state.pos=0;state.lap++;render()}let target=Math.min(14,state.pos+n);$('#message').textContent=`${n}が出た！ マスを進んでいます…`;while(state.pos<target){await new Promise(resolve=>setTimeout(resolve,300));if(epoch!==diceEpoch||mapId!==state.mapId)return;state.pos++;render()}let s=currentSquares()[state.pos];$('#message').textContent=`${n}が出た！ ${tileLabel(s)}に到着。`;tone(520,.06);await new Promise(resolve=>setTimeout(resolve,450));if(epoch!==diceEpoch||mapId!==state.mapId)return;if(s==='item'){const drop=itemBallDrop();state[drop.key]+=drop.count;busy=false;$('#message').textContent=drop.name+'を'+drop.count+'個見つけた！';render()}else openBattle(s==='trainer'||s==='goal',s==='goal')}
+function openBattle(trainer,boss){resetDicePresentation();activePuzzlePointer=null;clearPuzzleSelection();battleEpoch++;preparing=false;capturePending=false;lastSecond=-1;$('#battle').classList.remove('hurry','resolving','attack-release','gathering-power');$('#energy-layer')?.remove();$('#leave').disabled=false;$('#battle-fx').innerHTML='';$('#callout').textContent='';$('#ready-overlay').hidden=false;$('#ready-overlay').innerHTML='<strong>3つ つないで<br>パワーをためよう！</strong><span>30秒後に まとめてアタック！</span>';$('#timebar').style.width='100%';$('#combobar').style.width='0%';$('#puzzle-tip').textContent='同じマークを3つ以上なぞろう！';if(boss&&activeMap().boss?.wild)trainer=false;const id=boss?activeBossId():pickEncounterId();let m=mons[id-1];battle={m,trainer,boss,damage:0,shownDamage:0,phase:'ready',hp:boss?620:trainer?460:300+(m.id-1)%3*65,total:boss?620:trainer?460:300+(m.id-1)%3*65};combo=maxCombo=0;lastClear=0;elapsed=0;running=false;path=[];grid=Array.from({length:36},()=>Math.floor(Math.random()*3));$('#kind').textContent=boss&&activeMap().boss?.wild?'⚑ '+activeMap().name+'・最深部':boss?'⚑ '+(activeMap().boss?.role||'ボストレーナー')+'：'+(activeMap().boss?.name||'ボス'):trainer?'⚔ トレーナーバトル':'🌿 野生のポケモン';$('#weakness-tip').textContent=m.type===null?'属性の相性は なし':`${icons[[1,2,0][m.type]]} ${types[[1,2,0][m.type]]}で こうかばつぐん！`;$('#enemyname').textContent=m.label;$('#enemyimg').src=img(m.id);$('#enemyimg').alt=m.label;$('#clock').textContent='30.0';$('#combo').textContent='属性を3個以上つなごう';$('#chain').textContent='0 CHAIN';$('#start').hidden=false;updateHP();updateCharge();draw();$('#encounter-label').textContent=boss?'ボスが あらわれた！':trainer?'トレーナーと しょうぶ！':'野生のポケモンが あらわれた！';$('#encounter-name').textContent=m.label;$('#encounter-img').src=pokemonPortrait(m.id);$('#encounter-silhouette').src=pokemonPortrait(m.id);$('#encounter-img').alt=m.label;showEncounter(trainer||boss&&!activeMap().boss?.wild);tone(520,.15)}
 function updateHP(){$('#hpbar').style.width=`${100*battle.hp/battle.total}%`;$('#hptext').textContent=`HP ${Math.ceil(battle.hp)} / ${battle.total} · ${battle.m.type===null?'タイプ：—':types[battle.m.type]+'タイプ'}`}
 const canvas=$('#board'),ctx=canvas.getContext('2d');function draw(){ctx.clearRect(0,0,420,420);for(let i=0;i<36;i++){let x=(i%6)*70+35,y=Math.floor(i/6)*70+35;ctx.beginPath();ctx.shadowColor=path.includes(i)?'#ffe36a':'#51317344';ctx.shadowBlur=path.includes(i)?16:0;ctx.shadowOffsetY=4;ctx.arc(x,y,path.includes(i)?31:28,0,Math.PI*2);ctx.fillStyle=colors[grid[i]];ctx.fill();ctx.shadowBlur=0;ctx.shadowOffsetY=0;ctx.beginPath();ctx.ellipse(x-5,y-15,15,6,-.3,0,Math.PI*2);ctx.fillStyle='#ffffff66';ctx.fill();ctx.beginPath();ctx.arc(x,y,path.includes(i)?31:28,0,Math.PI*2);ctx.strokeStyle=path.includes(i)?'#6a35ab':'#ffffffaa';ctx.lineWidth=path.includes(i)?5:2;ctx.stroke();ctx.font='29px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(icons[grid[i]],x,y+1);if(path.includes(i)){ctx.font='bold 12px sans-serif';ctx.fillStyle='#4d2b73';ctx.fillText(String(path.indexOf(i)+1),x+18,y-20)}}if(path.length){ctx.strokeStyle='#fff5b5';ctx.lineWidth=6;ctx.lineJoin='round';ctx.beginPath();path.forEach((i,j)=>{let x=i%6*70+35,y=Math.floor(i/6)*70+35;j?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.stroke()}}
 function cell(e){let r=canvas.getBoundingClientRect(),x=(e.clientX-r.left)*420/r.width,y=(e.clientY-r.top)*420/r.height;if(x<0||y<0||x>=420||y>=420)return -1;return Math.floor(y/70)*6+Math.floor(x/70)}
@@ -88,25 +136,43 @@ $('#start').onclick=async()=>{if(preparing||running)return;preparing=true;$('#st
 function tick(now){if(!running)return;elapsed=(now-startAt)/1000;let left=Math.max(0,30-elapsed);$('#clock').textContent=left.toFixed(1);$('#timebar').style.width=`${left/30*100}%`;$('#combobar').style.width=lastClear?`${Math.max(0,1-(now-lastClear)/2000)*100}%`:'0%';$('#battle').classList.toggle('hurry',left<=5);if(left<=5&&Math.ceil(left)!==lastSecond){lastSecond=Math.ceil(left);tone(650,.06)}if(elapsed>=30){resolveAttack();return}raf=requestAnimationFrame(tick)}
 
 function renderJourney(){
+ renderRainbowHub();
  const cleared=new Set(state.clearedMaps),gyms=MAP_ORDER.filter(id=>MAPS[id].badge),complete=cleared.has(MAP_ORDER.at(-1));
- $('#journey-summary').textContent=complete?'ハナダの洞窟まで クリア！':`いまは ${activeMap().name}・バッジ ${gyms.filter(id=>cleared.has(id)).length} / 8`;
+ $('#journey-summary').textContent=complete?`${state.tour}周目・ハナダの洞窟まで クリア済み`:`${state.tour}周目・いまは ${activeMap().name}・バッジ ${gyms.filter(id=>cleared.has(id)).length} / 8`;
  $('#journey-badges').innerHTML=gyms.map(id=>`<span class="journey-badge ${cleared.has(id)?'earned':''}" aria-label="${MAPS[id].badge} ${cleared.has(id)?'獲得済み':'未獲得'}"><b aria-hidden="true">${cleared.has(id)?'★':'◇'}</b>${MAPS[id].badge}</span>`).join('');
  $('#journey-list').innerHTML=MAP_ORDER.map((id,i)=>{const map=MAPS[id],current=id===state.mapId,done=cleared.has(id);return `<li class="${current?'journey-current':''} ${done?'journey-cleared':''}" ${current?'aria-current="step"':''}><span class="journey-step">${String(i+1).padStart(2,'0')}</span><div><strong>${map.name}</strong><small>${map.boss.role}：${map.boss.name}</small></div><span class="journey-status">${current?'いまここ':done?'✓ クリア':'これから'}</span></li>`}).join('');
 }
 function advanceMap(){
  const next=state.pendingMapId;if(!next||!Object.hasOwn(MAPS,next)||capturePending)return;
- resetDicePresentation();state.pendingMapId=null;state.mapId=next;state.pos=0;state.lap=1;busy=false;battle=null;
+ resetDicePresentation();if(state.mapId===MAP_ORDER.at(-1)&&next===MAP_ORDER[0])state.tour++;state.pendingMapId=null;state.mapId=next;state.pos=0;state.lap=1;busy=false;battle=null;
  $('#result').close();render();$('#message').textContent=activeMap().name+'に とうちゃく！';
  const card=$('#map .mapcard');card.classList.remove('map-arriving');void card.offsetWidth;card.classList.add('map-arriving');
 }
-function result(html){$('#resultBody').innerHTML=html;$('#result').showModal();if(battle&&battle.hp===0){celebrate();tone(660,.1);setTimeout(()=>tone(880,.15),130)}}function done(){if(capturePending)return;if(state.pendingMapId){advanceMap();return}resetDicePresentation();busy=false;render();$('#result').close();$('#message').textContent='次の出会いを探しにいこう。';if(activeMap().final&&state.clearedMaps.includes(state.mapId))showTab('journey')}
+function result(html){$('#resultBody').innerHTML=html;$('#result').showModal();if(battle&&battle.hp===0){celebrate();tone(660,.1);setTimeout(()=>tone(880,.15),130)}}function done(){if(capturePending)return;if(rainbowExitReady()){leaveRainbow();return}if(state.pendingMapId){advanceMap();return}resetDicePresentation();busy=false;render();$('#result').close();$('#message').textContent='次の出会いを探しにいこう。';}
 function rewardItemsHtml(items){
- return `<div class="reward-items" style="--reward-count:${items.length}" aria-label="獲得したアイテム">${items.map(item=>{const ball=BALLS.find(b=>b.id===item.id);return `<div class="reward-card" data-ball="${ball.id}">${ball.id==='master'?'<span class="reward-rare">レア！</span>':''}<img src="${ball.image}" alt=""><span class="reward-name">${ball.name}</span><strong class="reward-count" aria-label="${item.count}個">× ${item.count}</strong></div>`}).join('')}</div>`;
+ return `<div class="reward-items" style="--reward-count:${items.length}" aria-label="獲得したアイテム">${items.map(item=>{const ball=item.id==='rainbow'?{id:'rainbow',name:'虹のチケット',image:RAINBOW_CONFIG.ticketImage}:BALLS.find(b=>b.id===item.id);return `<div class="reward-card" data-ball="${ball.id}">${['master','rainbow'].includes(ball.id)?'<span class="reward-rare">レア！</span>':''}<img src="${ball.image}" alt=""><span class="reward-name">${ball.name}</span><strong class="reward-count" aria-label="${item.count}個">× ${item.count}</strong></div>`}).join('')}</div>`;
 }
-function endBattle(win){if(!battle)return;battleEpoch++;preparing=false;running=false;drag=false;cancelAnimationFrame(raf);$('#battle').close();if(!win){state.balls++;render();result(`<h2>もう一度、挑戦しよう。</h2><p>参加報酬を うけとった！</p>${rewardItemsHtml([{id:'normal',count:1}])}<button class="primary" id="done">マップへ戻る</button>`);$('#done').onclick=done;return}const earnedBadge=battle.boss&&!state.clearedMaps.includes(state.mapId)?activeMap().badge:null;
-if(battle.boss){if(!state.clearedMaps.includes(state.mapId))state.clearedMaps.push(state.mapId);const next=activeMap().nextMap;if(next&&Object.hasOwn(MAPS,next))state.pendingMapId=next}
-const masterDrop=battle.boss&&Math.random()<BALL_DROPS.bossMaster;if(masterDrop)state.master++;
-if(battle.trainer){state.super+=battle.boss?3:1;state.balls+=2;render();result(`<h2>${battle.boss?(activeMap().leagueFinal?'ワタルに勝利！':activeMap().final?activeMap().name+'クリア！':activeMap().name+'クリア！'):'トレーナーに勝利！'}</h2><p>アイテムを てにいれた！</p>${rewardItemsHtml([{id:'super',count:battle.boss?3:1},{id:'normal',count:2},...(masterDrop?[{id:'master',count:1}]:[])])}${earnedBadge?`<div class="reward-badge"><svg aria-hidden="true"><use href="assets/ui-icons.svg#goal"/></svg><span><small>バッジを てにいれた！</small><strong>${earnedBadge}</strong></span></div>`:''}${activeMap().final&&battle.boss?'<p>カントーのたび クリア！</p>':''}<button id="done" class="primary">${state.pendingMapId?'次のマップへ':activeMap().final&&battle.boss?'旅のきろくへ':'旅を続ける'}</button>`);$('#done').onclick=done;return}render();let base=Math.min(.8,.4+Math.min(1,battle.damage/battle.total-1)*.15+maxCombo*.015);result(`<small>${battle.boss?'最深部クリア！':'CATCH CHANCE'}</small><h2>${battle.m.label}を捕まえよう！</h2><img src="${img(battle.m.id)}" alt="${battle.m.label}"><p>ボールを選んで捕獲に挑戦。<br>ためたパワー・最大コンボで確率アップ！</p>${masterDrop?`<div class="capture-bonus"><img src="assets/master-ball.webp" alt="">マスターボール ×1 獲得！</div>`:''}<div class="ball-options">${BALLS.map(b=>`<button id="${b.id}" class="primary ball-choice" ${state[b.key]?'':'disabled'}><img src="${b.image}" alt=""><span>${b.name}<small>成功 ${Math.round(Math.min(b.cap,base+b.bonus)*100)}%・残り ${state[b.key]}個</small></span></button>`).join('')}</div><button id="skip">見送る</button>`);BALLS.forEach(b=>{$('#'+b.id).onclick=()=>catchMon(b.id,Math.min(b.cap,base+b.bonus))});$('#skip').onclick=done}
+function endBattle(win){
+ if(!battle||battle.rewardResolved)return;battle.rewardResolved=true;
+ battleEpoch++;preparing=false;running=false;drag=false;cancelAnimationFrame(raf);$('#battle').close();
+ const cloudBoss=isRainbow()&&battle.boss;
+ if(cloudBoss)state.rainbowVisit.exitPending=true;
+ if(!win){state.balls++;render();result(`<h2>${cloudBoss?'虹の雲の ぼうけん終了':'もう一度、挑戦しよう。'}</h2><p>参加報酬を うけとった！</p>${rewardItemsHtml([{id:'normal',count:1}])}<button class="primary" id="done">${cloudBoss?'旅に戻る':'マップへ戻る'}</button>`);$('#done').onclick=done;return}
+ const normalBoss=battle.boss&&!isRainbow();
+ const earnedBadge=normalBoss&&!state.clearedMaps.includes(state.mapId)?activeMap().badge:null;
+ if(normalBoss){if(!state.clearedMaps.includes(state.mapId))state.clearedMaps.push(state.mapId);state.pendingMapId=activeMap().nextMap||MAP_ORDER[0]}
+ const masterDrop=battle.boss&&Math.random()<BALL_DROPS.bossMaster;if(masterDrop)state.master++;
+ const ticket=normalBoss&&Math.random()<RAINBOW_CONFIG.ticketRate?grantRainbowTicket():null;
+ if(battle.trainer){
+  state.super+=battle.boss?3:1;state.balls+=2;render();
+  result(`<h2>${battle.boss?(activeMap().leagueFinal?'ワタルに勝利！':activeMap().name+'クリア！'):'トレーナーに勝利！'}</h2><p>アイテムを てにいれた！</p>${rewardItemsHtml([{id:'super',count:battle.boss?3:1},{id:'normal',count:2},...(masterDrop?[{id:'master',count:1}]:[]),...(ticket?[{id:'rainbow',count:1}]:[])])}${earnedBadge?`<div class="reward-badge"><svg aria-hidden="true"><use href="assets/ui-icons.svg#goal"/></svg><span><small>バッジを てにいれた！</small><strong>${earnedBadge}</strong></span></div>`:''}${ticket?'<button id="reward-rainbow" class="rainbow-action">虹の雲へ 行く</button>':''}<button id="done" class="primary">次のマップへ</button>`);
+  $('#done').onclick=done;if(ticket)$('#reward-rainbow').onclick=()=>enterRainbow(ticket.id);return;
+ }
+ render();const base=Math.min(.8,.4+Math.min(1,battle.damage/battle.total-1)*.15+maxCombo*.015);
+ result(`<small>${cloudBoss?'虹の雲のボス クリア！':battle.boss?'最深部クリア！':'CATCH CHANCE'}</small><h2>${battle.m.label}を捕まえよう！</h2><img src="${img(battle.m.id)}" alt="${battle.m.label}"><p>ボールを選んで捕獲に挑戦。<br>ためたパワー・最大コンボで確率アップ！</p>${masterDrop?'<div class="capture-bonus"><img src="assets/master-ball.webp" alt="">マスターボール ×1 獲得！</div>':''}${ticket?`<div class="capture-bonus"><img src="${RAINBOW_CONFIG.ticketImage}" alt="">虹のチケット ×1 獲得！</div>`:''}<div class="ball-options">${BALLS.map(b=>`<button id="${b.id}" class="primary ball-choice" ${state[b.key]?'':'disabled'}><img src="${b.image}" alt=""><span>${b.name}<small>成功 ${Math.round(Math.min(b.cap,base+b.bonus)*100)}%・残り ${state[b.key]}個</small></span></button>`).join('')}</div><button id="skip">${cloudBoss?'捕まえず 旅に戻る':'見送る'}</button>`);
+ BALLS.forEach(b=>{$('#'+b.id).onclick=()=>catchMon(b.id,Math.min(b.cap,base+b.bonus))});$('#skip').onclick=done;
+}
+
 async function playCaptureThrow(ball,mon){
  const body=$('#resultBody');body.innerHTML=`<small>つかまえる チャンス！</small><div class="capture-scene" data-phase="ready" aria-hidden="true"><div class="capture-ground"></div><img class="capture-target" src="${pokemonPortrait(mon.id)}" alt=""><div class="capture-flash"></div><div class="capture-ball"><img src="${ball.image}" alt=""></div></div><h2 id="capture-status" aria-live="polite">${ball.name}を なげた！</h2><p>ポケモンを つかまえよう！</p>`;
  const scene=$('.capture-scene'),wait=ms=>new Promise(resolve=>setTimeout(resolve,reduceMotion?Math.min(ms,120):ms));
@@ -116,9 +182,9 @@ async function playCaptureThrow(ball,mon){
  scene.dataset.phase='settle';$('#capture-status').textContent='ボールの なかへ！';await wait(350);
  scene.dataset.phase='check';$('#capture-status').textContent='つかまるかな…？';body.querySelector('p').textContent='ドキドキ…';tone(330,.12);await wait(1100);
 }
-$('#result').addEventListener('cancel',e=>{if(capturePending||state.pendingMapId)e.preventDefault()});
-async function catchMon(ballId,chance){if(capturePending)return;const selected=BALLS.find(b=>b.id===ballId);if(!selected||state[selected.key]<1)return;state[selected.key]--;capturePending=true;save();let ok=Math.random()<chance;busy=true;await playCaptureThrow(selected,battle.m);let duplicate=state.owned.includes(battle.m.id);if(ok){if(duplicate)state.balls+=2;else state.owned.push(battle.m.id)}render();$('#resultBody').innerHTML=`<h2>${ok?'やった！ 捕獲成功！':'あっ！ 逃げられた…'}</h2><img src="${img(battle.m.id)}" alt="${battle.m.label}"><p>${ok?(duplicate?'すでに仲間のポケモンです。<br>モンスターボール2個に交換しました。':`${battle.m.label}のカードを獲得！<br>図鑑からパーティに編成できます。`):'また草むらで探してみよう。'}</p><button class="primary" id="done">旅を続ける</button>`;$('#done').onclick=done;if(ok){celebrate();tone(880,.2)}else tone(220,.2);capturePending=false}
-$('#leave').onclick=()=>{if(confirm('バトルを撤退しますか？')){battleEpoch++;preparing=false;running=false;cancelAnimationFrame(raf);$('#battle').close();busy=false;render()}};$('#battle').addEventListener('cancel',e=>e.preventDefault());$('#result').addEventListener('cancel',e=>e.preventDefault());document.addEventListener('visibilitychange',()=>{if(document.hidden&&(running||preparing)){elapsed=(performance.now()-startAt)/1000;endBattle(false)}});render();
+$('#result').addEventListener('cancel',e=>{if(capturePending||state.pendingMapId||rainbowExitReady())e.preventDefault()});
+async function catchMon(ballId,chance){if(capturePending)return;const selected=BALLS.find(b=>b.id===ballId);if(!selected||state[selected.key]<1)return;state[selected.key]--;capturePending=true;save();let ok=Math.random()<chance;busy=true;await playCaptureThrow(selected,battle.m);let duplicate=state.owned.includes(battle.m.id);if(ok){if(duplicate)state.balls+=2;else state.owned.push(battle.m.id)}render();$('#resultBody').innerHTML=`<h2>${ok?'やった！ 捕獲成功！':'あっ！ 逃げられた…'}</h2><img src="${img(battle.m.id)}" alt="${battle.m.label}"><p>${ok?(duplicate?'すでに仲間のポケモンです。<br>モンスターボール2個に交換しました。':`${battle.m.label}のカードを獲得！<br>図鑑からパーティに編成できます。`):'また草むらで探してみよう。'}</p><button class="primary" id="done">${rainbowExitReady()?'旅に戻る':'旅を続ける'}</button>`;$('#done').onclick=done;if(ok){celebrate();tone(880,.2)}else tone(220,.2);capturePending=false}
+$('#leave').onclick=()=>{if(confirm('バトルを撤退しますか？')){if(isRainbow()&&battle?.boss){endBattle(false);return}battleEpoch++;preparing=false;running=false;cancelAnimationFrame(raf);$('#battle').close();busy=false;render()}};$('#battle').addEventListener('cancel',e=>e.preventDefault());$('#result').addEventListener('cancel',e=>e.preventDefault());document.addEventListener('visibilitychange',()=>{if(document.hidden&&(running||preparing)){elapsed=(performance.now()-startAt)/1000;endBattle(false)}});render();
 
 document.addEventListener('title:start',()=>{ $('#title-screen').hidden=true;$('#game-shell').hidden=false;document.body.classList.remove('at-title');window.scrollTo(0,0);$('#roll').focus({preventScroll:true})});
 
@@ -212,14 +278,14 @@ function resetDicePresentation(){
  }
  const button=$('#roll');button.classList.remove('dice-holding');
  if(pointer!==undefined&&button.hasPointerCapture?.(pointer)){try{button.releasePointerCapture(pointer)}catch{}}
- $('#roll small').textContent=state.pendingMapId?'タップして つぎの ぼうけんへ！':'おして はなして ころがそう！';
+ $('#roll small').textContent=rainbowExitReady()?'タップして 元の旅へ！':state.pendingMapId?'タップして つぎの ぼうけんへ！':'おして はなして ころがそう！';
 }
 function cancelDiceHold(){
  if(!diceHold)return;resetDicePresentation();busy=false;
 }
 const rollButton=$('#roll');
 rollButton.onpointerdown=e=>{
- if(busy||e.button!==0||!e.isPrimary)return;e.preventDefault();if(state.pendingMapId||state.pos===14&&!state.clearedMaps.includes(state.mapId)){rollDice();return}
+ if(busy||e.button!==0||!e.isPrimary)return;e.preventDefault();if(rainbowExitReady()||state.pendingMapId||state.pos===14){rollDice();return}
  diceHold={pointer:e.pointerId};busy=true;rollButton.setPointerCapture(e.pointerId);
  diceLayer().classList.add('dice-held');rollButton.classList.add('dice-holding');$('#roll small').textContent='はなして ストップ！';
 };

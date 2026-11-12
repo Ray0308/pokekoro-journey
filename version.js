@@ -1,3 +1,3 @@
 'use strict';
 // Update this value and CHANGELOG.md for each release.
-const GAME_VERSION = '0.4.0';
+const GAME_VERSION = '0.5.0';
