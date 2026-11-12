@@ -708,3 +708,7 @@ body:not(.at-title) .app-version { color: rgb(105, 125, 142); font-size: 8px; }
 #resultBody > #skip { min-height: 32px; }
 }
 #resultBody > .confetti { inset: 0px; overflow: hidden; }
+
+.gem-shard{position:absolute;width:14px;height:20px;background:linear-gradient(125deg,#ffffff 0%,var(--spark) 38%,var(--spark) 70%,#24405a 100%);clip-path:polygon(20% 0,100% 25%,65% 100%,0 65%);filter:drop-shadow(0 0 3px var(--spark));pointer-events:none;animation:gem-shatter .52s ease-out both}.gem-shard:nth-child(2n){width:10px;height:15px;clip-path:polygon(0 0,100% 40%,25% 100%)}
+@keyframes gem-shatter{0%{opacity:1;transform:translate(-50%,-50%) scale(.55) rotate(0)}20%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(.2) rotate(var(--turn))}}
+@media(prefers-reduced-motion:reduce){.gem-shard{display:none}}
