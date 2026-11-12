@@ -3,7 +3,11 @@
   const audio = document.createElement('audio');
   audio.id = 'map-bgm';audio.src = MAP_AUDIO.src;audio.loop = true;audio.preload = 'metadata';audio.volume = MAP_AUDIO.volume;
   document.body.append(audio);
-  let enabled = true, priming = false, context = null, gain = null;
+  let enabled = true, priming = false, context = null, gain = null,currentTheme='field';
+  const failedTracks=new Set();
+  audio.dataset.theme=currentTheme;
+  function selectTrack(){const requested=mapMusicTheme(state.mapId),next=failedTracks.has(requested)?'field':requested;if(next===currentTheme)return;level(0);audio.pause();currentTheme=next;audio.dataset.theme=next;audio.src=MAP_MUSIC_TRACKS[next];audio.load()}
+  audio.addEventListener('error',()=>{if(currentTheme==='field')return;failedTracks.add(currentTheme);selectTrack();sync()});
   try { const saved = JSON.parse(localStorage.getItem('pokekoro-title-v1'));if (typeof saved?.sound === 'boolean') enabled = saved.sound; } catch {}
   function canPlay() { return enabled && !document.hidden && !document.querySelector('#game-shell').hidden && !document.querySelector('dialog[open]:not(#game-menu):not(#item-bag):not(#title-options)'); }
   function unlock() {
@@ -24,6 +28,7 @@
     else gain.gain.setValueAtTime(value, now);
   }
   function sync() {
+    selectTrack();
     if (!canPlay()) {
       level(0);
       // A silent first playback unlocks this media element during the Start gesture on iOS.
@@ -35,7 +40,7 @@
   }
   document.addEventListener('click', event => {
     if (!event.target.closest?.('#enter-game') || !enabled || document.querySelector('#enter-game').disabled) return;
-    unlock();priming = true;level(0);audio.play()?.catch(() => { priming = false; });
+    selectTrack();unlock();priming = true;level(0);audio.play()?.catch(() => { priming = false; });
   }, true);
   function userGesture() { if (canPlay()) { unlock();sync(); } }
   document.addEventListener('pointerdown', userGesture, { capture: true, passive: true });
@@ -47,5 +52,6 @@
   window.addEventListener('pageshow', sync);
   const observer = new MutationObserver(sync);
   for (const element of [document.querySelector('#game-shell'), document.querySelector('#title-screen'), ...document.querySelectorAll('dialog')]) observer.observe(element, { attributes: true, attributeFilter: ['hidden', 'open', 'data-start-phase'] });
+  observer.observe(document.querySelector('#map'),{attributes:true,attributeFilter:['data-map']});
   sync();
 })();
