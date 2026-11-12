@@ -27,7 +27,7 @@
   tapPrompt.addEventListener('click',activateTitle);
   root.addEventListener('click',event=>{if(titleReady||event.target.closest('a,#title-debug'))return;event.preventDefault();event.stopImmediatePropagation();activateTitle()},true);
 
-  let sequence = 0;
+  let sequence = 0,departureDice=null;
   let idleTimer = 0;
   let idleGeneration = 0;
   let idlePlaying = false;
@@ -290,7 +290,8 @@
     sequence++;
     stopCry();restoreMusicVolume();
     starting = false;
-    root.classList.remove('is-departing', 'hero-is-active');
+    departureDice?.cancel();departureDice=null;window.PokekoroSfx?.stopRoll();
+    root.classList.remove('is-departing', 'is-starting', 'hero-is-active');
     root.removeAttribute('aria-busy');
     delete root.dataset.startPhase;
     titleReady=false;bgm.pause();tapPrompt.disabled=true;root.classList.add('is-menu-waiting');for (const button of titleButtons) button.disabled = true;revealMenu();
@@ -307,6 +308,23 @@
     const token = ++sequence;
     root.setAttribute('aria-busy', 'true');
     for (const button of [start, rules, optionsButton]) button.disabled = true;
+    root.dataset.startPhase='throwing';root.classList.add('is-starting');
+    const cube=root.querySelector('.title-dice-cube'),die=cube.getBoundingClientRect(),screen=root.getBoundingClientRect();
+    const fromX=screen.right-die.left+die.width+24;
+    const frames=motionPreference.matches?[{opacity:0,transform:'translateX(15px)'},{opacity:1,transform:'translateX(0)'}]:[
+      {offset:0,transform:`translate(${fromX}px,-75px) rotate(-720deg) scale(1.2)`},
+      {offset:.47,transform:'translate(42px,-34px) rotate(-300deg) scale(1.16)'},
+      {offset:.68,transform:'translate(16px,0) rotate(-125deg) scale(1.12,.9)'},
+      {offset:.83,transform:'translate(5px,-10px) rotate(-40deg) scale(1.07)'},
+      {offset:1,transform:'translate(0,0) rotate(0deg) scale(1)'}];
+    window.PokekoroSfx?.play('throw');window.PokekoroSfx?.startRoll('throw');
+    departureDice=cube.animate(frames,{duration:motionPreference.matches?180:config.motion.diceThrowMs,easing:'ease-out',fill:'forwards'});
+    try{await departureDice.finished}catch{return}
+    if(token!==sequence)return;
+    window.PokekoroSfx?.stopRoll();window.PokekoroSfx?.play('land');root.dataset.startPhase='settled';
+    await new Promise(resolve=>setTimeout(resolve,motionPreference.matches?100:config.motion.diceSettleMs));
+    if(token!==sequence)return;
+    window.PokekoroSfx?.play('diceResult');
     root.dataset.startPhase = 'walking';
     root.classList.add('is-departing');
     if (action.complete && action.naturalWidth) root.classList.add('hero-is-active');

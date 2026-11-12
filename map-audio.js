@@ -32,7 +32,7 @@
     if (!canPlay()) {
       level(0);
       // A silent first playback unlocks this media element during the Start gesture on iOS.
-      if (priming && enabled && !document.hidden && document.querySelector('#title-screen').dataset.startPhase === 'walking') return;
+      if (priming && enabled && !document.hidden && ['throwing','settled','walking'].includes(document.querySelector('#title-screen').dataset.startPhase)) return;
       priming = false;audio.pause();return;
     }
     unlock();level(MAP_AUDIO.volume, true);
