@@ -151,7 +151,7 @@ function renderJourney(){
  renderRainbowHub();
  const cleared=new Set(state.clearedMaps),gyms=MAP_ORDER.filter(id=>MAPS[id].badge),complete=cleared.has(MAP_ORDER.at(-1));
  $('#journey-summary').textContent=complete?`${state.tour}周目・ハナダの洞窟まで クリア済み`:`${state.tour}周目・いまは ${activeMap().name}・バッジ ${gyms.filter(id=>cleared.has(id)).length} / 8`;
- $('#journey-badges').innerHTML=gyms.map(id=>`<span class="journey-badge ${cleared.has(id)?'earned':''}" aria-label="${MAPS[id].badge} ${cleared.has(id)?'獲得済み':'未獲得'}"><b aria-hidden="true">${cleared.has(id)?'★':'◇'}</b>${MAPS[id].badge}</span>`).join('');
+ $('#journey-badges').innerHTML=gyms.map(id=>`<span class="journey-badge ${cleared.has(id)?'earned':''}" aria-label="${MAPS[id].badge} ${cleared.has(id)?'獲得済み':'未獲得'}"><img src="${MAPS[id].badgeImage}" alt="">${MAPS[id].badge}<small>${cleared.has(id)?'✓ 獲得済み':'未獲得'}</small></span>`).join('');
  $('#journey-list').innerHTML=MAP_ORDER.map((id,i)=>{const map=MAPS[id],current=id===state.mapId,done=cleared.has(id);return `<li class="${current?'journey-current':''} ${done?'journey-cleared':''}" ${current?'aria-current="step"':''}><span class="journey-step">${String(i+1).padStart(2,'0')}</span><div><strong>${map.name}</strong><small>${map.boss.role}：${map.boss.name}</small></div><span class="journey-status">${current?'いまここ':done?'✓ クリア':'これから'}</span></li>`}).join('');
 }
 function advanceMap(){
@@ -178,7 +178,7 @@ function endBattle(win){
  const ticket=normalBoss&&(window.PokekoroDebug?.forceRainbowTicket?.()||Math.random()<RAINBOW_CONFIG.ticketRate)?grantRainbowTicket():null;
  if(battle.trainer){
   state.super+=battle.boss?3:1;state.balls+=2;render();
-  result(`<h2>${battle.boss?(activeMap().leagueFinal?'ワタルに勝利！':activeMap().name+'クリア！'):'トレーナーに勝利！'}</h2><p>アイテムを てにいれた！</p>${rewardItemsHtml([{id:'super',count:battle.boss?3:1},{id:'normal',count:2},...(masterDrop?[{id:'master',count:1}]:[]),...(ticket?[{id:'rainbow',count:1}]:[])])}${earnedBadge?`<div class="reward-badge"><svg aria-hidden="true"><use href="assets/ui-icons.svg#goal"/></svg><span><small>バッジを てにいれた！</small><strong>${earnedBadge}</strong></span></div>`:''}${ticket?'<button id="reward-rainbow" class="rainbow-action">虹の雲へ 行く</button>':''}<button id="done" class="primary">次のマップへ</button>`);
+  result(`<h2>${battle.boss?(activeMap().leagueFinal?'ワタルに勝利！':activeMap().name+'クリア！'):'トレーナーに勝利！'}</h2><p>アイテムを てにいれた！</p>${rewardItemsHtml([{id:'super',count:battle.boss?3:1},{id:'normal',count:2},...(masterDrop?[{id:'master',count:1}]:[]),...(ticket?[{id:'rainbow',count:1}]:[])])}${earnedBadge?`<div class="reward-badge"><img src="${activeMap().badgeImage}" alt="${earnedBadge}"><span><small>バッジを てにいれた！</small><strong>${earnedBadge}</strong></span></div>`:''}${ticket?'<button id="reward-rainbow" class="rainbow-action">虹の雲へ 行く</button>':''}<button id="done" class="primary">次のマップへ</button>`);
   $('#done').onclick=done;if(ticket)$('#reward-rainbow').onclick=()=>enterRainbow(ticket.id);return;
  }
  render();const base=Math.min(.8,.4+Math.min(1,battle.damage/battle.total-1)*.15+maxCombo*.015);
