@@ -19,13 +19,21 @@
   function status(text) {
     document.querySelector('#device-status').textContent = text;
   }
+  function sound(name) {
+    window.PokekoroSfx?.play(name);
+  }
+  function speechFocus(active) {
+    document.dispatchEvent(new CustomEvent('dex:speech', { detail: { active } }));
+  }
   function updateSpeechButton() {
     const button = document.querySelector('#device-speak'),
       hasText = pokemonSeen(selected) && !!POKEDEX[selected - 1].description;
-    button.disabled = !supported || !soundEnabled || !hasText;
-    button.textContent = utterance ? '■ とめる' : !soundEnabled ? 'サウンドOFF' : '▶ よみあげ';
+    const audible = soundEnabled && (window.PokekoroAudioMix?.get('se') ?? 1) > 0;
+    button.disabled = !supported || !audible || !hasText;
+    button.textContent = utterance ? '■ とめる' : !audible ? 'よみあげ OFF' : '▶ よみあげ';
   }
   function stopReading() {
+    if (utterance) speechFocus(false);
     speechToken++;
     if (supported) synth.cancel();
     utterance = null;
@@ -116,6 +124,7 @@
     view(id === undefined ? 'list' : 'detail');
     if (!dialog.open) {
       dialog.showModal();
+      sound('dexOpen');
       clearTimeout(openingTimer);
       if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
         dialog.classList.add('is-opening');
@@ -150,6 +159,7 @@
     const error = partyTypeError(next);
     if (error) {
       document.querySelector('#device-list-count').textContent = error;
+      sound('dexError');
       return;
     }
     state.party = next;
@@ -159,17 +169,26 @@
   function read() {
     if (utterance) {
       stopReading();
+      sound('dexPage');
       status('よみあげを とめました');
       return;
     }
     const mon = POKEDEX[selected - 1];
-    if (!supported || !soundEnabled || !pokemonSeen(selected) || !mon.description) return;
+    if (
+      !supported ||
+      !soundEnabled ||
+      (window.PokekoroAudioMix?.get('se') ?? 1) === 0 ||
+      !pokemonSeen(selected) ||
+      !mon.description
+    )
+      return;
     stopReading();
     const token = speechToken;
     utterance = new SpeechSynthesisUtterance(mon.label + '。' + mon.description);
     utterance.lang = 'ja-JP';
     utterance.rate = 0.92;
     utterance.pitch = 0.95;
+    utterance.volume = window.PokekoroAudioMix?.get('se') ?? 1;
     const voice = synth.getVoices().find((v) => v.lang?.toLowerCase().startsWith('ja'));
     if (voice) utterance.voice = voice;
     utterance.onstart = () => {
@@ -182,6 +201,7 @@
     function finished(error) {
       if (token !== speechToken) return;
       utterance = null;
+      speechFocus(false);
       dialog.classList.remove('is-speaking');
       updateSpeechButton();
       status(error ? 'よみあげを始められませんでした。もう一度ためしてね' : 'よみおわりました');
@@ -189,6 +209,8 @@
     utterance.onend = () => finished(false);
     utterance.onerror = (event) => finished(!['canceled', 'interrupted'].includes(event.error));
     try {
+      sound('dexRead');
+      speechFocus(true);
       synth.speak(utterance);
       updateSpeechButton();
     } catch {
@@ -213,6 +235,7 @@
     if (row && !row.disabled) {
       if (replaceSlot !== null) replaceWith(Number(row.dataset.dexId));
       else {
+        sound('dexPage');
         select(Number(row.dataset.dexId));
         view('detail');
       }
@@ -225,18 +248,35 @@
   document.querySelector('#device-next').onclick = () => select(selected + 1);
   document.querySelector('#device-jump').addEventListener('change', (event) => {
     const id = Number(event.target.value);
-    if (validPokemonId(id)) select(id);
-    else {
+    if (validPokemonId(id)) {
+      select(id);
+      sound('dexPage');
+    } else {
       event.target.value = String(selected);
       status('1〜1025の 番号をいれてね');
+      sound('dexError');
     }
   });
   document.querySelector('#device-party').onclick = () => {
     const message = togglePokemonParty(selected);
     renderEntry();
     if (message) status(message);
+    sound(message ? 'dexError' : 'dexPage');
   };
+  dialog.addEventListener('click', (event) => {
+    const button = event.target.closest('button');
+    if (
+      !button ||
+      button.disabled ||
+      !dialog.open ||
+      ['device-close', 'device-speak', 'device-party'].includes(button.id) ||
+      button.hasAttribute('data-dex-id')
+    )
+      return;
+    sound('dexPage');
+  });
   dialog.addEventListener('close', () => {
+    sound('dexClose');
     replaceSlot = null;
     dialog.classList.remove('is-picking');
     stopReading();
@@ -250,6 +290,10 @@
   document.addEventListener('title:soundchange', (event) => {
     soundEnabled = !!event.detail.enabled;
     if (!soundEnabled) stopReading();
+    updateSpeechButton();
+  });
+  document.addEventListener('audio:mixchange', () => {
+    if ((window.PokekoroAudioMix?.get('se') ?? 1) === 0) stopReading();
     updateSpeechButton();
   });
   window.PokekoroDex = Object.freeze({ open, openPicker });

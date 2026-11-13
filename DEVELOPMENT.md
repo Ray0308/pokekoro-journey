@@ -74,3 +74,8 @@ HTMLテンプレートの内部は、空白による表示の変化を避ける�
 名前・タイプ・説明は [docs/pokemon-data.md](docs/pokemon-data.md) を参照する。
 シートを修正したらローカルJSONを更新し、`npm run data:generate`と`npm test`を実行する。
 名前・タイプの照合エラーを無視して参照データを書き換えない。
+
+## 図鑑の音と自作曲
+
+再生成・場面切替・読み上げとの音量調整は [docs/retro-audio.md](docs/retro-audio.md) を参照する。
+`npm run music:generate` はffmpegを使用する開発専用コマンド。

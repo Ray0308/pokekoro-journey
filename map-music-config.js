@@ -7,11 +7,12 @@ const MAP_MUSIC_TRACKS = Object.freeze({
   trainerBattle: 'assets/audio/trainer-battle.mp3',
   victory: 'assets/audio/battle-victory.mp3',
   trainerVictory: 'assets/audio/trainer-victory.mp3',
-  gym: 'assets/audio/map-gym.mp3',
-  cave: 'assets/audio/map-cave.mp3',
-  hideout: 'assets/audio/map-hideout.mp3',
-  league: 'assets/audio/map-league.mp3',
-  water: 'assets/audio/map-water.mp3',
+  gym: 'assets/audio/map-gym-chip-v1.mp3',
+  cave: 'assets/audio/map-cave-chip-v1.mp3',
+  hideout: 'assets/audio/map-hideout-chip-v1.mp3',
+  league: 'assets/audio/map-league-chip-v1.mp3',
+  water: 'assets/audio/map-water-chip-v1.mp3',
+  pokedex: 'assets/audio/map-pokedex-chip-v1.mp3',
 });
 function mapMusicTheme(mapId) {
   const map = MAPS[mapId];
@@ -29,7 +30,13 @@ function mapMusicTheme(mapId) {
 
 // The supplied field recording is quieter than the synthesized themes.
 function mapMusicVolume(theme) {
-  return theme === 'field' ? 0.5 : theme === 'wild' ? 0.36 : MAP_AUDIO.volume;
+  return theme === 'pokedex'
+    ? 0.25
+    : theme === 'field'
+      ? 0.5
+      : theme === 'wild'
+        ? 0.36
+        : MAP_AUDIO.volume;
 }
 
 // Measured first musical onset: keep the tiny pre-attack, skip the export lead-in.

@@ -158,6 +158,27 @@
         ? battleBus
         : null;
     switch (name) {
+      // 短い矩形波で、端末を操作した瞬間に返る電子音を作る。
+      case 'dexOpen':
+        note(784, 0.06, 0, 0.13, 784, 'square');
+        note(1568, 0.09, 0.065, 0.1, 1568, 'square');
+        break;
+      case 'dexClose':
+        note(1047, 0.045, 0, 0.1, 1047, 'square');
+        note(523, 0.06, 0.05, 0.09, 523, 'square');
+        break;
+      case 'dexPage':
+        note(1397, 0.035, 0, 0.095, 1397, 'square');
+        note(1047, 0.035, 0.04, 0.065, 1047, 'square');
+        break;
+      case 'dexRead':
+        note(1175, 0.04, 0, 0.1, 1175, 'square');
+        note(1568, 0.065, 0.05, 0.08, 1568, 'square');
+        break;
+      case 'dexError':
+        note(196, 0.07, 0, 0.12, 196, 'square');
+        note(196, 0.06, 0.09, 0.09, 196, 'square');
+        break;
       case 'roll': {
         const f = [720, 960, 820, 1100][rollBeat++ % 4];
         tapNoise(0.025, 2100, 0.2);
@@ -352,11 +373,16 @@
         !b ||
         b.disabled ||
         b.closest('#boot-screen') ||
+        b.matches(
+          '#open-pokedex, [data-menu-action="dex"], [data-party-slot], #cards .party-member',
+        ) ||
         ['roll', 'enter-game', 'game-menu-toggle'].includes(b.id)
       )
         return;
+      // 図鑑は専用の操作音を持つため、汎用クリック音を重ねない。
+      if (b.closest('#pokedex-device')) return;
       if (b.closest('#game-menu')) play('confirm');
-      else if (b.closest('#pokedex-device') || b.hasAttribute('data-tab')) play('select');
+      else if (b.hasAttribute('data-tab')) play('select');
       else if (b.id.startsWith('close-') || ['device-close', 'item-bag-back'].includes(b.id))
         play('menuClose');
       else if (b.closest('#battle') || b.closest('#result')) return;

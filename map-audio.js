@@ -18,7 +18,8 @@
     wanted = null,
     visibleTheme = null,
     focus = 1,
-    focusTimer = 0;
+    focusTimer = 0,
+    narration = false;
   try {
     const saved = JSON.parse(localStorage.getItem('pokekoro-title-v1'));
     if (typeof saved?.sound === 'boolean') enabled = saved.sound;
@@ -36,6 +37,7 @@
     );
   }
   function theme() {
+    if (document.querySelector('#pokedex-device').open) return 'pokedex';
     return victory()
       ? battle.trainer
         ? 'trainerVictory'
@@ -56,7 +58,7 @@
         ? ':not(#encounter):not(#battle)'
         : '';
     return !document.querySelector(
-      'dialog[open]:not(#game-menu):not(#item-bag):not(#title-options):not(#ball-exchange):not(#kurt-house):not(#type-ball-picker):not(#debug-tools):not(#debug-roll-picker)' +
+      'dialog[open]:not(#pokedex-device):not(#game-menu):not(#item-bag):not(#title-options):not(#ball-exchange):not(#kurt-house):not(#type-ball-picker):not(#debug-tools):not(#debug-roll-picker)' +
         exceptions,
     );
   }
@@ -144,9 +146,19 @@
       warm('trainerVictory');
     } else if (encounter() && !battle?.safari) warm('victory');
     else if (!encounter()) {
+      warm('pokedex');
       warm('wild');
       warm('trainer');
     }
+  }
+  // 読み上げ中も曲を止めずに下げる。BGM設定・既存の鳴き声用フォーカスと併用する。
+  function musicGain(key) {
+    return (
+      mapMusicVolume(key) *
+      (window.PokekoroAudioMix?.get('bgm') ?? 0.75) *
+      focus *
+      (narration ? 0.24 : 1)
+    );
   }
   function install(key, buffer, immediate = false) {
     if (!context) return;
@@ -159,10 +171,7 @@
     source.connect(gain).connect(context.destination);
     const now = context.currentTime,
       offset = (positions.get(key) ?? MAP_MUSIC_CUE[key] ?? 0) % buffer.duration;
-    gain.gain.setValueAtTime(
-      mapMusicVolume(key) * (window.PokekoroAudioMix?.get('bgm') ?? 0.75) * focus,
-      now,
-    );
+    gain.gain.setValueAtTime(musicGain(key), now);
     source.start(now + (immediate ? 0 : 0.006), offset);
     active = { key, source, gain, buffer, offset, time: now + (immediate ? 0 : 0.006) };
     visibleTheme = key;
@@ -182,7 +191,7 @@
       audio.currentTime = positions.get(key) ?? MAP_MUSIC_CUE[key] ?? 0;
       visibleTheme = key;
     }
-    audio.volume = mapMusicVolume(key) * (window.PokekoroAudioMix?.get('bgm') ?? 0.75) * focus;
+    audio.volume = musicGain(key);
     audio.dataset.theme = key;
     audio.dataset.backend = 'media';
     audio
@@ -199,6 +208,11 @@
     }
     const key = theme();
     if (active?.key === key) {
+      // 曲の準備中に図鑑を閉じた場合、古い切替要求を残して再表示を妨げない。
+      if (wanted && wanted !== key) {
+        request++;
+        wanted = null;
+      }
       audio.dataset.playing = 'true';
       return;
     }
@@ -232,18 +246,14 @@
     warmScene();
   }
   function applyMix() {
-    if (active)
-      active.gain.gain.setTargetAtTime(
-        mapMusicVolume(active.key) * (window.PokekoroAudioMix?.get('bgm') ?? 0.75) * focus,
-        context.currentTime,
-        0.045,
-      );
-    audio.volume =
-      mapMusicVolume(visibleTheme || 'field') *
-      (window.PokekoroAudioMix?.get('bgm') ?? 0.75) *
-      focus;
+    if (active) active.gain.gain.setTargetAtTime(musicGain(active.key), context.currentTime, 0.045);
+    audio.volume = musicGain(visibleTheme || 'field');
   }
   document.addEventListener('audio:mixchange', applyMix);
+  document.addEventListener('dex:speech', (event) => {
+    narration = !!event.detail?.active;
+    applyMix();
+  });
   document.addEventListener('battle:audiofocus', (e) => {
     clearTimeout(focusTimer);
     focus = e.detail?.active ? 0.55 : 1;
@@ -348,6 +358,8 @@
       position: position(),
       backend: audio.dataset.backend,
       cached: [...buffers.keys()],
+      volume: musicGain(visibleTheme || 'field'),
+      narration,
     }),
     sync,
   });

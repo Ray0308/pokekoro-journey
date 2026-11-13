@@ -57,7 +57,7 @@
 .device-top > strong {
   margin-left: auto;
   font-size: 11px;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
   color: #ffe6c7;
 }
 #device-close {
@@ -90,10 +90,10 @@
 .device-screen {
   padding: 7px 10px 9px;
   text-align: center;
-  background: radial-gradient(#f5fbea, #dbe9d3);
-  border: 2px solid #7b9d8a;
-  border-radius: 7px;
-  box-shadow: inset 0 2px 5px #31594b20;
+  background: #dfe9bd;
+  border: 2px solid #43533d;
+  border-radius: 3px;
+  box-shadow: inset 0 2px 3px #25352220;
 }
 #device-number {
   display: block;
@@ -126,10 +126,10 @@
 }
 .device-text {
   padding: 11px 13px;
-  border: 2px solid #823847;
-  border-radius: 9px;
-  background: #cfdfc5;
-  box-shadow: inset 0 2px 4px #203f4022;
+  border: 3px double #35492e;
+  border-radius: 3px;
+  background: #e6edca;
+  box-shadow: none;
 }
 #device-description {
   font-size: 15px;
@@ -422,7 +422,7 @@
   color: #244737;
 }
 #device-list-view {
-  background: #e3edcf;
+  background: #dfe9bd;
   border: 3px double #344c36;
   padding: 8px;
   color: #233c2b;
