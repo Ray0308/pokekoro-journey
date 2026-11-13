@@ -8,7 +8,7 @@
  function victory(){return !!battle?.victory&&(document.querySelector('#battle').open||document.querySelector('#result').open)}
  function encounter(){return !!battle&&(document.querySelector('#encounter').open||document.querySelector('#battle').open)}
  function theme(){return victory()?(battle.trainer?'trainerVictory':'victory'):encounter()?(battle.trainer?(document.querySelector('#battle').open?'trainerBattle':'trainer'):'wild'):mapMusicTheme(state.mapId)}
- function canPlay(){if(!enabled||document.hidden||document.querySelector('#game-shell').hidden)return false;const exceptions=victory()?':not(#battle):not(#result)':encounter()?':not(#encounter):not(#battle)':'';return !document.querySelector('dialog[open]:not(#game-menu):not(#item-bag):not(#title-options)'+exceptions)}
+ function canPlay(){if(!enabled||document.hidden||document.querySelector('#game-shell').hidden)return false;const exceptions=victory()?':not(#battle):not(#result)':encounter()?':not(#encounter):not(#battle)':'';return !document.querySelector('dialog[open]:not(#game-menu):not(#item-bag):not(#title-options):not(#ball-exchange)'+exceptions)}
  function unlock(){if(!enabled||document.hidden)return;try{const AC=window.AudioContext||window.webkitAudioContext;if(!context&&AC)context=new AC({latencyHint:'interactive'});if(context?.state==='suspended')context.resume().catch(()=>{})}catch{}}
  function position(){return active?(active.offset+Math.max(0,context.currentTime-active.time))%active.buffer.duration:audio.currentTime||0}
  function dispose(record,when){if(!record)return;try{record.source.stop(when)}catch{}record.source.onended=()=>{record.source.disconnect();record.gain.disconnect()}}

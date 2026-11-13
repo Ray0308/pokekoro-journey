@@ -297,3 +297,7 @@ body[data-game-view="journey"] .app-version,body[data-game-view="party"] .app-ve
 #map .board-legend .map-mystery-icon img{width:140%;height:140%}
 #map .tile.current>.map-mystery-icon{opacity:0}
 #map .rainbow-mew{position:absolute;width:14%;height:14%;object-fit:contain;transform:translate(-50%,-50%) rotate(180deg);opacity:.5;image-rendering:pixelated;pointer-events:none;z-index:1;max-width:none}
+
+#map .tile.node-exchange{background:linear-gradient(#e4f4ff,#b2d9ed);border-color:#fff}
+#map .tile img.exchange-field-icon{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:115%;height:115%;max-width:none;object-fit:contain;image-rendering:pixelated;mix-blend-mode:normal;background:none;border:0;border-radius:0;box-shadow:none}
+#map .exchange-legend img{width:18px;height:18px}

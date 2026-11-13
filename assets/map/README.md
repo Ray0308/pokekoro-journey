@@ -57,3 +57,6 @@
 
 ## diglett-cave.webp
 ユーザー提供のディグダのあな背景。1280×1169の全体構図を維持してWebP化。原本はoriginals/diglett-cave.jpg。専用routePointsで左下のはしごから右上のはしごへ進む。
+
+## ball-exchange.webp
+ユーザー提供ショップ画像から建物だけを透過アイコン化。原本はoriginals/ball-exchange-shop.jpg。通常マップ7マス目のボール交換所と凡例に使用。
