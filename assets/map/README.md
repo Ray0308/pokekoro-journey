@@ -60,3 +60,6 @@
 
 ## ball-exchange.webp
 ユーザー提供ショップ画像から建物だけを透過アイコン化。原本はoriginals/ball-exchange-shop.jpg。通常マップ7マス目のボール交換所と凡例に使用。
+
+## kurt-house.webp
+提供されたガンテツの家から外側の白地を除いた透過アイコン。原本はoriginals/kurt-house.jpg。対応人物画像はassets/trainers/kurt.jpg。
