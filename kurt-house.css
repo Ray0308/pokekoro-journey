@@ -45,3 +45,10 @@
 #map .tile img.kurt-field-icon{width:135%;height:135%}
 @media(max-height:650px){.kurt-heading>img{height:52px;width:34px}.kurt-heading h2{font-size:19px}.kurt-heading p{font-size:10px}#kurt-house{padding:10px}#kurt-types button img{width:30px;height:30px}#kurt-types button span{font-size:8px}#kurt-selection>img{width:34px;height:34px}#kurt-stock,#kurt-preview,#kurt-status{margin:3px 0;font-size:10px}#kurt-selection strong{font-size:13px}#kurt-trade,#kurt-close{min-height:32px;padding:5px;font-size:12px}.kurt-footer{margin-top:4px}#kurt-house .exchange-quantity button,#kurt-quantity{min-height:30px}}
 @media(max-height:650px){#result:has(#open-type-balls) #resultBody{gap:6px}#result:has(#open-type-balls) #resultBody>img{width:85px;height:65px}#result:has(#open-type-balls) #resultBody>p{font-size:10px;line-height:1.45}#result:has(#open-type-balls) .ball-options .ball-choice{min-height:54px;padding:4px}#resultBody>.type-ball-open{min-height:40px;padding:5px}}
+/* Give Safari a definite dialog height so the flex grid cannot collapse to a strip. */
+#kurt-house[open],#type-ball-picker[open]{box-sizing:border-box;height:min(650px,calc(var(--app-height,100dvh) - 24px))}
+#kurt-types{flex:1 1 auto;min-height:160px;grid-auto-rows:minmax(48px,1fr)}
+#type-ball-choices{flex:1 1 auto;min-height:64px}
+/* In short/landscape windows, scroll the house as one document instead of squeezing its choices. */
+@media(max-height:480px){#kurt-house[open]{display:block;height:auto;overflow-y:auto;-webkit-overflow-scrolling:touch}#kurt-types{min-height:0;overflow:visible;grid-auto-rows:minmax(48px,auto);flex:none}}
+#kurt-house[open],#type-ball-picker[open]{overflow-y:auto;-webkit-overflow-scrolling:touch}

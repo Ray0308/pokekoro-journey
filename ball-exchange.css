@@ -28,3 +28,7 @@
 #ball-exchange>h2,#ball-exchange>.exchange-lead,#exchange-status,#exchange-close{flex-shrink:0}
 #exchange-recipes{min-height:0;overflow:auto;flex:1;padding:1px 2px;overscroll-behavior:contain}
 #exchange-close{margin:0}
+/* A definite flex container height avoids the same collapsed-list issue in Safari. */
+#ball-exchange[open]{box-sizing:border-box;height:min(700px,calc(var(--app-height,100dvh) - 24px))}
+#exchange-recipes{min-height:96px}
+#ball-exchange[open]{overflow-y:auto}
