@@ -1,13 +1,13 @@
 {
   "name": "pokekoro-journey",
-  "version": "0.9.2-21",
+  "version": "0.9.2-22",
   "private": true,
   "description": "ポケコロジャーニーの整形・検証用ツール",
   "scripts": {
     "format": "prettier --write \"*.{js,css,html}\" \"scripts/**/*.cjs\" \"tools/**/*.cjs\" \"tests/**/*.{js,cjs}\" manifest.webmanifest .prettierrc.json package.json",
     "format:check": "prettier --check \"*.{js,css,html}\" \"scripts/**/*.cjs\" \"tools/**/*.cjs\" \"tests/**/*.{js,cjs}\" manifest.webmanifest .prettierrc.json package.json",
     "check:syntax": "node tools/check-syntax.cjs",
-    "test": "node tests/type-balls.cjs"
+    "test": "node tests/type-balls.cjs && node tests/pokemon-art.cjs"
   },
   "devDependencies": {
     "acorn": "8.15.0",

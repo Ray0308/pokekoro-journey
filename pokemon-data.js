@@ -1,6 +1,5 @@
 'use strict';
-// 未登録の名前・画像・属性は推測で補わず、番号表示と空の属性を維持する。
-// National Pokédex IDs are stable save keys. Only already-supplied entries have metadata.
+// 全国図鑑番号はセーブのキー。画像は全種の公式アートを使い、未登録の名前・属性は推測しない。
 const POKEDEX_SIZE = 1025;
 const POKEMON_OVERRIDES = Object.freeze({
   1: {
@@ -37,8 +36,8 @@ const POKEDEX = Object.freeze(
       type: known?.type ?? null,
       types: Object.freeze(known?.types ?? (Number.isInteger(known?.type) ? [known.type] : [])),
       power: known?.power ?? 11,
-      image: known?.image ?? (id <= 9 ? `assets/${id}.jpg` : null),
-      portrait: known?.portrait ?? (id <= 9 ? `assets/pokemon/${id}.webp` : null),
+      image: known?.image ?? `assets/pokemon/official-artwork/${id}.svg`,
+      portrait: known?.portrait ?? `assets/pokemon/official-artwork/${id}.svg`,
       placeholder: !known?.name,
     });
   }),
@@ -61,4 +60,20 @@ function pokemonImage(id) {
 }
 function pokemonPortrait(id) {
   return validPokemonId(id) ? POKEDEX[id - 1].portrait || numberedPokemonArt(id) : '';
+}
+// errorはバブルしないため捕捉段階で処理する。再描画された画像にも適用し、再試行のループを防ぐ。
+if (typeof document !== 'undefined') {
+  document.addEventListener(
+    'error',
+    (event) => {
+      const image = event.target;
+      if (image?.tagName !== 'IMG') return;
+      const match = image
+        .getAttribute('src')
+        ?.match(/(?:^|\/)assets\/pokemon\/official-artwork\/(\d+)\.svg$/);
+      if (match && validPokemonId(Number(match[1])))
+        image.src = numberedPokemonArt(Number(match[1]));
+    },
+    true,
+  );
 }

@@ -1385,7 +1385,8 @@ async function showEncounter(immediate) {
     go = $('#encounter-go'),
     epoch = battleEpoch;
   dialog.classList.remove('boss-encounter');
-  dialog.dataset.numberOnly = String(battle.m.placeholder);
+  // 名前の未登録と画像の未登録は別。アートがあれば番号表示の相手にもシルエット演出を使う。
+  dialog.dataset.numberOnly = String(!battle.m.portrait);
   if (
     (battle.boss || (battle.trainer && battle.trainerAppearance)) &&
     activeMap().boss &&
