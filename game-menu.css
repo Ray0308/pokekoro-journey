@@ -36,3 +36,14 @@ body.at-title #title-options #back-title{display:none}
 #party-type-warning{flex-shrink:0;margin:0 0 8px;padding:7px 9px;border:1px solid #ddba61;border-radius:8px;background:#fff0c5;color:#81551e;font-size:11px;line-height:1.5;text-align:center}#party-type-warning[hidden]{display:none}
 @media(max-height:650px){#party-type-warning{padding:4px 6px;margin-bottom:5px;font-size:10px;line-height:1.4}}
 @media(min-aspect-ratio:4/3) and (max-height:500px){#party-type-warning{padding:3px 6px;font-size:10px;margin-bottom:4px}#party-type-warning br{display:none}}
+
+/* Keep both types readable within the six-slot party layout. */
+.party-member .party-types{display:flex;justify-content:center;gap:4px;min-height:17px;margin-top:3px;white-space:nowrap}
+.party-member .party-type{display:inline-flex;align-items:center;justify-content:center;padding:1px 7px;border:1px solid var(--type-color,#a7ada5);border-left-width:4px;border-radius:5px;background:#fffdf6;color:#304637;font-size:10px;font-weight:800;line-height:14px;letter-spacing:0}
+.party-member>span{flex-shrink:0}
+.party-member img{min-height:0;flex-shrink:1}
+@media(max-height:650px){.party-member .party-types{margin-top:2px;min-height:15px}.party-member .party-type{font-size:9px;line-height:12px;padding:0 5px}.party-member img{height:clamp(18px,5dvh,34px)}}
+@media(max-height:750px) and (max-aspect-ratio:4/3){
+.party-slot{padding:5px}.party-member small{font-size:9px;line-height:11px}.party-member strong{font-size:13px;line-height:17px}.party-member .party-types{min-height:15px;margin-top:2px}.party-member .party-type{font-size:9px;line-height:12px;padding:0 5px}.party-replace{min-height:30px;padding:3px;margin-top:3px}.party-member img{height:36px}
+}
+@media(max-height:600px) and (max-aspect-ratio:4/3){.party-member img{height:22px}.party-slot{padding:4px}.party-replace{min-height:27px;font-size:11px}.party-member small{line-height:10px}.party-member strong{font-size:12px;line-height:15px}}

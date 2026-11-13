@@ -113,7 +113,7 @@ function render(){ applyMapTheme();updateSafariMapLegend();$('#roll .roll-copy>s
 function renderDex(){
  $('#party-type-warning').hidden=partyTypes(state.party).length<5;
  $('#count').textContent=`${state.party.length} / ${PARTY_SIZE}匹`;$('.party-hint').textContent=`${partyTypes(state.party).length}属性 · チャージ ×${typeDiversityBonus(partyTypes(state.party).length).toFixed(2)}`;
- $('#cards').innerHTML=Array.from({length:PARTY_SIZE},(_,slot)=>{const id=state.party[slot],mon=id?mons[id-1]:null;return `<article class="party-slot ${mon?'':'is-empty'}"><button class="party-member" data-id="${id||''}" ${mon?'':'disabled'}>${mon?`<img src="${img(id)}" alt=""><span><small>No.${pokemonNumber(id)}</small><strong>${mon.label}</strong></span>`:'<span class="party-vacant">＋ あき</span>'}</button><button class="party-replace" data-party-slot="${slot}">${mon?'入れ替える':'えらぶ'}</button></article>`}).join('');
+ $('#cards').innerHTML=Array.from({length:PARTY_SIZE},(_,slot)=>{const id=state.party[slot],mon=id?mons[id-1]:null;return `<article class="party-slot ${mon?'':'is-empty'}"><button class="party-member" data-id="${id||''}" ${mon?'':'disabled'}>${mon?`<img src="${img(id)}" alt=""><span><small>No.${pokemonNumber(id)}</small><strong>${mon.label}</strong><span class="party-types" aria-label="属性">${pokemonTypes(mon).length?pokemonTypes(mon).map(t=>`<span class="party-type" style="--type-color:${POKEMON_TYPE_COLORS[t]}">${POKEMON_TYPE_NAMES[t]}</span>`).join(''):'<span class="party-type type-unknown">未登録</span>'}</span></span>`:'<span class="party-vacant">＋ あき</span>'}</button><button class="party-replace" data-party-slot="${slot}">${mon?'入れ替える':'えらぶ'}</button></article>`}).join('');
 }
 function togglePokemonParty(id){
  if(busy)return 'いまは へんせいできません';
