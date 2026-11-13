@@ -1,0 +1,31 @@
+/* Battle rewards stay out of the finger path; the finale gets the big effects. */
+#battle #callout{top:5%;-webkit-text-stroke:0;filter:drop-shadow(0 2px 1px #26365c);text-shadow:0 2px #26365c;line-height:1.05}
+#battle #callout strong{font-size:clamp(31px,9vw,44px);color:#fff4b1}
+#battle #callout strong small{display:inline;font-size:16px;color:#fff}
+#battle #callout>span{font-size:14px;-webkit-text-stroke:0;color:white}
+#battle[data-combo-tier="2"] #callout strong{color:#ffe16e}
+#battle[data-combo-tier="3"] #callout strong{color:#bff6ff;text-shadow:0 2px #254ab3,0 0 10px #558be1}
+#battle[data-combo-tier="1"] .puzzle-stage{box-shadow:0 4px #a88738,0 0 0 2px #ffe39c}
+#battle[data-combo-tier="2"] .puzzle-stage{box-shadow:0 4px #b98227,0 0 0 3px #ffd75d,0 0 16px #ffd75d66}
+#battle[data-combo-tier="3"] .puzzle-stage{box-shadow:0 4px #5f81be,0 0 0 3px #a5efff,0 0 22px #a5efff66}
+#battle-power-tag{font-size:9px;font-weight:800;border-radius:12px;padding:2px 5px;color:#6d644c;background:#fff9e8;white-space:nowrap;margin:0 4px}
+#battle-power-tag[data-tier="2"]{background:#ffde72;color:#713b0f}
+#battle-power-tag[data-tier="3"]{background:#d8efff;color:#364c8f}
+#battle.power-breakthrough .attack-charge{animation:power-unlock .65s ease-out}
+#battle .power-note{position:absolute;right:6%;top:19%;font-size:20px;font-weight:900;color:var(--spark);text-shadow:1px 1px white,-1px -1px white,0 2px #293950;pointer-events:none;z-index:23;animation:power-received .65s ease-out both;white-space:nowrap}
+#battle .energy-orb{width:calc(72px * var(--attack-size,1));height:calc(72px * var(--attack-size,1));margin:calc(-36px * var(--attack-size,1));background:radial-gradient(circle,#fff 15%,#fff4bb 35%,var(--attack-color,#ffd557) 60%,transparent 76%);box-shadow:0 0 20px 8px #fff4bb,0 0 45px 15px var(--attack-color,#ffd557)}
+#battle.attack-release .enemy::after{border-color:var(--attack-color,#ffd557);border-width:calc(4px * var(--impact-scale,1))}
+#battle.attack-release .enemy .hp i{transition:width .6s cubic-bezier(.16,.6,.2,1)}
+#battle .final-damage{font-size:clamp(38px,11vw,66px);color:#ffe295;white-space:nowrap}
+#battle[data-attack-tier="3"] .final-damage{color:#bdedff;text-shadow:2px 2px #214d80,-2px -2px white;-webkit-text-stroke:1px #214d80}
+#battle.enemy-defeated .enemy>img{animation:enemy-falls .55s ease-in both!important}
+#battle.enemy-defeated .enemy h2{color:#8a6923}
+#battle .battle-reward-fx{position:absolute;inset:0;pointer-events:none;z-index:22;overflow:hidden}
+.impact-spark,.victory-spark{position:absolute;pointer-events:none;background:var(--spark);width:8px;height:18px;border:1px solid #fff7b4;box-shadow:0 0 5px var(--spark);animation:reward-spark .75s ease-out both}
+.victory-spark{width:11px;height:11px;clip-path:polygon(50% 0,62% 35%,100% 50%,62% 65%,50% 100%,38% 65%,0 50%,38% 35%);background:#ffe575}
+@keyframes power-received{0%{opacity:0;transform:translateY(7px) scale(.8)}25%{opacity:1;transform:translateY(0) scale(1.1)}75%{opacity:1}100%{opacity:0;transform:translateY(-20px)}}
+@keyframes power-unlock{30%{box-shadow:0 0 0 5px #ffe16aaa,0 0 24px #ffcc56;transform:scale(1.025)}100%{transform:scale(1)}}
+@keyframes reward-spark{0%{opacity:1;transform:translate(-50%,-50%) scale(.5)}15%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) rotate(var(--turn)) scale(.3)}}
+@keyframes enemy-falls{0%{opacity:1;transform:translateX(-50%) scale(1)}45%{opacity:.8;transform:translateX(-50%) scale(.92)}100%{opacity:0;transform:translate(-50%,12px) scale(.5)}}
+@media(max-width:350px){#battle-power-tag{font-size:8px;margin:0 2px;padding:2px 3px}#battle .attack-charge strong{font-size:10px}#battle #callout>span{font-size:12px}}
+@media(prefers-reduced-motion:reduce){#battle .power-note,#battle.power-breakthrough .attack-charge{animation:none}.power-note{display:none}#battle.enemy-defeated .enemy>img{animation:none!important;opacity:.2}#battle.attack-release .enemy .hp i{transition:none}}

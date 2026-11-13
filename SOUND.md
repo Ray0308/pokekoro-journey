@@ -10,3 +10,6 @@ PokekoroSfx.play(name,value)、startRoll(mode)、stopRoll()、stopAll()を呼ぶ
 
 ## 0.9.2
 BGM and SE/cry have independent persisted 0–100% sliders (default BGM 75%, SE 100%). Battle effects use a 2.6× bus before the existing compressor. Combo pitch climbs by semitones (capped at 12). A two-second layered charge rises continuously, followed by launch and impact. Attack focus lowers map BGM to 55% without pausing; impact, retreat and battle reset restore it. Reduced motion uses a shorter charge and static visual feedback.
+
+## 0.9.2.13
+Battle combo milestones (3/5/8), charge milestones (100%/160%), four attack strengths, and knockout have distinct cues. Continuous charge grows in pitch AND gain over its two-second duration. Existing independent SE/BGM controls apply. BattleFX owns and clears presentation timers and particles on battle reset/exit. No gameplay RNG is consumed by presentation.
