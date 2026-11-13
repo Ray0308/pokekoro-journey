@@ -1,34 +1,238 @@
-#ball-exchange{width:min(94vw,440px);max-height:calc(var(--app-height,100dvh) - 24px);overflow:auto;padding:18px;border:3px solid #bad3e0;border-radius:18px;background:#f6fbff;color:#304e64}
-#ball-exchange::backdrop{background:#193a5eb8}
-#ball-exchange h2{font-size:23px;text-align:center;color:#305d7c;margin:0 0 4px}
-.exchange-lead{text-align:center;font-size:12px;margin:0 0 12px;color:#5f7889}
-#exchange-recipes{display:grid;gap:12px}
-.exchange-recipe{padding:12px;border:1px solid #bfd3dc;border-radius:12px;background:#fffdf2;min-width:0}
-.exchange-rate{display:grid;grid-template-columns:1fr 24px 1fr;gap:6px;align-items:center;text-align:center}
-.exchange-rate>span{display:flex;align-items:center;justify-content:center;gap:5px;flex-wrap:wrap;min-width:0}
-.exchange-rate img{width:32px;height:32px;object-fit:contain;border-radius:50%}
-.exchange-rate strong{font-size:11px;flex-basis:100%;line-height:1.2}
-.exchange-rate small{font-weight:800;font-size:14px}
-.exchange-rate>b{font-size:24px;color:#4c85aa}
-.exchange-stock{font-size:10px;text-align:center;line-height:1.5;color:#6d7b7e;margin:8px 0}
-.exchange-recipe>label{display:block;text-align:center;font-size:11px;font-weight:800;margin-bottom:4px}
-.exchange-quantity{display:flex;justify-content:center;gap:6px;align-items:center}
-.exchange-quantity button{min-width:40px;min-height:36px;padding:3px 8px;border:1px solid #b7cbd6;background:#e6f1f8;border-radius:7px;color:#365f79;font-size:16px}
-.exchange-quantity [data-adjust="max"]{font-size:11px}
-.exchange-quantity input{width:64px;min-height:36px;text-align:center;font:800 17px Arial,sans-serif;color:#365f79;background:white;border:1px solid #9fbacb;border-radius:7px;box-sizing:border-box}
-.exchange-quantity input:focus-visible{outline:3px solid #87c6e8;outline-offset:1px}
-.exchange-preview{font-size:12px;font-weight:800;text-align:center;margin:7px 0;color:#6f562a;min-height:17px}
-#ball-exchange .exchange-submit{width:100%;min-height:38px;margin:0;padding:6px 12px;font-size:14px}
-.exchange-shortage{display:block;text-align:center;font-size:10px;color:#8f6551;margin-top:6px}
-#exchange-status{font-size:12px;text-align:center;line-height:1.5;min-height:36px;margin:10px 0;color:#3c6b73;font-weight:800}
-#exchange-close{width:100%;min-height:40px;font-size:14px;padding:8px}
-#ball-exchange button:disabled{opacity:.45;cursor:default}
-@media(max-height:650px){#ball-exchange{padding:12px}#ball-exchange h2{font-size:20px}.exchange-lead{margin-bottom:8px;font-size:11px}#exchange-recipes{gap:8px}.exchange-recipe{padding:8px}.exchange-rate img{width:25px;height:25px}.exchange-rate strong{font-size:10px}.exchange-stock{margin:5px 0;font-size:9px}.exchange-quantity button,.exchange-quantity input{min-height:32px}.exchange-preview{font-size:11px;margin:5px 0}#ball-exchange .exchange-submit{min-height:32px;font-size:12px}#exchange-status{margin:7px 0;font-size:11px}}
-#ball-exchange[open]{display:flex;flex-direction:column;overflow:hidden}
-#ball-exchange>h2,#ball-exchange>.exchange-lead,#exchange-status,#exchange-close{flex-shrink:0}
-#exchange-recipes{min-height:0;overflow:auto;flex:1;padding:1px 2px;overscroll-behavior:contain}
-#exchange-close{margin:0}
+#ball-exchange {
+  width: min(94vw, 440px);
+  max-height: calc(var(--app-height, 100dvh) - 24px);
+  overflow: auto;
+  padding: 18px;
+  border: 3px solid #bad3e0;
+  border-radius: 18px;
+  background: #f6fbff;
+  color: #304e64;
+}
+#ball-exchange::backdrop {
+  background: #193a5eb8;
+}
+#ball-exchange h2 {
+  font-size: 23px;
+  text-align: center;
+  color: #305d7c;
+  margin: 0 0 4px;
+}
+.exchange-lead {
+  text-align: center;
+  font-size: 12px;
+  margin: 0 0 12px;
+  color: #5f7889;
+}
+#exchange-recipes {
+  display: grid;
+  gap: 12px;
+}
+.exchange-recipe {
+  padding: 12px;
+  border: 1px solid #bfd3dc;
+  border-radius: 12px;
+  background: #fffdf2;
+  min-width: 0;
+}
+.exchange-rate {
+  display: grid;
+  grid-template-columns: 1fr 24px 1fr;
+  gap: 6px;
+  align-items: center;
+  text-align: center;
+}
+.exchange-rate > span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+.exchange-rate img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  border-radius: 50%;
+}
+.exchange-rate strong {
+  font-size: 11px;
+  flex-basis: 100%;
+  line-height: 1.2;
+}
+.exchange-rate small {
+  font-weight: 800;
+  font-size: 14px;
+}
+.exchange-rate > b {
+  font-size: 24px;
+  color: #4c85aa;
+}
+.exchange-stock {
+  font-size: 10px;
+  text-align: center;
+  line-height: 1.5;
+  color: #6d7b7e;
+  margin: 8px 0;
+}
+.exchange-recipe > label {
+  display: block;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+.exchange-quantity {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  align-items: center;
+}
+.exchange-quantity button {
+  min-width: 40px;
+  min-height: 36px;
+  padding: 3px 8px;
+  border: 1px solid #b7cbd6;
+  background: #e6f1f8;
+  border-radius: 7px;
+  color: #365f79;
+  font-size: 16px;
+}
+.exchange-quantity [data-adjust='max'] {
+  font-size: 11px;
+}
+.exchange-quantity input {
+  width: 64px;
+  min-height: 36px;
+  text-align: center;
+  font:
+    800 17px Arial,
+    sans-serif;
+  color: #365f79;
+  background: white;
+  border: 1px solid #9fbacb;
+  border-radius: 7px;
+  box-sizing: border-box;
+}
+.exchange-quantity input:focus-visible {
+  outline: 3px solid #87c6e8;
+  outline-offset: 1px;
+}
+.exchange-preview {
+  font-size: 12px;
+  font-weight: 800;
+  text-align: center;
+  margin: 7px 0;
+  color: #6f562a;
+  min-height: 17px;
+}
+#ball-exchange .exchange-submit {
+  width: 100%;
+  min-height: 38px;
+  margin: 0;
+  padding: 6px 12px;
+  font-size: 14px;
+}
+.exchange-shortage {
+  display: block;
+  text-align: center;
+  font-size: 10px;
+  color: #8f6551;
+  margin-top: 6px;
+}
+#exchange-status {
+  font-size: 12px;
+  text-align: center;
+  line-height: 1.5;
+  min-height: 36px;
+  margin: 10px 0;
+  color: #3c6b73;
+  font-weight: 800;
+}
+#exchange-close {
+  width: 100%;
+  min-height: 40px;
+  font-size: 14px;
+  padding: 8px;
+}
+#ball-exchange button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+@media (max-height: 650px) {
+  #ball-exchange {
+    padding: 12px;
+  }
+  #ball-exchange h2 {
+    font-size: 20px;
+  }
+  .exchange-lead {
+    margin-bottom: 8px;
+    font-size: 11px;
+  }
+  #exchange-recipes {
+    gap: 8px;
+  }
+  .exchange-recipe {
+    padding: 8px;
+  }
+  .exchange-rate img {
+    width: 25px;
+    height: 25px;
+  }
+  .exchange-rate strong {
+    font-size: 10px;
+  }
+  .exchange-stock {
+    margin: 5px 0;
+    font-size: 9px;
+  }
+  .exchange-quantity button,
+  .exchange-quantity input {
+    min-height: 32px;
+  }
+  .exchange-preview {
+    font-size: 11px;
+    margin: 5px 0;
+  }
+  #ball-exchange .exchange-submit {
+    min-height: 32px;
+    font-size: 12px;
+  }
+  #exchange-status {
+    margin: 7px 0;
+    font-size: 11px;
+  }
+}
+#ball-exchange[open] {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+#ball-exchange > h2,
+#ball-exchange > .exchange-lead,
+#exchange-status,
+#exchange-close {
+  flex-shrink: 0;
+}
+#exchange-recipes {
+  min-height: 0;
+  overflow: auto;
+  flex: 1;
+  padding: 1px 2px;
+  overscroll-behavior: contain;
+}
+#exchange-close {
+  margin: 0;
+}
 /* A definite flex container height avoids the same collapsed-list issue in Safari. */
-#ball-exchange[open]{box-sizing:border-box;height:min(700px,calc(var(--app-height,100dvh) - 24px))}
-#exchange-recipes{min-height:96px}
-#ball-exchange[open]{overflow-y:auto}
+#ball-exchange[open] {
+  box-sizing: border-box;
+  height: min(700px, calc(var(--app-height, 100dvh) - 24px));
+}
+#exchange-recipes {
+  min-height: 96px;
+}
+#ball-exchange[open] {
+  overflow-y: auto;
+}

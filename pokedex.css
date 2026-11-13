@@ -1,48 +1,548 @@
-.dex-launch{display:block;width:100%;margin:14px 0 0;padding:13px;border:2px solid #ffb1a8;border-radius:12px;background:linear-gradient(#e95752,#c9343b);color:#fff7dd;font-size:15px;font-weight:800;box-shadow:0 3px 0 #902c36}
-#pokedex-device{width:min(96vw,700px);max-height:calc(var(--app-height,100dvh) - 16px);padding:0;border:3px solid #802a38;border-radius:20px;background:#cf3e45;overflow:hidden;color:#173e42;box-shadow:0 8px 0 #6b2634,0 20px 60px #13202e66}
-#pokedex-device::backdrop{background:#172d42cc}
-.dex-machine{padding:10px 12px 12px;background:linear-gradient(110deg,#eb615b,#ce3943 65%,#b02f42)}
-.device-top{display:flex;align-items:center;gap:10px;height:42px;margin-bottom:8px}
-.device-lens{width:31px;height:31px;border:4px solid #d4e7e4;border-radius:50%;background:radial-gradient(at 35% 30%,#e4ffff,#73e0ed 40%,#26879f 75%);box-shadow:0 2px 0 #8b293b;flex-shrink:0}
-.device-indicators{align-self:flex-start;padding-top:3px;color:#ffd474;font-size:11px;letter-spacing:3px}
-.device-top>strong{margin-left:auto;font-size:11px;letter-spacing:2px;color:#ffe6c7}
-#device-close{width:40px;min-height:40px;padding:0;border:1px solid #812c39;border-radius:10px;background:#9f2e3e;color:#fff0d7;font-size:25px;box-shadow:0 2px 0 #852b38}
-.device-body{position:relative;perspective:900px}
-.device-spread{display:grid;grid-template-columns:1fr;gap:9px}
-.device-display{padding:9px;background:#dddccf;border:2px solid #963946;border-radius:13px 13px 13px 25px;box-shadow:inset 0 2px #fff3}
-.device-screen{padding:7px 10px 9px;text-align:center;background:radial-gradient(#f5fbea,#dbe9d3);border:2px solid #7b9d8a;border-radius:7px;box-shadow:inset 0 2px 5px #31594b20}
-#device-number{display:block;font-size:10px;font-weight:800;letter-spacing:1px;color:#587669;text-align:left}
-#device-image{display:block;width:100%;height:min(20dvh,160px);object-fit:contain;mix-blend-mode:normal;background:none;margin:0}
-#device-name{font-size:21px;margin:0;line-height:1.3;color:#2f594a}
-#device-type{display:block;font-size:10px;margin-top:2px;color:#617b65}
-.device-text{padding:11px 13px;border:2px solid #823847;border-radius:9px;background:#cfdfc5;box-shadow:inset 0 2px 4px #203f4022}
-#device-description{font-size:15px;line-height:1.75;margin:0;max-height:135px;overflow:auto;color:#25473d;text-align:left}
-#device-owned{display:block;margin-top:7px;font-size:9px;color:#5a7867}
-.device-actions{display:flex;gap:8px;margin-top:9px}
-.device-actions button{min-height:43px;flex:1;padding:7px 5px;border:2px solid #f5e5c4;border-radius:9px;font-size:12px;font-weight:800;line-height:1.4;box-shadow:0 3px 0 #8c303c}
-#device-speak{background:#276b79;color:#efffef;border-color:#7ec2c6}
-#device-party{background:#ffdc81;color:#725124;border-color:#fff0b2}
-#device-status{height:15px;overflow:hidden;margin:6px 0 4px;font-size:9px;color:#fff0d6;line-height:15px;text-align:center}
-.device-pager{display:flex;align-items:center;justify-content:center;gap:16px}
-.device-pager>button{width:43px;min-height:41px;padding:5px;border:2px solid #4e4249;border-radius:9px;background:#393e48;color:#fff5da;box-shadow:0 3px 0 #852b3a;font-size:18px}
-.device-pager label{display:flex;align-items:center;gap:7px;font-size:10px;color:#ffe9cc}
-#device-jump{width:65px;padding:7px 4px;font-size:16px;text-align:center;border:2px solid #7b4b4e;border-radius:6px;background:#e8edcf;color:#33524c}
-.device-cover{display:none;position:absolute;inset:0;z-index:5;border:3px solid #8d303e;border-radius:12px;background:linear-gradient(100deg,#ed6259,#c73042);color:#ffd9bb;align-items:center;justify-content:center;flex-direction:column;gap:20px;transform-origin:left center;backface-visibility:hidden;pointer-events:none;box-shadow:5px 0 0 #973041}
-.device-cover>b{font-size:18px;letter-spacing:5px}.device-cover>span{font-size:65px;color:#e9d8c8}
-#pokedex-device.is-opening .device-cover{display:flex;animation:device-open .55s ease-in-out both}
-#pokedex-device.is-opening .device-body button,#pokedex-device.is-opening .device-body input{pointer-events:none}
-#pokedex-device.is-speaking .device-lens{box-shadow:0 0 11px #c4ffff}
-@keyframes device-open{0%,12%{transform:rotateY(0);opacity:1}85%{opacity:1}100%{transform:rotateY(-115deg);opacity:0}}
-@media(min-width:600px){.device-spread{grid-template-columns:1.05fr 1fr;gap:15px}.device-text{display:flex;flex-direction:column;justify-content:center;border-left:6px solid #a23846}#device-image{height:min(34dvh,230px)}#device-description{font-size:17px;max-height:240px}.device-top{margin-bottom:12px}.dex-machine{padding:14px 17px}.device-actions{margin-top:14px}}
-@media(max-width:350px){.dex-machine{padding:8px 10px}.device-top{gap:7px;height:37px}#device-image{height:min(18dvh,115px)}#device-name{font-size:19px}#device-description{font-size:14px;line-height:1.7}.device-text{padding:9px 11px}.device-actions button{font-size:11px}.device-indicators{letter-spacing:1px}.device-pager{gap:11px}}
-@media(max-height:450px){#pokedex-device{width:min(96vw,680px)}.dex-machine{padding:6px 10px}.device-top{height:31px;margin-bottom:5px}.device-lens{width:25px;height:25px}.device-spread{grid-template-columns:1fr 1fr;gap:10px}.device-display{padding:5px}.device-screen{padding:4px 7px}#device-image{height:90px}#device-name{font-size:18px}#device-description{font-size:14px;max-height:115px}.device-actions{margin-top:6px}.device-actions button{min-height:35px;padding:4px}.device-pager>button{min-height:35px}#device-close{min-height:32px;height:32px}#device-status{margin:4px 0 2px}}
-@media(prefers-reduced-motion:reduce){#pokedex-device .device-cover{display:none!important}}
-#pokedex-device .device-top{padding:0;background:none;border:0;box-shadow:none;position:relative;width:auto;max-width:none;min-height:0;color:#ffe6c7}
-#pokedex-device section{margin:0}
-#cards .card.locked{cursor:pointer}
+.dex-launch {
+  display: block;
+  width: 100%;
+  margin: 14px 0 0;
+  padding: 13px;
+  border: 2px solid #ffb1a8;
+  border-radius: 12px;
+  background: linear-gradient(#e95752, #c9343b);
+  color: #fff7dd;
+  font-size: 15px;
+  font-weight: 800;
+  box-shadow: 0 3px 0 #902c36;
+}
+#pokedex-device {
+  width: min(96vw, 700px);
+  max-height: calc(var(--app-height, 100dvh) - 16px);
+  padding: 0;
+  border: 3px solid #802a38;
+  border-radius: 20px;
+  background: #cf3e45;
+  overflow: hidden;
+  color: #173e42;
+  box-shadow:
+    0 8px 0 #6b2634,
+    0 20px 60px #13202e66;
+}
+#pokedex-device::backdrop {
+  background: #172d42cc;
+}
+.dex-machine {
+  padding: 10px 12px 12px;
+  background: linear-gradient(110deg, #eb615b, #ce3943 65%, #b02f42);
+}
+.device-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 42px;
+  margin-bottom: 8px;
+}
+.device-lens {
+  width: 31px;
+  height: 31px;
+  border: 4px solid #d4e7e4;
+  border-radius: 50%;
+  background: radial-gradient(at 35% 30%, #e4ffff, #73e0ed 40%, #26879f 75%);
+  box-shadow: 0 2px 0 #8b293b;
+  flex-shrink: 0;
+}
+.device-indicators {
+  align-self: flex-start;
+  padding-top: 3px;
+  color: #ffd474;
+  font-size: 11px;
+  letter-spacing: 3px;
+}
+.device-top > strong {
+  margin-left: auto;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: #ffe6c7;
+}
+#device-close {
+  width: 40px;
+  min-height: 40px;
+  padding: 0;
+  border: 1px solid #812c39;
+  border-radius: 10px;
+  background: #9f2e3e;
+  color: #fff0d7;
+  font-size: 25px;
+  box-shadow: 0 2px 0 #852b38;
+}
+.device-body {
+  position: relative;
+  perspective: 900px;
+}
+.device-spread {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 9px;
+}
+.device-display {
+  padding: 9px;
+  background: #dddccf;
+  border: 2px solid #963946;
+  border-radius: 13px 13px 13px 25px;
+  box-shadow: inset 0 2px #fff3;
+}
+.device-screen {
+  padding: 7px 10px 9px;
+  text-align: center;
+  background: radial-gradient(#f5fbea, #dbe9d3);
+  border: 2px solid #7b9d8a;
+  border-radius: 7px;
+  box-shadow: inset 0 2px 5px #31594b20;
+}
+#device-number {
+  display: block;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #587669;
+  text-align: left;
+}
+#device-image {
+  display: block;
+  width: 100%;
+  height: min(20dvh, 160px);
+  object-fit: contain;
+  mix-blend-mode: normal;
+  background: none;
+  margin: 0;
+}
+#device-name {
+  font-size: 21px;
+  margin: 0;
+  line-height: 1.3;
+  color: #2f594a;
+}
+#device-type {
+  display: block;
+  font-size: 10px;
+  margin-top: 2px;
+  color: #617b65;
+}
+.device-text {
+  padding: 11px 13px;
+  border: 2px solid #823847;
+  border-radius: 9px;
+  background: #cfdfc5;
+  box-shadow: inset 0 2px 4px #203f4022;
+}
+#device-description {
+  font-size: 15px;
+  line-height: 1.75;
+  margin: 0;
+  max-height: 135px;
+  overflow: auto;
+  color: #25473d;
+  text-align: left;
+}
+#device-owned {
+  display: block;
+  margin-top: 7px;
+  font-size: 9px;
+  color: #5a7867;
+}
+.device-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 9px;
+}
+.device-actions button {
+  min-height: 43px;
+  flex: 1;
+  padding: 7px 5px;
+  border: 2px solid #f5e5c4;
+  border-radius: 9px;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.4;
+  box-shadow: 0 3px 0 #8c303c;
+}
+#device-speak {
+  background: #276b79;
+  color: #efffef;
+  border-color: #7ec2c6;
+}
+#device-party {
+  background: #ffdc81;
+  color: #725124;
+  border-color: #fff0b2;
+}
+#device-status {
+  height: 15px;
+  overflow: hidden;
+  margin: 6px 0 4px;
+  font-size: 9px;
+  color: #fff0d6;
+  line-height: 15px;
+  text-align: center;
+}
+.device-pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+.device-pager > button {
+  width: 43px;
+  min-height: 41px;
+  padding: 5px;
+  border: 2px solid #4e4249;
+  border-radius: 9px;
+  background: #393e48;
+  color: #fff5da;
+  box-shadow: 0 3px 0 #852b3a;
+  font-size: 18px;
+}
+.device-pager label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 10px;
+  color: #ffe9cc;
+}
+#device-jump {
+  width: 65px;
+  padding: 7px 4px;
+  font-size: 16px;
+  text-align: center;
+  border: 2px solid #7b4b4e;
+  border-radius: 6px;
+  background: #e8edcf;
+  color: #33524c;
+}
+.device-cover {
+  display: none;
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  border: 3px solid #8d303e;
+  border-radius: 12px;
+  background: linear-gradient(100deg, #ed6259, #c73042);
+  color: #ffd9bb;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 20px;
+  transform-origin: left center;
+  backface-visibility: hidden;
+  pointer-events: none;
+  box-shadow: 5px 0 0 #973041;
+}
+.device-cover > b {
+  font-size: 18px;
+  letter-spacing: 5px;
+}
+.device-cover > span {
+  font-size: 65px;
+  color: #e9d8c8;
+}
+#pokedex-device.is-opening .device-cover {
+  display: flex;
+  animation: device-open 0.55s ease-in-out both;
+}
+#pokedex-device.is-opening .device-body button,
+#pokedex-device.is-opening .device-body input {
+  pointer-events: none;
+}
+#pokedex-device.is-speaking .device-lens {
+  box-shadow: 0 0 11px #c4ffff;
+}
+@keyframes device-open {
+  0%,
+  12% {
+    transform: rotateY(0);
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: rotateY(-115deg);
+    opacity: 0;
+  }
+}
+@media (min-width: 600px) {
+  .device-spread {
+    grid-template-columns: 1.05fr 1fr;
+    gap: 15px;
+  }
+  .device-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-left: 6px solid #a23846;
+  }
+  #device-image {
+    height: min(34dvh, 230px);
+  }
+  #device-description {
+    font-size: 17px;
+    max-height: 240px;
+  }
+  .device-top {
+    margin-bottom: 12px;
+  }
+  .dex-machine {
+    padding: 14px 17px;
+  }
+  .device-actions {
+    margin-top: 14px;
+  }
+}
+@media (max-width: 350px) {
+  .dex-machine {
+    padding: 8px 10px;
+  }
+  .device-top {
+    gap: 7px;
+    height: 37px;
+  }
+  #device-image {
+    height: min(18dvh, 115px);
+  }
+  #device-name {
+    font-size: 19px;
+  }
+  #device-description {
+    font-size: 14px;
+    line-height: 1.7;
+  }
+  .device-text {
+    padding: 9px 11px;
+  }
+  .device-actions button {
+    font-size: 11px;
+  }
+  .device-indicators {
+    letter-spacing: 1px;
+  }
+  .device-pager {
+    gap: 11px;
+  }
+}
+@media (max-height: 450px) {
+  #pokedex-device {
+    width: min(96vw, 680px);
+  }
+  .dex-machine {
+    padding: 6px 10px;
+  }
+  .device-top {
+    height: 31px;
+    margin-bottom: 5px;
+  }
+  .device-lens {
+    width: 25px;
+    height: 25px;
+  }
+  .device-spread {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .device-display {
+    padding: 5px;
+  }
+  .device-screen {
+    padding: 4px 7px;
+  }
+  #device-image {
+    height: 90px;
+  }
+  #device-name {
+    font-size: 18px;
+  }
+  #device-description {
+    font-size: 14px;
+    max-height: 115px;
+  }
+  .device-actions {
+    margin-top: 6px;
+  }
+  .device-actions button {
+    min-height: 35px;
+    padding: 4px;
+  }
+  .device-pager > button {
+    min-height: 35px;
+  }
+  #device-close {
+    min-height: 32px;
+    height: 32px;
+  }
+  #device-status {
+    margin: 4px 0 2px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #pokedex-device .device-cover {
+    display: none !important;
+  }
+}
+#pokedex-device .device-top {
+  padding: 0;
+  background: none;
+  border: 0;
+  box-shadow: none;
+  position: relative;
+  width: auto;
+  max-width: none;
+  min-height: 0;
+  color: #ffe6c7;
+}
+#pokedex-device section {
+  margin: 0;
+}
+#cards .card.locked {
+  cursor: pointer;
+}
 
-.device-view-tabs{display:flex;gap:7px;margin-bottom:9px}.device-view-tabs button{flex:1;min-height:36px;padding:5px;border:2px solid #94313e;border-radius:6px;background:#b73442;color:#ffe8cf;font-size:13px;box-shadow:none}.device-view-tabs button[aria-pressed="true"]{background:#e3edcf;color:#244737}
-#device-list-view{background:#e3edcf;border:3px double #344c36;padding:8px;color:#233c2b}#device-list-count{margin:0 0 7px;font-size:13px;font-weight:700;text-align:center}#device-list-rows{height:min(48dvh,360px);overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable}.device-list-row{display:grid;grid-template-columns:22px 65px 1fr;align-items:center;width:100%;min-height:43px;padding:6px 3px;gap:5px;border:0;border-radius:0;border-bottom:1px solid #bac9ac;background:none;color:#233c2b;box-shadow:none;text-align:left;font:14px monospace}.device-list-row:disabled{opacity:1;color:#65765e}.device-list-row:focus-visible{outline:2px solid #344c36;outline-offset:-2px}.device-list-row strong{font-size:14px}.dex-caught img{display:block;width:18px;height:18px;border-radius:50%;mix-blend-mode:multiply}.device-list-pager{display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-size:12px}.device-list-pager button{min-width:44px;min-height:36px;padding:4px;background:#344c36;color:#f0f5df;border:0;border-radius:4px;box-shadow:none}
-#pokedex-device[data-view="list"] .device-spread,#pokedex-device[data-view="list"] .device-actions,#pokedex-device[data-view="list"] #device-status,#pokedex-device[data-view="list"] .device-pager{display:none}#device-image[hidden]{display:none}
-@media(max-height:450px){#device-list-rows{height:145px}.device-view-tabs{margin-bottom:5px}.device-view-tabs button{min-height:30px}#device-list-count{margin-bottom:3px}.device-list-pager{margin-top:4px}}
-@media(max-width:599px) and (max-height:620px){#pokedex-device[data-view="detail"] .device-top{height:32px;margin-bottom:5px}#pokedex-device[data-view="detail"] .device-view-tabs{margin-bottom:5px}#pokedex-device[data-view="detail"] #device-image{height:75px}#pokedex-device[data-view="detail"] .device-text{padding:7px 10px}#pokedex-device[data-view="detail"] #device-description{max-height:72px;font-size:13px;line-height:1.6}#pokedex-device[data-view="detail"] .device-actions{margin-top:5px}#pokedex-device[data-view="detail"] .device-actions button{min-height:36px}#pokedex-device[data-view="detail"] .device-pager>button{min-height:35px}}
+.device-view-tabs {
+  display: flex;
+  gap: 7px;
+  margin-bottom: 9px;
+}
+.device-view-tabs button {
+  flex: 1;
+  min-height: 36px;
+  padding: 5px;
+  border: 2px solid #94313e;
+  border-radius: 6px;
+  background: #b73442;
+  color: #ffe8cf;
+  font-size: 13px;
+  box-shadow: none;
+}
+.device-view-tabs button[aria-pressed='true'] {
+  background: #e3edcf;
+  color: #244737;
+}
+#device-list-view {
+  background: #e3edcf;
+  border: 3px double #344c36;
+  padding: 8px;
+  color: #233c2b;
+}
+#device-list-count {
+  margin: 0 0 7px;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+}
+#device-list-rows {
+  height: min(48dvh, 360px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+.device-list-row {
+  display: grid;
+  grid-template-columns: 22px 65px 1fr;
+  align-items: center;
+  width: 100%;
+  min-height: 43px;
+  padding: 6px 3px;
+  gap: 5px;
+  border: 0;
+  border-radius: 0;
+  border-bottom: 1px solid #bac9ac;
+  background: none;
+  color: #233c2b;
+  box-shadow: none;
+  text-align: left;
+  font: 14px monospace;
+}
+.device-list-row:disabled {
+  opacity: 1;
+  color: #65765e;
+}
+.device-list-row:focus-visible {
+  outline: 2px solid #344c36;
+  outline-offset: -2px;
+}
+.device-list-row strong {
+  font-size: 14px;
+}
+.dex-caught img {
+  display: block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  mix-blend-mode: multiply;
+}
+.device-list-pager {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+  font-size: 12px;
+}
+.device-list-pager button {
+  min-width: 44px;
+  min-height: 36px;
+  padding: 4px;
+  background: #344c36;
+  color: #f0f5df;
+  border: 0;
+  border-radius: 4px;
+  box-shadow: none;
+}
+#pokedex-device[data-view='list'] .device-spread,
+#pokedex-device[data-view='list'] .device-actions,
+#pokedex-device[data-view='list'] #device-status,
+#pokedex-device[data-view='list'] .device-pager {
+  display: none;
+}
+#device-image[hidden] {
+  display: none;
+}
+@media (max-height: 450px) {
+  #device-list-rows {
+    height: 145px;
+  }
+  .device-view-tabs {
+    margin-bottom: 5px;
+  }
+  .device-view-tabs button {
+    min-height: 30px;
+  }
+  #device-list-count {
+    margin-bottom: 3px;
+  }
+  .device-list-pager {
+    margin-top: 4px;
+  }
+}
+@media (max-width: 599px) and (max-height: 620px) {
+  #pokedex-device[data-view='detail'] .device-top {
+    height: 32px;
+    margin-bottom: 5px;
+  }
+  #pokedex-device[data-view='detail'] .device-view-tabs {
+    margin-bottom: 5px;
+  }
+  #pokedex-device[data-view='detail'] #device-image {
+    height: 75px;
+  }
+  #pokedex-device[data-view='detail'] .device-text {
+    padding: 7px 10px;
+  }
+  #pokedex-device[data-view='detail'] #device-description {
+    max-height: 72px;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  #pokedex-device[data-view='detail'] .device-actions {
+    margin-top: 5px;
+  }
+  #pokedex-device[data-view='detail'] .device-actions button {
+    min-height: 36px;
+  }
+  #pokedex-device[data-view='detail'] .device-pager > button {
+    min-height: 35px;
+  }
+}
