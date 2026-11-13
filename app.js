@@ -111,7 +111,7 @@ function drawRoute(){
  const bossPoint=mapRoutePoints().at(-1),decoration=activeMap().decoration?`<img class="rainbow-mew" src="${activeMap().decoration}" style="left:${bossPoint[0]-17}%;top:${bossPoint[1]}%" alt="" aria-hidden="true">`:'';
  return `<img class="map-art" src="${activeMap().background}" alt="">`+decoration+svg+currentSquares().map((s,i)=>{const p=mapRoutePoints()[i],portrait=s==='goal'&&isSafari()?`<img class="map-grass" src="${MAP_ASSETS.grass}" alt="特別な出会い">`:s==='goal'&&activeMap().boss?.wild?`<span class="boss-portrait"><img src="${pokemonPortrait(activeBossId())}" alt=""></span>`:s==='start'?`<img class="center-icon" src="${MAP_ASSETS.center}" alt="">`:s==='goal'&&activeMap().boss?.icon?`<span class="boss-portrait"><img src="${activeMap().boss.icon}" alt=""></span>`:s==='trainer'&&activeMap().trainerIcon?`<img class="trainer-portrait" src="${activeMap().trainerIcon}" alt="">`:s==='kurt'?`<img class="exchange-field-icon kurt-field-icon" src="${KURT_CONFIG.house}" alt="">`:s==='exchange'?`<img class="exchange-field-icon" src="assets/map/ball-exchange.webp" alt="">`:s==='item'?`<img class="item-field-icon" src="assets/map/item-ball.png" alt="">`:s==='wild'?mapWildIcon():`<svg class="node-symbol" aria-hidden="true"><use href="assets/ui-icons.svg#${s==='wild'?'grass':s}"/></svg>`;return `<div class="tile node-${s} ${i===state.pos?'current':''} ${i<state.pos?'visited':''}" style="left:${p[0]}%;top:${p[1]}%" aria-label="${i+1}マス目 ${tileLabel(s)}${i===state.pos?' 現在地':''}"><span class="node-number">${String(i+1).padStart(2,'0')}</span>${portrait}<small>${tileLabel(s)}</small>${i===state.pos?`<span class="player-marker">ここ！</span><img class="player-pawn" src="${MAP_ASSETS.player}" alt="主人公のコマ">`:''}</div>`}).join('');
 }
-function render(){ ensureKurtVisit(state);applyMapTheme();updateSafariMapLegend();$('#roll .roll-copy>span').textContent=rainbowExitReady()?'旅に戻る':state.pendingMapId?'次のマップへ':'サイコロを振る';if(!$('#roll').classList.contains('dice-holding'))$('#roll small').textContent=rainbowExitReady()?'タップして 元の旅へ！':state.pendingMapId?'タップして つぎの ぼうけんへ！':'おして はなして ころがそう！'; $('#lap').textContent=`${state.tour}周目 · ${state.pos+1}/15`;$('#route').innerHTML=drawRoute();$('#inventory').innerHTML=BALLS.map(b=>`<span aria-label="${b.name} ${state[b.key]}個"><img class="ball-icon" src="${b.image}" alt=""> ${state[b.key]}</span>`).join('');$('#miniParty').innerHTML=Array.from({length:PARTY_SIZE},(_,i)=>state.party[i]?`<img src="${img(state.party[i])}" alt="${mons[state.party[i]-1].label}">`:`<span class="party-empty" aria-label="空き枠">＋</span>`).join('');renderDex();$('#roll').disabled=busy;renderJourney();save()}
+function render(){ ensureKurtVisit(state);applyMapTheme();updateSafariMapLegend();$('#roll .roll-copy>span').textContent=rainbowExitReady()?'旅に戻る':state.pendingMapId?'次のマップへ':'サイコロを振る';if(!$('#roll').classList.contains('dice-holding'))$('#roll small').textContent=rainbowExitReady()?'タップして 元の旅へ！':state.pendingMapId?'タップして つぎの ぼうけんへ！':window.PokekoroDebug?.isActive?.()?'出目をえらんで ころがそう！':'おして はなして ころがそう！'; $('#lap').textContent=`${state.tour}周目 · ${state.pos+1}/15`;$('#route').innerHTML=drawRoute();$('#inventory').innerHTML=BALLS.map(b=>`<span aria-label="${b.name} ${state[b.key]}個"><img class="ball-icon" src="${b.image}" alt=""> ${state[b.key]}</span>`).join('');$('#miniParty').innerHTML=Array.from({length:PARTY_SIZE},(_,i)=>state.party[i]?`<img src="${img(state.party[i])}" alt="${mons[state.party[i]-1].label}">`:`<span class="party-empty" aria-label="空き枠">＋</span>`).join('');renderDex();$('#roll').disabled=busy;renderJourney();save()}
 function renderDex(){
  $('#party-type-warning').hidden=partyTypes(state.party).length<5;
  $('#count').textContent=`${state.party.length} / ${PARTY_SIZE}匹`;$('.party-hint').textContent=`${partyTypes(state.party).length}属性 · チャージ ×${typeDiversityBonus(partyTypes(state.party).length).toFixed(2)}`;
@@ -314,14 +314,14 @@ function resetDicePresentation(){
  }
  const button=$('#roll');button.classList.remove('dice-holding');
  if(pointer!==undefined&&button.hasPointerCapture?.(pointer)){try{button.releasePointerCapture(pointer)}catch{}}
- $('#roll small').textContent=rainbowExitReady()?'タップして 元の旅へ！':state.pendingMapId?'タップして つぎの ぼうけんへ！':'おして はなして ころがそう！';
+ $('#roll small').textContent=rainbowExitReady()?'タップして 元の旅へ！':state.pendingMapId?'タップして つぎの ぼうけんへ！':window.PokekoroDebug?.isActive?.()?'出目をえらんで ころがそう！':'おして はなして ころがそう！';
 }
 function cancelDiceHold(){
  if(!diceHold)return;resetDicePresentation();busy=false;
 }
 const rollButton=$('#roll');
 rollButton.onpointerdown=e=>{
- if(busy||e.button!==0||!e.isPrimary)return;e.preventDefault();if(rainbowExitReady()||state.pendingMapId||state.pos===14){rollDice();return}
+ if(busy||e.button!==0||!e.isPrimary)return;if(window.PokekoroDebug?.chooseRoll?.()){e.preventDefault();return}e.preventDefault();if(rainbowExitReady()||state.pendingMapId||state.pos===14){rollDice();return}
  diceHold={pointer:e.pointerId};busy=true;rollButton.setPointerCapture(e.pointerId);
  window.PokekoroSfx?.startRoll();diceLayer().classList.add('dice-held');rollButton.classList.add('dice-holding');$('#roll small').textContent='はなして ストップ！';
 };
@@ -331,7 +331,7 @@ rollButton.onpointerup=e=>{
 };
 rollButton.onpointercancel=cancelDiceHold;
 rollButton.onlostpointercapture=cancelDiceHold;
-rollButton.onclick=e=>{if(e.detail===0&&!diceHold)rollDice()};
+rollButton.onclick=e=>{if(e.detail===0&&!diceHold){if(window.PokekoroDebug?.chooseRoll?.())return;rollDice()}};
 rollButton.oncontextmenu=e=>e.preventDefault();
 window.addEventListener('blur',cancelDiceHold);
 document.addEventListener('visibilitychange',()=>{if(document.hidden)cancelDiceHold()});
