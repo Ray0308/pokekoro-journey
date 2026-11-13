@@ -5,7 +5,7 @@ function normalizeTypeBalls(stock){stock.typeBalls=Array.from({length:18},(_,i)=
 function kurtVisitKey(stock){return stock.tour+':'+stock.mapId}
 function kurtEligible(stock){return MAP_ORDER.includes(stock.mapId)&&stock.mapId!=='safari-zone'&&(!MAPS[stock.mapId].squares||MAPS[stock.mapId].squares.includes('exchange'))}
 function ensureKurtVisit(stock,rng=Math.random){if(!kurtEligible(stock))return;const key=kurtVisitKey(stock);if(!Object.hasOwn(stock.kurtHouses,key))stock.kurtHouses[key]=rng()<KURT_CONFIG.rate;for(const saved of Object.keys(stock.kurtHouses))if(Number(saved.split(':')[0])<stock.tour-1)delete stock.kurtHouses[saved]}
-function isKurtHouse(stock){return kurtEligible(stock)&&stock.kurtHouses?.[kurtVisitKey(stock)]===true}
+function isKurtHouse(stock){return kurtEligible(stock)&&(globalThis.PokekoroDebug?.forceKurtHouse?.()||stock.kurtHouses?.[kurtVisitKey(stock)]===true)}
 function captureBallStock(ball,stock){return Number.isInteger(ball.typeIndex)?stock.typeBalls[ball.typeIndex]:stock[ball.key]}
 function typeBallMatches(ball,mon){return Number.isInteger(ball.typeIndex)&&pokemonTypes(mon).includes(ball.typeIndex)}
 function ballCatchChance(ball,base,mon){const match=typeBallMatches(ball,mon),typed=Number.isInteger(ball.typeIndex);return Math.min(typed?(match?KURT_CONFIG.matchCap:.8):ball.cap,Math.max(0,base)+(typed?(match?KURT_CONFIG.matchBonus:0):ball.bonus))}
