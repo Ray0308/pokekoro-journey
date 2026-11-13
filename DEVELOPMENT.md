@@ -79,3 +79,9 @@ HTMLテンプレートの内部は、空白による表示の変化を避ける�
 
 再生成・場面切替・読み上げとの音量調整は [docs/retro-audio.md](docs/retro-audio.md) を参照する。
 `npm run music:generate` はffmpegを使用する開発専用コマンド。
+
+## トレーナー編成と連戦
+
+編集元・再生成・セーブ移行・報酬確定の境界は [docs/trainer-battles.md](docs/trainer-battles.md) を参照する。
+候補は `data/trainer-rosters.json` の全国図鑑番号で管理し、`npm run trainers:generate` と `npm test` で検査する。
+連戦の途中でバッジ・報酬・マップ進行を確定しない。

@@ -18,6 +18,23 @@
           })
           .join('')
       : '<span class="enemy-type-unknown">タイプ ？？？</span>';
+    const roster = document.querySelector('#trainer-roster');
+    roster.hidden = !battle.series;
+    if (battle.series) {
+      const { team, index } = battle.series;
+      roster.setAttribute(
+        'aria-label',
+        `相手の手持ち${team.length}匹、残り${team.length - index}匹`,
+      );
+      roster.innerHTML =
+        team
+          .map(
+            (_, i) =>
+              `<i class="${i < index ? 'defeated' : i === index ? 'active' : ''}" aria-hidden="true"></i>`,
+          )
+          .join('') +
+        `<small>${index === team.length - 1 ? 'きりふだ' : 'あと' + (team.length - index) + 'ひき'}</small>`;
+    } else roster.replaceChildren();
     ownedMark.hidden = !owned.includes(battle.m.id);
     const ratio = Math.max(0, battle.hp / battle.total);
     status.dataset.hp = ratio <= 0.2 ? 'low' : ratio <= 0.5 ? 'mid' : 'high';
@@ -25,7 +42,7 @@
     hpRow.setAttribute('aria-valuenow', String(Math.max(0, Math.ceil(battle.hp))));
     document.querySelector('#hptext').textContent = battle.safari
       ? '倒さずに なかよく なろう！'
-      : `${Math.max(0, Math.ceil(battle.hp))} / ${battle.total}`;
+      : `${battle.level ? 'Lv.' + battle.level + ' · ' : ''}${Math.max(0, Math.ceil(battle.hp))} / ${battle.total}`;
   }
   function set(map, battle, owned) {
     backdrop.style.backgroundImage = `url("${map.background}")`;

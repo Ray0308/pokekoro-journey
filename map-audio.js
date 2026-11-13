@@ -44,7 +44,7 @@
         : 'victory'
       : encounter()
         ? battle.trainer
-          ? document.querySelector('#battle').open
+          ? battle.continuation || document.querySelector('#battle').open
             ? 'trainerBattle'
             : 'trainer'
           : 'wild'
@@ -264,9 +264,10 @@
         applyMix();
       }, 5000);
   });
-  document.addEventListener('battle:prepare', () => {
-    for (const key of ['wild', 'trainer', 'trainerBattle', 'victory', 'trainerVictory'])
-      positions.delete(key);
+  document.addEventListener('battle:prepare', (event) => {
+    if (!event.detail?.continuation)
+      for (const key of ['wild', 'trainer', 'trainerBattle', 'victory', 'trainerVictory'])
+        positions.delete(key);
     if (battle?.trainer) {
       warm('trainer');
       warm('trainerBattle');

@@ -8,6 +8,11 @@
   gap: 6px;
 }
 #battle .battlehead > span {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-size: 11px;
   color: #3e5f50;
 }
@@ -376,6 +381,39 @@
   box-shadow: none;
 }
 /* A small RPG status plate and a location-specific encounter field. */
+#trainer-roster {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  min-height: 13px;
+}
+#trainer-roster[hidden] {
+  display: none;
+}
+#trainer-roster > i {
+  display: block;
+  width: 10px;
+  height: 10px;
+  flex-shrink: 0;
+  border: 1px solid #3d5044;
+  border-radius: 50%;
+  background: linear-gradient(#da6559 0 44%, #3d5044 44% 57%, #fffdf1 57%);
+}
+#trainer-roster > i.defeated {
+  background: #829381;
+  opacity: 0.35;
+}
+#trainer-roster > i.active {
+  outline: 2px solid #dab054;
+  outline-offset: 1px;
+}
+#battle .enemy #trainer-roster > small {
+  display: block;
+  margin-left: auto;
+  font-size: 9px;
+  white-space: nowrap;
+  color: #596b56;
+}
 #battle .enemy {
   min-height: 128px;
   margin: 1px 0 3px;

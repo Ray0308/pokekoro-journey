@@ -253,6 +253,9 @@
         if (Array.isArray(saved.typeBalls)) next.typeBalls = saved.typeBalls;
         if (saved.kurtHouses && typeof saved.kurtHouses === 'object')
           next.kurtHouses = saved.kurtHouses;
+        for (const key of ['rivalStarterId', 'rivalTeams', 'trainerWins'])
+          if (Object.hasOwn(saved, key)) next[key] = clone(saved[key]);
+          else delete next[key];
         next.nextRainbowTicketId = Math.max(
           next.nextRainbowTicketId,
           ...next.rainbowTickets.map((t) => t.id + 1),
@@ -260,6 +263,7 @@
       }
     }
     normalizeTypeBalls(next);
+    normalizeTrainerState(next);
     forceTickets = force.checked;
     forceHouse = houseSetting.checked;
     forcedDice = validDice(diceSetting.value);

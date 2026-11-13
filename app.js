@@ -73,6 +73,8 @@ state.clearedMaps = Array.isArray(state.clearedMaps)
   : [];
 state.tour = Number.isSafeInteger(state.tour) && state.tour > 0 ? state.tour : 1;
 normalizeTypeBalls(state);
+// 旧セーブの所持・進行を維持し、ライバルの系統とボス勝利記録だけを補完する。
+normalizeTrainerState(state);
 // チケットは入手元と帰還先を保持し、通常マップの周回進行から独立させる。
 function normalizeRainbowTicket(ticket) {
   if (
@@ -123,10 +125,15 @@ state.nextRainbowTicketId = Math.max(
   state.rainbowVisit ? state.rainbowVisit.id + 1 : 1,
 );
 state.pendingMapId = remapMapId(state.pendingMapId);
+// 改修前にワタルへ勝ち、ハナダの洞窟への移動待ちだったセーブは巻き戻さない。
+const legacyLeagueExit =
+  state.mapId === 'indigo-lance' &&
+  state.pendingMapId === 'cerulean-cave' &&
+  state.clearedMaps.includes('indigo-lance');
 state.pendingMapId =
   !state.rainbowVisit &&
   state.clearedMaps.includes(state.mapId) &&
-  MAPS[state.mapId].nextMap === state.pendingMapId &&
+  (MAPS[state.mapId].nextMap === state.pendingMapId || legacyLeagueExit) &&
   MAP_ORDER.includes(state.pendingMapId)
     ? state.pendingMapId
     : null;
@@ -189,7 +196,10 @@ function isRainbow() {
 }
 // 保存済みの家の出現結果を見て表示だけ差し替える。ここでは再抽選しない。
 function currentSquares() {
-  const stops = activeMap().squares || squares;
+  const configured = activeMap().squares || squares;
+  const stops = activeMap().boss?.wild
+    ? configured.map((s) => (s === 'trainer' ? 'wild' : s))
+    : configured;
   return isKurtHouse(state) ? stops.map((s) => (s === 'exchange' ? 'kurt' : s)) : stops;
 }
 function rainbowExitReady() {
@@ -311,8 +321,8 @@ function applyMapTheme() {
   $('#map .maphead h2').textContent = map.name;
   $('#route').setAttribute('aria-label', map.name + 'の双六マップ');
   $('#map .board-legend span:nth-child(2)').innerHTML =
-    (map.trainerIcon
-      ? `<img src="${map.trainerIcon}" alt="">`
+    (trainerTileProfile(state, 4)?.icon || map.trainerIcon
+      ? `<img src="${trainerTileProfile(state, 4)?.icon || map.trainerIcon}" alt="">`
       : '<svg><use href="assets/ui-icons.svg#trainer"/></svg>') + 'トレーナー';
 }
 let activePuzzlePointer = null;
@@ -451,8 +461,8 @@ function drawRoute() {
                   ? `<img class="center-icon" src="${MAP_ASSETS.center}" alt="">`
                   : s === 'goal' && activeMap().boss?.icon
                     ? `<span class="boss-portrait"><img src="${activeMap().boss.icon}" alt=""></span>`
-                    : s === 'trainer' && activeMap().trainerIcon
-                      ? `<img class="trainer-portrait" src="${activeMap().trainerIcon}" alt="">`
+                    : s === 'trainer' && trainerTileProfile(state, i)?.icon
+                      ? `<img class="trainer-portrait" src="${trainerTileProfile(state, i).icon}" alt="${trainerTileProfile(state, i).name}">`
                       : s === 'kurt'
                         ? `<img class="exchange-field-icon kurt-field-icon" src="${KURT_CONFIG.house}" alt="">`
                         : s === 'exchange'
@@ -626,20 +636,17 @@ async function rollDice() {
     render();
   } else openBattle(s === 'trainer' || s === 'goal', s === 'goal');
 }
-function pickTrainerAppearance(config, rng = Math.random) {
-  const variants = config?.imageVariants;
-  return variants?.length
-    ? { ...config, ...variants[Math.floor(rng() * variants.length)] }
-    : config;
-}
 // 1回分のバトル状態を作り直す。HPや報酬を前の相手から持ち越さない。
-function openBattle(trainer, boss) {
+function openBattle(trainer, boss, continuation = null) {
   window.PokekoroBattleFX?.reset();
   if (partyTypeError(state.party)) {
+    busy = false;
+    $('#roll').disabled = false;
     showTab('party');
     $('.party-hint').textContent = '3属性以上の パーティーを くもう！';
     return;
   }
+  busy = true;
   window.PokekoroSfx?.stopAll();
   document.dispatchEvent(new CustomEvent('battle:audiofocus', { detail: { active: false } }));
   resetDicePresentation();
@@ -657,6 +664,9 @@ function openBattle(trainer, boss) {
     'power-full',
   );
   $('#energy-layer')?.remove();
+  $('#battle')
+    .querySelectorAll('.damage-number')
+    .forEach((node) => node.remove());
   $('#leave').disabled = false;
   $('#battle-fx').innerHTML = '';
   $('#callout').textContent = '';
@@ -666,9 +676,12 @@ function openBattle(trainer, boss) {
   $('#timebar').style.width = '100%';
   $('#combobar').style.width = '0%';
   $('#puzzle-tip').textContent = '同じマークを3つ以上なぞろう！';
-  if (isSafari() || (boss && activeMap().boss?.wild)) trainer = false;
-  const id =
-    isSafari() && boss
+  if (isSafari() || activeMap().boss?.wild) trainer = false;
+  const series = trainer ? continuation || createTrainerEncounter(state, activeMap(), boss) : null;
+  const member = series?.team[series.index];
+  const id = member
+    ? member.id
+    : isSafari() && boss
       ? SAFARI_RULES.finalIds[Math.floor(Math.random() * SAFARI_RULES.finalIds.length)]
       : boss
         ? activeBossId()
@@ -682,17 +695,19 @@ function openBattle(trainer, boss) {
     trainer,
     boss,
     safari: isSafari(),
-    trainerAppearance:
-      (trainer || boss) && activeMap().boss?.imageVariants
-        ? pickTrainerAppearance(activeMap().boss)
-        : null,
+    series,
+    continuation: !!continuation,
+    roundStarted: !trainer,
+    trainerAppearance: series?.profile || null,
+    level: member?.level,
+    roundSeconds: member?.seconds || 30,
     puzzleTypes: partyTypes(state.party),
     typeCharge: {},
     damage: 0,
     shownDamage: 0,
     phase: 'ready',
-    hp: boss ? 620 : trainer ? 460 : 300 + ((m.id - 1) % 3) * 65,
-    total: boss ? 620 : trainer ? 460 : 300 + ((m.id - 1) % 3) * 65,
+    hp: member?.hp ?? (boss ? 620 : 300 + ((m.id - 1) % 3) * 65),
+    total: member?.hp ?? (boss ? 620 : 300 + ((m.id - 1) % 3) * 65),
   };
   combo = maxCombo = 0;
   lastClear = 0;
@@ -707,9 +722,9 @@ function openBattle(trainer, boss) {
         ? '⚑ ' +
           (activeMap().boss?.role || 'ボストレーナー') +
           '：' +
-          (activeMap().boss?.name || 'ボス')
+          (battle.trainerAppearance?.name || activeMap().boss?.name || 'ボス')
         : trainer
-          ? '⚔ トレーナーバトル'
+          ? '⚔ ' + battle.trainerAppearance.name
           : '🌿 野生のポケモン';
   $('#weakness-tip').textContent =
     m.type === null || m.type > 2
@@ -720,7 +735,11 @@ function openBattle(trainer, boss) {
   $('#enemyname').textContent = m.label;
   $('#enemyimg').src = pokemonPortrait(m.id);
   $('#enemyimg').alt = m.label;
-  $('#clock').textContent = '30.0';
+  $('#clock').textContent = battleDuration().toFixed(1);
+  $('#ready-overlay').innerHTML =
+    '<strong>3つ つないで<br>パワーをためよう！</strong><span>' +
+    battleDuration() +
+    '秒後に まとめてアタック！</span>';
   $('#combo').textContent = '属性を3個以上つなごう';
   $('#chain').textContent = '0つなぎ';
   $('#start').hidden = false;
@@ -738,7 +757,9 @@ function openBattle(trainer, boss) {
   $('#encounter-img').alt = m.label;
   configureSafariUI();
   window.PokekoroBattleScene?.set(activeMap(), battle, state.owned);
-  document.dispatchEvent(new CustomEvent('battle:prepare'));
+  document.dispatchEvent(
+    new CustomEvent('battle:prepare', { detail: { continuation: !!continuation } }),
+  );
   showEncounter(trainer || (boss && !activeMap().boss?.wild));
   tone(520, 0.15);
 }
@@ -842,7 +863,7 @@ canvas.onpointerup = (e) => {
   activePuzzlePointer = null;
   if (!drag) return;
   drag = false;
-  if (running && performance.now() - startAt >= 30000) {
+  if (running && performance.now() - startAt >= battleDuration() * 1000) {
     path = [];
     resolveAttack();
     return;
@@ -902,9 +923,9 @@ $('#start').onclick = async () => {
 function tick(now) {
   if (!running) return;
   elapsed = (now - startAt) / 1000;
-  let left = Math.max(0, 30 - elapsed);
+  let left = Math.max(0, battleDuration() - elapsed);
   $('#clock').textContent = left.toFixed(1);
-  $('#timebar').style.width = `${(left / 30) * 100}%`;
+  $('#timebar').style.width = `${(left / battleDuration()) * 100}%`;
   $('#combobar').style.width = lastClear
     ? `${Math.max(0, 1 - (now - lastClear) / 2000) * 100}%`
     : '0%';
@@ -913,7 +934,7 @@ function tick(now) {
     lastSecond = Math.ceil(left);
     tone(650, 0.06);
   }
-  if (elapsed >= 30) {
+  if (elapsed >= battleDuration()) {
     resolveAttack();
     return;
   }
@@ -999,7 +1020,7 @@ function rewardItemsHtml(items) {
 }
 // HPが0になった瞬間に1度だけ勝利を通知し、結果文より先に勝利BGMを始める。
 function markBattleVictory() {
-  if (!battle || battle.safari || battle.victory) return;
+  if (!battle || battle.safari || battle.victory || hasNextTrainerPokemon()) return;
   battle.victory = true;
   document.dispatchEvent(new CustomEvent('battle:victory'));
 }
@@ -1013,7 +1034,12 @@ function endBattle(win) {
     return;
   }
   if (!battle || battle.rewardResolved) return;
+  if (battle.series && !battle.roundStarted) return;
   if (battle.victory) win = true;
+  if (win && hasNextTrainerPokemon()) {
+    nextTrainerRound();
+    return;
+  }
   if (win) markBattleVictory();
   battle.rewardResolved = true;
   battleEpoch++;
@@ -1037,6 +1063,8 @@ function endBattle(win) {
   const earnedBadge =
     normalBoss && !state.clearedMaps.includes(state.mapId) ? activeMap().badge : null;
   if (normalBoss) {
+    if (battle.trainer)
+      state.trainerWins[state.mapId] = Math.min(999, (state.trainerWins[state.mapId] || 0) + 1);
     if (!state.clearedMaps.includes(state.mapId)) state.clearedMaps.push(state.mapId);
     state.pendingMapId = activeMap().nextMap || MAP_ORDER[0];
   }
@@ -1052,7 +1080,7 @@ function endBattle(win) {
     state.balls += 2;
     render();
     result(
-      `<h2>${battle.boss ? (activeMap().leagueFinal ? 'ワタルに勝利！' : activeMap().name + 'クリア！') : 'トレーナーに勝利！'}</h2><p>アイテムを てにいれた！</p>${rewardItemsHtml([{ id: 'super', count: battle.boss ? 3 : 1 }, { id: 'normal', count: 2 }, ...(masterDrop ? [{ id: 'master', count: 1 }] : []), ...(ticket ? [{ id: 'rainbow', count: 1 }] : [])])}${earnedBadge ? `<div class="reward-badge"><img src="${activeMap().badgeImage}" alt="${earnedBadge}"><span><small>バッジを てにいれた！</small><strong>${earnedBadge}</strong></span></div>` : ''}${ticket ? '<button id="reward-rainbow" class="rainbow-action">にじのくもへ 行く</button>' : ''}<button id="done" class="primary">次のマップへ</button>`,
+      `<h2>${battle.boss ? (activeMap().leagueFinal ? battle.trainerAppearance.name + 'に勝利！' : activeMap().name + 'クリア！') : 'トレーナーに勝利！'}</h2><p>${battle.trainerAppearance.name}の ${battle.series.team.length}ひきに かった！<br>アイテムを てにいれた！</p>${rewardItemsHtml([{ id: 'super', count: battle.boss ? 3 : 1 }, { id: 'normal', count: 2 }, ...(masterDrop ? [{ id: 'master', count: 1 }] : []), ...(ticket ? [{ id: 'rainbow', count: 1 }] : [])])}${earnedBadge ? `<div class="reward-badge"><img src="${activeMap().badgeImage}" alt="${earnedBadge}"><span><small>バッジを てにいれた！</small><strong>${earnedBadge}</strong></span></div>` : ''}${ticket ? '<button id="reward-rainbow" class="rainbow-action">にじのくもへ 行く</button>' : ''}<button id="done" class="primary">${battle.boss ? '次のマップへ' : 'マップへ もどる'}</button>`,
     );
     if (earnedBadge) sfx('badge');
     else sfx('success');
@@ -1387,6 +1415,10 @@ async function showEncounter(immediate) {
   dialog.classList.remove('boss-encounter');
   // 名前の未登録と画像の未登録は別。アートがあれば番号表示の相手にもシルエット演出を使う。
   dialog.dataset.numberOnly = String(!battle.m.portrait);
+  if (battle.continuation) {
+    showNextTrainerEncounter();
+    return;
+  }
   if (
     (battle.boss || (battle.trainer && battle.trainerAppearance)) &&
     activeMap().boss &&
@@ -1433,6 +1465,7 @@ $('#encounter-go').onclick = () => {
   if ($('#encounter-go').disabled) return;
   $('#encounter').close();
   $('#battle').showModal();
+  battle.roundStarted = true;
   document.dispatchEvent(new CustomEvent('battle:enter'));
   fitBattle();
 };
@@ -1485,7 +1518,7 @@ async function resolveAttack() {
   drag = false;
   preparing = false;
   path = [];
-  elapsed = 30;
+  elapsed = battleDuration();
   cancelAnimationFrame(raf);
   battle.phase = 'resolving';
   const epoch = battleEpoch;
@@ -1570,7 +1603,7 @@ async function resolveAttack() {
   if (epoch !== battleEpoch) return;
   d.remove();
   $('#ready-overlay').innerHTML =
-    `<strong>${remaining === 0 ? 'やった！ 勝利！' : 'おしかった…！'}</strong><span>${remaining === 0 ? 'みんなのパワーで 大しょうり！' : 'ながく つなぐと たくさん たまるよ！'}</span>`;
+    `<strong>${remaining === 0 ? (hasNextTrainerPokemon() ? 'つぎの ポケモン！' : 'やった！ 勝利！') : 'おしかった…！'}</strong><span>${remaining === 0 ? (hasNextTrainerPokemon() ? 'しょうぶは まだまだ！' : 'みんなのパワーで 大しょうり！') : 'ながく つなぐと たくさん たまるよ！'}</span>`;
   await wait(700);
   if (epoch !== battleEpoch) return;
   battle.phase = 'finished';
