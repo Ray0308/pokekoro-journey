@@ -51,3 +51,6 @@
 
 ## rainbow-cloud.webp
 ユーザー提供の虹の雲背景。1254×1254の全体構図を維持してWebP化。原本はoriginals/rainbow-cloud.jpg。既存のoutdoorルートを使用し、四隅の星座・バッグを残して表示。
+
+## rainbow-mew.png / rainbow-mystery.jpg
+ユーザー提供のミュウ図案から方眼・印刷記号を除いた透過装飾と、提供された特別な出会いアイコン。ミュウ原本はoriginals/rainbow-mew.jpg。CSSで180度回転・不透明度50%、ボスの左側に表示。

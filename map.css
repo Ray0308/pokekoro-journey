@@ -290,3 +290,10 @@ body[data-game-view="journey"] .app-version,body[data-game-view="party"] .app-ve
 @media(prefers-reduced-motion:reduce){#encounter[data-phase="boss-trainer"] #encounter-trainer{animation:none}}
 
 #map .tile img.item-field-icon{position:absolute;inset:auto;left:50%;top:50%;width:80%;height:80%;max-width:32px;max-height:32px;transform:translate(-50%,-50%);object-fit:contain;image-rendering:pixelated;mix-blend-mode:normal;border:0;border-radius:0;background:none;box-shadow:none}
+
+#map .tile .map-mystery-icon{position:absolute;left:50%;top:50%;width:80%;height:80%;transform:translate(-50%,-50%);border-radius:6px;overflow:hidden;display:block;background:white}
+#map .map-mystery-icon img{position:absolute;left:50%;top:50%;width:140%;height:140%;max-width:none;transform:translate(-50%,-50%);object-fit:cover;border:0;border-radius:0;mix-blend-mode:normal;box-shadow:none}
+#map .board-legend .map-mystery-icon{position:relative;width:16px;height:16px;display:inline-block;overflow:hidden;border-radius:3px;vertical-align:middle}
+#map .board-legend .map-mystery-icon img{width:140%;height:140%}
+#map .tile.current>.map-mystery-icon{opacity:0}
+#map .rainbow-mew{position:absolute;width:14%;height:14%;object-fit:contain;transform:translate(-50%,-50%) rotate(180deg);opacity:.5;image-rendering:pixelated;pointer-events:none;z-index:1;max-width:none}
