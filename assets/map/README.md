@@ -54,3 +54,6 @@
 
 ## rainbow-mew.png / rainbow-mystery.jpg
 ユーザー提供のミュウ図案から方眼・印刷記号を除いた透過装飾と、提供された特別な出会いアイコン。ミュウ原本はoriginals/rainbow-mew.jpg。CSSで180度回転・不透明度50%、ボスの左側に表示。
+
+## diglett-cave.webp
+ユーザー提供のディグダのあな背景。1280×1169の全体構図を維持してWebP化。原本はoriginals/diglett-cave.jpg。専用routePointsで左下のはしごから右上のはしごへ進む。
