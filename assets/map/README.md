@@ -48,3 +48,6 @@
 
 ## vermilion-gym.webp
 ユーザー提供のクチバジム背景。1254×1254の構図を維持してWebP化。原本はoriginals/vermilion-gym.jpg。専用routePointsで入口から巡り、奥中央のマチスへ到達する15マスを配置。
+
+## rainbow-cloud.webp
+ユーザー提供の虹の雲背景。1254×1254の全体構図を維持してWebP化。原本はoriginals/rainbow-cloud.jpg。既存のoutdoorルートを使用し、四隅の星座・バッグを残して表示。
