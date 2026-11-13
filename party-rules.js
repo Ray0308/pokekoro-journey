@@ -86,11 +86,20 @@ const MULTITYPE_BALANCE = Object.freeze({ baseline: 3, neighborChance: 0.25 });
 function typeDiversityBonus(typeCount) {
   return Math.max(1, typeCount / MULTITYPE_BALANCE.baseline);
 }
-function puzzleCharge(power, count, combo, weak, typeCount) {
+function puzzleCharge(power, count, combo, effectiveness, typeCount) {
+  // 旧来の真偽値による呼び出しも維持しつつ、無効の0を等倍へ置き換えない。
+  const factor =
+    typeof effectiveness === 'boolean'
+      ? effectiveness
+        ? 2
+        : 1
+      : Number.isFinite(effectiveness) && effectiveness >= 0
+        ? effectiveness
+        : 1;
   return Math.round(
     ((power * count) / 3) *
       (1 + Math.min(Math.max(0, combo - 1), 9) * 0.15) *
-      (weak ? 2 : 1) *
+      factor *
       typeDiversityBonus(typeCount),
   );
 }

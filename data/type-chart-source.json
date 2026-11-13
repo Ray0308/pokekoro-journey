@@ -1,0 +1,18 @@
+{
+  "repository": "https://github.com/PokeAPI/pokeapi",
+  "commit": "8a92bfa7dab2f12b84b5d151562f9857c133ff30",
+  "fetchedAt": "2026-11-13",
+  "scope": "18 standard types, current-generation chart; excludes Stellar and move/ability exceptions",
+  "files": [
+    {
+      "url": "https://raw.githubusercontent.com/PokeAPI/pokeapi/8a92bfa7dab2f12b84b5d151562f9857c133ff30/data/v2/csv/type_efficacy.csv",
+      "path": "data/type-efficacy.source.csv",
+      "sha256": "cdd7de4066680414d0a2433af805f139f425d6350cbf998ecab559a0fe8ff587"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/PokeAPI/pokeapi/8a92bfa7dab2f12b84b5d151562f9857c133ff30/data/v2/csv/type_names.csv",
+      "path": "data/type-names.source.csv",
+      "sha256": "685230c51074cf2f723debcf827a4df4c36ab0ec7e929c806ad65a3e40958705"
+    }
+  ]
+}

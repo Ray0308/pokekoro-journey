@@ -726,12 +726,16 @@ function openBattle(trainer, boss, continuation = null) {
         : trainer
           ? '⚔ ' + battle.trainerAppearance.name
           : '🌿 野生のポケモン';
+  const matchup = bestTypeMatchup(m, battle.puzzleTypes);
   $('#weakness-tip').textContent =
-    m.type === null || m.type > 2
+    !matchup || matchup.factor === 1
       ? 'パーティーの属性を つなごう！'
-      : `${icons[[1, 2, 0][m.type]]} ${types[[1, 2, 0][m.type]]}で こうかばつぐん！`;
-  $('#weakness-tip').textContent +=
-    ` · ${battle.puzzleTypes.length}属性 ×${typeDiversityBonus(battle.puzzleTypes.length).toFixed(2)}`;
+      : matchup.factor === 0
+        ? 'こうかのある属性なし。撤退して編成を変えよう'
+        : `${icons[matchup.type]} ${types[matchup.type]} ×${matchup.factor}${matchup.factor > 1 ? 'で こうかばつぐん！' : '（いまひとつ）'}`;
+  if (matchup?.factor !== 0)
+    $('#weakness-tip').textContent +=
+      ` · ${battle.puzzleTypes.length}属性 ×${typeDiversityBonus(battle.puzzleTypes.length).toFixed(2)}`;
   $('#enemyname').textContent = m.label;
   $('#enemyimg').src = pokemonPortrait(m.id);
   $('#enemyimg').alt = m.label;
@@ -875,18 +879,14 @@ canvas.onpointerup = (e) => {
     lastClear = now;
     let t = grid[path[0]],
       power = partyTypePower(state.party, t);
-    let weak =
-      !battle.safari &&
-      ((t === 0 && battle.m.type === 2) ||
-        (t === 2 && battle.m.type === 1) ||
-        (t === 1 && battle.m.type === 0));
-    let damage = puzzleCharge(power, path.length, combo, weak, battle.puzzleTypes.length);
+    const effectiveness = battleTypeMultiplier(t, battle);
+    let damage = puzzleCharge(power, path.length, combo, effectiveness, battle.puzzleTypes.length);
     battle.damage += damage;
     battle.typeCharge[t] = (battle.typeCharge[t] || 0) + damage;
-    flyCharge(path.slice(), t, damage);
-    attackFX(path.slice(), t, damage, weak, combo);
+    if (damage > 0) flyCharge(path.slice(), t, damage);
+    attackFX(path.slice(), t, damage, effectiveness, combo);
     $('#combo').textContent =
-      `${combo}コンボ ×${(1 + Math.min(combo - 1, 9) * 0.15).toFixed(2)} · +${damage}${battle.safari ? 'なかよし' : 'パワー'}${weak ? ' 効果抜群！' : ''}`;
+      `${combo}コンボ ×${(1 + Math.min(combo - 1, 9) * 0.15).toFixed(2)} · +${damage}${battle.safari ? 'なかよし' : 'パワー'}${battle.safari ? '' : ' ' + typeEffectivenessLabel(effectiveness)}`;
     refillPuzzle(path);
   }
   if (path.length > 0 && path.length < 3)
@@ -1241,7 +1241,7 @@ function pulse(el, cls) {
   void el.offsetWidth;
   el.classList.add(cls);
 }
-function attackFX(cells, type, damage, weak, count) {
+function attackFX(cells, type, damage, effectiveness, count) {
   const layer = $('#battle-fx');
   let html = '';
   for (const cell of cells) {
@@ -1269,7 +1269,7 @@ function attackFX(cells, type, damage, weak, count) {
     ? 'つづけて消して なかよく なろう！'
     : 'つづけて消して パワーアップ！';
   sfx('gem', count);
-  window.PokekoroBattleFX?.combo(count, damage, weak, cells.length, type, battle.safari);
+  window.PokekoroBattleFX?.combo(count, damage, effectiveness, cells.length, type, battle.safari);
   pulse($('#chain'), 'chain-pop');
   $('#callout').dataset.level = Math.min(count, 6);
   if ((cells.length >= 7 || count >= 3) && !reduceMotion) pulse($('.puzzle-stage'), 'big-hit');

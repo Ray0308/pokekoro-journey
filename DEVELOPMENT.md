@@ -85,3 +85,9 @@ HTMLテンプレートの内部は、空白による表示の変化を避ける�
 編集元・再生成・セーブ移行・報酬確定の境界は [docs/trainer-battles.md](docs/trainer-battles.md) を参照する。
 候補は `data/trainer-rosters.json` の全国図鑑番号で管理し、`npm run trainers:generate` と `npm test` で検査する。
 連戦の途中でバッジ・報酬・マップ進行を確定しない。
+
+## タイプ相性
+
+出典・再生成・パズルへの適用範囲は [docs/type-effectiveness.md](docs/type-effectiveness.md) を参照する。
+`npm run types:generate`で属性順を変換し、`npm test`で単体・複合・無効を検査する。
+サファリのなかよし量へ戦闘用の相性を掛けない。

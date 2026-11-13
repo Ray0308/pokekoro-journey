@@ -49,7 +49,7 @@
     dialog.append(layer);
     later(() => layer.remove(), 1000);
   }
-  function combo(count, damage, weak, cells, type, safari) {
+  function combo(count, damage, effectiveness, cells, type, safari) {
     const tier = count >= 8 ? 3 : count >= 5 ? 2 : count >= 3 ? 1 : 0;
     dialog.dataset.comboTier = tier;
     const callout = document.querySelector('#callout'),
@@ -63,12 +63,13 @@
               : cells >= 7
                 ? 'ロングチェイン！'
                 : 'ナイス！';
-    callout.innerHTML = `<strong>${count}<small> コンボ！</small></strong><span>${word}</span>`;
+    const effect = !safari && effectiveness !== 1 ? typeEffectivenessLabel(effectiveness) : '';
+    callout.innerHTML = `<strong>${count}<small> コンボ！</small></strong><span>${effect || word}</span>`;
     const tip = document.querySelector('#puzzle-tip');
     tip.textContent = safari
       ? 'つづけて消して なかよく なろう！'
-      : weak
-        ? 'こうかばつぐん！ たくさん たまった！'
+      : effect
+        ? effect + (effectiveness === 0 ? ' 別の属性で つなごう！' : '')
         : count >= 3
           ? 'そのちょうし！ つづけて つなごう！'
           : cells >= 7
@@ -82,7 +83,8 @@
     const note = document.createElement('b');
     note.className = 'power-note';
     note.style.setProperty('--spark', POKEMON_TYPE_COLORS[type]);
-    note.textContent = '＋' + damage.toLocaleString();
+    note.textContent =
+      !safari && effectiveness === 0 ? 'こうかなし' : '＋' + damage.toLocaleString();
     document.querySelector('.puzzle-stage').append(note);
     later(() => note.remove(), 650);
   }
