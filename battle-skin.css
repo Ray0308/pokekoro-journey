@@ -1,0 +1,64 @@
+/* Adventure-game panels: matte colors, clear type marks and restrained emphasis. */
+#battle{background:#edf2e5;color:#304d43;font-style:normal}
+#battle .battlehead{gap:6px}
+#battle .battlehead>span{font-size:11px;color:#3e5f50}
+#battle .battlehead strong{background:#385d4e;color:#fffdf1;border:1px solid #294a3d;border-radius:6px;box-shadow:none;font-style:normal;font-variant-numeric:tabular-nums;font-size:19px}
+#battle #leave{border:1px solid #c6d1c2;border-radius:6px;background:#f8faf3;color:#6a796d;box-shadow:none}
+#battle .enemy{border-radius:8px;background:radial-gradient(ellipse at 50% 90%,#cfddc8 0%,#cfddc8 23%,transparent 24%)}
+#battle .enemy>img{filter:none}
+#battle .enemy h2{font-size:16px;border:1px solid #c6d1c2;border-radius:5px;background:#fffdf3;padding:4px 9px;box-shadow:0 2px #c6d1c2;text-shadow:none;color:#304d43}
+#battle .enemy .hp{height:8px;border:1px solid #9eb4a0;background:#d3dfcf;box-shadow:none;border-radius:4px}
+#battle .enemy .hp i{background:#59925d}
+#battle .enemy #hptext{text-shadow:none;font-size:9px;color:#607563}
+#battle .attack-charge{background:#fffdf2;border:1px solid #c8cfb8;border-radius:7px;box-shadow:0 2px #b4bea5;padding:5px 9px}
+#battle .attack-charge strong{font-size:11px;color:#566749}
+#battle .attack-charge #charge-value{font-style:normal;letter-spacing:0;font-variant-numeric:tabular-nums;color:#796330;font-size:23px}
+#battle .attack-charge-track{background:#e5e5cf;height:10px;border:1px solid #c2c9b3;box-shadow:none;border-radius:4px}
+#battle .attack-charge-track i{background:#dbb451;box-shadow:none;border-radius:3px}
+#battle .attack-charge-track b{font-size:7px;line-height:9px;text-shadow:none;color:#6c7356}
+#battle .attack-charge>small{color:#788067;font-size:9px}
+#battle .attack-charge.charged{background:#fff9de;border-color:#d2b25c}
+#battle .attack-charge.charged .attack-charge-track i{background:#c99d36}
+#battle #battle-power-tag{border-radius:4px;background:#eff0df;font-size:9px;color:#6b7459}
+#battle #battle-power-tag[data-tier="2"]{background:#f5df96;color:#74602e}
+#battle #battle-power-tag[data-tier="3"]{background:#dbeaf0;color:#436674}
+#battle .weakness-tip{border-radius:4px;background:#e2e9d9;color:#657759;font-size:9px;letter-spacing:0}
+#battle .time-track{background:#d4dfcd;border-radius:3px;box-shadow:none;height:5px}
+#battle .time-track i{background:#6d97a4;box-shadow:none;border-radius:3px}
+#battle .battleinfo{color:#63775e;font-size:9px}
+#battle #chain{background:#e1e8d7;border-radius:4px;padding:2px 7px;color:#59734f}
+#battle .puzzle-stage{border-radius:9px;background:#d9e3d3;box-shadow:0 3px #9eaf95}
+#battle canvas{background:#e3ebdc;border:3px solid #fffdf2;box-shadow:none;border-radius:9px}
+#battle[data-combo-tier="1"] .puzzle-stage{box-shadow:0 3px #9eaf95,0 0 0 2px #ddc886}
+#battle[data-combo-tier="2"] .puzzle-stage{box-shadow:0 3px #9eaf95,0 0 0 2px #c9a64d}
+#battle[data-combo-tier="3"] .puzzle-stage{box-shadow:0 3px #9eaf95,0 0 0 2px #799ead}
+#battle .combo-track{background:#d4dfcd;border-radius:3px;height:4px}
+#battle .combo-track i{background:#c6a44e;border-radius:3px}
+#battle .puzzle-instruction{font-size:10px;font-weight:600;color:#6e7d63}
+#battle #start{background:#e1b654;border:1px solid #af8c39;box-shadow:0 2px #997830;border-radius:7px;color:#3b4f37;font-size:13px;letter-spacing:0}
+#battle #ready-overlay,#battle.gathering-power #ready-overlay{background:#263f36ed;backdrop-filter:none;border:1px solid #c8d6ba;border-radius:7px;gap:10px}
+#battle #ready-overlay strong{font-size:clamp(22px,5vw,28px);line-height:1.5;color:#fffbed;text-shadow:none;letter-spacing:1px}
+#battle #ready-overlay .countdown-number{font-size:42px}
+#battle #ready-overlay span{font-size:11px;color:#dce3c7}
+#battle.power-full #ready-overlay strong{color:#f3d789;text-shadow:none;transform:none}
+#battle #callout{top:5%;width:max-content;max-width:80%;margin:0 auto;padding:5px 13px;background:#fffdf3ee;border:1px solid #bdcdb7;border-radius:6px;filter:none;text-shadow:none;-webkit-text-stroke:0;line-height:1.1;box-shadow:0 2px #81977666}
+#battle #callout:empty{display:none}
+#battle #callout strong,#battle[data-combo-tier] #callout strong{font-size:25px;color:#3e6453;text-shadow:none;font-variant-numeric:tabular-nums}
+#battle #callout strong small{font-size:12px;color:#61725b;letter-spacing:0}
+#battle #callout>span{font-size:10px;color:#78815e;-webkit-text-stroke:0}
+#battle .callout-pop{animation:combo-clean .7s ease-out both}
+#battle .power-note{font-size:15px;color:#506c48;text-shadow:1px 1px #fffdf2,-1px -1px #fffdf2}
+#battle .charge-light{width:8px;height:8px;margin:-4px;border-radius:2px;box-shadow:0 0 4px var(--spark);background:#fff8d1}
+#battle .charge-light::after{inset:2px;border-radius:0}
+#battle .final-damage,#battle[data-attack-tier="3"] .final-damage{width:max-content;max-width:90%;margin:auto;padding:4px 12px;border:1px solid #c5b58b;border-radius:7px;background:#fff9e8e8;color:#775d2c;text-shadow:none;-webkit-text-stroke:0;font-size:clamp(32px,10vw,56px);letter-spacing:0}
+#battle[data-attack-tier="3"] .final-damage{background:#edf8ffe8;color:#3a6579;border-color:#9ebcc7}
+#battle .final-damage small{font-size:11px;color:#6c7960;text-shadow:none}
+@keyframes combo-clean{0%{opacity:0;transform:translateY(6px) scale(.96)}20%,65%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-8px)}}
+@media(max-height:600px){#battle .attack-charge{padding:3px 8px}#battle .attack-charge #charge-value{font-size:19px;line-height:21px}#battle #ready-overlay strong{font-size:21px}#battle #callout strong{font-size:22px}}
+@media(prefers-reduced-motion:reduce){#battle .callout-pop{animation:quiet-feedback .65s ease both}#battle .charge-light{display:none}}
+#battle.hurry #clock{background:#b26349;border-color:#8e4d38}
+#battle.hurry .time-track i{background:#b97948}
+#battle.hurry .puzzle-instruction{color:#986744}
+#battle .gem-shard,#battle .gem-shard:nth-child(2n){width:7px;height:9px;background:var(--spark);border:1px solid #fff9df;clip-path:polygon(0 0,100% 0,100% 100%,0 100%);filter:none}
+#battle .gem-shard:nth-child(2n){width:6px;height:6px}
+#battle .pop-ring{width:36px;height:36px;border-width:3px;border-radius:7px;box-shadow:none}
