@@ -1,0 +1,652 @@
+{
+  "date": "2026-11-13",
+  "source": {
+    "url": "https://docs.google.com/spreadsheets/d/1zdl2GwCz7ievmw0qTRpmpd0LvfYh2zBYgU1rP6QTqCI/edit",
+    "sheet": "シート1",
+    "range": "B3:F1027",
+    "exportedAt": "2026-11-13",
+    "descriptionStatus": "User-provided summaries; not individually verified against primary sources"
+  },
+  "changes": [
+    {
+      "id": 53,
+      "column": 2,
+      "before": {
+        "stringValue": "ペルシアン\r"
+      },
+      "after": {
+        "stringValue": "ペルシアン"
+      }
+    },
+    {
+      "id": 56,
+      "column": 2,
+      "before": {
+        "stringValue": "マンキー\r"
+      },
+      "after": {
+        "stringValue": "マンキー"
+      }
+    },
+    {
+      "id": 58,
+      "column": 2,
+      "before": {
+        "stringValue": "ガーディ\r"
+      },
+      "after": {
+        "stringValue": "ガーディ"
+      }
+    },
+    {
+      "id": 65,
+      "column": 2,
+      "before": {
+        "stringValue": "フーディン\r"
+      },
+      "after": {
+        "stringValue": "フーディン"
+      }
+    },
+    {
+      "id": 66,
+      "column": 2,
+      "before": {
+        "stringValue": "ワンリキー\r"
+      },
+      "after": {
+        "stringValue": "ワンリキー"
+      }
+    },
+    {
+      "id": 73,
+      "column": 2,
+      "before": {
+        "stringValue": "ドククラゲ\r"
+      },
+      "after": {
+        "stringValue": "ドククラゲ"
+      }
+    },
+    {
+      "id": 85,
+      "column": 2,
+      "before": {
+        "stringValue": "ドードリオ\r"
+      },
+      "after": {
+        "stringValue": "ドードリオ"
+      }
+    },
+    {
+      "id": 88,
+      "column": 2,
+      "before": {
+        "stringValue": "ベトベター\r"
+      },
+      "after": {
+        "stringValue": "ベトベター"
+      }
+    },
+    {
+      "id": 89,
+      "column": 2,
+      "before": {
+        "stringValue": "ベトベトン\r"
+      },
+      "after": {
+        "stringValue": "ベトベトン"
+      }
+    },
+    {
+      "id": 101,
+      "column": 2,
+      "before": {
+        "stringValue": "マルマイン\r"
+      },
+      "after": {
+        "stringValue": "マルマイン"
+      }
+    },
+    {
+      "id": 102,
+      "column": 2,
+      "before": {
+        "stringValue": "タマタマ\r"
+      },
+      "after": {
+        "stringValue": "タマタマ"
+      }
+    },
+    {
+      "id": 112,
+      "column": 2,
+      "before": {
+        "stringValue": "サイドン\r"
+      },
+      "after": {
+        "stringValue": "サイドン"
+      }
+    },
+    {
+      "id": 114,
+      "column": 2,
+      "before": {
+        "stringValue": "モンジャラ\r"
+      },
+      "after": {
+        "stringValue": "モンジャラ"
+      }
+    },
+    {
+      "id": 115,
+      "column": 2,
+      "before": {
+        "stringValue": "ガルーラ\r"
+      },
+      "after": {
+        "stringValue": "ガルーラ"
+      }
+    },
+    {
+      "id": 117,
+      "column": 2,
+      "before": {
+        "stringValue": "シードラ\r"
+      },
+      "after": {
+        "stringValue": "シードラ"
+      }
+    },
+    {
+      "id": 120,
+      "column": 2,
+      "before": {
+        "stringValue": "ヒトデマン\r"
+      },
+      "after": {
+        "stringValue": "ヒトデマン"
+      }
+    },
+    {
+      "id": 121,
+      "column": 2,
+      "before": {
+        "stringValue": "スターミー\r"
+      },
+      "after": {
+        "stringValue": "スターミー"
+      }
+    },
+    {
+      "id": 124,
+      "column": 2,
+      "before": {
+        "stringValue": "ルージュラ\r"
+      },
+      "after": {
+        "stringValue": "ルージュラ"
+      }
+    },
+    {
+      "id": 126,
+      "column": 2,
+      "before": {
+        "stringValue": "ブーバー\r"
+      },
+      "after": {
+        "stringValue": "ブーバー"
+      }
+    },
+    {
+      "id": 127,
+      "column": 2,
+      "before": {
+        "stringValue": "カイロス\r"
+      },
+      "after": {
+        "stringValue": "カイロス"
+      }
+    },
+    {
+      "id": 129,
+      "column": 2,
+      "before": {
+        "stringValue": "コイキング\r"
+      },
+      "after": {
+        "stringValue": "コイキング"
+      }
+    },
+    {
+      "id": 130,
+      "column": 2,
+      "before": {
+        "stringValue": "ギャラドス\r"
+      },
+      "after": {
+        "stringValue": "ギャラドス"
+      }
+    },
+    {
+      "id": 131,
+      "column": 2,
+      "before": {
+        "stringValue": "ラプラス\r"
+      },
+      "after": {
+        "stringValue": "ラプラス"
+      }
+    },
+    {
+      "id": 132,
+      "column": 2,
+      "before": {
+        "stringValue": "メタモン\r"
+      },
+      "after": {
+        "stringValue": "メタモン"
+      }
+    },
+    {
+      "id": 133,
+      "column": 2,
+      "before": {
+        "stringValue": "イーブイ\r"
+      },
+      "after": {
+        "stringValue": "イーブイ"
+      }
+    },
+    {
+      "id": 135,
+      "column": 2,
+      "before": {
+        "stringValue": "サンダース\r"
+      },
+      "after": {
+        "stringValue": "サンダース"
+      }
+    },
+    {
+      "id": 138,
+      "column": 2,
+      "before": {
+        "stringValue": "オムナイト\r"
+      },
+      "after": {
+        "stringValue": "オムナイト"
+      }
+    },
+    {
+      "id": 139,
+      "column": 2,
+      "before": {
+        "stringValue": "オムスター\r"
+      },
+      "after": {
+        "stringValue": "オムスター"
+      }
+    },
+    {
+      "id": 146,
+      "column": 2,
+      "before": {
+        "stringValue": "ファイヤー\r"
+      },
+      "after": {
+        "stringValue": "ファイヤー"
+      }
+    },
+    {
+      "id": 147,
+      "column": 2,
+      "before": {
+        "stringValue": "ミニリュウ\r"
+      },
+      "after": {
+        "stringValue": "ミニリュウ"
+      }
+    },
+    {
+      "id": 152,
+      "column": 2,
+      "before": {
+        "stringValue": "チコリータ\r"
+      },
+      "after": {
+        "stringValue": "チコリータ"
+      }
+    },
+    {
+      "id": 153,
+      "column": 2,
+      "before": {
+        "stringValue": "ベイリーフ\r"
+      },
+      "after": {
+        "stringValue": "ベイリーフ"
+      }
+    },
+    {
+      "id": 154,
+      "column": 2,
+      "before": {
+        "stringValue": "メガニウム\r"
+      },
+      "after": {
+        "stringValue": "メガニウム"
+      }
+    },
+    {
+      "id": 157,
+      "column": 2,
+      "before": {
+        "stringValue": "バクフーン\r"
+      },
+      "after": {
+        "stringValue": "バクフーン"
+      }
+    },
+    {
+      "id": 159,
+      "column": 2,
+      "before": {
+        "stringValue": "アリゲイツ\r"
+      },
+      "after": {
+        "stringValue": "アリゲイツ"
+      }
+    },
+    {
+      "id": 163,
+      "column": 2,
+      "before": {
+        "stringValue": "ホーホー\r"
+      },
+      "after": {
+        "stringValue": "ホーホー"
+      }
+    },
+    {
+      "id": 166,
+      "column": 2,
+      "before": {
+        "stringValue": "レディアン\r"
+      },
+      "after": {
+        "stringValue": "レディアン"
+      }
+    },
+    {
+      "id": 169,
+      "column": 2,
+      "before": {
+        "stringValue": "クロバット\r"
+      },
+      "after": {
+        "stringValue": "クロバット"
+      }
+    },
+    {
+      "id": 171,
+      "column": 2,
+      "before": {
+        "stringValue": "ランターン\r"
+      },
+      "after": {
+        "stringValue": "ランターン"
+      }
+    },
+    {
+      "id": 181,
+      "column": 2,
+      "before": {
+        "stringValue": "デンリュウ\r"
+      },
+      "after": {
+        "stringValue": "デンリュウ"
+      }
+    },
+    {
+      "id": 182,
+      "column": 2,
+      "before": {
+        "stringValue": "キレイハナ\r"
+      },
+      "after": {
+        "stringValue": "キレイハナ"
+      }
+    },
+    {
+      "id": 185,
+      "column": 2,
+      "before": {
+        "stringValue": "ウソッキー\r"
+      },
+      "after": {
+        "stringValue": "ウソッキー"
+      }
+    },
+    {
+      "id": 191,
+      "column": 2,
+      "before": {
+        "stringValue": "ヒマナッツ\r"
+      },
+      "after": {
+        "stringValue": "ヒマナッツ"
+      }
+    },
+    {
+      "id": 193,
+      "column": 2,
+      "before": {
+        "stringValue": "ヤンヤンマ\r"
+      },
+      "after": {
+        "stringValue": "ヤンヤンマ"
+      }
+    },
+    {
+      "id": 200,
+      "column": 2,
+      "before": {
+        "stringValue": "ムウマ\r"
+      },
+      "after": {
+        "stringValue": "ムウマ"
+      }
+    },
+    {
+      "id": 201,
+      "column": 2,
+      "before": {
+        "stringValue": "アンノーン\r"
+      },
+      "after": {
+        "stringValue": "アンノーン"
+      }
+    },
+    {
+      "id": 211,
+      "column": 2,
+      "before": {
+        "stringValue": "ハリーセン\r"
+      },
+      "after": {
+        "stringValue": "ハリーセン"
+      }
+    },
+    {
+      "id": 212,
+      "column": 2,
+      "before": {
+        "stringValue": "ハッサム\r"
+      },
+      "after": {
+        "stringValue": "ハッサム"
+      }
+    },
+    {
+      "id": 213,
+      "column": 2,
+      "before": {
+        "stringValue": "ツボツボ\r"
+      },
+      "after": {
+        "stringValue": "ツボツボ"
+      }
+    },
+    {
+      "id": 215,
+      "column": 2,
+      "before": {
+        "stringValue": "ニューラ\r"
+      },
+      "after": {
+        "stringValue": "ニューラ"
+      }
+    },
+    {
+      "id": 216,
+      "column": 2,
+      "before": {
+        "stringValue": "ヒメグマ\r"
+      },
+      "after": {
+        "stringValue": "ヒメグマ"
+      }
+    },
+    {
+      "id": 217,
+      "column": 2,
+      "before": {
+        "stringValue": "リングマ\r"
+      },
+      "after": {
+        "stringValue": "リングマ"
+      }
+    },
+    {
+      "id": 225,
+      "column": 2,
+      "before": {
+        "stringValue": "デリバード\r"
+      },
+      "after": {
+        "stringValue": "デリバード"
+      }
+    },
+    {
+      "id": 226,
+      "column": 2,
+      "before": {
+        "stringValue": "マンタイン\r"
+      },
+      "after": {
+        "stringValue": "マンタイン"
+      }
+    },
+    {
+      "id": 230,
+      "column": 2,
+      "before": {
+        "stringValue": "キングドラ\r"
+      },
+      "after": {
+        "stringValue": "キングドラ"
+      }
+    },
+    {
+      "id": 231,
+      "column": 2,
+      "before": {
+        "stringValue": "ゴマゾウ\r"
+      },
+      "after": {
+        "stringValue": "ゴマゾウ"
+      }
+    },
+    {
+      "id": 243,
+      "column": 2,
+      "before": {
+        "stringValue": "ライコウ\r"
+      },
+      "after": {
+        "stringValue": "ライコウ"
+      }
+    },
+    {
+      "id": 244,
+      "column": 2,
+      "before": {
+        "stringValue": "エンテイ\r"
+      },
+      "after": {
+        "stringValue": "エンテイ"
+      }
+    },
+    {
+      "id": 247,
+      "column": 2,
+      "before": {
+        "stringValue": "サナギラス\r"
+      },
+      "after": {
+        "stringValue": "サナギラス"
+      }
+    },
+    {
+      "id": 248,
+      "column": 2,
+      "before": {
+        "stringValue": "バンギラス\r"
+      },
+      "after": {
+        "stringValue": "バンギラス"
+      }
+    },
+    {
+      "id": 248,
+      "column": 4,
+      "before": {
+        "stringValue": "じめん"
+      },
+      "after": {
+        "stringValue": "あく"
+      }
+    },
+    {
+      "id": 251,
+      "column": 2,
+      "before": {
+        "stringValue": "セレビィ\r"
+      },
+      "after": {
+        "stringValue": "セレビィ"
+      }
+    },
+    {
+      "id": 252,
+      "column": 2,
+      "before": {
+        "stringValue": "キモリ\r"
+      },
+      "after": {
+        "stringValue": "キモリ"
+      }
+    },
+    {
+      "id": 256,
+      "column": 2,
+      "before": {
+        "stringValue": "ワカシャモ\r"
+      },
+      "after": {
+        "stringValue": "ワカシャモ"
+      }
+    }
+  ]
+}

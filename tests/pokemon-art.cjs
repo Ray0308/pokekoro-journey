@@ -18,6 +18,7 @@ const context = vm.createContext({
     },
   },
 });
+vm.runInContext(fs.readFileSync(path.join(root, 'pokemon-data.generated.js'), 'utf8'), context);
 vm.runInContext(fs.readFileSync(path.join(root, 'pokemon-data.js'), 'utf8'), context);
 const entries = vm.runInContext('POKEDEX', context);
 assert.equal(manifest.count, 1025);

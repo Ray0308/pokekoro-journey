@@ -68,3 +68,9 @@ HTMLテンプレートの内部は、空白による表示の変化を避ける�
 全1025種の通常アートの取得元、再生成方法、透過・容量検査と権利表記は
 [docs/pokemon-art.md](docs/pokemon-art.md) を参照する。
 通常プレイ中にPokéAPIへの問い合わせは行わない。
+
+## ポケモンの表示データ
+
+名前・タイプ・説明は [docs/pokemon-data.md](docs/pokemon-data.md) を参照する。
+シートを修正したらローカルJSONを更新し、`npm run data:generate`と`npm test`を実行する。
+名前・タイプの照合エラーを無視して参照データを書き換えない。

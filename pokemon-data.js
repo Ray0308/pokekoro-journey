@@ -1,22 +1,16 @@
 'use strict';
-// 全国図鑑番号はセーブのキー。画像は全種の公式アートを使い、未登録の名前・属性は推測しない。
+// 全国図鑑番号はセーブのキー。表示データと、このゲーム独自の攻撃力を分離する。
 const POKEDEX_SIZE = 1025;
 const POKEMON_OVERRIDES = Object.freeze({
-  1: {
-    name: 'フシギダネ',
-    type: 0,
-    types: [0, 3],
-    power: 11,
-    description: '生まれて しばらくの あいだ 背中の タネに つまった 栄養を とって 育つ。',
-  },
-  2: { name: 'フシギソウ', type: 0, types: [0, 3], power: 14 },
-  3: { name: 'フシギバナ', type: 0, types: [0, 3], power: 17 },
-  4: { name: 'ヒトカゲ', type: 1, power: 11 },
-  5: { name: 'リザード', type: 1, power: 14 },
-  6: { name: 'リザードン', type: 1, types: [1, 4], power: 17 },
-  7: { name: 'ゼニガメ', type: 2, power: 11 },
-  8: { name: 'カメール', type: 2, power: 14 },
-  9: { name: 'カメックス', type: 2, power: 17 },
+  1: { power: 11 },
+  2: { power: 14 },
+  3: { power: 17 },
+  4: { power: 11 },
+  5: { power: 14 },
+  6: { power: 17 },
+  7: { power: 11 },
+  8: { power: 14 },
+  9: { power: 17 },
 });
 function validPokemonId(id) {
   return Number.isInteger(id) && id >= 1 && id <= POKEDEX_SIZE;
@@ -27,18 +21,19 @@ function pokemonNumber(id) {
 const POKEDEX = Object.freeze(
   Array.from({ length: POKEDEX_SIZE }, (_, i) => {
     const id = i + 1,
-      known = POKEMON_OVERRIDES[id];
+      known = POKEMON_OVERRIDES[id],
+      metadata = POKEMON_METADATA[i];
     return Object.freeze({
       id,
-      description: known?.description ?? null,
-      name: known?.name ?? null,
-      label: known?.name ?? `No.${pokemonNumber(id)}`,
-      type: known?.type ?? null,
-      types: Object.freeze(known?.types ?? (Number.isInteger(known?.type) ? [known.type] : [])),
+      description: metadata.description,
+      name: metadata.name,
+      label: metadata.name,
+      type: metadata.types[0],
+      types: Object.freeze([...metadata.types]),
       power: known?.power ?? 11,
       image: known?.image ?? `assets/pokemon/official-artwork/${id}.svg`,
       portrait: known?.portrait ?? `assets/pokemon/official-artwork/${id}.svg`,
-      placeholder: !known?.name,
+      placeholder: false,
     });
   }),
 );

@@ -64,5 +64,6 @@ check(typeBallMatches(z, charizard), 'secondary match');
 check(ballCatchChance(z, 0.4, charizard) === 0.8, 'match bonus');
 check(ballCatchChance(TYPE_BALLS[2], 0.4, charizard) === 0.4, 'nonmatch');
 check(ballCatchChance(z, 0.8, charizard) === 0.99, 'cap');
-check(ballCatchChance(z, 0.4, POKEDEX[149]) === 0.4, 'unknown metadata');
+check(ballCatchChance(z, 0.4, POKEDEX[149]) === 0.4, 'psychic does not match flying');
+check(ballCatchChance(z, 0.4, { types: [] }) === 0.4, 'unknown metadata');
 check(ballCatchChance(z, 0.4, { types: [4, 4] }) === 0.8, 'bonus once');
