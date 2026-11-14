@@ -1049,3 +1049,58 @@ body.at-title {
   outline-offset: 2px;
   border-radius: 8px;
 }
+
+/* 破壊的な操作は通常の設定と区切り、確認画面では「やめる」を初期選択にする。 */
+#title-options {
+  max-height: 90dvh;
+  overflow-y: auto;
+}
+#title-options .save-delete-link {
+  width: 100%;
+  margin: 14px 0 0;
+  padding: 12px;
+  border: 1px solid #bc8075;
+  border-radius: 9px;
+  background: #fff6ee;
+  color: #963e35;
+  font-size: 13px;
+  box-shadow: none;
+}
+#delete-save-confirm {
+  width: min(92vw, 420px);
+  max-height: 90dvh;
+  overflow-y: auto;
+  padding: 22px;
+  border: 3px solid #d1b985;
+  border-radius: 18px;
+  background: #fffbee;
+  color: #3e5147;
+}
+#delete-save-confirm::backdrop {
+  background: #182f3bc9;
+}
+#delete-save-confirm h2 {
+  font-size: 19px;
+  margin: 0 0 14px;
+}
+#delete-save-confirm p {
+  font-size: 14px;
+  line-height: 1.8;
+}
+#delete-save-confirm p strong,
+#delete-save-error {
+  color: #a23d35;
+}
+.save-delete-actions {
+  display: grid;
+  gap: 12px;
+  margin-top: 20px;
+}
+.save-delete-actions button {
+  min-height: 48px;
+}
+#delete-save-confirm .save-delete-danger {
+  background: #a93f35;
+  color: #fff;
+  border-color: #84382e;
+}

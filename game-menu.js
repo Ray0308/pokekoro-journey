@@ -112,3 +112,33 @@
     if (menu.open) position();
   });
 })();
+
+// 削除対象は冒険データだけ。通常・デバッグの古い保存を消し、再読込でメモリ上の進行も破棄する。
+(() => {
+  const confirmDialog = document.querySelector('#delete-save-confirm');
+  const error = document.querySelector('#delete-save-error');
+  const commit = document.querySelector('#delete-save-commit');
+  document.querySelector('#delete-save-open').onclick = () => {
+    error.hidden = true;
+    commit.disabled = false;
+    confirmDialog.showModal();
+    document.querySelector('#delete-save-cancel').focus();
+  };
+  document.querySelector('#delete-save-cancel').onclick = () => confirmDialog.close();
+  commit.onclick = () => {
+    if (commit.disabled || !confirmDialog.open) return;
+    commit.disabled = true;
+    try {
+      // localStorage.clear() は使わず、音量やサウンド設定を保つ。
+      localStorage.removeItem('pokekoro-v1');
+      localStorage.removeItem('pokekoro-debug-v1');
+    } catch {
+      error.textContent =
+        '削除できませんでした。ブラウザの保存設定を確認して、もう一度お試しください。';
+      error.hidden = false;
+      commit.disabled = false;
+      return;
+    }
+    window.location.reload();
+  };
+})();
