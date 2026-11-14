@@ -63,3 +63,6 @@
 
 ## kurt-house.webp
 提供されたガンテツの家から外側の白地を除いた透過アイコン。原本はoriginals/kurt-house.jpg。対応人物画像はassets/trainers/kurt.jpg。
+
+## rock-tunnel.webp
+ユーザー提供のイワヤマトンネル背景。1254×1254の全体構図・比率を維持してWebP化。原本はoriginals/rock-tunnel.jpg。専用15マスを下の入口から岩の間、左側の通路、右上の出口へ配置。戦闘背景と共通使用。

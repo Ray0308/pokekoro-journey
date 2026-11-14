@@ -465,7 +465,27 @@ const MAPS = Object.freeze({
   'rock-tunnel': Object.freeze({
     'name': 'イワヤマトンネル',
     'kind': 'cave',
-    'background': 'assets/map/placeholders/cave.svg',
+    'background': 'assets/map/rock-tunnel.webp',
+    'backgroundPlaceholder': false,
+    'aspectRatio': 1,
+    // 下の入口から岩の間を回り、左側の通路を経て右上の出口へ。
+    'routePoints': [
+      [57, 91],
+      [73, 87],
+      [84, 77],
+      [82, 65],
+      [68, 59],
+      [53, 63],
+      [37, 70],
+      [20, 74],
+      [13, 58],
+      [14, 42],
+      [25, 33],
+      [40, 29],
+      [54, 27],
+      [72, 25],
+      [84, 17],
+    ],
     'trainerIcon': 'assets/map/viridian-trainer.webp',
     'boss': {
       'name': 'やまおとこ',
