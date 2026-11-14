@@ -75,3 +75,6 @@
 
 ## celadon-gym-v2.webp
 再提供されたタマムシジム背景。1254×1254の全体構図を維持してWebP化。原本はoriginals/celadon-gym-v2.jpg。旧版は保持し、現行のマップ・戦闘背景はv2を参照する。新しい通路と階段に専用の15マス・routeViaを配置し、奥中央のエリカへ到着する。
+
+## victory-road.webp
+ユーザー提供のチャンピオンロード背景。1254×1254の構図を維持してWebP化。原本はoriginals/victory-road.jpg。右上の入口にスタート、中央台座にボスを配置。上段の階段から洞窟を巡る15マスをroutePoints、通路の角をrouteViaで指定し、戦闘背景にも共通使用。
