@@ -700,6 +700,7 @@ function openBattle(trainer, boss, continuation = null) {
     safari: isSafari(),
     series,
     continuation: !!continuation,
+    puzzleStarted: false,
     roundStarted: !trainer,
     trainerAppearance: series?.profile || null,
     level: member?.level,
@@ -927,7 +928,11 @@ $('#start').onclick = async () => {
   preparing = true;
   $('#start').hidden = true;
   const epoch = battleEpoch;
-  for (const n of battle.combat?.turn > 1 ? ['GO!'] : ['3', '2', '1', 'GO!']) {
+  // 経過ターンは連戦全体で共有するが、カウントダウンは相手1匹ごとの初回に行う。
+  // 同じ相手との次ターンだけGOに短縮し、新しい相手の登場では必ず3・2・1を見せる。
+  const countdown = battle.puzzleStarted ? ['GO!'] : ['3', '2', '1', 'GO!'];
+  battle.puzzleStarted = true;
+  for (const n of countdown) {
     if (epoch !== battleEpoch) return;
     $('#ready-overlay').innerHTML = `<strong class="countdown-number">${n}</strong>`;
     tone(n === 'GO!' ? 880 : 440, 0.12);
