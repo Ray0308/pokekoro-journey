@@ -7,30 +7,32 @@
     content="#38206b" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta
     name="apple-mobile-web-app-title"
     content="ポケコロジャーニー" /><title>ポケコロジャーニー</title
-  ><link rel="icon" href="assets/icons/favicon.ico?v=0.9.2.29" sizes="16x16 32x32" /><link
+  ><link rel="icon" href="assets/icons/favicon.ico?v=0.9.2.30" sizes="16x16 32x32" /><link
     rel="icon"
     type="image/png"
     sizes="32x32"
-    href="assets/icons/icon-32.png?v=0.9.2.29" /><link
+    href="assets/icons/icon-32.png?v=0.9.2.30" /><link
     rel="apple-touch-icon"
     sizes="180x180"
-    href="assets/icons/icon-180.png?v=0.9.2.29" /><link
+    href="assets/icons/icon-180.png?v=0.9.2.30" /><link
     rel="manifest"
-    href="manifest.webmanifest?v=0.9.2.29" /><link
+    href="manifest.webmanifest?v=0.9.2.30" /><link
     rel="stylesheet"
-    href="style.css?v=0.9.2.29" /><link rel="stylesheet" href="title.css?v=0.9.2.29" /><link
+    href="style.css?v=0.9.2.30" /><link rel="stylesheet" href="title.css?v=0.9.2.30" /><link
     rel="stylesheet"
-    href="map.css?v=0.9.2.29" /><link rel="stylesheet" href="pokedex.css?v=0.9.2.29" /><link
+    href="map.css?v=0.9.2.30" /><link rel="stylesheet" href="pokedex.css?v=0.9.2.30" /><link
     rel="stylesheet"
-    href="game-menu.css?v=0.9.2.29" /><link
+    href="game-menu.css?v=0.9.2.30" /><link
     rel="stylesheet"
-    href="battle-feedback.css?v=0.9.2.29" /><link
+    href="battle-feedback.css?v=0.9.2.30" /><link
     rel="stylesheet"
-    href="ball-exchange.css?v=0.9.2.29" /><link
+    href="ball-exchange.css?v=0.9.2.30" /><link
     rel="stylesheet"
-    href="kurt-house.css?v=0.9.2.29" /><link
+    href="kurt-house.css?v=0.9.2.30" /><link
     rel="stylesheet"
-    href="battle-skin.css?v=0.9.2.29" /><body class="at-title"
+    href="battle-skin.css?v=0.9.2.30" /><link
+    rel="stylesheet"
+    href="battle-turns.css?v=0.9.2.30" /><body class="at-title"
     ><section id="boot-screen" hidden aria-label="Ray Edu Labo"
       ><img
         id="boot-logo"
@@ -250,7 +252,9 @@
           ><div><strong>こうげきパワー</strong><span id="charge-value">0</span></div
           ><div class="attack-charge-track"><i id="chargebar"></i><b>撃破ライン</b></div
           ><small id="charge-hint">ピースを消して パワーをためよう！</small></div
-        ><div class="weakness-tip" id="weakness-tip"></div
+        ><div class="weakness-tip" id="weakness-tip"></div>
+        <div id="battle-turn-status" role="status" hidden></div>
+        <div id="battle-party" aria-label="仲間の技ゲージ" hidden></div
         ><div class="time-track"><i id="timebar"></i></div
         ><div class="battleinfo"
           ><span id="combo">属性を3個以上つなごう</span><span id="chain">0つなぎ</span></div
@@ -262,6 +266,12 @@
             height="420"
             aria-label="同じ属性の隣接ピースを3個以上なぞって離すパズル"
           ></canvas
+          ><div id="turn-actions" hidden>
+            <div class="turn-skill-body"
+              ><strong id="turn-skill-name"></strong><p id="turn-skill-help"></p
+              ><div id="turn-skill-options"></div
+            ></div>
+            <button id="turn-next" class="primary">反撃を受けて 次の10秒へ</button> </div
           ><div id="ready-overlay"
             ><strong>3つ つないで<br />はなすと攻撃！</strong
             ><span>たくさんつなぐと 大ダメージ！</span></div
@@ -467,34 +477,36 @@
         >もどる</button
       ></dialog
     ><span class="app-version" data-version></span
-    ><script src="version.js?v=0.9.2.29"></script
-    ><script src="map-config.js?v=0.9.2.29"></script
-    ><script src="pokemon-data.generated.js?v=0.9.2.29"></script
-    ><script src="pokemon-data.js?v=0.9.2.29"></script
-    ><script src="rainbow-config.js?v=0.9.2.29"></script
-    ><script src="party-rules.js?v=0.9.2.29"></script
-    ><script src="type-chart.generated.js?v=0.9.2.29"></script
-    ><script src="type-effectiveness.js?v=0.9.2.29"></script
-    ><script src="puzzle-visuals.js?v=0.9.2.29"></script
-    ><script src="safari.js?v=0.9.2.29"></script
-    ><script src="trainer-rosters.generated.js?v=0.9.2.29"></script
-    ><script src="trainer-rules.js?v=0.9.2.29"></script
-    ><script src="trainer-battle.js?v=0.9.2.29"></script
-    ><script src="audio-settings.js?v=0.9.2.29"></script
-    ><script src="game-sfx.js?v=0.9.2.29"></script
-    ><script src="battle-feedback.js?v=0.9.2.29"></script
-    ><script src="type-balls.js?v=0.9.2.29"></script
-    ><script src="battle-scene.js?v=0.9.2.29"></script
-    ><script src="app.js?v=0.9.2.29"></script
-    ><script src="kurt-house.js?v=0.9.2.29"></script
-    ><script src="ball-exchange.js?v=0.9.2.29"></script
-    ><script src="pokedex-filters.js?v=0.9.2.29"></script
-    ><script src="pokedex.js?v=0.9.2.29"></script
-    ><script src="map-music-config.js?v=0.9.2.29"></script
-    ><script src="map-audio.js?v=0.9.2.29"></script
-    ><script src="title-config.js?v=0.9.2.29"></script
-    ><script src="title.js?v=0.9.2.29"></script>
-    <script src="game-menu.js?v=0.9.2.29"></script>
+    ><script src="version.js?v=0.9.2.30"></script
+    ><script src="map-config.js?v=0.9.2.30"></script
+    ><script src="pokemon-data.generated.js?v=0.9.2.30"></script
+    ><script src="pokemon-data.js?v=0.9.2.30"></script
+    ><script src="rainbow-config.js?v=0.9.2.30"></script
+    ><script src="party-rules.js?v=0.9.2.30"></script
+    ><script src="type-chart.generated.js?v=0.9.2.30"></script
+    ><script src="type-effectiveness.js?v=0.9.2.30"></script
+    ><script src="puzzle-visuals.js?v=0.9.2.30"></script
+    ><script src="safari.js?v=0.9.2.30"></script
+    ><script src="trainer-rosters.generated.js?v=0.9.2.30"></script
+    ><script src="trainer-rules.js?v=0.9.2.30"></script
+    ><script src="battle-turn-rules.js?v=0.9.2.30"></script
+    ><script src="trainer-battle.js?v=0.9.2.30"></script
+    ><script src="audio-settings.js?v=0.9.2.30"></script
+    ><script src="game-sfx.js?v=0.9.2.30"></script
+    ><script src="battle-feedback.js?v=0.9.2.30"></script
+    ><script src="type-balls.js?v=0.9.2.30"></script
+    ><script src="battle-scene.js?v=0.9.2.30"></script
+    ><script src="app.js?v=0.9.2.30"></script
+    ><script src="battle-turns.js?v=0.9.2.30"></script
+    ><script src="kurt-house.js?v=0.9.2.30"></script
+    ><script src="ball-exchange.js?v=0.9.2.30"></script
+    ><script src="pokedex-filters.js?v=0.9.2.30"></script
+    ><script src="pokedex.js?v=0.9.2.30"></script
+    ><script src="map-music-config.js?v=0.9.2.30"></script
+    ><script src="map-audio.js?v=0.9.2.30"></script
+    ><script src="title-config.js?v=0.9.2.30"></script
+    ><script src="title.js?v=0.9.2.30"></script>
+    <script src="game-menu.js?v=0.9.2.30"></script>
     <!-- デバッグ不要時は、次のscript行だけをコメントアウトしてください。 -->
-    <script src="debug.js?v=0.9.2.29"></script> </body
+    <script src="debug.js?v=0.9.2.30"></script> </body
 ></html>

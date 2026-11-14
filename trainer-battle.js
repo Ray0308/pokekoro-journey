@@ -32,8 +32,9 @@ function setTrainerRoster(element, series, currentDefeated = false) {
 function hasNextTrainerPokemon() {
   return !!battle?.series && battle.series.index < battle.series.team.length - 1;
 }
+// 旧編成データのsecondsではなく、戦闘は10秒・サファリは30秒を使う。
 function battleDuration() {
-  return battle?.roundSeconds || 30;
+  return battle?.safari ? 30 : BattleTurnRules.config.seconds;
 }
 function nextTrainerRound() {
   if (!hasNextTrainerPokemon() || !battle.roundStarted || battle.roundClosed) return;

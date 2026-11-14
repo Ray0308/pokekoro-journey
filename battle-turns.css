@@ -1,0 +1,290 @@
+#battle-turn-status {
+  min-height: 15px;
+  font-size: 10px;
+  font-weight: 800;
+  color: #405b4b;
+  text-align: center;
+}
+#battle-party {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 4px;
+  flex-shrink: 0;
+}
+#battle-party[hidden],
+#battle-turn-status[hidden],
+#turn-actions[hidden] {
+  display: none;
+}
+#battle-party button {
+  position: relative;
+  min-width: 0;
+  height: 47px;
+  padding: 1px 2px 4px;
+  border: 1px solid #a5b29b;
+  border-radius: 6px;
+  box-shadow: none;
+  background: #f7faef;
+  color: #405a48;
+}
+#battle-party button:disabled {
+  opacity: 1;
+}
+#battle-party img {
+  display: block;
+  width: 27px;
+  height: 27px;
+  object-fit: contain;
+  margin: auto;
+}
+#battle-party span {
+  display: block;
+  font-size: 8px;
+  line-height: 11px;
+  white-space: nowrap;
+}
+#battle-party i {
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  bottom: 2px;
+  height: 3px;
+  background: #d0d8c8;
+  border-radius: 2px;
+  overflow: hidden;
+}
+#battle-party i b {
+  display: block;
+  height: 100%;
+  background: #689e6f;
+}
+#battle-party .skill-ready {
+  border-color: #b18b32;
+  background: #fff3c4;
+}
+#battle-party [aria-pressed='true'] {
+  outline: 2px solid #46785c;
+  outline-offset: -2px;
+}
+#battle-party button.is-fainted {
+  background: #d6dbd3;
+  color: #6c7469;
+}
+#battle-party .is-fainted img {
+  filter: grayscale(1);
+  opacity: 0.35;
+}
+#battle-party .is-fainted i {
+  background: #a5ada0;
+}
+#turn-actions {
+  position: absolute;
+  inset: 0;
+  z-index: 32;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 7px;
+  box-sizing: border-box;
+  background: #f4f6e8;
+  border: 2px solid #879a7c;
+  border-radius: 9px;
+  text-align: center;
+}
+.turn-skill-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+#turn-skill-name {
+  display: block;
+  font-size: 13px;
+  color: #345641;
+}
+#turn-skill-help {
+  font-size: 10px;
+  margin: 3px 0 5px;
+  line-height: 1.5;
+}
+#turn-skill-options {
+  display: grid;
+  gap: 4px;
+}
+#turn-skill-options button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  padding: 7px 5px;
+  min-height: 44px;
+  border: 1px solid #b5c1a6;
+  border-radius: 5px;
+  box-shadow: none;
+  background: #fffdf0;
+  color: #3d5844;
+}
+#turn-skill-options strong {
+  font-size: 11px;
+  white-space: nowrap;
+}
+#turn-skill-options small {
+  font-size: 9px;
+  line-height: 1.4;
+}
+#turn-actions #turn-next {
+  flex-shrink: 0;
+  min-height: 36px;
+  padding: 6px 3px;
+  margin: 0;
+  font-size: 11px;
+  border-radius: 6px;
+}
+#battle.turn-battle #start {
+  min-height: 36px;
+  padding: 7px;
+  font-size: 13px;
+}
+@media (max-height: 600px) {
+  #battle.turn-battle .enemy {
+    min-height: 104px;
+  }
+  #battle-party button {
+    height: 43px;
+  }
+  #battle-party img {
+    height: 23px;
+  }
+  #battle-turn-status {
+    font-size: 9px;
+    min-height: 12px;
+  }
+  #turn-actions {
+    padding: 4px;
+  }
+}
+@media (max-height: 450px) {
+  #battle.turn-battle {
+    overflow-y: auto;
+  }
+  #battle-party button {
+    height: 42px;
+  }
+}
+@media (max-height: 450px) and (min-width: 600px) {
+  #battle.turn-battle {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: 33px 108px 56px 16px 13px 42px 36px;
+    align-content: center;
+    gap: 4px 12px;
+    overflow: hidden;
+  }
+  #battle.turn-battle .battlehead {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  #battle.turn-battle .enemy {
+    grid-column: 1;
+    grid-row: 2;
+    min-height: 104px;
+    margin: 0;
+  }
+  #battle.turn-battle .attack-charge {
+    grid-column: 1;
+    grid-row: 3;
+    margin: 0;
+  }
+  #battle.turn-battle .weakness-tip {
+    grid-column: 1;
+    grid-row: 4;
+    margin: 0;
+    font-size: 9px;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  #battle.turn-battle #battle-turn-status {
+    grid-column: 1;
+    grid-row: 5;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  #battle.turn-battle #battle-party {
+    grid-column: 1;
+    grid-row: 6;
+  }
+  #battle.turn-battle #start {
+    grid-column: 1;
+    grid-row: 7;
+  }
+  #battle.turn-battle .battleinfo {
+    grid-column: 2;
+    grid-row: 1;
+    font-size: 9px;
+    overflow: hidden;
+  }
+  #battle.turn-battle .puzzle-stage {
+    grid-column: 2;
+    grid-row: 2 / 7;
+    align-self: start;
+    justify-self: center;
+    margin-top: 8px;
+  }
+  #battle.turn-battle .time-track {
+    grid-column: 2;
+    grid-row: 2;
+    align-self: start;
+  }
+  #battle.turn-battle .combo-track {
+    grid-column: 2;
+    grid-row: 7;
+    align-self: start;
+  }
+  #battle.turn-battle .puzzle-instruction {
+    grid-column: 2;
+    grid-row: 7;
+    align-self: end;
+    font-size: 9px;
+  }
+}
+/* 合間は盤面の場所を広い技メニューへ切り替える。選択肢と次へボタンを一緒に見せる。 */
+#battle.in-skill-break .weakness-tip,
+#battle.in-skill-break .time-track,
+#battle.in-skill-break .battleinfo,
+#battle.in-skill-break .combo-track {
+  display: none;
+}
+#battle.in-skill-break .puzzle-stage {
+  width: 100%;
+  max-width: 420px;
+  height: max(var(--puzzle-size), 240px);
+  min-height: 230px;
+  touch-action: pan-y;
+}
+#battle.in-skill-break canvas {
+  visibility: hidden;
+}
+#turn-actions button {
+  touch-action: manipulation;
+}
+
+#battle-party .just-hit {
+  animation: turn-member-hit 0.45s ease-out;
+}
+@keyframes turn-member-hit {
+  30% {
+    transform: translateX(-3px);
+    box-shadow: 0 0 0 2px #cc6b58;
+  }
+  60% {
+    transform: translateX(3px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #battle-party .just-hit {
+    animation: none;
+  }
+}

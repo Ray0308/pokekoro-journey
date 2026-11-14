@@ -672,7 +672,7 @@ function openBattle(trainer, boss, continuation = null) {
   $('#callout').textContent = '';
   $('#ready-overlay').hidden = false;
   $('#ready-overlay').innerHTML =
-    '<strong>3つ つないで<br>パワーをためよう！</strong><span>30秒後に まとめてアタック！</span>';
+    '<strong>3つ つないで<br>パワーをためよう！</strong><span>パズルで 力をためよう！</span>';
   $('#timebar').style.width = '100%';
   $('#combobar').style.width = '0%';
   $('#puzzle-tip').textContent = '同じマークを3つ以上なぞろう！';
@@ -700,7 +700,6 @@ function openBattle(trainer, boss, continuation = null) {
     roundStarted: !trainer,
     trainerAppearance: series?.profile || null,
     level: member?.level,
-    roundSeconds: member?.seconds || 30,
     puzzleTypes: partyTypes(state.party),
     typeCharge: {},
     damage: 0,
@@ -709,6 +708,7 @@ function openBattle(trainer, boss, continuation = null) {
     hp: member?.hp ?? (boss ? 620 : 300 + ((m.id - 1) % 3) * 65),
     total: member?.hp ?? (boss ? 620 : 300 + ((m.id - 1) % 3) * 65),
   };
+  window.PokekoroTurns?.init(battle);
   combo = maxCombo = 0;
   lastClear = 0;
   elapsed = 0;
@@ -761,6 +761,7 @@ function openBattle(trainer, boss, continuation = null) {
   $('#encounter-img').alt = m.label;
   configureSafariUI();
   window.PokekoroBattleScene?.set(activeMap(), battle, state.owned);
+  window.PokekoroTurns?.render();
   document.dispatchEvent(
     new CustomEvent('battle:prepare', { detail: { continuation: !!continuation } }),
   );
@@ -798,7 +799,11 @@ function draw() {
     const x = (i % 6) * 70 + 35,
       y = Math.floor(i / 6) * 70 + 35,
       selected = path.includes(i);
+    const inactive =
+      battle?.combat && partyTypePower(window.PokekoroTurns.aliveParty(), grid[i]) === 0;
+    ctx.globalAlpha = inactive ? 0.32 : 1;
     drawTypeGem(ctx, x, y, colors[grid[i]], icons[grid[i]], selected, grid[i]);
+    ctx.globalAlpha = 1;
     if (selected) {
       ctx.fillStyle = '#344c42';
       ctx.fillRect(x + 10, y - 29, 20, 17);
@@ -878,15 +883,24 @@ canvas.onpointerup = (e) => {
     maxCombo = Math.max(maxCombo, combo);
     lastClear = now;
     let t = grid[path[0]],
-      power = partyTypePower(state.party, t);
+      power = partyTypePower(window.PokekoroTurns?.aliveParty() || state.party, t);
     const effectiveness = battleTypeMultiplier(t, battle);
-    let damage = puzzleCharge(power, path.length, combo, effectiveness, battle.puzzleTypes.length);
+    let damage = Math.round(
+      puzzleCharge(power, path.length, combo, effectiveness, battle.puzzleTypes.length) *
+        (battle.combat?.boost || 1),
+    );
+    window.PokekoroTurns?.charge(t, path.length);
     battle.damage += damage;
     battle.typeCharge[t] = (battle.typeCharge[t] || 0) + damage;
     if (damage > 0) flyCharge(path.slice(), t, damage);
     attackFX(path.slice(), t, damage, effectiveness, combo);
     $('#combo').textContent =
       `${combo}コンボ ×${(1 + Math.min(combo - 1, 9) * 0.15).toFixed(2)} · +${damage}${battle.safari ? 'なかよし' : 'パワー'}${battle.safari ? '' : ' ' + typeEffectivenessLabel(effectiveness)}`;
+    if (power === 0 && battle.combat) {
+      $('#callout').innerHTML =
+        '<strong>こうげきできない</strong><span>この属性の仲間は おやすみ</span>';
+      $('#puzzle-tip').textContent = '戦える仲間の 属性をつなごう！';
+    }
     refillPuzzle(path);
   }
   if (path.length > 0 && path.length < 3)
@@ -902,11 +916,11 @@ canvas.onlostpointercapture = (e) => {
   if (e.pointerId === activePuzzlePointer) resetPuzzlePointer();
 };
 $('#start').onclick = async () => {
-  if (preparing || running) return;
+  if (preparing || running || (battle.combat && !window.PokekoroTurns.begin())) return;
   preparing = true;
   $('#start').hidden = true;
   const epoch = battleEpoch;
-  for (const n of ['3', '2', '1', 'GO!']) {
+  for (const n of battle.combat?.turn > 1 ? ['GO!'] : ['3', '2', '1', 'GO!']) {
     if (epoch !== battleEpoch) return;
     $('#ready-overlay').innerHTML = `<strong class="countdown-number">${n}</strong>`;
     tone(n === 'GO!' ? 880 : 440, 0.12);
@@ -917,6 +931,7 @@ $('#start').onclick = async () => {
   preparing = false;
   running = true;
   battle.phase = 'charging';
+  window.PokekoroTurns?.render();
   startAt = performance.now();
   raf = requestAnimationFrame(tick);
 };
@@ -1054,7 +1069,7 @@ function endBattle(win) {
     state.balls++;
     render();
     result(
-      `<h2>${cloudBoss ? 'にじのくもの ぼうけん終了' : 'もう一度、挑戦しよう。'}</h2><p>参加報酬を うけとった！</p>${rewardItemsHtml([{ id: 'normal', count: 1 }])}<button class="primary" id="done">${cloudBoss ? '旅に戻る' : 'マップへ戻る'}</button>`,
+      `<h2>${cloudBoss ? 'にじのくもの ぼうけん終了' : 'もう一度、挑戦しよう。'}</h2>${battle.lossReason ? `<p>${battle.lossReason}<br>仲間は みんな元気に もどるよ</p>` : ''}<p>参加報酬を うけとった！</p>${rewardItemsHtml([{ id: 'normal', count: 1 }])}<button class="primary" id="done">${cloudBoss ? '旅に戻る' : 'マップへ戻る'}</button>`,
     );
     $('#done').onclick = done;
     return;
@@ -1479,7 +1494,23 @@ function fitBattle() {
   const view = window.visualViewport;
   const height = view ? view.height : window.innerHeight;
   const width = view ? view.width : window.innerWidth;
-  const size = Math.max(120, Math.min(420, width - 28, height * (height <= 600 ? 0.36 : 0.39)));
+  const size = Math.max(
+    120,
+    Math.min(
+      420,
+      width - 28,
+      height *
+        (battle?.combat
+          ? height <= 450
+            ? 0.55
+            : height <= 600
+              ? 0.25
+              : 0.28
+          : height <= 600
+            ? 0.36
+            : 0.39),
+    ),
+  );
   $('#battle').style.setProperty('--puzzle-size', `${size}px`);
 }
 window.addEventListener('resize', fitBattle);
@@ -1497,147 +1528,32 @@ if (window.visualViewport) window.visualViewport.addEventListener('resize', fitV
 fitViewport();
 
 function updateCharge(value = battle.damage) {
-  window.PokekoroBattleFX?.charge(value, battle.total, battle.safari, battle.phase === 'charging');
-  const p = value / battle.total;
+  window.PokekoroBattleFX?.charge(
+    value,
+    battle.combat ? Math.max(1, battle.hp) : battle.total,
+    battle.safari,
+    battle.phase === 'charging',
+  );
+  const target = battle.combat ? Math.max(1, battle.hp) : battle.total;
+  const p = value / target;
   $('#charge-value').textContent = value.toLocaleString();
   $('#chargebar').style.width = `${Math.min(100, p * 100)}%`;
   $('.attack-charge').classList.toggle('charged', p >= 1);
   $('#charge-hint').textContent = battle.safari
     ? p >= 1
       ? 'なかよし目標 達成！ もっとためて 捕獲率アップ！'
-      : `あと ${Math.max(0, battle.total - value)} で なかよし目標！`
+      : `あと ${Math.max(0, target - value)} で なかよし目標！`
     : p >= 1
       ? battle.trainer
         ? '撃破ライン突破！ もっとためて 全力アタック！'
         : '撃破ライン突破！ もっとためて捕獲率アップ！'
-      : `あと ${Math.max(0, battle.total - value)} パワーで撃破ライン！`;
+      : `あと ${Math.max(0, target - value)} パワーで撃破ライン！`;
 }
-// 30秒のパズル終了後に蓄積分を一斉解放する。演出の各待機後に世代を確認する。
+// サファリは従来のなかよし処理、戦闘は10秒ターンのコントローラーへ渡す。
 async function resolveAttack() {
   if (!battle || battle.phase === 'resolving' || battle.phase === 'finished') return;
-  if (battle.safari) {
-    await resolveSafari();
-    return;
-  }
-  running = false;
-  activePuzzlePointer = null;
-  drag = false;
-  preparing = false;
-  path = [];
-  elapsed = battleDuration();
-  cancelAnimationFrame(raf);
-  battle.phase = 'resolving';
-  const epoch = battleEpoch;
-  const wait = (ms) =>
-    new Promise((resolve) => setTimeout(resolve, reduceMotion ? Math.min(250, ms) : ms));
-  const type = Number(
-      Object.entries(battle.typeCharge || {}).sort((a, b) => b[1] - a[1])[0]?.[0] ?? 0,
-    ),
-    tier = window.PokekoroBattleFX?.prepare(battle.damage, battle.total, type) || 0;
-  $('#clock').textContent = '0.0';
-  $('#timebar').style.width = '0%';
-  $('#combobar').style.width = '0%';
-  $('#battle').classList.remove('hurry');
-  $('#battle').classList.add('resolving');
-  $('#ready-overlay').hidden = false;
-  $('#callout').textContent = '';
-  $('#ready-overlay').innerHTML =
-    '<strong>タイムアップ！</strong><span>みんなのパワーを ひとつに！</span>';
-  $('#puzzle-tip').textContent = 'ためた力を はなて！';
-  tone(440, 0.15);
-  if (battle.damage === 0) {
-    $('#ready-overlay').innerHTML =
-      '<strong>パワーが たりない…</strong><span>つぎは 3つ つないでみよう！</span>';
-    await wait(1100);
-    if (epoch === battleEpoch) {
-      battle.phase = 'finished';
-      endBattle(false);
-    }
-    return;
-  }
-  await wait(500);
-  if (epoch !== battleEpoch) return;
-  updateCharge();
-  $('#battle').classList.add('gathering-power');
-  $('#ready-overlay').innerHTML =
-    '<strong>パワーを しゅうちゅう…！</strong><span>' + maxCombo + 'コンボの力を こめて！</span>';
-  const orb = makeEnergyOrb();
-  document.dispatchEvent(new CustomEvent('battle:audiofocus', { detail: { active: true } }));
-  sfx('gather', reduceMotion ? 0.5 : 2);
-  await wait(1100);
-  if (epoch !== battleEpoch) return;
-  $('#battle').classList.add('power-full');
-  $('#ready-overlay').innerHTML =
-    '<strong>' +
-    ['よし、いくぞ！', '全力アタック！', '撃破パワー 解放！', '超！ 全力アタック！！'][tier] +
-    '</strong><span>' +
-    battle.damage.toLocaleString() +
-    ' パワー！！</span>';
-  await wait(900);
-  if (epoch !== battleEpoch) return;
-  $('#battle').classList.remove('gathering-power', 'power-full');
-  orb.classList.add('energy-launch');
-  sfx('release', tier);
-  $('#ready-overlay').innerHTML =
-    '<strong>いっけーーっ！！</strong><span>みんなの力を ぶつけろ！</span>';
-  await wait(450);
-  if (epoch !== battleEpoch) return;
-  orb.remove();
-  $('#battle').classList.add('attack-release');
-  pulse($('.enemy'), 'enemy-hit');
-  window.PokekoroBattleFX?.impact(tier);
-  const d = document.createElement('b');
-  d.className = 'damage-number final-damage';
-  d.innerHTML = `${battle.damage.toLocaleString()}<small>${tier >= 3 ? 'オーバーパワー！！' : 'まとめて ダメージ！'}</small>`;
-  $('.enemy').append(d);
-  const remaining = Math.max(0, battle.total - battle.damage);
-  battle.hp = remaining;
-  updateHP();
-  $('#chargebar').style.width = '0%';
-  if (remaining === 0) {
-    markBattleVictory();
-    if (battle.trainer) $('#leave').disabled = true;
-  }
-  await wait(battle.trainer ? TRAINER_PRESENTATION.impactSettleMs : 650);
-  if (epoch !== battleEpoch) return;
-  document.dispatchEvent(new CustomEvent('battle:audiofocus', { detail: { active: false } }));
-  if (remaining === 0 && battle.trainer) {
-    const complete = !hasNextTrainerPokemon();
-    window.PokekoroBattleFX?.defeat(tier, complete);
-    d.remove();
-    $('#ready-overlay').innerHTML = complete
-      ? '<strong>ぜんぶ たおした！</strong><span>' +
-        battle.trainerAppearance.name +
-        'に 勝利！</span>'
-      : '<strong>' + battle.m.label + 'を<br>たおした！</strong><span>よし！ このちょうし！</span>';
-    $('#puzzle-tip').textContent = complete
-      ? 'みんなの力で 大しょうり！'
-      : 'つぎの ポケモンが くるぞ！';
-    await wait(
-      complete ? TRAINER_PRESENTATION.completionHoldMs : TRAINER_PRESENTATION.defeatedHoldMs,
-    );
-    if (epoch !== battleEpoch) return;
-  } else {
-    // 野生・負けた時の流れは従来どおり。捕獲と報酬の条件には触れない。
-    if (remaining === 0) {
-      window.PokekoroBattleFX?.defeat(tier);
-      $('#ready-overlay').innerHTML =
-        '<strong>げきは！！</strong><span>' + maxCombo + ' コンボの力が とどいた！</span>';
-    } else
-      $('#ready-overlay').innerHTML =
-        '<strong>あと ' +
-        remaining +
-        ' パワー！</strong><span>つぎは もっと つないでみよう！</span>';
-    await wait(1000);
-    if (epoch !== battleEpoch) return;
-    d.remove();
-    $('#ready-overlay').innerHTML =
-      `<strong>${remaining === 0 ? 'やった！ 勝利！' : 'おしかった…！'}</strong><span>${remaining === 0 ? 'みんなのパワーで 大しょうり！' : 'ながく つなぐと たくさん たまるよ！'}</span>`;
-    await wait(700);
-    if (epoch !== battleEpoch) return;
-  }
-  battle.phase = 'finished';
-  endBattle(remaining === 0);
+  if (battle.safari) await resolveSafari();
+  else await window.PokekoroTurns.resolve();
 }
 
 // Pointer capture keeps release reliable even when a finger leaves the button.
@@ -1790,6 +1706,7 @@ function energyLayer() {
 }
 // 到着が遅れた粒子で最終パワー表示を巻き戻さないよう、充填中だけ数値を更新する。
 function flyCharge(cells, type, amount) {
+  const turn = battle.combat?.turn;
   const epoch = battleEpoch,
     layer = energyLayer(),
     dialog = $('#battle').getBoundingClientRect(),
@@ -1808,7 +1725,8 @@ function flyCharge(cells, type, amount) {
   }
   setTimeout(
     () => {
-      if (epoch !== battleEpoch || battle.phase !== 'charging') return;
+      if (epoch !== battleEpoch || battle.phase !== 'charging' || turn !== battle.combat?.turn)
+        return;
       battle.shownDamage += amount;
       updateCharge(battle.shownDamage);
       pulse($('.attack-charge'), 'charge-pop');
@@ -1817,18 +1735,6 @@ function flyCharge(cells, type, amount) {
     reduceMotion ? 100 : 760 + cells.length * 12,
   );
 }
-function makeEnergyOrb() {
-  const layer = energyLayer(),
-    dialog = $('#battle').getBoundingClientRect(),
-    g = $('.attack-charge').getBoundingClientRect(),
-    enemy = $('.enemy').getBoundingClientRect();
-  const orb = document.createElement('div');
-  orb.className = 'energy-orb';
-  orb.style.cssText = `left:${g.left - dialog.left + g.width / 2}px;top:${g.top - dialog.top + g.height / 2}px;--target-y:${enemy.top + enemy.height / 2 - (g.top + g.height / 2)}px`;
-  layer.append(orb);
-  return orb;
-}
-
 // iOS Safari: keep long presses and drag gestures inside the puzzle interaction.
 function clearPuzzleSelection() {
   const selection = window.getSelection?.();
@@ -1847,6 +1753,7 @@ for (const event of ['touchstart', 'touchmove'])
   puzzleStage.addEventListener(
     event,
     (e) => {
+      if (e.target.closest('#turn-actions')) return;
       if (e.cancelable) e.preventDefault();
     },
     { passive: false },
