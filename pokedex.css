@@ -546,3 +546,209 @@
     min-height: 35px;
   }
 }
+
+/* 検索パネルと結果リストで同じ高さを使い、スマホでも閉じる・決定を常に見せる。 */
+#pokedex-device[data-view='list'] .dex-machine {
+  height: min(720px, calc(var(--app-height, 100dvh) - 36px));
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+#pokedex-device[data-view='list'] .device-top {
+  flex-shrink: 0;
+}
+#pokedex-device[data-view='list'] .device-body {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1;
+}
+#pokedex-device[data-view='list'] .device-view-tabs {
+  flex-shrink: 0;
+}
+#pokedex-device[data-view='list'] #device-list-view {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1;
+}
+#device-list-view[hidden],
+#device-filter-panel[hidden],
+#device-kana-panel[hidden],
+#device-types-panel[hidden] {
+  display: none !important;
+}
+#pokedex-device[data-view='list'] #device-list-rows {
+  flex: 1;
+  min-height: 0;
+  height: auto;
+}
+.device-filter-bar {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.device-filter-bar button,
+#device-filter-panel button {
+  min-height: 40px;
+  padding: 6px 8px;
+  border: 1px solid #839579;
+  border-radius: 5px;
+  box-shadow: none;
+  background: #eff3dc;
+  color: #284536;
+  font-size: 13px;
+  font-weight: 700;
+}
+.device-filter-bar button {
+  flex: 1;
+}
+.device-filter-bar button[aria-pressed='true'],
+.device-filter-bar button[aria-expanded='true'],
+#device-type-grid button[aria-pressed='true'] {
+  background: #345b46;
+  border-color: #234431;
+  color: #f4f8df;
+}
+#pokedex-device button:focus-visible {
+  outline: 3px solid #167a9a;
+  outline-offset: 1px;
+}
+#device-filter-reset {
+  flex: 0 0 auto;
+  font-size: 11px;
+}
+#device-filter-summary {
+  flex-shrink: 0;
+  margin: 6px 0;
+  font-size: 11px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+  color: #4c6549;
+}
+#device-filter-panel {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  gap: 7px;
+}
+.device-filter-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+#device-filter-done {
+  min-height: 34px !important;
+}
+.device-filter-options {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  overscroll-behavior: contain;
+  padding: 2px;
+}
+#device-name-query {
+  display: block;
+  min-height: 34px;
+  box-sizing: border-box;
+  border: 1px solid #a3b28d;
+  border-radius: 4px;
+  padding: 6px;
+  background: #f7f8e9;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+.device-filter-help {
+  font-size: 10px;
+  line-height: 1.6;
+  margin: 5px 0 7px;
+  color: #50694b;
+}
+.device-kana-tools {
+  display: grid;
+  grid-template-columns: 1.4fr 1.6fr 1fr 1.2fr 0.8fr;
+  gap: 4px;
+  margin-bottom: 7px;
+}
+#device-filter-panel .device-kana-tools button {
+  padding: 4px 1px;
+  font-size: 11px;
+}
+#device-kana-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 5px;
+}
+#device-filter-panel #device-kana-grid button {
+  min-height: 44px;
+  font-size: 18px;
+}
+#device-type-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+#device-type-grid button {
+  padding: 6px 2px;
+  font-size: 12px;
+}
+#device-filter-panel #device-filter-apply {
+  flex-shrink: 0;
+  min-height: 42px;
+  background: #345b46;
+  color: #f4f8df;
+  border-color: #234431;
+}
+#pokedex-device[data-filter-panel] #device-list-rows,
+#pokedex-device[data-filter-panel] .device-list-pager {
+  display: none;
+}
+.device-list-row small {
+  display: block;
+  margin-top: 3px;
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 1.45;
+  color: #5b7350;
+}
+.device-list-row strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.device-empty {
+  padding: 30px 4px;
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.8;
+}
+.device-empty small {
+  font-size: 11px;
+}
+@media (min-width: 600px) {
+  #device-kana-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+  #device-type-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+@media (max-height: 450px) {
+  #device-list-count {
+    font-size: 11px;
+  }
+  .device-filter-bar button {
+    min-height: 32px;
+  }
+  #device-filter-summary {
+    margin: 3px 0;
+  }
+  .device-filter-heading {
+    font-size: 11px;
+  }
+  #device-filter-panel {
+    gap: 4px;
+  }
+}

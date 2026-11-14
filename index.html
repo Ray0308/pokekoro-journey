@@ -7,30 +7,30 @@
     content="#38206b" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta
     name="apple-mobile-web-app-title"
     content="ポケコロジャーニー" /><title>ポケコロジャーニー</title
-  ><link rel="icon" href="assets/icons/favicon.ico?v=0.9.2.27" sizes="16x16 32x32" /><link
+  ><link rel="icon" href="assets/icons/favicon.ico?v=0.9.2.28" sizes="16x16 32x32" /><link
     rel="icon"
     type="image/png"
     sizes="32x32"
-    href="assets/icons/icon-32.png?v=0.9.2.27" /><link
+    href="assets/icons/icon-32.png?v=0.9.2.28" /><link
     rel="apple-touch-icon"
     sizes="180x180"
-    href="assets/icons/icon-180.png?v=0.9.2.27" /><link
+    href="assets/icons/icon-180.png?v=0.9.2.28" /><link
     rel="manifest"
-    href="manifest.webmanifest?v=0.9.2.27" /><link
+    href="manifest.webmanifest?v=0.9.2.28" /><link
     rel="stylesheet"
-    href="style.css?v=0.9.2.27" /><link rel="stylesheet" href="title.css?v=0.9.2.27" /><link
+    href="style.css?v=0.9.2.28" /><link rel="stylesheet" href="title.css?v=0.9.2.28" /><link
     rel="stylesheet"
-    href="map.css?v=0.9.2.27" /><link rel="stylesheet" href="pokedex.css?v=0.9.2.27" /><link
+    href="map.css?v=0.9.2.28" /><link rel="stylesheet" href="pokedex.css?v=0.9.2.28" /><link
     rel="stylesheet"
-    href="game-menu.css?v=0.9.2.27" /><link
+    href="game-menu.css?v=0.9.2.28" /><link
     rel="stylesheet"
-    href="battle-feedback.css?v=0.9.2.27" /><link
+    href="battle-feedback.css?v=0.9.2.28" /><link
     rel="stylesheet"
-    href="ball-exchange.css?v=0.9.2.27" /><link
+    href="ball-exchange.css?v=0.9.2.28" /><link
     rel="stylesheet"
-    href="kurt-house.css?v=0.9.2.27" /><link
+    href="kurt-house.css?v=0.9.2.28" /><link
     rel="stylesheet"
-    href="battle-skin.css?v=0.9.2.27" /><body class="at-title"
+    href="battle-skin.css?v=0.9.2.28" /><body class="at-title"
     ><section id="boot-screen" hidden aria-label="Ray Edu Labo"
       ><img
         id="boot-logo"
@@ -283,7 +283,60 @@
             ><button id="device-list-tab" aria-pressed="true">リスト</button
             ><button id="device-detail-tab" aria-pressed="false">くわしく</button></div
           ><section id="device-list-view" aria-label="図鑑リスト"
-            ><p id="device-list-count"></p><div id="device-list-rows"></div
+            ><p id="device-list-count"></p
+            ><div class="device-filter-bar" aria-label="ポケモンの絞り込み">
+              <button
+                id="device-name-filter"
+                aria-expanded="false"
+                aria-controls="device-filter-panel"
+                aria-pressed="false"
+                >なまえ</button
+              >
+              <button
+                id="device-type-filter"
+                aria-expanded="false"
+                aria-controls="device-filter-panel"
+                aria-pressed="false"
+                >タイプ</button
+              >
+              <button id="device-filter-reset">リセット</button>
+            </div>
+            <p id="device-filter-summary" role="status" aria-live="polite"></p>
+            <div
+              id="device-filter-panel"
+              hidden
+              role="group"
+              aria-labelledby="device-filter-heading"
+            >
+              <div class="device-filter-heading"
+                ><strong id="device-filter-heading"></strong
+                ><button id="device-filter-done">とじる</button></div
+              >
+              <div class="device-filter-options">
+                <div id="device-kana-panel">
+                  <output id="device-name-query" aria-label="入力した名前"></output>
+                  <p class="device-filter-help"
+                    >にごる音・小さい文字も いっしょにさがすよ<br />下へスクロールで
+                    パネルの続きが見られるよ</p
+                  >
+                  <div class="device-kana-tools">
+                    <button id="device-name-backspace">１字けす</button
+                    ><button id="device-name-clear">ぜんぶけす</button>
+                    <button id="device-name-voice" aria-label="最後の文字に濁点・半濁点"
+                      >゛゜</button
+                    ><button id="device-name-small">小文字</button
+                    ><button id="device-name-long">ー</button>
+                  </div>
+                  <div id="device-kana-grid" aria-label="50音パネル"></div>
+                </div>
+                <div id="device-types-panel" hidden
+                  ><p class="device-filter-help">どちらかの タイプが合えば 表示するよ</p
+                  ><div id="device-type-grid" aria-label="タイプを選ぶ"></div
+                ></div>
+              </div>
+              <button id="device-filter-apply"></button>
+            </div>
+            <div id="device-list-rows"></div
             ><div class="device-list-pager"
               ><button id="device-list-prev" aria-label="前のリスト">◀</button
               ><span id="device-list-page"></span
@@ -413,33 +466,34 @@
         >もどる</button
       ></dialog
     ><span class="app-version" data-version></span
-    ><script src="version.js?v=0.9.2.27"></script
-    ><script src="map-config.js?v=0.9.2.27"></script
-    ><script src="pokemon-data.generated.js?v=0.9.2.27"></script
-    ><script src="pokemon-data.js?v=0.9.2.27"></script
-    ><script src="rainbow-config.js?v=0.9.2.27"></script
-    ><script src="party-rules.js?v=0.9.2.27"></script
-    ><script src="type-chart.generated.js?v=0.9.2.27"></script
-    ><script src="type-effectiveness.js?v=0.9.2.27"></script
-    ><script src="puzzle-visuals.js?v=0.9.2.27"></script
-    ><script src="safari.js?v=0.9.2.27"></script
-    ><script src="trainer-rosters.generated.js?v=0.9.2.27"></script
-    ><script src="trainer-rules.js?v=0.9.2.27"></script
-    ><script src="trainer-battle.js?v=0.9.2.27"></script
-    ><script src="audio-settings.js?v=0.9.2.27"></script
-    ><script src="game-sfx.js?v=0.9.2.27"></script
-    ><script src="battle-feedback.js?v=0.9.2.27"></script
-    ><script src="type-balls.js?v=0.9.2.27"></script
-    ><script src="battle-scene.js?v=0.9.2.27"></script
-    ><script src="app.js?v=0.9.2.27"></script
-    ><script src="kurt-house.js?v=0.9.2.27"></script
-    ><script src="ball-exchange.js?v=0.9.2.27"></script
-    ><script src="pokedex.js?v=0.9.2.27"></script
-    ><script src="map-music-config.js?v=0.9.2.27"></script
-    ><script src="map-audio.js?v=0.9.2.27"></script
-    ><script src="title-config.js?v=0.9.2.27"></script
-    ><script src="title.js?v=0.9.2.27"></script>
-    <script src="game-menu.js?v=0.9.2.27"></script>
+    ><script src="version.js?v=0.9.2.28"></script
+    ><script src="map-config.js?v=0.9.2.28"></script
+    ><script src="pokemon-data.generated.js?v=0.9.2.28"></script
+    ><script src="pokemon-data.js?v=0.9.2.28"></script
+    ><script src="rainbow-config.js?v=0.9.2.28"></script
+    ><script src="party-rules.js?v=0.9.2.28"></script
+    ><script src="type-chart.generated.js?v=0.9.2.28"></script
+    ><script src="type-effectiveness.js?v=0.9.2.28"></script
+    ><script src="puzzle-visuals.js?v=0.9.2.28"></script
+    ><script src="safari.js?v=0.9.2.28"></script
+    ><script src="trainer-rosters.generated.js?v=0.9.2.28"></script
+    ><script src="trainer-rules.js?v=0.9.2.28"></script
+    ><script src="trainer-battle.js?v=0.9.2.28"></script
+    ><script src="audio-settings.js?v=0.9.2.28"></script
+    ><script src="game-sfx.js?v=0.9.2.28"></script
+    ><script src="battle-feedback.js?v=0.9.2.28"></script
+    ><script src="type-balls.js?v=0.9.2.28"></script
+    ><script src="battle-scene.js?v=0.9.2.28"></script
+    ><script src="app.js?v=0.9.2.28"></script
+    ><script src="kurt-house.js?v=0.9.2.28"></script
+    ><script src="ball-exchange.js?v=0.9.2.28"></script
+    ><script src="pokedex-filters.js?v=0.9.2.28"></script
+    ><script src="pokedex.js?v=0.9.2.28"></script
+    ><script src="map-music-config.js?v=0.9.2.28"></script
+    ><script src="map-audio.js?v=0.9.2.28"></script
+    ><script src="title-config.js?v=0.9.2.28"></script
+    ><script src="title.js?v=0.9.2.28"></script>
+    <script src="game-menu.js?v=0.9.2.28"></script>
     <!-- デバッグ不要時は、次のscript行だけをコメントアウトしてください。 -->
-    <script src="debug.js?v=0.9.2.27"></script> </body
+    <script src="debug.js?v=0.9.2.28"></script> </body
 ></html>
