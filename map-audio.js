@@ -37,7 +37,11 @@
     );
   }
   function theme() {
-    if (document.querySelector('#pokedex-device').open) return 'pokedex';
+    if (
+      document.querySelector('#pokedex-device').open ||
+      document.querySelector('#opening[open][data-scene="dex"]')
+    )
+      return 'pokedex';
     return victory()
       ? battle.trainer
         ? 'trainerVictory'
@@ -52,13 +56,16 @@
   }
   function canPlay() {
     if (!enabled || document.hidden || document.querySelector('#game-shell').hidden) return false;
-    const exceptions = victory()
-      ? ':not(#battle):not(#result)'
-      : encounter()
-        ? ':not(#encounter):not(#battle)'
-        : '';
+    const exceptions =
+      window.PokekoroOpening?.pending() && document.querySelector('#result').open
+        ? ':not(#result)'
+        : victory()
+          ? ':not(#battle):not(#result)'
+          : encounter()
+            ? ':not(#encounter):not(#battle)'
+            : '';
     return !document.querySelector(
-      'dialog[open]:not(#pokedex-device):not(#game-menu):not(#item-bag):not(#title-options):not(#ball-exchange):not(#kurt-house):not(#type-ball-picker):not(#debug-tools):not(#debug-roll-picker)' +
+      'dialog[open]:not(#opening):not(#pokedex-device):not(#game-menu):not(#item-bag):not(#title-options):not(#ball-exchange):not(#kurt-house):not(#type-ball-picker):not(#debug-tools):not(#debug-roll-picker)' +
         exceptions,
     );
   }
@@ -329,6 +336,7 @@
     if (enabled && event.detail.userGesture) unlock();
     sync();
   });
+  document.addEventListener('opening:scene', sync);
   document.addEventListener('visibilitychange', sync);
   window.addEventListener('pagehide', pause);
   window.addEventListener('pageshow', sync);

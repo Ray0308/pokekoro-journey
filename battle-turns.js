@@ -17,7 +17,10 @@
   const wait = (ms) =>
     new Promise((resolve) => setTimeout(resolve, reduceMotion ? Math.min(ms, 120) : ms));
   function init(current) {
-    current.combat = current.safari ? null : current.series?.combat || rules.create(state.party);
+    current.combat =
+      current.safari || current.tutorial
+        ? null
+        : current.series?.combat || rules.create(state.party);
     if (current.series) current.series.combat = current.combat;
     current.attackTotal = 0;
     selected = null;
@@ -140,7 +143,7 @@
     render();
   }
   function aliveParty() {
-    return enabled() ? rules.alive(battle.combat) : state.party;
+    return battle?.tutorial ? [32] : enabled() ? rules.alive(battle.combat) : state.party;
   }
   async function wipeout(epoch) {
     if (epoch !== battleEpoch || battle.phase === 'wipeout') return;

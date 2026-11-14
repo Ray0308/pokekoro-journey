@@ -1,0 +1,220 @@
+/* 初回案内は短い画面単位で進める。小さい端末ではダイアログ内をスクロール。 */
+#opening {
+  width: min(94vw, 540px);
+  max-height: 94dvh;
+  padding: 0;
+  overflow-y: auto;
+  background: #fffdf0;
+  border: 3px solid #c5b483;
+  border-radius: 20px;
+  color: #304c43;
+}
+#opening::backdrop {
+  background: #193b45c9;
+  backdrop-filter: blur(5px);
+}
+.opening-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  background: #e9efe2;
+  font-weight: 800;
+}
+.opening-heading small {
+  font-size: 11px;
+  font-weight: 500;
+}
+.opening-scene {
+  height: clamp(150px, 32dvh, 280px);
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  overflow: hidden;
+  background: #dce9cf url('assets/opening/laboratory.webp') center/cover;
+}
+#opening[data-scene='forest'] .opening-scene {
+  background: linear-gradient(#c4e8d5, #dcefad);
+}
+.opening-oak {
+  height: 95%;
+  object-fit: contain;
+  background: #fffef2e0;
+  border-radius: 100px 100px 0 0;
+  padding: 5px 25px 0;
+}
+.opening-companion {
+  height: 90%;
+  width: 70%;
+  object-fit: contain;
+  z-index: 1;
+}
+.opening-snack {
+  position: absolute;
+  bottom: 12%;
+  right: 16%;
+  font-size: 40px;
+  transform: rotate(-15deg);
+}
+.opening-partner {
+  position: absolute;
+  height: 65%;
+  width: 45%;
+  object-fit: contain;
+  right: 0;
+  bottom: 0;
+  filter: drop-shadow(0 8px 5px #183c3426);
+}
+.opening-message {
+  padding: 16px 20px 4px;
+}
+.opening-message h2 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+.opening-message p {
+  margin: 0;
+  line-height: 1.85;
+  font-size: 15px;
+  min-height: 5.5em;
+}
+.opening-actions {
+  padding: 12px 18px 18px;
+  display: grid;
+  gap: 12px;
+}
+.opening-actions > .primary {
+  width: 100%;
+  min-height: 50px;
+  font-size: 15px;
+}
+.opening-starters {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+.opening-starters button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 2px;
+  border: 2px solid #b8c6b3;
+  background: #f1f5e9;
+  border-radius: 12px;
+  color: inherit;
+}
+.opening-starters button[aria-pressed='true'] {
+  border-color: #d18b29;
+  background: #fff0b5;
+  box-shadow: 0 0 0 2px #f5d481;
+}
+.opening-starters img {
+  width: 100%;
+  height: 75px;
+  object-fit: contain;
+}
+.opening-starters strong {
+  font-size: 12px;
+}
+.opening-starters small {
+  font-size: 10px;
+  margin-top: 4px;
+}
+.opening-dex {
+  width: 78%;
+  height: 88%;
+  padding: 12px;
+  box-sizing: border-box;
+  border: 5px solid #9b3437;
+  border-radius: 12px;
+  background: #e75655;
+  color: #fffbed;
+  box-shadow: 5px 6px 0 #683b3a55;
+  align-self: center;
+}
+.opening-dex > i {
+  display: inline-block;
+  height: 15px;
+  width: 15px;
+  background: #89eeff;
+  border: 3px solid #fff6c6;
+  border-radius: 50%;
+  margin-right: 12px;
+}
+.opening-dex-screen {
+  height: 60%;
+  background: #d4efd2;
+  border: 7px solid #fff0cf;
+  border-radius: 7px;
+  margin: 8px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #43654c;
+  text-align: center;
+}
+.opening-dex-screen img {
+  width: 33%;
+  height: 100%;
+  object-fit: contain;
+  animation: opening-register 0.6s ease-out;
+}
+.opening-dex small {
+  font-size: 11px;
+}
+.opening-team {
+  display: flex;
+  align-self: center;
+  align-items: center;
+  width: 100%;
+  background: #fffde8df;
+  padding: 18px 0;
+}
+.opening-team > div {
+  width: 33.33%;
+  text-align: center;
+  font-size: 12px;
+  font-weight: bold;
+}
+.opening-team img {
+  width: 100%;
+  height: 110px;
+  object-fit: contain;
+}
+@keyframes opening-register {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .opening-dex-screen img {
+    animation: none;
+  }
+}
+@media (max-height: 500px) {
+  .opening-scene {
+    height: 140px;
+  }
+  .opening-message p {
+    min-height: 0;
+  }
+}
+
+#opening .opening-dex small {
+  color: #fffbed;
+}
+#opening[data-scene='dex'] .opening-dex {
+  animation: opening-register 0.45s ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  #opening[data-scene='dex'] .opening-dex {
+    animation: none;
+  }
+}

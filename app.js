@@ -11,7 +11,8 @@ const MAP_ASSETS = Object.freeze({
 });
 const mons = POKEDEX;
 // セーブはポケモンの全国図鑑番号をキーにする。旧データの不足項目は下で補完する。
-let state = { owned: [1, 4, 7], party: [1, 4, 7], pos: 0, lap: 1, balls: 8, super: 2 };
+let state = OpeningRules.fresh();
+let hadValidSave = false;
 try {
   let s = JSON.parse(localStorage.getItem('pokekoro-v1'));
   if (
@@ -28,9 +29,12 @@ try {
     Number.isFinite(s.super) &&
     s.balls >= 0 &&
     s.super >= 0
-  )
+  ) {
     state = s;
+    hadValidSave = true;
+  }
 } catch {}
+OpeningRules.normalize(state, hadValidSave);
 state.owned = [...new Set(state.owned.filter(validPokemonId))];
 state.seen = [
   ...new Set([
@@ -637,9 +641,10 @@ async function rollDice() {
   } else openBattle(s === 'trainer' || s === 'goal', s === 'goal');
 }
 // 1回分のバトル状態を作り直す。HPや報酬を前の相手から持ち越さない。
-function openBattle(trainer, boss, continuation = null) {
+function openBattle(trainer, boss, continuation = null, practice = false) {
+  const tutorial = practice && !!window.PokekoroOpening?.canPractice();
   window.PokekoroBattleFX?.reset();
-  if (partyTypeError(state.party)) {
+  if (!tutorial && partyTypeError(state.party)) {
     busy = false;
     $('#roll').disabled = false;
     showTab('party');
@@ -679,21 +684,24 @@ function openBattle(trainer, boss, continuation = null) {
   if (isSafari() || activeMap().boss?.wild) trainer = false;
   const series = trainer ? continuation || createTrainerEncounter(state, activeMap(), boss) : null;
   const member = series?.team[series.index];
-  const id = member
-    ? member.id
-    : isSafari() && boss
-      ? SAFARI_RULES.finalIds[Math.floor(Math.random() * SAFARI_RULES.finalIds.length)]
-      : boss
-        ? activeBossId()
-        : pickEncounterId();
+  const id = tutorial
+    ? 25
+    : member
+      ? member.id
+      : isSafari() && boss
+        ? SAFARI_RULES.finalIds[Math.floor(Math.random() * SAFARI_RULES.finalIds.length)]
+        : boss
+          ? activeBossId()
+          : pickEncounterId();
   let m = mons[id - 1];
   if (isSafari() && boss)
     m = { ...m, label: { 115: 'ガルーラ', 113: 'ラッキー', 128: 'ケンタロス' }[id] };
-  markPokemonSeen(id);
+  if (!tutorial) markPokemonSeen(id);
   // 通常の野生は番号の剰余ではなく種族値で差を付ける。トレーナーのレベル・エース補正は維持。
   const baseHP = member?.hp ?? (boss ? 620 : isSafari() ? 300 + ((m.id - 1) % 3) * 65 : 365);
-  const totalHP = isSafari() ? baseHP : PokemonBattleStats.enemyHP(m, baseHP);
+  const totalHP = tutorial ? 1 : isSafari() ? baseHP : PokemonBattleStats.enemyHP(m, baseHP);
   battle = {
+    tutorial,
     m,
     trainer,
     boss,
@@ -704,7 +712,7 @@ function openBattle(trainer, boss, continuation = null) {
     roundStarted: !trainer,
     trainerAppearance: series?.profile || null,
     level: member?.level,
-    puzzleTypes: partyTypes(state.party),
+    puzzleTypes: partyTypes(tutorial ? [32] : state.party),
     typeCharge: {},
     damage: 0,
     shownDamage: 0,
@@ -1058,6 +1066,7 @@ function markBattleVictory() {
 }
 // 勝利確定後は撤退などで敗北へ戻さない。rewardResolved で報酬の二重付与を防ぐ。
 function endBattle(win) {
+  if (battle?.tutorial) return window.PokekoroOpening.cancelPractice();
   // 古いラウンドからの重複呼び出しで、次の送球SEや演出を止めない。
   if (!battle || battle.rewardResolved || (battle.series && !battle.roundStarted)) return;
   window.PokekoroBattleFX?.reset();
@@ -1170,6 +1179,7 @@ $('#result').addEventListener('cancel', (e) => {
 });
 // 投球開始時に在庫を減らして保存する。連打は capturePending で弾く。
 async function catchMon(ballId, chance) {
+  if (battle?.tutorial || window.PokekoroOpening?.pending()) return;
   if (capturePending) return;
   const selected = [...BALLS, ...TYPE_BALLS].find((b) => b.id === ballId);
   if (
@@ -1203,6 +1213,7 @@ async function catchMon(ballId, chance) {
   capturePending = false;
 }
 $('#leave').onclick = () => {
+  if (battle?.tutorial) return window.PokekoroOpening.cancelPractice();
   if (confirm(battle?.safari ? 'なかよしチャレンジを やめますか？' : 'バトルを撤退しますか？')) {
     if (battle?.safari) {
       endBattle(false);
@@ -1569,6 +1580,7 @@ function updateCharge(value = battle.damage) {
 // サファリは従来のなかよし処理、戦闘は10秒ターンのコントローラーへ渡す。
 async function resolveAttack() {
   if (!battle || battle.phase === 'resolving' || battle.phase === 'finished') return;
+  if (battle.tutorial) return window.PokekoroOpening.resolvePractice();
   if (battle.safari) await resolveSafari();
   else await window.PokekoroTurns.resolve();
 }
