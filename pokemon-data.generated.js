@@ -1,6 +1,6 @@
 'use strict';
 // 自動生成: npm run data:generate。編集元は data/pokemon.json。
-// 名前・タイプは参照データと全件照合。説明はユーザー提供の要約文。
+// 名前・タイプは参照データと全件照合。説明は提供要約と出典付き修正文（修正記録は data/pokemon-description-corrections.json）。
 const POKEMON_METADATA = Object.freeze([
   {
     'id': 1,
@@ -1743,7 +1743,7 @@ const POKEMON_METADATA = Object.freeze([
     'id': 267,
     'name': 'アゲハント',
     'types': [11, 4],
-    'description': '花の ミツを 好んで 集める。 細長い 口で 花粉を 吸い取る。',
+    'description': '色 鮮やかな 羽の 模様が 特徴。 細い 口を 伸ばして 花の 甘い ミツを 吸い取る。',
   },
   {
     'id': 268,
@@ -1779,7 +1779,8 @@ const POKEMON_METADATA = Object.freeze([
     'id': 273,
     'name': 'タネボー',
     'types': [0],
-    'description': '木の 枝に ぶら下がって 暮らす。 頭の 葉っぱで 水分を 吸収する。',
+    'description':
+      '頭の 先を 枝に くっつけて ぶら下がる。強風に あおられ 落ちてしまう ことも あるのだ。',
   },
   {
     'id': 274,
@@ -1887,7 +1888,7 @@ const POKEMON_METADATA = Object.freeze([
     'id': 291,
     'name': 'テッカニン',
     'types': [11, 4],
-    'description': '目にも 止まらぬ 速さで 飛ぶ。 羽ばたく 音が 聞こえない ほど 素早い。',
+    'description': '鳴き声を 聞き続けると 頭痛が 治まらなくなる。 見えない ほどの 速さで 動く。',
   },
   {
     'id': 292,
@@ -1899,7 +1900,8 @@ const POKEMON_METADATA = Object.freeze([
     'id': 293,
     'name': 'ゴニョニョ',
     'types': [5],
-    'description': '小さな 声でも 近くに いると 大きく 響く。 大声で 仲間と 呼び合う。',
+    'description':
+      '普段は ささやき 声。危険を 察知すると 大声で 泣き出す。 耳の 蓋を 閉じると 泣きやむ。',
   },
   {
     'id': 294,
@@ -2061,7 +2063,8 @@ const POKEMON_METADATA = Object.freeze([
     'id': 320,
     'name': 'ホエルコ',
     'types': [2],
-    'description': '海の 水を 大きな 口に ためる。 小さな 体で 元気に 泳ぐ。',
+    'description':
+      '毎日 １トンの エサを食べる。 鼻から ためこんだ 海水を 勢いよく 噴き出して 遊ぶ。',
   },
   {
     'id': 321,
@@ -2259,7 +2262,8 @@ const POKEMON_METADATA = Object.freeze([
     'id': 353,
     'name': 'カゲボウズ',
     'types': [13],
-    'description': '人の 気持ちを 養分に する。 捨てられた 人形から 生まれたと 言われる。',
+    'description':
+      '頭の ツノで 恨みや ねたみの 感情を 食べると 言われる。 真夜中 活発に 活動する。',
   },
   {
     'id': 354,
@@ -2301,7 +2305,8 @@ const POKEMON_METADATA = Object.freeze([
     'id': 360,
     'name': 'ソーナノ',
     'types': [10],
-    'description': '仲間と ぶつかりながら 遊ぶ。 尻尾で バランスを 取る。',
+    'description':
+      '仲間たちと おしくらまんじゅうを やることで 我慢強く 育つ。 甘い 果物が 大好物。',
   },
   {
     'id': 361,
@@ -2367,7 +2372,7 @@ const POKEMON_METADATA = Object.freeze([
     'id': 371,
     'name': 'タツベイ',
     'types': [14],
-    'description': '高い 崖から 飛び降りて 翼を 鍛える。 空を 飛ぶ ことを 夢見る。',
+    'description': '大空を 飛ぶことを 夢見て 毎日 飛ぶ 練習のために 崖から 飛び降りている。',
   },
   {
     'id': 372,
@@ -2469,7 +2474,8 @@ const POKEMON_METADATA = Object.freeze([
     'id': 388,
     'name': 'ハヤシガメ',
     'types': [0],
-    'description': '森の 中で 暮らす。 背中の 茂みで 小さな ポケモンを 守る。',
+    'description':
+      'きれいな 水が わき出る 場所を 知っていて 仲間の ポケモンを 背中に 乗せて そこまで 運ぶ。',
   },
   {
     'id': 389,
@@ -2481,19 +2487,19 @@ const POKEMON_METADATA = Object.freeze([
     'id': 390,
     'name': 'ヒコザル',
     'types': [1],
-    'description': 'しっぽの 炎を 消さずに 動き回る。 高い 場所にも 素早く 登る。',
+    'description': 'お尻の 炎は お腹で 作られた ガスが 燃料。 雨に ぬれても 消えない。',
   },
   {
     'id': 391,
     'name': 'モウカザル',
     'types': [1, 8],
-    'description': '手足から 炎を 出して 戦う。 素早い 動きで 相手を 翻弄する。',
+    'description': '尻尾の 炎の 勢いを うまく コントロールして 自分の 得意な 間合いで 戦うのだ。',
   },
   {
     'id': 392,
     'name': 'ゴウカザル',
     'types': [1, 8],
-    'description': '手足に 炎を まとって 戦う。 激しい 攻撃で 相手を 圧倒する。',
+    'description': '素早さで 相手を 翻弄する。 両手 両足を 使った 独特の 戦い方を する。',
   },
   {
     'id': 393,
@@ -2505,7 +2511,8 @@ const POKEMON_METADATA = Object.freeze([
     'id': 394,
     'name': 'ポッタイシ',
     'types': [2],
-    'description': '群れを 作って 暮らす。 翼を 振って 仲間に 合図する。',
+    'description':
+      '群れを 作らずに １匹で いる。 自分が 一番 偉いと どの ポッタイシも 考えているようだ。',
   },
   {
     'id': 395,
@@ -2547,7 +2554,7 @@ const POKEMON_METADATA = Object.freeze([
     'id': 401,
     'name': 'コロボーシ',
     'types': [11],
-    'description': '足を こすり合わせて 音を 出す。 秋の 草むらで 鳴く。',
+    'description': '触覚を ぶつけ合って 鳴らす 音で 仲間と 会話をする。 音色は 秋の 夜の 風物詩。',
   },
   {
     'id': 402,
@@ -2577,7 +2584,8 @@ const POKEMON_METADATA = Object.freeze([
     'id': 406,
     'name': 'スボミー',
     'types': [0, 3],
-    'description': 'つぼみから 甘い 香りを 出す。 きれいな 水を 飲んで 育つ。',
+    'description':
+      '暖かい 日差しを 浴びると つぼみが 開き 花粉を 飛ばす。 きれいな 水の 近くが 住処。',
   },
   {
     'id': 407,
@@ -2697,7 +2705,8 @@ const POKEMON_METADATA = Object.freeze([
     'id': 426,
     'name': 'フワライド',
     'types': [13, 4],
-    'description': '風を 受けて 空を 飛ぶ。 体の 中に たくさんの 空気を ためる。',
+    'description':
+      '体内の ガスの 原料は 魂。 身体が しぼんでくると 人や ポケモンを 連れ去るという。',
   },
   {
     'id': 427,
@@ -2739,7 +2748,7 @@ const POKEMON_METADATA = Object.freeze([
     'id': 433,
     'name': 'リーシャン',
     'types': [10],
-    'description': '動く ときに 鈴の ような 音が 鳴る。 風に 乗って 揺れる。',
+    'description': '飛び跳ねると 口の中にある 玉が あちこちに 反射して 鈴のような 音色と なる。',
   },
   {
     'id': 434,
@@ -2775,13 +2784,15 @@ const POKEMON_METADATA = Object.freeze([
     'id': 439,
     'name': 'マネネ',
     'types': [10, 17],
-    'description': '人の 動きを まねる。 不思議な 壁を 作って 身を 守る。',
+    'description':
+      '相手の 動きを そっくりに 真似を して 戸惑わせている あいだに さっさと 逃げるのだ。',
   },
   {
     'id': 440,
     'name': 'ピンプク',
     'types': [5],
-    'description': '丸い 石を 大切に 持ち歩く。 仲間の 世話を するのが 好き。',
+    'description':
+      'タマゴに 似た 真んまるい 石を お腹の 袋に 入れている。 好きな 相手に 石を 渡す。',
   },
   {
     'id': 441,
@@ -2854,7 +2865,7 @@ const POKEMON_METADATA = Object.freeze([
     'id': 452,
     'name': 'ドラピオン',
     'types': [3, 15],
-    'description': '強い 腕で 敵を 押さえ込む。 尻尾の 毒針で 攻撃する。',
+    'description': '両腕の ツメは 自動車を スクラップにする 破壊力。 ツメの 先から 毒を 出す。',
   },
   {
     'id': 453,
@@ -2896,7 +2907,8 @@ const POKEMON_METADATA = Object.freeze([
     'id': 459,
     'name': 'ユキカブリ',
     'types': [0, 7],
-    'description': '雪山に 暮らし 寒さに 強い。 春になると 山を 下りる。',
+    'description':
+      '寒い 季節は 山の ふもとまで 降りてくるが 春に なると 雪が 残る 山頂に 戻っていく。',
   },
   {
     'id': 460,
@@ -2920,7 +2932,8 @@ const POKEMON_METADATA = Object.freeze([
     'id': 463,
     'name': 'ベロベルト',
     'types': [5],
-    'description': '長い 舌を 器用に 使う。 大きな 体でも 素早く 動ける。',
+    'description':
+      '人間の 手先にも 負けないほど 器用な ベロで なんでも できる。 反対に 指先は 不器用だ。',
   },
   {
     'id': 464,
@@ -2974,7 +2987,7 @@ const POKEMON_METADATA = Object.freeze([
     'id': 472,
     'name': 'グライオン',
     'types': [9, 4],
-    'description': '翼の ような 腕で 滑空する。 尻尾の ハサミで 獲物を 捕らえる。',
+    'description': '羽音を 立てずに 空を 飛ぶ。 長い 尻尾で 獲物を 捕まえ キバで 急所を 一突き。',
   },
   {
     'id': 473,
@@ -2986,7 +2999,7 @@ const POKEMON_METADATA = Object.freeze([
     'id': 474,
     'name': 'ポリゴンＺ',
     'types': [5],
-    'description': '不思議な 空間を 移動する。 体を 電子の ように 変化させる。',
+    'description': '異次元空間を 自由に 移動できるように プログラムを 修正したが ミスした らしい。',
   },
   {
     'id': 475,
@@ -2998,13 +3011,13 @@ const POKEMON_METADATA = Object.freeze([
     'id': 476,
     'name': 'ダイノーズ',
     'types': [12, 16],
-    'description': '強い 磁力で 小さな 石を 集める。 大きな 鼻が 特徴。',
+    'description': 'チビノーズと 呼ばれる 小さな ３つの ユニットを 磁力で 自由自在に 操っている。',
   },
   {
     'id': 477,
     'name': 'ヨノワール',
     'types': [13],
-    'description': '大きな 手で 魂を 捕まえると 言われる。 夜の 墓地を さまよう。',
+    'description': '狙った 相手を 腹の口で 丸飲み。 魂だけを 食い 肉体は 吐き出し 去っていく。',
   },
   {
     'id': 478,
@@ -3184,7 +3197,7 @@ const POKEMON_METADATA = Object.freeze([
     'id': 507,
     'name': 'ハーデリア',
     'types': [5],
-    'description': '長い 毛で 目を 覆う。 忠実な 性格で 仲間を 守る。',
+    'description': 'トレーナーを 助けながら 他の ポケモンの 世話もする とても 忠実な ポケモン。',
   },
   {
     'id': 508,
@@ -3214,7 +3227,8 @@ const POKEMON_METADATA = Object.freeze([
     'id': 512,
     'name': 'ヤナッキー',
     'types': [0],
-    'description': '大きな 葉っぱを 振って 戦う。 森の 中を 素早く 移動する。',
+    'description':
+      'トゲの たくさん ついた 尻尾を 相手に たたきつけて 攻撃。 気性の 激しい ポケモン。',
   },
   {
     'id': 513,
@@ -3238,7 +3252,7 @@ const POKEMON_METADATA = Object.freeze([
     'id': 516,
     'name': 'ヒヤッキー',
     'types': [2],
-    'description': '頭から 水を 放って 戦う。 水の 中を 器用に 泳ぐ。',
+    'description': '尻尾から 高圧の 水を 発射すると コンクリートの 壁も 破壊する 威力。',
   },
   {
     'id': 517,
@@ -3250,7 +3264,8 @@ const POKEMON_METADATA = Object.freeze([
     'id': 518,
     'name': 'ムシャーナ',
     'types': [10],
-    'description': '眠っている 人の 夢を 見る。 額から 夢の 煙を 出す。',
+    'description':
+      'おでこから でる ゆめのけむりは 食べた 夢の 内容によって さまざまな 色に 変わるのだ。',
   },
   {
     'id': 519,
@@ -3286,7 +3301,8 @@ const POKEMON_METADATA = Object.freeze([
     'id': 524,
     'name': 'ダンゴロ',
     'types': [12],
-    'description': '洞窟の 岩を 食べて 育つ。 体の 中に 光る 石を もつ。',
+    'description':
+      '１００年前の 大地震のときに 地割れから 発見された。 体内に エネルギーコアを 持つ。',
   },
   {
     'id': 525,
@@ -3298,7 +3314,8 @@ const POKEMON_METADATA = Object.freeze([
     'id': 526,
     'name': 'ギガイアス',
     'types': [12],
-    'description': '強い 音で 周囲の 岩を 砕く。 体の 結晶に 力を ためる。',
+    'description':
+      '取りこんだ 太陽光線を エネルギーコアで 反応 させて 光の玉として 撃ちだしてくる。',
   },
   {
     'id': 527,
@@ -3370,7 +3387,8 @@ const POKEMON_METADATA = Object.freeze([
     'id': 538,
     'name': 'ナゲキ',
     'types': [8],
-    'description': '赤い 帯を つけた 格闘家。 相手を 投げ飛ばして 戦う。',
+    'description':
+      '帯を 締めると パワーアップする。 野生の ナゲキは つる草を 編んで 自分の 帯を 作る。',
   },
   {
     'id': 539,
@@ -3400,7 +3418,8 @@ const POKEMON_METADATA = Object.freeze([
     'id': 543,
     'name': 'フシデ',
     'types': [11, 3],
-    'description': '毒の ある ツメで 身を 守る。 落ち葉の 下を 這い回る。',
+    'description':
+      'かみついて 猛毒を 与える。 天敵の 大きな とりポケモンも 体が しびれて 動けなくなる。',
   },
   {
     'id': 544,
@@ -3430,7 +3449,8 @@ const POKEMON_METADATA = Object.freeze([
     'id': 548,
     'name': 'チュリネ',
     'types': [0],
-    'description': '土に 根を 張って 暮らす。 葉っぱで 太陽の 光を 集める。',
+    'description':
+      '綺麗な 水と 土を 好む。 棲み処の 環境が 悪くなると 新たな土地へと 群れで 引っ越す。',
   },
   {
     'id': 549,
@@ -3514,7 +3534,8 @@ const POKEMON_METADATA = Object.freeze([
     'id': 562,
     'name': 'デスマス',
     'types': [13],
-    'description': '古代の 人の 魂が 宿ったと 言われる。 顔の 模様に 過去の 面影を 残す。',
+    'description':
+      '持っている マスクは デスマスが 人間だった ときの 顔。 たまに 見つめては 泣いている。',
   },
   {
     'id': 563,
@@ -3586,7 +3607,8 @@ const POKEMON_METADATA = Object.freeze([
     'id': 574,
     'name': 'ゴチム',
     'types': [10],
-    'description': '星の 光を 見つめる。 周囲の 気持ちを 感じ取る。',
+    'description':
+      'リボンのような 触角で サイコパワーを 増幅させる。 なにかを じっと 見つめている。',
   },
   {
     'id': 575,
@@ -3646,7 +3668,8 @@ const POKEMON_METADATA = Object.freeze([
     'id': 584,
     'name': 'バイバニラ',
     'types': [7],
-    'description': '三つの 頭から 冷気を 吹き出す。 吹雪の 中でも 元気に 動く。',
+    'description':
+      '２つの 頭が 同時に 怒ると ツノから 猛吹雪を 噴き出す。 あたりを 大雪で 埋めてしまう。',
   },
   {
     'id': 585,
@@ -3778,7 +3801,8 @@ const POKEMON_METADATA = Object.freeze([
     'id': 606,
     'name': 'オーベム',
     'types': [10],
-    'description': '強い 念力で 相手を 操る。 頭の 模様が 光る。',
+    'description':
+      '強い サイコパワーを 持っている。 ３色に 光る 指で 相手を 操り 記憶を 書き換えてしまう。',
   },
   {
     'id': 607,
@@ -4126,7 +4150,7 @@ const POKEMON_METADATA = Object.freeze([
     'id': 664,
     'name': 'コフキムシ',
     'types': [11],
-    'description': '体に ついた 粉で 身を 守る。 暮らす 場所で 模様が 変わる。',
+    'description': '体を 覆う 粉が 体温を 調節するので どんな 気候や 風土の 地域でも 暮らせる。',
   },
   {
     'id': 665,
@@ -4192,7 +4216,8 @@ const POKEMON_METADATA = Object.freeze([
     'id': 675,
     'name': 'ゴロンダ',
     'types': [8, 15],
-    'description': '大きな 体で 仲間を 守る。 竹を 使って 戦う。',
+    'description':
+      '気性が 荒く ケンカっ早いが 弱いものいじめは 許さない。 葉っぱで 敵の 動きを 読む。',
   },
   {
     'id': 676,
@@ -4240,7 +4265,8 @@ const POKEMON_METADATA = Object.freeze([
     'id': 683,
     'name': 'フレフワン',
     'types': [17],
-    'description': '強い 香りで 相手を 惑わせる。 長い くちばしの ような 顔を もつ。',
+    'description':
+      'さまざまな においを 作り出す。 相手の 嫌がる においを 出して 戦いを 有利に 進めるのだ。',
   },
   {
     'id': 684,
@@ -4258,7 +4284,7 @@ const POKEMON_METADATA = Object.freeze([
     'id': 686,
     'name': 'マーイーカ',
     'types': [15, 10],
-    'description': '頭を 回して 相手を 混乱させる。 光を 点滅させて 催眠を かける。',
+    'description': '回転しながら 発光体を 点滅。 光の パターンで 仲間と コミュニケーションする。',
   },
   {
     'id': 687,
@@ -4330,7 +4356,8 @@ const POKEMON_METADATA = Object.freeze([
     'id': 698,
     'name': 'アマルス',
     'types': [12, 7],
-    'description': '首の ひれで 冷気を 放つ。 古代の 海辺で 暮らしていた。',
+    'description':
+      'おっとりした 性格の ポケモン。 ガチゴラスなど 凶暴な 敵の いない 寒い 土地に 住んでいた。',
   },
   {
     'id': 699,
@@ -4360,7 +4387,7 @@ const POKEMON_METADATA = Object.freeze([
     'id': 703,
     'name': 'メレシー',
     'types': [12, 17],
-    'description': '地下で 宝石を 作る。 硬い 体を もつ 小さな ポケモン。',
+    'description': '地下深くの 高温 高圧な 環境で 生まれた。 頭の 石から エネルギーを 放つ。',
   },
   {
     'id': 704,
@@ -4552,7 +4579,8 @@ const POKEMON_METADATA = Object.freeze([
     'id': 735,
     'name': 'デカグース',
     'types': [5],
-    'description': '獲物を 見つけると 粘り強く 追う。 鋭い 歯で かみつく。',
+    'description':
+      '獲物の 痕跡を みつけると 粘り強く その場に 張り込むが 日暮れには うつらうつら している。',
   },
   {
     'id': 736,
@@ -4672,7 +4700,8 @@ const POKEMON_METADATA = Object.freeze([
     'id': 755,
     'name': 'ネマシュ',
     'types': [0, 17],
-    'description': '夜の 森で 体を 光らせる。 胞子を まいて 仲間と 合図する。',
+    'description':
+      '昼間でも 暗い 森で 暮らす。 点滅しながら 光る 胞子を ばらまいて 敵を 眠らせる。',
   },
   {
     'id': 756,
@@ -4696,7 +4725,8 @@ const POKEMON_METADATA = Object.freeze([
     'id': 759,
     'name': 'ヌイコグマ',
     'types': [5, 8],
-    'description': 'かわいい 姿でも 力が 強い。 大きな 腕で 相手を 抱きしめる。',
+    'description':
+      '抱きしめられたり 触られるのが 大嫌い。 ジタバタ 暴れて 抵抗する 力は ものすごい。',
   },
   {
     'id': 760,
@@ -4768,7 +4798,7 @@ const POKEMON_METADATA = Object.freeze([
     'id': 771,
     'name': 'ナマコブシ',
     'types': [2],
-    'description': '体の トゲで 身を 守る。 海辺の 岩に 張りつく。',
+    'description': '温かい 浅瀬で 暮らす。 敵に 出会うと 体内器官を 口から 出して 殴りつける。',
   },
   {
     'id': 772,
@@ -4798,7 +4828,8 @@ const POKEMON_METADATA = Object.freeze([
     'id': 776,
     'name': 'バクガメス',
     'types': [1, 14],
-    'description': '甲羅の 穴から 炎を 吹き出す。 火山の 近くで 暮らす。',
+    'description':
+      '爆薬で コーティングされた 甲羅を 背負う。 攻撃してきた 敵を 大爆発で 返り討ち。',
   },
   {
     'id': 777,
@@ -4948,7 +4979,8 @@ const POKEMON_METADATA = Object.freeze([
     'id': 801,
     'name': 'マギアナ',
     'types': [16, 17],
-    'description': '古代の 技術で 作られた 人工の ポケモン。 花の ような 胸を もつ。',
+    'description':
+      'およそ ５００年前 科学者に よって 作られた。 ソウルハートと 呼ばれる パーツが 本体なのだ。',
   },
   {
     'id': 802,
@@ -5110,13 +5142,13 @@ const POKEMON_METADATA = Object.freeze([
     'id': 828,
     'name': 'フォクスライ',
     'types': [15],
-    'description': '長い 尻尾で 足跡を 消す。 人に 見つからずに 動く。',
+    'description': '身軽な 体と 鋭い ツメで エサや タマゴを 盗んで まわる。 パルスワンが 天敵。',
   },
   {
     'id': 829,
     'name': 'ヒメンカ',
     'types': [0],
-    'description': '頭の 花で 光を 浴びる。 風に 乗って 綿毛を 飛ばす。',
+    'description': '一本足を 地面に 刺して 陽の光を たっぷり 浴びると 花びらが 鮮やかに 色づく。',
   },
   {
     'id': 830,
@@ -5230,7 +5262,7 @@ const POKEMON_METADATA = Object.freeze([
     'id': 848,
     'name': 'エレズン',
     'types': [6, 3],
-    'description': '体の 中に 電気を ためる。 音に 反応して 元気に 動く。',
+    'description': '毒素を 化学変化 させて 電気を 出す。 電力は 弱いが ビリビリと 痺れる。',
   },
   {
     'id': 849,
@@ -5254,7 +5286,7 @@ const POKEMON_METADATA = Object.freeze([
     'id': 852,
     'name': 'タタッコ',
     'types': [8],
-    'description': '岩場で 暮らし 腕を 鍛える。 相手に しがみついて 戦う。',
+    'description': '餌を 求め 地上に 上がる。 好奇心旺盛で 目にしたものは とりあえず 触手で 殴る。',
   },
   {
     'id': 853,
@@ -5326,7 +5358,7 @@ const POKEMON_METADATA = Object.freeze([
     'id': 864,
     'name': 'サニゴーン',
     'types': [13],
-    'description': 'サンゴの 魂が 集まったと 言われる。 体から 枝を 伸ばす。',
+    'description': '霊力が 高まり 殻から 解き放たれた。 霊体で 核の 魂を 守っている。',
   },
   {
     'id': 865,
@@ -5452,14 +5484,15 @@ const POKEMON_METADATA = Object.freeze([
     'id': 885,
     'name': 'ドラメシヤ',
     'types': [14, 13],
-    'description': '夕暮れには 群れで 海の 上を 飛び回る。 水中の ポケモンを つついて 遊ぶ。',
+    'description':
+      '古代の 海で 暮らしていた。 ゴーストポケモンとして よみがえり かつての すみかを さまよっている。',
   },
   {
     'id': 886,
     'name': 'ドロンチ',
     'types': [14, 13],
     'description':
-      'ドラメシヤの 世話を しながら 空を 飛ぶ。 肺に ためた エネルギーを 放って 戦う。',
+      '飛行速度は 時速２００キロ。 ドラメシヤと いっしょに 戦い 無事に 進化するまで 世話をする。',
   },
   {
     'id': 887,
@@ -5513,7 +5546,7 @@ const POKEMON_METADATA = Object.freeze([
     'id': 895,
     'name': 'レジドラゴ',
     'types': [14],
-    'description': 'ドラゴンの 力を 体に 秘める。 頭の 形が 竜に 似ている。',
+    'description': '腕の 形は 古代の ドラゴン ポケモンの 頭という 学説も あるが 証明されていない。',
   },
   {
     'id': 896,
@@ -5550,7 +5583,8 @@ const POKEMON_METADATA = Object.freeze([
     'id': 901,
     'name': 'ガチグマ',
     'types': [9, 5],
-    'description': '大きな 体で 山を 歩く。 月の 光に 反応して 変化する 姿も ある。',
+    'description':
+      'ヒスイの 湿地に 適応して たくましい 体と 泥炭を 自在に 操る 力を 得たと 考えられている。',
   },
   {
     'id': 902,
@@ -5586,7 +5620,8 @@ const POKEMON_METADATA = Object.freeze([
     'id': 907,
     'name': 'ニャローテ',
     'types': [0],
-    'description': '前足の ツメで 器用に 物を つかむ。 いたずら好きな 性格。',
+    'description':
+      '長い 毛の 下に 隠した ツルを 器用に 操り 硬い 花の つぼみを 相手に たたきつける。',
   },
   {
     'id': 908,
@@ -5604,7 +5639,8 @@ const POKEMON_METADATA = Object.freeze([
     'id': 910,
     'name': 'アチゲータ',
     'types': [1],
-    'description': '頭の 炎が 揺れると 歌う。 熱い 炎を 使って 戦う。',
+    'description':
+      '炎袋の 弁は 声帯と つながっている。 あたりに 炎を 吹きながら 低い 鳴き声を 出す。',
   },
   {
     'id': 911,
@@ -5640,7 +5676,7 @@ const POKEMON_METADATA = Object.freeze([
     'id': 916,
     'name': 'パフュートン',
     'types': [5],
-    'description': '鼻で においを かぎ分ける。 美しい 毛並みを もつ。',
+    'description': 'つやのある 美しい 皮膚が 自慢。 尻尾の 先から 濃厚な 香りを 放つ。',
   },
   {
     'id': 917,
@@ -5664,7 +5700,7 @@ const POKEMON_METADATA = Object.freeze([
     'id': 920,
     'name': 'エクスレッグ',
     'types': [11, 15],
-    'description': '強い 足で 高く 跳ぶ。 鋭い ツメで 相手を 攻撃する。',
+    'description': '本気で 戦うときは 折りたたんでいた 脚で 立ち上がり 敵を 素早く 倒す。',
   },
   {
     'id': 921,
@@ -5700,7 +5736,8 @@ const POKEMON_METADATA = Object.freeze([
     'id': 926,
     'name': 'パピモッチ',
     'types': [17],
-    'description': 'パン生地の ような 体を もつ。 甘い 香りで 仲間を 引き寄せる。',
+    'description':
+      'なめらかで しっとりした 手触り。 吐く 息に 含まれる 酵母が まわりのものを 発酵させる。',
   },
   {
     'id': 927,
@@ -5742,7 +5779,7 @@ const POKEMON_METADATA = Object.freeze([
     'id': 933,
     'name': 'ジオヅム',
     'types': [12],
-    'description': '塩の 結晶で 体を 守る。 岩を 登って 移動する。',
+    'description': '体内で 岩塩を 圧縮して 硬い 塩の 弾を 作る。 鉄板も つらぬく 勢いで 撃ち出す。',
   },
   {
     'id': 934,
@@ -5772,13 +5809,14 @@ const POKEMON_METADATA = Object.freeze([
     'id': 938,
     'name': 'ズピカ',
     'types': [6],
-    'description': '体に 電気を ためる。 水辺の 岩に 張りつく。',
+    'description':
+      '体に ためた 電気で 浮かぶ。 雷雲が 近づくと 地面から いつもより 高く 浮き上がる。',
   },
   {
     'id': 939,
     'name': 'ハラバリー',
     'types': [6],
-    'description': '大きな 体で 電気を 放つ。 お腹の でんきぶくろが 特徴。',
+    'description': '柔らかい 体を 伸び縮みさせると お腹の へそダイナモが 大量の 電気を 作り出す。',
   },
   {
     'id': 940,
@@ -5820,7 +5858,8 @@ const POKEMON_METADATA = Object.freeze([
     'id': 946,
     'name': 'アノクサ',
     'types': [0, 13],
-    'description': '風に 吹かれて 草原を 転がる。 根を 使って 動く。',
+    'description':
+      '風に 吹かれて 荒野を 転がる。 行き先は 自分でも わからない。 水に 濡れるのが 大嫌い。',
   },
   {
     'id': 947,
@@ -5838,7 +5877,7 @@ const POKEMON_METADATA = Object.freeze([
     'id': 949,
     'name': 'リククラゲ',
     'types': [9, 0],
-    'description': '森の 地面を 歩き回る。 長い 触手で 仲間と 合図する。',
+    'description': '森の 奥で 群れを 作り コロニーで 暮らす。 よそ者が 近づくことを とても 嫌う。',
   },
   {
     'id': 950,
@@ -5856,7 +5895,7 @@ const POKEMON_METADATA = Object.freeze([
     'id': 952,
     'name': 'スコヴィラン',
     'types': [0, 1],
-    'description': '二つの 頭から 炎を 放つ。 辛い 成分を 力に 変える。',
+    'description': '赤い 頭は 辛い 成分を 炎エネルギーに 変え 激辛の 炎を あたりに 吹き出す。',
   },
   {
     'id': 953,
@@ -5868,7 +5907,8 @@ const POKEMON_METADATA = Object.freeze([
     'id': 954,
     'name': 'ベラカス',
     'types': [11, 10],
-    'description': '不思議な 玉を 使って 力を 高める。 静かに 瞑想する。',
+    'description':
+      '玉の 中には 赤ん坊が 眠っている。 気持ちよく 眠れるように 脚で 玉を 転がして あやす。',
   },
   {
     'id': 955,
@@ -5904,7 +5944,7 @@ const POKEMON_METADATA = Object.freeze([
     'id': 960,
     'name': 'ウミディグダ',
     'types': [2],
-    'description': '海辺の 砂に 潜って 暮らす。 細長い 体で 泳ぐ。',
+    'description': '２０メートルほど 離れた ミガルーサの においを 感じ取ると 砂の 中に 身を 隠す。',
   },
   {
     'id': 961,
@@ -5916,7 +5956,8 @@ const POKEMON_METADATA = Object.freeze([
     'id': 962,
     'name': 'オトシドリ',
     'types': [4, 15],
-    'description': '空高く 飛んで 獲物を 落とす。 胸の 袋に 物を ためる。',
+    'description':
+      '胸の 前掛けで 食べ物を 包んで 巣へ 運ぶ。 大きな 音が するものを 高い 場所から 落とすのが 好き。',
   },
   {
     'id': 963,
@@ -5964,7 +6005,7 @@ const POKEMON_METADATA = Object.freeze([
     'id': 970,
     'name': 'キラフロル',
     'types': [12, 3],
-    'description': '美しい 結晶の 花を 広げる。 毒の 粉を まいて 身を 守る。',
+    'description': '危険を 感じると 結晶の 花びらを 開き 円すい形の 体から ビームを 放つ。',
   },
   {
     'id': 971,
@@ -5988,19 +6029,22 @@ const POKEMON_METADATA = Object.freeze([
     'id': 974,
     'name': 'アルクジラ',
     'types': [7],
-    'description': '氷の 海で 暮らす。 大きな 体で 泳ぎ回る。',
+    'description':
+      'はるか 昔に 海を 離れて 陸で 暮らすように なった。 ホエルコに 近い 仲間と 考えられている。',
   },
   {
     'id': 975,
     'name': 'ハルクジラ',
     'types': [7],
-    'description': '巨大な 体で 氷を 砕く。 冷たい 海を 力強く 泳ぐ。',
+    'description':
+      '雪と 氷に 覆われた 土地を 歩き回る。 たくましい 筋肉と 分厚い 脂肪で 体を 守る。',
   },
   {
     'id': 976,
     'name': 'ミガルーサ',
     'types': [2, 10],
-    'description': '体の 一部を 刃の ように 使う。 水中を 素早く 泳ぐ。',
+    'description':
+      '余分な 身を 切り離して 身軽になり 獲物へ 突進する。 切り離した 身は 優れた 再生力で 元に 戻る。',
   },
   {
     'id': 977,
@@ -6030,13 +6074,14 @@ const POKEMON_METADATA = Object.freeze([
     'id': 981,
     'name': 'リキキリン',
     'types': [5, 10],
-    'description': '二つの 頭で 周囲を 見渡す。 尻尾の 頭も 考える 力を もつ。',
+    'description':
+      '尻尾に あった 頭が 硬くなり 本体の 頭を 守る。 長い 首を 振り回して 頭突きする。',
   },
   {
     'id': 982,
     'name': 'ノココッチ',
     'types': [5],
-    'description': '長い 体で 地面を 進む。 尻尾の 節が 多い 姿も ある。',
+    'description': '硬い 尻尾で 地下深くの 岩盤を 掘り 巣を 作る。 巣の 長さは １０キロにも なる。',
   },
   {
     'id': 983,
@@ -6072,13 +6117,14 @@ const POKEMON_METADATA = Object.freeze([
     'id': 988,
     'name': 'チヲハウハネ',
     'types': [11, 8],
-    'description': '大きな 翼で 大地を 飛ぶ。 古代の 姿に 似た 謎の ポケモン。',
+    'description': '古い 本に チヲハウハネと 記された 生き物に 似た 特徴を 持つ 謎の ポケモン。',
   },
   {
     'id': 989,
     'name': 'スナノケガワ',
     'types': [6, 9],
-    'description': '砂鉄を 集めて 体を 動かす。 古代の 姿に 似た 謎の ポケモン。',
+    'description':
+      '捕獲された 記録が なく 詳しいことは 不明。 探検記に 描かれた 生き物と 特徴が 一致する。',
   },
   {
     'id': 990,
@@ -6090,7 +6136,8 @@ const POKEMON_METADATA = Object.freeze([
     'id': 991,
     'name': 'テツノツツミ',
     'types': [7, 2],
-    'description': '氷の 体で 素早く 動く。 未来の 姿に 似た 謎の ポケモン。',
+    'description':
+      '古い 本に 登場する 謎の 物体に 似ている。 目撃されたという 報告は ２件しか ない。',
   },
   {
     'id': 992,
@@ -6120,13 +6167,14 @@ const POKEMON_METADATA = Object.freeze([
     'id': 996,
     'name': 'セビエ',
     'types': [14, 7],
-    'description': '背中の ひれで 寒さを 感じ取る。 雪山で 暮らす。',
+    'description':
+      '背びれから 熱を 吸収して 氷エネルギーに 変える。 気温が 高いほど 多くの 力を ためられる。',
   },
   {
     'id': 997,
     'name': 'セゴール',
     'types': [14, 7],
-    'description': '鋭い ツメで 氷を 砕く。 雪山を 素早く 移動する。',
+    'description': 'まわりの 空気を 凍らせて 顔を 氷の 仮面で 守り 背びれを 氷の 刃に 変える。',
   },
   {
     'id': 998,
@@ -6138,7 +6186,8 @@ const POKEMON_METADATA = Object.freeze([
     'id': 999,
     'name': 'コレクレー',
     'types': [13],
-    'description': '古い コインに 宿って 暮らす。 宝箱に 隠れる 姿も ある。',
+    'description':
+      '古い 宝箱の 中で 暮らす。 ポケモンだと 気づかれず お店の 隅に 置き去りに されることも ある。',
   },
   {
     'id': 1000,
@@ -6150,7 +6199,8 @@ const POKEMON_METADATA = Object.freeze([
     'id': 1001,
     'name': 'チオンジェン',
     'types': [15, 0],
-    'description': '古い 木の 葉に 災いの 力が 宿ったと 言われる。 森に 現れる。',
+    'description':
+      '王の 悪事を 木簡に 記して 罰せられた 人の 恨みが 枯れ葉を まとい ポケモンに なった。',
   },
   {
     'id': 1002,
@@ -6162,7 +6212,8 @@ const POKEMON_METADATA = Object.freeze([
     'id': 1003,
     'name': 'ディンルー',
     'types': [15, 9],
-    'description': '大きな 角で 大地を 揺らす。 古い 災いの 力を 秘める。',
+    'description':
+      'とても 重い 頭を ゆっくり 地面に 打ち下ろし 深さ５０メートルを 超える 大きな 地割れを 起こす。',
   },
   {
     'id': 1004,
@@ -6222,13 +6273,14 @@ const POKEMON_METADATA = Object.freeze([
     'id': 1013,
     'name': 'ヤバソチャ',
     'types': [0, 13],
-    'description': '茶筅の ような 体で お茶を かき混ぜる。 不思議な 力で 戦う。',
+    'description':
+      '棚の 奥や 床下など 涼しく 暗い 場所を 好む。 日が 暮れると 獲物を 探して さまよう。',
   },
   {
     'id': 1014,
     'name': 'イイネイヌ',
     'types': [3, 8],
-    'description': '鎖の ような 飾りを まとって 戦う。 仲間を 守る 力を もつ。',
+    'description': '気が 短く 乱暴な ポケモン。 首の 鎖を 振り回して あらゆるものを 粉々にする。',
   },
   {
     'id': 1015,
@@ -6252,7 +6304,7 @@ const POKEMON_METADATA = Object.freeze([
     'id': 1018,
     'name': 'ブリジュラス',
     'types': [16, 14],
-    'description': '鋼の 体で 高い 場所に 登る。 強い エネルギーを 放つ。',
+    'description': 'まわりの 静電気を 集める。 四つんばいの 姿から 放つ ビームは すさまじい 威力。',
   },
   {
     'id': 1019,
@@ -6271,7 +6323,8 @@ const POKEMON_METADATA = Object.freeze([
     'id': 1021,
     'name': 'タケルライコ',
     'types': [6, 14],
-    'description': '長い 首から 雷を 放つ。 古代の 姿に 似た 謎の ポケモン。',
+    'description':
+      '体毛から 放つ 雷で あたりを 焼き尽くすと いわれる。 詳しいことは ほとんど わかっていない。',
   },
   {
     'id': 1022,

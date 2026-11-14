@@ -79,7 +79,7 @@ async function main() {
   const config = await prettier.resolveConfig(output);
   const source = await prettier.format(
     "'use strict';\n// 自動生成: npm run data:generate。編集元は data/pokemon.json。\n" +
-      '// 名前・タイプは参照データと全件照合。説明はユーザー提供の要約文。\n' +
+      '// 名前・タイプは参照データと全件照合。説明は提供要約と出典付き修正文（修正記録は data/pokemon-description-corrections.json）。\n' +
       `const POKEMON_METADATA = Object.freeze(${JSON.stringify(metadata)});\n`,
     { ...config, parser: 'babel' },
   );

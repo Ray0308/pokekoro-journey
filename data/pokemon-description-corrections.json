@@ -1,0 +1,1602 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-11-14",
+  "scope": "National Dex 001–1025; review of identity, anatomy, habitat, behavior and form confusion. Retained summaries are not verbatim official descriptions.",
+  "source": {
+    "repository": "PokeAPI/pokeapi",
+    "commit": "8a92bfa7dab2f12b84b5d151562f9857c133ff30",
+    "url": "https://raw.githubusercontent.com/PokeAPI/pokeapi/8a92bfa7dab2f12b84b5d151562f9857c133ff30/data/v2/csv/pokemon_species_flavor_text.csv",
+    "sha256": "c341e602ab623084fef4c44ca4a174938e617802cfcf2deec830d824f688dc69",
+    "japaneseCoverage": "001–898",
+    "englishCoverage": "001–1025"
+  },
+  "review": {
+    "total": 1025,
+    "unchangedExactJapaneseSourceIds": [
+      2,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      14,
+      15,
+      16,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      58,
+      59,
+      60,
+      61,
+      62,
+      63,
+      64,
+      65,
+      66,
+      67,
+      68,
+      69,
+      70,
+      71,
+      72,
+      73,
+      77,
+      78,
+      79,
+      80,
+      81,
+      82,
+      83,
+      84,
+      85,
+      86,
+      87,
+      88,
+      89,
+      90,
+      91,
+      92,
+      93,
+      94,
+      95,
+      96,
+      97,
+      98,
+      99,
+      100,
+      101,
+      102,
+      103,
+      104,
+      105,
+      106,
+      107,
+      108,
+      109,
+      110,
+      111,
+      112,
+      113,
+      114,
+      115,
+      116,
+      117,
+      118,
+      119,
+      120,
+      121,
+      122,
+      123,
+      124,
+      125,
+      126,
+      127,
+      128,
+      129,
+      130,
+      131,
+      132,
+      133,
+      134,
+      135,
+      136,
+      137,
+      138,
+      139,
+      140,
+      141,
+      142,
+      143,
+      144,
+      145,
+      146,
+      147,
+      148,
+      149,
+      150,
+      151,
+      152,
+      153,
+      158,
+      159,
+      163,
+      164,
+      165,
+      166,
+      167,
+      168,
+      169,
+      170,
+      171,
+      172,
+      173,
+      174,
+      175,
+      176,
+      177,
+      178,
+      179,
+      180,
+      181,
+      182,
+      183,
+      184,
+      185,
+      186,
+      187,
+      188,
+      189,
+      192,
+      194,
+      195,
+      196,
+      197,
+      199,
+      202,
+      203,
+      204,
+      205,
+      206,
+      208,
+      209,
+      210,
+      211,
+      212,
+      213,
+      214,
+      215,
+      218,
+      219,
+      220,
+      221,
+      222,
+      223,
+      224,
+      225,
+      226,
+      227,
+      228,
+      229,
+      230,
+      231,
+      233,
+      235,
+      236,
+      237,
+      238,
+      239,
+      240,
+      241,
+      242,
+      245,
+      246,
+      247,
+      248,
+      249,
+      250,
+      251,
+      252,
+      254,
+      255,
+      256,
+      257,
+      258,
+      259,
+      260,
+      261,
+      262,
+      263,
+      264
+    ],
+    "retainedOfficialExamples": [
+      {
+        "id": 58,
+        "versionId": 34,
+        "languageId": 11,
+        "text": "忠実な　性格で　親の\nトレーナーを　守るため　必死に\n相手に　吠えかかる。"
+      },
+      {
+        "id": 65,
+        "versionId": 34,
+        "languageId": 11,
+        "text": "強力な　超能力を　操る。\n両手の　スプーンは\nその　力で　作りだしたという。"
+      },
+      {
+        "id": 124,
+        "versionId": 34,
+        "languageId": 11,
+        "text": "ガラルの　ルージュラは　美しく\n繊細な　鳴き声を　持つものが　多く\nファンも　いるほど。"
+      },
+      {
+        "id": 128,
+        "versionId": 34,
+        "languageId": 11,
+        "text": "ガラルに　暮らす　ケンタロスは\n気性が　荒く　人間が\n背に　乗ることを　許さない。"
+      },
+      {
+        "id": 165,
+        "versionId": 30,
+        "languageId": 11,
+        "text": "とっても　臆病な　ポケモン。\n仲間と　一緒に　リフレクターを\n張って　巣を　守って　いるのだ。"
+      },
+      {
+        "id": 166,
+        "versionId": 30,
+        "languageId": 11,
+        "text": "きらめく　粉を　振りまきながら\n夜空を　飛ぶ。　粉が　身体に\nつくと　いいことが　あるといわれる。"
+      },
+      {
+        "id": 184,
+        "versionId": 34,
+        "languageId": 11,
+        "text": "空気が　詰まった　泡を　作る。\nルリリが　川で　遊ぶときは\nこの　泡で　包んであげるのだ。"
+      }
+    ],
+    "note": "Regional names do not imply regional forms. Jynx 124 and Tauros 128 Galar references are valid Shield text and remain unchanged. Yanma 193 house-lifting wind is supported by Legends: Arceus English text.",
+    "retainedYanmaEvidence": {
+      "id": 193,
+      "versionId": 39,
+      "languageId": 9,
+      "text": "Its frail wings are so thin that one can see clear through them.\nHowever, during flight these wings exhibit the power to churn\nair with force enough to launch a house skyward."
+    },
+    "nonDescriptionPokemonSha256": "922bedcfc6ef6177f6c76955a816627963937e2c67368fc6617997e8b8610d10"
+  },
+  "changes": [
+    {
+      "id": 267,
+      "name": "アゲハント",
+      "before": "花の ミツを 好んで 集める。 細長い 口で 花粉を 吸い取る。",
+      "after": "色 鮮やかな 羽の 模様が 特徴。 細い 口を 伸ばして 花の 甘い ミツを 吸い取る。",
+      "reason": "吸うものを花粉から花の蜜へ訂正",
+      "evidence": {
+        "speciesId": 267,
+        "versionId": 23,
+        "languageId": 11,
+        "text": "色　鮮やかな　羽の　模様が　特徴。\n細い　口を　伸ばして\n花の　甘い　ミツを　吸い取る。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 273,
+      "name": "タネボー",
+      "before": "木の 枝に ぶら下がって 暮らす。 頭の 葉っぱで 水分を 吸収する。",
+      "after": "頭の 先を 枝に くっつけて ぶら下がる。強風に あおられ 落ちてしまう ことも あるのだ。",
+      "reason": "頭に葉があるという記述を除去。枝に頭の先をつける",
+      "evidence": {
+        "speciesId": 273,
+        "versionId": 23,
+        "languageId": 11,
+        "text": "頭の　先を　枝に　くっつけて\nぶら下がる。強風に　あおられ\n落ちてしまう　ことも　あるのだ。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 291,
+      "name": "テッカニン",
+      "before": "目にも 止まらぬ 速さで 飛ぶ。 羽ばたく 音が 聞こえない ほど 素早い。",
+      "after": "鳴き声を 聞き続けると 頭痛が 治まらなくなる。 見えない ほどの 速さで 動く。",
+      "reason": "音が聞こえないという記述を訂正。姿が見えない速さと鳴き声を区別",
+      "evidence": {
+        "speciesId": 291,
+        "versionId": 23,
+        "languageId": 11,
+        "text": "鳴き声を　聞き続けると\n頭痛が　治まらなくなる。\n見えない　ほどの　速さで　動く。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 293,
+      "name": "ゴニョニョ",
+      "before": "小さな 声でも 近くに いると 大きく 響く。 大声で 仲間と 呼び合う。",
+      "after": "普段は ささやき 声。危険を 察知すると 大声で 泣き出す。 耳の 蓋を 閉じると 泣きやむ。",
+      "reason": "普段のささやき声と危険時の大声を区別",
+      "evidence": {
+        "speciesId": 293,
+        "versionId": 23,
+        "languageId": 11,
+        "text": "普段は　ささやき　声。危険を\n察知すると　大声で　泣き出す。\n耳の　蓋を　閉じると　泣きやむ。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 320,
+      "name": "ホエルコ",
+      "before": "海の 水を 大きな 口に ためる。 小さな 体で 元気に 泳ぐ。",
+      "after": "毎日 １トンの エサを食べる。 鼻から ためこんだ 海水を 勢いよく 噴き出して 遊ぶ。",
+      "reason": "小さな体という表現を除去。毎日1トンの餌を食べる",
+      "evidence": {
+        "speciesId": 320,
+        "versionId": 24,
+        "languageId": 11,
+        "text": "毎日　１トンの　エサを食べる。\n鼻から　ためこんだ　海水を\n勢いよく　噴き出して　遊ぶ。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 353,
+      "name": "カゲボウズ",
+      "before": "人の 気持ちを 養分に する。 捨てられた 人形から 生まれたと 言われる。",
+      "after": "頭の ツノで 恨みや ねたみの 感情を 食べると 言われる。 真夜中 活発に 活動する。",
+      "reason": "捨てられた人形が起源なのはジュペッタ。カゲボウズの食性に訂正",
+      "evidence": {
+        "speciesId": 353,
+        "versionId": 23,
+        "languageId": 11,
+        "text": "頭の　ツノで　恨みや　ねたみの\n感情を　食べると　言われる。\n真夜中　活発に　活動する。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 360,
+      "name": "ソーナノ",
+      "before": "仲間と ぶつかりながら 遊ぶ。 尻尾で バランスを 取る。",
+      "after": "仲間たちと おしくらまんじゅうを やることで 我慢強く 育つ。 甘い 果物が 大好物。",
+      "reason": "未確認の尻尾でバランスを取る描写を除去",
+      "evidence": {
+        "speciesId": 360,
+        "versionId": 24,
+        "languageId": 11,
+        "text": "仲間たちと　おしくらまんじゅうを\nやることで　我慢強く　育つ。\n甘い　果物が　大好物。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 371,
+      "name": "タツベイ",
+      "before": "高い 崖から 飛び降りて 翼を 鍛える。 空を 飛ぶ ことを 夢見る。",
+      "after": "大空を 飛ぶことを 夢見て 毎日 飛ぶ 練習のために 崖から 飛び降りている。",
+      "reason": "まだ翼はない。崖から飛び降りて飛ぶ練習をする",
+      "evidence": {
+        "speciesId": 371,
+        "versionId": 24,
+        "languageId": 11,
+        "text": "大空を　飛ぶことを　夢見て\n毎日　飛ぶ　練習のために\n崖から　飛び降りている。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 388,
+      "name": "ハヤシガメ",
+      "before": "森の 中で 暮らす。 背中の 茂みで 小さな ポケモンを 守る。",
+      "after": "きれいな 水が わき出る 場所を 知っていて 仲間の ポケモンを 背中に 乗せて そこまで 運ぶ。",
+      "reason": "背中で守るという要約を、水場へ仲間を運ぶ習性に訂正",
+      "evidence": {
+        "speciesId": 388,
+        "versionId": 24,
+        "languageId": 11,
+        "text": "きれいな　水が　わき出る　場所を\n知っていて　仲間の　ポケモンを\n背中に　乗せて　そこまで　運ぶ。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 390,
+      "name": "ヒコザル",
+      "before": "しっぽの 炎を 消さずに 動き回る。 高い 場所にも 素早く 登る。",
+      "after": "お尻の 炎は お腹で 作られた ガスが 燃料。 雨に ぬれても 消えない。",
+      "reason": "しっぽとお尻の炎を区別",
+      "evidence": {
+        "speciesId": 390,
+        "versionId": 23,
+        "languageId": 11,
+        "text": "お尻の　炎は\nお腹で　作られた　ガスが　燃料。\n雨に　ぬれても　消えない。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 391,
+      "name": "モウカザル",
+      "before": "手足から 炎を 出して 戦う。 素早い 動きで 相手を 翻弄する。",
+      "after": "尻尾の 炎の 勢いを うまく コントロールして 自分の 得意な 間合いで 戦うのだ。",
+      "reason": "炎の場所を手足から尻尾へ訂正",
+      "evidence": {
+        "speciesId": 391,
+        "versionId": 23,
+        "languageId": 11,
+        "text": "尻尾の　炎の　勢いを\nうまく　コントロールして\n自分の　得意な　間合いで　戦うのだ。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 392,
+      "name": "ゴウカザル",
+      "before": "手足に 炎を まとって 戦う。 激しい 攻撃で 相手を 圧倒する。",
+      "after": "素早さで 相手を 翻弄する。 両手 両足を 使った 独特の 戦い方を する。",
+      "reason": "手足が燃えているという表現を、手足を使う戦い方に訂正",
+      "evidence": {
+        "speciesId": 392,
+        "versionId": 24,
+        "languageId": 11,
+        "text": "素早さで　相手を　翻弄する。\n両手　両足を　使った\n独特の　戦い方を　する。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 394,
+      "name": "ポッタイシ",
+      "before": "群れを 作って 暮らす。 翼を 振って 仲間に 合図する。",
+      "after": "群れを 作らずに １匹で いる。 自分が 一番 偉いと どの ポッタイシも 考えているようだ。",
+      "reason": "群れを作るという逆の説明を単独生活へ訂正",
+      "evidence": {
+        "speciesId": 394,
+        "versionId": 23,
+        "languageId": 11,
+        "text": "群れを　作らずに　１匹で　いる。\n自分が　一番　偉いと　どの\nポッタイシも　考えているようだ。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 401,
+      "name": "コロボーシ",
+      "before": "足を こすり合わせて 音を 出す。 秋の 草むらで 鳴く。",
+      "after": "触覚を ぶつけ合って 鳴らす 音で 仲間と 会話をする。 音色は 秋の 夜の 風物詩。",
+      "reason": "音を出す器官を足から触角へ訂正",
+      "evidence": {
+        "speciesId": 401,
+        "versionId": 23,
+        "languageId": 11,
+        "text": "触覚を　ぶつけ合って　鳴らす　音で\n仲間と　会話をする。\n音色は　秋の　夜の　風物詩。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 406,
+      "name": "スボミー",
+      "before": "つぼみから 甘い 香りを 出す。 きれいな 水を 飲んで 育つ。",
+      "after": "暖かい 日差しを 浴びると つぼみが 開き 花粉を 飛ばす。 きれいな 水の 近くが 住処。",
+      "reason": "甘い香りの要約を、つぼみから花粉を飛ばす習性に訂正",
+      "evidence": {
+        "speciesId": 406,
+        "versionId": 23,
+        "languageId": 11,
+        "text": "暖かい　日差しを　浴びると\nつぼみが　開き　花粉を　飛ばす。\nきれいな　水の　近くが　住処。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 426,
+      "name": "フワライド",
+      "before": "風を 受けて 空を 飛ぶ。 体の 中に たくさんの 空気を ためる。",
+      "after": "体内の ガスの 原料は 魂。 身体が しぼんでくると 人や ポケモンを 連れ去るという。",
+      "reason": "体内にためるものを空気から魂を原料にしたガスへ訂正",
+      "evidence": {
+        "speciesId": 426,
+        "versionId": 30,
+        "languageId": 11,
+        "text": "体内の　ガスの　原料は\n魂。　身体が　しぼんでくると\n人や　ポケモンを　連れ去るという。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 433,
+      "name": "リーシャン",
+      "before": "動く ときに 鈴の ような 音が 鳴る。 風に 乗って 揺れる。",
+      "after": "飛び跳ねると 口の中にある 玉が あちこちに 反射して 鈴のような 音色と なる。",
+      "reason": "風に乗るというチリーンとの混同を、飛び跳ねる動きへ訂正",
+      "evidence": {
+        "speciesId": 433,
+        "versionId": 24,
+        "languageId": 11,
+        "text": "飛び跳ねると　口の中にある\n玉が　あちこちに　反射して\n鈴のような　音色と　なる。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 439,
+      "name": "マネネ",
+      "before": "人の 動きを まねる。 不思議な 壁を 作って 身を 守る。",
+      "after": "相手の 動きを そっくりに 真似を して 戸惑わせている あいだに さっさと 逃げるのだ。",
+      "reason": "壁を作るというバリヤードとの混同を、ものまねで逃げる習性へ訂正",
+      "evidence": {
+        "speciesId": 439,
+        "versionId": 23,
+        "languageId": 11,
+        "text": "相手の　動きを　そっくりに\n真似を　して　戸惑わせている\nあいだに　さっさと　逃げるのだ。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 440,
+      "name": "ピンプク",
+      "before": "丸い 石を 大切に 持ち歩く。 仲間の 世話を するのが 好き。",
+      "after": "タマゴに 似た 真んまるい 石を お腹の 袋に 入れている。 好きな 相手に 石を 渡す。",
+      "reason": "仲間の世話という進化後との混同を、好きな相手に石を渡す習性へ訂正",
+      "evidence": {
+        "speciesId": 440,
+        "versionId": 23,
+        "languageId": 11,
+        "text": "タマゴに　似た　真んまるい　石を\nお腹の　袋に　入れている。\n好きな　相手に　石を　渡す。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 452,
+      "name": "ドラピオン",
+      "before": "強い 腕で 敵を 押さえ込む。 尻尾の 毒針で 攻撃する。",
+      "after": "両腕の ツメは 自動車を スクラップにする 破壊力。 ツメの 先から 毒を 出す。",
+      "reason": "毒を出す器官を両腕の爪として明確化",
+      "evidence": {
+        "speciesId": 452,
+        "versionId": 24,
+        "languageId": 11,
+        "text": "両腕の　ツメは　自動車を\nスクラップにする　破壊力。\nツメの　先から　毒を　出す。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 459,
+      "name": "ユキカブリ",
+      "before": "雪山に 暮らし 寒さに 強い。 春になると 山を 下りる。",
+      "after": "寒い 季節は 山の ふもとまで 降りてくるが 春に なると 雪が 残る 山頂に 戻っていく。",
+      "reason": "春に山を下りるという逆の移動を、山頂へ戻るに訂正",
+      "evidence": {
+        "speciesId": 459,
+        "versionId": 23,
+        "languageId": 11,
+        "text": "寒い　季節は　山の　ふもとまで\n降りてくるが　春に　なると\n雪が　残る　山頂に　戻っていく。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 463,
+      "name": "ベロベルト",
+      "before": "長い 舌を 器用に 使う。 大きな 体でも 素早く 動ける。",
+      "after": "人間の 手先にも 負けないほど 器用な ベロで なんでも できる。 反対に 指先は 不器用だ。",
+      "reason": "未確認の素早い移動の記述を、器用な舌と不器用な指の対比へ訂正",
+      "evidence": {
+        "speciesId": 463,
+        "versionId": 34,
+        "languageId": 11,
+        "text": "人間の　手先にも　負けないほど\n器用な　ベロで　なんでも　できる。\n反対に　指先は　不器用だ。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 472,
+      "name": "グライオン",
+      "before": "翼の ような 腕で 滑空する。 尻尾の ハサミで 獲物を 捕らえる。",
+      "after": "羽音を 立てずに 空を 飛ぶ。 長い 尻尾で 獲物を 捕まえ キバで 急所を 一突き。",
+      "reason": "尾にハサミがあるという誤った器官の説明を訂正",
+      "evidence": {
+        "speciesId": 472,
+        "versionId": 24,
+        "languageId": 11,
+        "text": "羽音を　立てずに　空を　飛ぶ。\n長い　尻尾で　獲物を　捕まえ\nキバで　急所を　一突き。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 474,
+      "name": "ポリゴンＺ",
+      "before": "不思議な 空間を 移動する。 体を 電子の ように 変化させる。",
+      "after": "異次元空間を 自由に 移動できるように プログラムを 修正したが ミスした らしい。",
+      "reason": "異次元移動を実現済みと断定せず、プログラム修正の失敗として記述",
+      "evidence": {
+        "speciesId": 474,
+        "versionId": 24,
+        "languageId": 11,
+        "text": "異次元空間を　自由に\n移動できるように　プログラムを\n修正したが　ミスした　らしい。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 476,
+      "name": "ダイノーズ",
+      "before": "強い 磁力で 小さな 石を 集める。 大きな 鼻が 特徴。",
+      "after": "チビノーズと 呼ばれる 小さな ３つの ユニットを 磁力で 自由自在に 操っている。",
+      "reason": "集めた石と、自律するチビノーズのユニットを区別",
+      "evidence": {
+        "speciesId": 476,
+        "versionId": 24,
+        "languageId": 11,
+        "text": "チビノーズと　呼ばれる　小さな\n３つの　ユニットを　磁力で\n自由自在に　操っている。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 477,
+      "name": "ヨノワール",
+      "before": "大きな 手で 魂を 捕まえると 言われる。 夜の 墓地を さまよう。",
+      "after": "狙った 相手を 腹の口で 丸飲み。 魂だけを 食い 肉体は 吐き出し 去っていく。",
+      "reason": "魂を食べる腹の口を説明し、手で捕まえるという記述を除去",
+      "evidence": {
+        "speciesId": 477,
+        "versionId": 34,
+        "languageId": 11,
+        "text": "狙った　相手を　腹の口で\n丸飲み。　魂だけを　食い\n肉体は　吐き出し　去っていく。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 507,
+      "name": "ハーデリア",
+      "before": "長い 毛で 目を 覆う。 忠実な 性格で 仲間を 守る。",
+      "after": "トレーナーを 助けながら 他の ポケモンの 世話もする とても 忠実な ポケモン。",
+      "reason": "目を覆う毛というムーランドとの混同を除去",
+      "evidence": {
+        "speciesId": 507,
+        "versionId": 23,
+        "languageId": 11,
+        "text": "トレーナーを　助けながら\n他の　ポケモンの　世話もする\nとても　忠実な　ポケモン。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 512,
+      "name": "ヤナッキー",
+      "before": "大きな 葉っぱを 振って 戦う。 森の 中を 素早く 移動する。",
+      "after": "トゲの たくさん ついた 尻尾を 相手に たたきつけて 攻撃。 気性の 激しい ポケモン。",
+      "reason": "武器を葉っぱからトゲのある尻尾へ訂正",
+      "evidence": {
+        "speciesId": 512,
+        "versionId": 23,
+        "languageId": 11,
+        "text": "トゲの　たくさん　ついた　尻尾を\n相手に　たたきつけて　攻撃。\n気性の　激しい　ポケモン。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 516,
+      "name": "ヒヤッキー",
+      "before": "頭から 水を 放って 戦う。 水の 中を 器用に 泳ぐ。",
+      "after": "尻尾から 高圧の 水を 発射すると コンクリートの 壁も 破壊する 威力。",
+      "reason": "水を発射する器官を頭から尻尾へ訂正",
+      "evidence": {
+        "speciesId": 516,
+        "versionId": 23,
+        "languageId": 11,
+        "text": "尻尾から　高圧の　水を　発射すると\nコンクリートの　壁も\n破壊する　威力。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 518,
+      "name": "ムシャーナ",
+      "before": "眠っている 人の 夢を 見る。 額から 夢の 煙を 出す。",
+      "after": "おでこから でる ゆめのけむりは 食べた 夢の 内容によって さまざまな 色に 変わるのだ。",
+      "reason": "他人の夢を見るという表現を、食べた夢の内容が煙に表れる説明へ訂正",
+      "evidence": {
+        "speciesId": 518,
+        "versionId": 24,
+        "languageId": 11,
+        "text": "おでこから　でる　ゆめのけむりは\n食べた　夢の　内容によって\nさまざまな　色に　変わるのだ。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 524,
+      "name": "ダンゴロ",
+      "before": "洞窟の 岩を 食べて 育つ。 体の 中に 光る 石を もつ。",
+      "after": "１００年前の 大地震のときに 地割れから 発見された。 体内に エネルギーコアを 持つ。",
+      "reason": "岩を食べるという未確認の説明を、発見とエネルギーコアの説明へ訂正",
+      "evidence": {
+        "speciesId": 524,
+        "versionId": 24,
+        "languageId": 11,
+        "text": "１００年前の　大地震のときに\n地割れから　発見された。\n体内に　エネルギーコアを　持つ。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 526,
+      "name": "ギガイアス",
+      "before": "強い 音で 周囲の 岩を 砕く。 体の 結晶に 力を ためる。",
+      "after": "取りこんだ 太陽光線を エネルギーコアで 反応 させて 光の玉として 撃ちだしてくる。",
+      "reason": "攻撃を音から太陽光由来のエネルギー弾へ訂正",
+      "evidence": {
+        "speciesId": 526,
+        "versionId": 23,
+        "languageId": 11,
+        "text": "取りこんだ　太陽光線を\nエネルギーコアで　反応　させて\n光の玉として　撃ちだしてくる。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 538,
+      "name": "ナゲキ",
+      "before": "赤い 帯を つけた 格闘家。 相手を 投げ飛ばして 戦う。",
+      "after": "帯を 締めると パワーアップする。 野生の ナゲキは つる草を 編んで 自分の 帯を 作る。",
+      "reason": "赤い帯という体色との混同を除去",
+      "evidence": {
+        "speciesId": 538,
+        "versionId": 23,
+        "languageId": 11,
+        "text": "帯を　締めると　パワーアップする。\n野生の　ナゲキは　つる草を　編んで\n自分の　帯を　作る。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 543,
+      "name": "フシデ",
+      "before": "毒の ある ツメで 身を 守る。 落ち葉の 下を 這い回る。",
+      "after": "かみついて 猛毒を 与える。 天敵の 大きな とりポケモンも 体が しびれて 動けなくなる。",
+      "reason": "毒の爪という記述を毒のかみつきへ訂正",
+      "evidence": {
+        "speciesId": 543,
+        "versionId": 24,
+        "languageId": 11,
+        "text": "かみついて　猛毒を　与える。\n天敵の　大きな　とりポケモンも\n体が　しびれて　動けなくなる。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 548,
+      "name": "チュリネ",
+      "before": "土に 根を 張って 暮らす。 葉っぱで 太陽の 光を 集める。",
+      "after": "綺麗な 水と 土を 好む。 棲み処の 環境が 悪くなると 新たな土地へと 群れで 引っ越す。",
+      "reason": "根を張って固定生活するという記述を、環境が悪いと移動する習性へ訂正",
+      "evidence": {
+        "speciesId": 548,
+        "versionId": 30,
+        "languageId": 11,
+        "text": "綺麗な　水と　土を　好む。\n棲み処の　環境が　悪くなると\n新たな土地へと　群れで　引っ越す。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 562,
+      "name": "デスマス",
+      "before": "古代の 人の 魂が 宿ったと 言われる。 顔の 模様に 過去の 面影を 残す。",
+      "after": "持っている マスクは デスマスが 人間だった ときの 顔。 たまに 見つめては 泣いている。",
+      "reason": "顔の模様と、持っている人間時代の顔のマスクを区別",
+      "evidence": {
+        "speciesId": 562,
+        "versionId": 24,
+        "languageId": 11,
+        "text": "持っている　マスクは\nデスマスが　人間だった　ときの　顔。\nたまに　見つめては　泣いている。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 574,
+      "name": "ゴチム",
+      "before": "星の 光を 見つめる。 周囲の 気持ちを 感じ取る。",
+      "after": "リボンのような 触角で サイコパワーを 増幅させる。 なにかを じっと 見つめている。",
+      "reason": "星を見るという進化後との混同を除去",
+      "evidence": {
+        "speciesId": 574,
+        "versionId": 23,
+        "languageId": 11,
+        "text": "リボンのような　触角で\nサイコパワーを　増幅させる。\nなにかを　じっと　見つめている。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 584,
+      "name": "バイバニラ",
+      "before": "三つの 頭から 冷気を 吹き出す。 吹雪の 中でも 元気に 動く。",
+      "after": "２つの 頭が 同時に 怒ると ツノから 猛吹雪を 噴き出す。 あたりを 大雪で 埋めてしまう。",
+      "reason": "頭の数を三つから二つへ訂正",
+      "evidence": {
+        "speciesId": 584,
+        "versionId": 23,
+        "languageId": 11,
+        "text": "２つの　頭が　同時に　怒ると\nツノから　猛吹雪を　噴き出す。\nあたりを　大雪で　埋めてしまう。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 606,
+      "name": "オーベム",
+      "before": "強い 念力で 相手を 操る。 頭の 模様が 光る。",
+      "after": "強い サイコパワーを 持っている。 ３色に 光る 指で 相手を 操り 記憶を 書き換えてしまう。",
+      "reason": "光る場所を頭の模様から指へ訂正",
+      "evidence": {
+        "speciesId": 606,
+        "versionId": 30,
+        "languageId": 11,
+        "text": "強い　サイコパワーを　持っている。\n３色に　光る　指で　相手を\n操り　記憶を　書き換えてしまう。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 664,
+      "name": "コフキムシ",
+      "before": "体に ついた 粉で 身を 守る。 暮らす 場所で 模様が 変わる。",
+      "after": "体を 覆う 粉が 体温を 調節するので どんな 気候や 風土の 地域でも 暮らせる。",
+      "reason": "模様の変化というビビヨンとの混同を、粉による体温調節へ訂正",
+      "evidence": {
+        "speciesId": 664,
+        "versionId": 24,
+        "languageId": 11,
+        "text": "体を　覆う　粉が　体温を\n調節するので　どんな　気候や　風土の\n地域でも　暮らせる。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 675,
+      "name": "ゴロンダ",
+      "before": "大きな 体で 仲間を 守る。 竹を 使って 戦う。",
+      "after": "気性が 荒く ケンカっ早いが 弱いものいじめは 許さない。 葉っぱで 敵の 動きを 読む。",
+      "reason": "竹を武器にするという記述を除去。葉で動きを読み腕力で戦う",
+      "evidence": {
+        "speciesId": 675,
+        "versionId": 23,
+        "languageId": 11,
+        "text": "気性が　荒く　ケンカっ早いが\n弱いものいじめは　許さない。\n葉っぱで　敵の　動きを　読む。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 683,
+      "name": "フレフワン",
+      "before": "強い 香りで 相手を 惑わせる。 長い くちばしの ような 顔を もつ。",
+      "after": "さまざまな においを 作り出す。 相手の 嫌がる においを 出して 戦いを 有利に 進めるのだ。",
+      "reason": "長いくちばしというシュシュプとの混同を除去",
+      "evidence": {
+        "speciesId": 683,
+        "versionId": 23,
+        "languageId": 11,
+        "text": "さまざまな　においを　作り出す。\n相手の　嫌がる　においを　出して\n戦いを　有利に　進めるのだ。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 686,
+      "name": "マーイーカ",
+      "before": "頭を 回して 相手を 混乱させる。 光を 点滅させて 催眠を かける。",
+      "after": "回転しながら 発光体を 点滅。 光の パターンで 仲間と コミュニケーションする。",
+      "reason": "頭だけを回すという記述を、体を回転させて発光する説明へ訂正",
+      "evidence": {
+        "speciesId": 686,
+        "versionId": 33,
+        "languageId": 11,
+        "text": "回転しながら　発光体を\n点滅。　光の　パターンで\n仲間と　コミュニケーションする。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 698,
+      "name": "アマルス",
+      "before": "首の ひれで 冷気を 放つ。 古代の 海辺で 暮らしていた。",
+      "after": "おっとりした 性格の ポケモン。 ガチゴラスなど 凶暴な 敵の いない 寒い 土地に 住んでいた。",
+      "reason": "海辺を生息地とする記述を、寒冷な土地へ訂正",
+      "evidence": {
+        "speciesId": 698,
+        "versionId": 24,
+        "languageId": 11,
+        "text": "おっとりした　性格の　ポケモン。\nガチゴラスなど　凶暴な　敵の　いない\n寒い　土地に　住んでいた。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 703,
+      "name": "メレシー",
+      "before": "地下で 宝石を 作る。 硬い 体を もつ 小さな ポケモン。",
+      "after": "地下深くの 高温 高圧な 環境で 生まれた。 頭の 石から エネルギーを 放つ。",
+      "reason": "宝石を作るというディアンシーとの混同を除去",
+      "evidence": {
+        "speciesId": 703,
+        "versionId": 23,
+        "languageId": 11,
+        "text": "地下深くの　高温　高圧な\n環境で　生まれた。\n頭の　石から　エネルギーを　放つ。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 735,
+      "name": "デカグース",
+      "before": "獲物を 見つけると 粘り強く 追う。 鋭い 歯で かみつく。",
+      "after": "獲物の 痕跡を みつけると 粘り強く その場に 張り込むが 日暮れには うつらうつら している。",
+      "reason": "獲物を追い回すのではなく、通り道で待ち伏せる習性に訂正",
+      "evidence": {
+        "speciesId": 735,
+        "versionId": 27,
+        "languageId": 11,
+        "text": "獲物の　痕跡を　みつけると\n粘り強く　その場に　張り込むが\n日暮れには　うつらうつら　している。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 755,
+      "name": "ネマシュ",
+      "before": "夜の 森で 体を 光らせる。 胞子を まいて 仲間と 合図する。",
+      "after": "昼間でも 暗い 森で 暮らす。 点滅しながら 光る 胞子を ばらまいて 敵を 眠らせる。",
+      "reason": "胞子による仲間への合図という記述を、敵を眠らせる作用へ訂正",
+      "evidence": {
+        "speciesId": 755,
+        "versionId": 34,
+        "languageId": 11,
+        "text": "昼間でも　暗い　森で　暮らす。\n点滅しながら　光る　胞子を\nばらまいて　敵を　眠らせる。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 759,
+      "name": "ヌイコグマ",
+      "before": "かわいい 姿でも 力が 強い。 大きな 腕で 相手を 抱きしめる。",
+      "after": "抱きしめられたり 触られるのが 大嫌い。 ジタバタ 暴れて 抵抗する 力は ものすごい。",
+      "reason": "抱きしめるというキテルグマとの混同を、抱きしめられるのを嫌う習性へ訂正",
+      "evidence": {
+        "speciesId": 759,
+        "versionId": 30,
+        "languageId": 11,
+        "text": "抱きしめられたり　触られるのが\n大嫌い。　ジタバタ　暴れて\n抵抗する　力は　ものすごい。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 771,
+      "name": "ナマコブシ",
+      "before": "体の トゲで 身を 守る。 海辺の 岩に 張りつく。",
+      "after": "温かい 浅瀬で 暮らす。 敵に 出会うと 体内器官を 口から 出して 殴りつける。",
+      "reason": "トゲで守るという記述を、口から体内器官を出して殴る動作へ訂正",
+      "evidence": {
+        "speciesId": 771,
+        "versionId": 33,
+        "languageId": 11,
+        "text": "温かい　浅瀬で　暮らす。\n敵に　出会うと　体内器官を\n口から　出して　殴りつける。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 776,
+      "name": "バクガメス",
+      "before": "甲羅の 穴から 炎を 吹き出す。 火山の 近くで 暮らす。",
+      "after": "爆薬で コーティングされた 甲羅を 背負う。 攻撃してきた 敵を 大爆発で 返り討ち。",
+      "reason": "甲羅から火を吹くというコータスとの混同を、爆薬の甲羅へ訂正",
+      "evidence": {
+        "speciesId": 776,
+        "versionId": 33,
+        "languageId": 11,
+        "text": "爆薬で　コーティングされた\n甲羅を　背負う。　攻撃してきた\n敵を　大爆発で　返り討ち。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 801,
+      "name": "マギアナ",
+      "before": "古代の 技術で 作られた 人工の ポケモン。 花の ような 胸を もつ。",
+      "after": "およそ ５００年前 科学者に よって 作られた。 ソウルハートと 呼ばれる パーツが 本体なのだ。",
+      "reason": "花のような胸という曖昧な記述を、本体であるソウルハートの説明へ訂正",
+      "evidence": {
+        "speciesId": 801,
+        "versionId": 30,
+        "languageId": 11,
+        "text": "およそ　５００年前　科学者に\nよって　作られた。　ソウルハートと\n呼ばれる　パーツが　本体なのだ。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 828,
+      "name": "フォクスライ",
+      "before": "長い 尻尾で 足跡を 消す。 人に 見つからずに 動く。",
+      "after": "身軽な 体と 鋭い ツメで エサや タマゴを 盗んで まわる。 パルスワンが 天敵。",
+      "reason": "尾で足跡を消すという未確認の習性を除去",
+      "evidence": {
+        "speciesId": 828,
+        "versionId": 34,
+        "languageId": 11,
+        "text": "身軽な　体と　鋭い　ツメで\nエサや　タマゴを　盗んで　まわる。\nパルスワンが　天敵。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 829,
+      "name": "ヒメンカ",
+      "before": "頭の 花で 光を 浴びる。 風に 乗って 綿毛を 飛ばす。",
+      "after": "一本足を 地面に 刺して 陽の光を たっぷり 浴びると 花びらが 鮮やかに 色づく。",
+      "reason": "綿毛を飛ばすというワタシラガとの混同を除去",
+      "evidence": {
+        "speciesId": 829,
+        "versionId": 33,
+        "languageId": 11,
+        "text": "一本足を　地面に　刺して\n陽の光を　たっぷり　浴びると\n花びらが　鮮やかに　色づく。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 848,
+      "name": "エレズン",
+      "before": "体の 中に 電気を ためる。 音に 反応して 元気に 動く。",
+      "after": "毒素を 化学変化 させて 電気を 出す。 電力は 弱いが ビリビリと 痺れる。",
+      "reason": "音への反応というストリンダーとの混同を除去",
+      "evidence": {
+        "speciesId": 848,
+        "versionId": 34,
+        "languageId": 11,
+        "text": "毒素を　化学変化　させて\n電気を　出す。　電力は\n弱いが　ビリビリと　痺れる。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 852,
+      "name": "タタッコ",
+      "before": "岩場で 暮らし 腕を 鍛える。 相手に しがみついて 戦う。",
+      "after": "餌を 求め 地上に 上がる。 好奇心旺盛で 目にしたものは とりあえず 触手で 殴る。",
+      "reason": "しがみついて戦うという進化後との混同を除去",
+      "evidence": {
+        "speciesId": 852,
+        "versionId": 33,
+        "languageId": 11,
+        "text": "餌を　求め　地上に　上がる。\n好奇心旺盛で　目にしたものは\nとりあえず　触手で　殴る。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 864,
+      "name": "サニゴーン",
+      "before": "サンゴの 魂が 集まったと 言われる。 体から 枝を 伸ばす。",
+      "after": "霊力が 高まり 殻から 解き放たれた。 霊体で 核の 魂を 守っている。",
+      "reason": "多数の魂が集まったという説明を、殻から霊体が解放された説明へ訂正",
+      "evidence": {
+        "speciesId": 864,
+        "versionId": 33,
+        "languageId": 11,
+        "text": "霊力が　高まり　殻から\n解き放たれた。　霊体で\n核の　魂を　守っている。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 885,
+      "name": "ドラメシヤ",
+      "before": "夕暮れには 群れで 海の 上を 飛び回る。 水中の ポケモンを つついて 遊ぶ。",
+      "after": "古代の 海で 暮らしていた。 ゴーストポケモンとして よみがえり かつての すみかを さまよっている。",
+      "reason": "水中のポケモンをつついて遊ぶという未確認の習性を除去",
+      "evidence": {
+        "speciesId": 885,
+        "versionId": 33,
+        "languageId": 11,
+        "text": "古代の　海で　暮らしていた。\nゴーストポケモンとして　よみがえり\nかつての　すみかを　さまよっている。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 886,
+      "name": "ドロンチ",
+      "before": "ドラメシヤの 世話を しながら 空を 飛ぶ。 肺に ためた エネルギーを 放って 戦う。",
+      "after": "飛行速度は 時速２００キロ。 ドラメシヤと いっしょに 戦い 無事に 進化するまで 世話をする。",
+      "reason": "肺にエネルギーをためるという未確認の器官の説明を除去",
+      "evidence": {
+        "speciesId": 886,
+        "versionId": 33,
+        "languageId": 11,
+        "text": "飛行速度は　時速２００キロ。\nドラメシヤと　いっしょに　戦い\n無事に　進化するまで　世話をする。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 895,
+      "name": "レジドラゴ",
+      "before": "ドラゴンの 力を 体に 秘める。 頭の 形が 竜に 似ている。",
+      "after": "腕の 形は 古代の ドラゴン ポケモンの 頭という 学説も あるが 証明されていない。",
+      "reason": "竜の頭に似た場所を頭から腕へ訂正し、学説として表記",
+      "evidence": {
+        "speciesId": 895,
+        "versionId": 33,
+        "languageId": 11,
+        "text": "腕の　形は　古代の　ドラゴン\nポケモンの　頭という　学説も\nあるが　証明されていない。"
+      },
+      "method": "official-ja-whitespace-normalized"
+    },
+    {
+      "id": 901,
+      "name": "ガチグマ",
+      "before": "大きな 体で 山を 歩く。 月の 光に 反応して 変化する 姿も ある。",
+      "after": "ヒスイの 湿地に 適応して たくましい 体と 泥炭を 自在に 操る 力を 得たと 考えられている。",
+      "reason": "アカツキの姿へ月光で変身するという誤解を除去",
+      "evidence": {
+        "speciesId": 901,
+        "versionId": 39,
+        "languageId": 9,
+        "text": "I believe it was Hisui's swampy terrain that gave Ursaluna its\nburly physique and newfound capacity to manipulate peat\nat will."
+      },
+      "method": "editorial-ja-summary-of-official-en"
+    },
+    {
+      "id": 907,
+      "name": "ニャローテ",
+      "before": "前足の ツメで 器用に 物を つかむ。 いたずら好きな 性格。",
+      "after": "長い 毛の 下に 隠した ツルを 器用に 操り 硬い 花の つぼみを 相手に たたきつける。",
+      "reason": "武器を前足の爪からツルとつぼみへ訂正",
+      "evidence": {
+        "speciesId": 907,
+        "versionId": 40,
+        "languageId": 9,
+        "text": "Floragato deftly wields the vine hidden beneath its long fur, slamming the hard flower bud against its opponents."
+      },
+      "method": "editorial-ja-summary-of-official-en"
+    },
+    {
+      "id": 910,
+      "name": "アチゲータ",
+      "before": "頭の 炎が 揺れると 歌う。 熱い 炎を 使って 戦う。",
+      "after": "炎袋の 弁は 声帯と つながっている。 あたりに 炎を 吹きながら 低い 鳴き声を 出す。",
+      "reason": "頭の炎が揺れると歌うという因果を除去",
+      "evidence": {
+        "speciesId": 910,
+        "versionId": 41,
+        "languageId": 9,
+        "text": "The valve in Crocalor’s flame sac is closely connected to its vocal cords. This Pokémon utters a guttural cry as it spews flames every which way."
+      },
+      "method": "editorial-ja-summary-of-official-en"
+    },
+    {
+      "id": 916,
+      "name": "パフュートン",
+      "before": "鼻で においを かぎ分ける。 美しい 毛並みを もつ。",
+      "after": "つやのある 美しい 皮膚が 自慢。 尻尾の 先から 濃厚な 香りを 放つ。",
+      "reason": "毛並みと皮膚を区別",
+      "evidence": {
+        "speciesId": 916,
+        "versionId": 40,
+        "languageId": 9,
+        "text": "Oinkologne is proud of its fine, glossy skin. It emits a concentrated scent from the tip of its tail."
+      },
+      "method": "editorial-ja-summary-of-official-en"
+    },
+    {
+      "id": 920,
+      "name": "エクスレッグ",
+      "before": "強い 足で 高く 跳ぶ。 鋭い ツメで 相手を 攻撃する。",
+      "after": "本気で 戦うときは 折りたたんでいた 脚で 立ち上がり 敵を 素早く 倒す。",
+      "reason": "爪で攻撃するという記述を、本気の脚で戦う説明へ訂正",
+      "evidence": {
+        "speciesId": 920,
+        "versionId": 40,
+        "languageId": 9,
+        "text": "When it decides to fight all out, it stands on its previously folded legs to enter Showdown Mode. It neutralizes its enemies in short order."
+      },
+      "method": "editorial-ja-summary-of-official-en"
+    },
+    {
+      "id": 926,
+      "name": "パピモッチ",
+      "before": "パン生地の ような 体を もつ。 甘い 香りで 仲間を 引き寄せる。",
+      "after": "なめらかで しっとりした 手触り。 吐く 息に 含まれる 酵母が まわりのものを 発酵させる。",
+      "reason": "甘い香りで仲間を呼ぶという未確認の習性を除去",
+      "evidence": {
+        "speciesId": 926,
+        "versionId": 40,
+        "languageId": 9,
+        "text": "This Pokémon is smooth and moist to the touch. Yeast in Fidough’s breath induces fermentation in the Pokémon’s vicinity."
+      },
+      "method": "editorial-ja-summary-of-official-en"
+    },
+    {
+      "id": 933,
+      "name": "ジオヅム",
+      "before": "塩の 結晶で 体を 守る。 岩を 登って 移動する。",
+      "after": "体内で 岩塩を 圧縮して 硬い 塩の 弾を 作る。 鉄板も つらぬく 勢いで 撃ち出す。",
+      "reason": "岩登りという未確認の習性を、塩の弾による攻撃へ訂正",
+      "evidence": {
+        "speciesId": 933,
+        "versionId": 41,
+        "languageId": 9,
+        "text": "It compresses rock salt inside its body and shoots out hardened salt pellets with enough force to perforate an iron sheet."
+      },
+      "method": "editorial-ja-summary-of-official-en"
+    },
+    {
+      "id": 938,
+      "name": "ズピカ",
+      "before": "体に 電気を ためる。 水辺の 岩に 張りつく。",
+      "after": "体に ためた 電気で 浮かぶ。 雷雲が 近づくと 地面から いつもより 高く 浮き上がる。",
+      "reason": "岩に張りつく生活という説明を浮遊へ訂正",
+      "evidence": {
+        "speciesId": 938,
+        "versionId": 41,
+        "languageId": 9,
+        "text": "It floats using the electricity stored in its body. When thunderclouds are around, Tadbulb will float higher off the ground."
+      },
+      "method": "editorial-ja-summary-of-official-en"
+    },
+    {
+      "id": 939,
+      "name": "ハラバリー",
+      "before": "大きな 体で 電気を 放つ。 お腹の でんきぶくろが 特徴。",
+      "after": "柔らかい 体を 伸び縮みさせると お腹の へそダイナモが 大量の 電気を 作り出す。",
+      "reason": "腹の電気袋を、発電器官のへそダイナモへ訂正",
+      "evidence": {
+        "speciesId": 939,
+        "versionId": 40,
+        "languageId": 9,
+        "text": "When this Pokémon expands and contracts its wobbly body, the belly-button dynamo in its stomach produces a huge amount of electricity."
+      },
+      "method": "editorial-ja-summary-of-official-en"
+    },
+    {
+      "id": 946,
+      "name": "アノクサ",
+      "before": "風に 吹かれて 草原を 転がる。 根を 使って 動く。",
+      "after": "風に 吹かれて 荒野を 転がる。 行き先は 自分でも わからない。 水に 濡れるのが 大嫌い。",
+      "reason": "根で移動するという記述を風による移動へ訂正",
+      "evidence": {
+        "speciesId": 946,
+        "versionId": 41,
+        "languageId": 9,
+        "text": "Not even Bramblin knows where it is headed as it tumbles across the wilderness, blown by the wind. It loathes getting wet."
+      },
+      "method": "editorial-ja-summary-of-official-en"
+    },
+    {
+      "id": 949,
+      "name": "リククラゲ",
+      "before": "森の 地面を 歩き回る。 長い 触手で 仲間と 合図する。",
+      "after": "森の 奥で 群れを 作り コロニーで 暮らす。 よそ者が 近づくことを とても 嫌う。",
+      "reason": "触手で合図するという未確認の習性を除去",
+      "evidence": {
+        "speciesId": 949,
+        "versionId": 40,
+        "languageId": 9,
+        "text": "These Pokémon gather into groups and form colonies deep within forests. They absolutely hate it when strangers approach."
+      },
+      "method": "editorial-ja-summary-of-official-en"
+    },
+    {
+      "id": 952,
+      "name": "スコヴィラン",
+      "before": "二つの 頭から 炎を 放つ。 辛い 成分を 力に 変える。",
+      "after": "赤い 頭は 辛い 成分を 炎エネルギーに 変え 激辛の 炎を あたりに 吹き出す。",
+      "reason": "両方の頭から火が出るという記述を赤い頭へ訂正",
+      "evidence": {
+        "speciesId": 952,
+        "versionId": 40,
+        "languageId": 9,
+        "text": "The red head converts spicy chemicals into fire energy and blasts the surrounding area with a super spicy stream of flame."
+      },
+      "method": "editorial-ja-summary-of-official-en"
+    },
+    {
+      "id": 954,
+      "name": "ベラカス",
+      "before": "不思議な 玉を 使って 力を 高める。 静かに 瞑想する。",
+      "after": "玉の 中には 赤ん坊が 眠っている。 気持ちよく 眠れるように 脚で 玉を 転がして あやす。",
+      "reason": "瞑想するという記述を玉をあやす動作へ訂正",
+      "evidence": {
+        "speciesId": 954,
+        "versionId": 41,
+        "languageId": 9,
+        "text": "An infant sleeps inside the ball. Rabsca rolls the ball soothingly with its legs to ensure the infant sleeps comfortably."
+      },
+      "method": "editorial-ja-summary-of-official-en"
+    },
+    {
+      "id": 960,
+      "name": "ウミディグダ",
+      "before": "海辺の 砂に 潜って 暮らす。 細長い 体で 泳ぐ。",
+      "after": "２０メートルほど 離れた ミガルーサの においを 感じ取ると 砂の 中に 身を 隠す。",
+      "reason": "泳ぐという未確認の描写を、砂に隠れる習性へ訂正",
+      "evidence": {
+        "speciesId": 960,
+        "versionId": 40,
+        "languageId": 9,
+        "text": "This Pokémon can pick up the scent of a Veluza just over 65 feet away and will hide itself in the sand."
+      },
+      "method": "editorial-ja-summary-of-official-en"
+    },
+    {
+      "id": 962,
+      "name": "オトシドリ",
+      "before": "空高く 飛んで 獲物を 落とす。 胸の 袋に 物を ためる。",
+      "after": "胸の 前掛けで 食べ物を 包んで 巣へ 運ぶ。 大きな 音が するものを 高い 場所から 落とすのが 好き。",
+      "reason": "獲物を落とすという記述を、物を落とす習性へ訂正",
+      "evidence": {
+        "speciesId": 962,
+        "versionId": 41,
+        "languageId": 9,
+        "text": "Bombirdier uses the apron on its chest to bundle up food, which it carries back to its nest. It enjoys dropping things that make loud noises."
+      },
+      "method": "editorial-ja-summary-of-official-en"
+    },
+    {
+      "id": 970,
+      "name": "キラフロル",
+      "before": "美しい 結晶の 花を 広げる。 毒の 粉を まいて 身を 守る。",
+      "after": "危険を 感じると 結晶の 花びらを 開き 円すい形の 体から ビームを 放つ。",
+      "reason": "粉で身を守るというキラーメとの混同を除去",
+      "evidence": {
+        "speciesId": 970,
+        "versionId": 40,
+        "languageId": 9,
+        "text": "When this Pokémon detects danger, it will open up its crystalline petals and fire beams from its conical body."
+      },
+      "method": "editorial-ja-summary-of-official-en"
+    },
+    {
+      "id": 974,
+      "name": "アルクジラ",
+      "before": "氷の 海で 暮らす。 大きな 体で 泳ぎ回る。",
+      "after": "はるか 昔に 海を 離れて 陸で 暮らすように なった。 ホエルコに 近い 仲間と 考えられている。",
+      "reason": "海で泳ぐという記述を陸上生活へ訂正",
+      "evidence": {
+        "speciesId": 974,
+        "versionId": 40,
+        "languageId": 9,
+        "text": "This species left the ocean and began living on land a very long time ago. It seems to be closely related to Wailmer."
+      },
+      "method": "editorial-ja-summary-of-official-en"
+    },
+    {
+      "id": 975,
+      "name": "ハルクジラ",
+      "before": "巨大な 体で 氷を 砕く。 冷たい 海を 力強く 泳ぐ。",
+      "after": "雪と 氷に 覆われた 土地を 歩き回る。 たくましい 筋肉と 分厚い 脂肪で 体を 守る。",
+      "reason": "冷たい海で泳ぐという記述を雪上の生活へ訂正",
+      "evidence": {
+        "speciesId": 975,
+        "versionId": 40,
+        "languageId": 9,
+        "text": "This Pokémon wanders around snowy, icy areas. It protects its body with powerful muscles and a thick layer of fat under its skin."
+      },
+      "method": "editorial-ja-summary-of-official-en"
+    },
+    {
+      "id": 976,
+      "name": "ミガルーサ",
+      "before": "体の 一部を 刃の ように 使う。 水中を 素早く 泳ぐ。",
+      "after": "余分な 身を 切り離して 身軽になり 獲物へ 突進する。 切り離した 身は 優れた 再生力で 元に 戻る。",
+      "reason": "体を刃として使うという記述を、身を削ぐ習性へ訂正",
+      "evidence": {
+        "speciesId": 976,
+        "versionId": 41,
+        "languageId": 9,
+        "text": "Veluza has excellent regenerative capabilities. It sheds spare flesh from its body to boost its agility, then charges at its prey."
+      },
+      "method": "editorial-ja-summary-of-official-en"
+    },
+    {
+      "id": 981,
+      "name": "リキキリン",
+      "before": "二つの 頭で 周囲を 見渡す。 尻尾の 頭も 考える 力を もつ。",
+      "after": "尻尾に あった 頭が 硬くなり 本体の 頭を 守る。 長い 首を 振り回して 頭突きする。",
+      "reason": "進化前の独立した尻尾の頭との混同を除去",
+      "evidence": {
+        "speciesId": 981,
+        "versionId": 41,
+        "languageId": 9,
+        "text": "The hardened head from the tail protects the head of the main body as Farigiraf whips its long neck around to headbutt enemies."
+      },
+      "method": "editorial-ja-summary-of-official-en"
+    },
+    {
+      "id": 982,
+      "name": "ノココッチ",
+      "before": "長い 体で 地面を 進む。 尻尾の 節が 多い 姿も ある。",
+      "after": "硬い 尻尾で 地下深くの 岩盤を 掘り 巣を 作る。 巣の 長さは １０キロにも なる。",
+      "reason": "節が増える場所を尻尾とする誤解を除去",
+      "evidence": {
+        "speciesId": 982,
+        "versionId": 40,
+        "languageId": 9,
+        "text": "This Pokémon uses its hard tail to make its nest by boring holes into bedrock deep underground. The nest can reach lengths of over six miles."
+      },
+      "method": "editorial-ja-summary-of-official-en"
+    },
+    {
+      "id": 988,
+      "name": "チヲハウハネ",
+      "before": "大きな 翼で 大地を 飛ぶ。 古代の 姿に 似た 謎の ポケモン。",
+      "after": "古い 本に チヲハウハネと 記された 生き物に 似た 特徴を 持つ 謎の ポケモン。",
+      "reason": "飛行を断定する未確認の描写を除去",
+      "evidence": {
+        "speciesId": 988,
+        "versionId": 40,
+        "languageId": 9,
+        "text": "This mysterious Pokémon has some similarities to a creature that an old book introduced as Slither Wing."
+      },
+      "method": "editorial-ja-summary-of-official-en"
+    },
+    {
+      "id": 989,
+      "name": "スナノケガワ",
+      "before": "砂鉄を 集めて 体を 動かす。 古代の 姿に 似た 謎の ポケモン。",
+      "after": "捕獲された 記録が なく 詳しいことは 不明。 探検記に 描かれた 生き物と 特徴が 一致する。",
+      "reason": "砂鉄を集めるという未確認の習性を除去",
+      "evidence": {
+        "speciesId": 989,
+        "versionId": 40,
+        "languageId": 9,
+        "text": "No records exist of this Pokémon being caught. Data is lacking, but the Pokémon’s traits match up with a creature shown in an expedition journal."
+      },
+      "method": "editorial-ja-summary-of-official-en"
+    },
+    {
+      "id": 991,
+      "name": "テツノツツミ",
+      "before": "氷の 体で 素早く 動く。 未来の 姿に 似た 謎の ポケモン。",
+      "after": "古い 本に 登場する 謎の 物体に 似ている。 目撃されたという 報告は ２件しか ない。",
+      "reason": "氷でできた体というタイプからの推測を除去",
+      "evidence": {
+        "speciesId": 991,
+        "versionId": 41,
+        "languageId": 9,
+        "text": "It resembles a mysterious object mentioned in an old book. There are only two reported sightings of this Pokémon."
+      },
+      "method": "editorial-ja-summary-of-official-en"
+    },
+    {
+      "id": 996,
+      "name": "セビエ",
+      "before": "背中の ひれで 寒さを 感じ取る。 雪山で 暮らす。",
+      "after": "背びれから 熱を 吸収して 氷エネルギーに 変える。 気温が 高いほど 多くの 力を ためられる。",
+      "reason": "背びれを寒さの感知器とする記述を訂正",
+      "evidence": {
+        "speciesId": 996,
+        "versionId": 40,
+        "languageId": 9,
+        "text": "Frigibax absorbs heat through its dorsal fin and converts the heat into ice energy. The higher the temperature, the more energy Frigibax stores."
+      },
+      "method": "editorial-ja-summary-of-official-en"
+    },
+    {
+      "id": 997,
+      "name": "セゴール",
+      "before": "鋭い ツメで 氷を 砕く。 雪山を 素早く 移動する。",
+      "after": "まわりの 空気を 凍らせて 顔を 氷の 仮面で 守り 背びれを 氷の 刃に 変える。",
+      "reason": "爪を武器とする記述を背びれの刃へ訂正",
+      "evidence": {
+        "speciesId": 997,
+        "versionId": 40,
+        "languageId": 9,
+        "text": "Arctibax freezes the air around it, protecting its face with an ice mask and turning its dorsal fin into a blade of ice."
+      },
+      "method": "editorial-ja-summary-of-official-en"
+    },
+    {
+      "id": 999,
+      "name": "コレクレー",
+      "before": "古い コインに 宿って 暮らす。 宝箱に 隠れる 姿も ある。",
+      "after": "古い 宝箱の 中で 暮らす。 ポケモンだと 気づかれず お店の 隅に 置き去りに されることも ある。",
+      "reason": "通常画像のはこフォルムに対応する説明へ明確化",
+      "evidence": {
+        "speciesId": 999,
+        "versionId": 41,
+        "languageId": 9,
+        "text": "It lives inside an old treasure chest. Sometimes it gets left in shop corners since no one realizes it’s actually a Pokémon."
+      },
+      "method": "editorial-ja-summary-of-official-en"
+    },
+    {
+      "id": 1001,
+      "name": "チオンジェン",
+      "before": "古い 木の 葉に 災いの 力が 宿ったと 言われる。 森に 現れる。",
+      "after": "王の 悪事を 木簡に 記して 罰せられた 人の 恨みが 枯れ葉を まとい ポケモンに なった。",
+      "reason": "起源となる木簡を木の葉とする混同を訂正",
+      "evidence": {
+        "speciesId": 1001,
+        "versionId": 40,
+        "languageId": 9,
+        "text": "The grudge of a person punished for writing the king’s evil deeds upon wooden tablets has clad itself in dead leaves to become a Pokémon."
+      },
+      "method": "editorial-ja-summary-of-official-en"
+    },
+    {
+      "id": 1003,
+      "name": "ディンルー",
+      "before": "大きな 角で 大地を 揺らす。 古い 災いの 力を 秘める。",
+      "after": "とても 重い 頭を ゆっくり 地面に 打ち下ろし 深さ５０メートルを 超える 大きな 地割れを 起こす。",
+      "reason": "地面を割る重い頭と角を区別",
+      "evidence": {
+        "speciesId": 1003,
+        "versionId": 41,
+        "languageId": 9,
+        "text": "It slowly brings its exceedingly heavy head down upon the ground, splitting the earth open with huge fissures that run over 160 feet deep."
+      },
+      "method": "editorial-ja-summary-of-official-en"
+    },
+    {
+      "id": 1013,
+      "name": "ヤバソチャ",
+      "before": "茶筅の ような 体で お茶を かき混ぜる。 不思議な 力で 戦う。",
+      "after": "棚の 奥や 床下など 涼しく 暗い 場所を 好む。 日が 暮れると 獲物を 探して さまよう。",
+      "reason": "体を茶筅とする誤った説明を除去",
+      "evidence": {
+        "speciesId": 1013,
+        "versionId": 41,
+        "languageId": 9,
+        "text": "It prefers cool, dark places, such as the back of a shelf or the space beneath a home's floorboards. It wanders in search of prey after sunset."
+      },
+      "method": "editorial-ja-summary-of-official-en"
+    },
+    {
+      "id": 1014,
+      "name": "イイネイヌ",
+      "before": "鎖の ような 飾りを まとって 戦う。 仲間を 守る 力を もつ。",
+      "after": "気が 短く 乱暴な ポケモン。 首の 鎖を 振り回して あらゆるものを 粉々にする。",
+      "reason": "仲間を守る英雄として断定する記述を除去",
+      "evidence": {
+        "speciesId": 1014,
+        "versionId": 41,
+        "languageId": 9,
+        "text": "Okidogi is a ruffian with a short temper. It can pulverize anything by swinging around the chain on its neck."
+      },
+      "method": "editorial-ja-summary-of-official-en"
+    },
+    {
+      "id": 1018,
+      "name": "ブリジュラス",
+      "before": "鋼の 体で 高い 場所に 登る。 強い エネルギーを 放つ。",
+      "after": "まわりの 静電気を 集める。 四つんばいの 姿から 放つ ビームは すさまじい 威力。",
+      "reason": "高い場所へ登るという未確認の習性を除去",
+      "evidence": {
+        "speciesId": 1018,
+        "versionId": 40,
+        "languageId": 9,
+        "text": "It gathers static electricity from its surroundings. The beams it launches when down on all fours are tremendously powerful."
+      },
+      "method": "editorial-ja-summary-of-official-en"
+    },
+    {
+      "id": 1021,
+      "name": "タケルライコ",
+      "before": "長い 首から 雷を 放つ。 古代の 姿に 似た 謎の ポケモン。",
+      "after": "体毛から 放つ 雷で あたりを 焼き尽くすと いわれる。 詳しいことは ほとんど わかっていない。",
+      "reason": "雷を放つ場所を首から体毛へ訂正し、伝聞を維持",
+      "evidence": {
+        "speciesId": 1021,
+        "versionId": 40,
+        "languageId": 9,
+        "text": "It's said to incinerate everything around it with lightning launched from its fur. Very little is known about this creature."
+      },
+      "method": "editorial-ja-summary-of-official-en"
+    }
+  ],
+  "sheetSync": {
+    "spreadsheetId": "1zdl2GwCz7ievmw0qTRpmpd0LvfYh2zBYgU1rP6QTqCI",
+    "sheet": "シート1",
+    "column": "F",
+    "rowRule": "National Dex ID + 2",
+    "updatedCells": 92,
+    "verifiedAt": "2026-11-14",
+    "verified": "Values read back; adjacent B:E values, target formats and validation unchanged. API-format visual fallback used; native render not available."
+  }
+}
