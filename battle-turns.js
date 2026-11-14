@@ -1,5 +1,5 @@
 'use strict';
-// 10秒パズル→一斉攻撃→任意の技→反撃を接続する。各待機後に世代を確認する。
+// 次の相手を先に表示し、待機中だけ仲間のタップで個別技を開く。各待機後に世代を確認する。
 (() => {
   const rules = BattleTurnRules;
   let selected = null,
@@ -41,7 +41,7 @@
         : matchup?.factor === 0
           ? 'こうかのある属性なし。技や編成を見直そう'
           : '戦える仲間の 属性をつなごう！';
-    if (battle.phase === 'skills' && !combat.members.some((m) => m.id === selected && !m.fainted))
+    if (battle.phase === 'skills' && !combat.members.some((m) => m.id === selected))
       selected =
         combat.members.find(
           (m) => !m.fainted && m.usedTurn !== combat.turn && m.gauge >= rules.skillCost(m.id),
@@ -56,12 +56,12 @@
           cap = rules.skillCost(m.id),
           used = m.usedTurn === combat.turn,
           ready = m.gauge >= cap && !used;
-        return `<button type="button" data-battle-member="${m.id}" class="${m.fainted ? 'is-fainted' : ready ? 'skill-ready' : ''}" ${battle.phase !== 'skills' || m.fainted ? 'disabled' : ''} aria-pressed="${selected === m.id}" aria-label="${mon.label} ${m.fainted ? 'ひんし' : used ? 'このターンは使用済み' : '技ゲージ' + m.gauge + '/' + cap}"><img src="${pokemonPortrait(m.id)}" alt=""><span>${m.fainted ? 'ひんし' : used ? '使用ずみ' : ready ? 'わざ OK' : m.gauge + '/' + cap}</span><i><b style="width:${(100 * m.gauge) / cap}%"></b></i></button>`;
+        return `<button type="button" data-battle-member="${m.id}" class="${m.fainted ? 'is-fainted' : ready ? 'skill-ready' : ''}" ${!['ready', 'skills'].includes(battle.phase) ? 'disabled' : ''} aria-pressed="${selected === m.id}" aria-label="${mon.label}の技 ${m.fainted ? 'ひんし' : used ? 'このターンは使用済み' : '技ゲージ' + m.gauge + '/' + cap}"><img src="${pokemonPortrait(m.id)}" alt=""><span>${m.fainted ? 'ひんし' : used ? '使用ずみ' : ready ? 'わざ OK' : m.gauge + '/' + cap}</span><i><b style="width:${(100 * m.gauge) / cap}%"></b></i></button>`;
       })
       .join('');
     if (battle.phase !== 'skills') return;
     const member =
-      combat.members.find((m) => m.id === selected && !m.fainted) ||
+      combat.members.find((m) => m.id === selected) ||
       combat.members.find(
         (m) => !m.fainted && m.usedTurn !== combat.turn && m.gauge >= rules.skillCost(m.id),
       ) ||
@@ -75,6 +75,7 @@
       skill.category === 'revive' ||
       (skill.category === 'support' && skill.target === 'ally') ||
       (skill.category === 'board' && skill.mode === 'allyType');
+    $('#battle').dataset.skillTargeted = String(targeted);
     if (!candidates.some((m) => m.id === targetId)) targetId = candidates[0]?.id ?? null;
     const preview = rules.inspectSkill(combat, mon.id, skillContext());
     const damage =
@@ -97,7 +98,7 @@
     label.textContent = skill.name + 'を使う';
     hint.textContent = skill.category === 'attack' ? damage + 'ダメージ' : 'ゲージ' + skill.cost;
     use.append(label, hint);
-    $('#turn-next').textContent = battle.hp === 0 ? 'つぎのポケモンへ' : '反撃を受けて 次へ';
+    $('#turn-next').textContent = 'とじる';
   }
   function skillContext() {
     return {
@@ -165,6 +166,7 @@
       return;
     }
     panel.hidden = true;
+    $('#start').hidden = true;
     $('#battle').classList.remove('in-skill-break');
     battle.phase = 'resolving';
     $('#leave').disabled = true;
@@ -179,22 +181,43 @@
     battle.phase = 'finished';
     endBattle(true);
   }
-  function openSkills() {
-    $('#battle').classList.add('in-skill-break');
+  function prepare(counterPending = false) {
+    if (!enabled()) return;
+    battle.phase = 'ready';
+    battle.counterPending = counterPending;
+    selected = targetId = null;
+    panel.hidden = true;
+    $('#battle').classList.remove('in-skill-break', 'resolving', 'attack-release');
     window.PokekoroBattleFX?.reset();
-    if (battle.hp === 0) window.PokekoroBattleFX?.defeat(1);
-    $('#battle').classList.remove('resolving', 'attack-release');
+    battle.damage = battle.shownDamage = 0;
+    battle.typeCharge = {};
+    $('#clock').textContent = '10.0';
+    $('#timebar').style.width = '100%';
+    $('#combobar').style.width = '0%';
+    $('#ready-overlay').hidden = false;
+    $('#ready-overlay').innerHTML =
+      '<strong>準備ができたら<br>スタート！</strong><span>仲間をタップすると 技を見られるよ</span>';
+    $('#puzzle-tip').textContent = counterPending
+      ? 'スタートで相手の反撃を受けて、次のパズルへ'
+      : '仲間をタップで技。準備ができたらスタート！';
+    $('#start').hidden = false;
+    $('#start').textContent = '▶ スタート';
+    updateCharge();
+    render();
+  }
+  function closeSkills() {
+    if (enabled() && battle.phase === 'skills') prepare(!!battle.counterPending);
+  }
+  function openSkills(id) {
+    if (!enabled() || !['ready', 'skills'].includes(battle.phase)) return;
+    $('#battle').classList.add('in-skill-break');
     $('#ready-overlay').hidden = true;
     battle.phase = 'skills';
-    battle.damage = battle.shownDamage = 0;
-    updateCharge();
-    selected = null;
+    selected = id;
     targetId = null;
+    $('#turn-next').disabled = false;
     panel.hidden = false;
-    $('#puzzle-tip').textContent =
-      battle.hp === 0
-        ? '相手を倒した！ 次に備えて 技も使えるよ'
-        : '技を使うか、温存して次のターンへ！';
+    $('#puzzle-tip').textContent = '技を使うか、とじてスタートしよう';
     render();
   }
   async function resolve() {
@@ -233,11 +256,11 @@
     }
     await wait(260);
     if (epoch !== battleEpoch) return;
-    if (battle.hp === 0 && !hasNextTrainerPokemon()) {
+    if (battle.hp === 0) {
       await finish(epoch);
       return;
     }
-    openSkills();
+    prepare(true);
   }
 
   async function useSkill(moveId) {
@@ -277,15 +300,14 @@
     await wait(380);
     if (epoch !== battleEpoch) return;
     $('#turn-next').disabled = false;
-    if (battle.hp === 0 && !hasNextTrainerPokemon()) {
+    if (battle.hp === 0) {
       await finish(epoch);
       return;
     }
-    battle.phase = 'skills';
-    render();
+    prepare(!!battle.counterPending);
   }
   async function next() {
-    if (!enabled() || battle.phase !== 'skills') return;
+    if (!enabled() || battle.phase !== 'ready' || !battle.counterPending) return;
     const epoch = battleEpoch;
     if (battle.hp === 0) {
       battle.phase = 'resolving';
@@ -293,6 +315,7 @@
       return;
     }
     battle.phase = 'counterattack';
+    $('#start').hidden = true;
     $('#battle').classList.remove('in-skill-break');
     panel.hidden = true;
     $('#ready-overlay').hidden = false;
@@ -315,24 +338,15 @@
       await wipeout(epoch);
       return;
     }
-    battle.phase = 'ready';
-    battle.damage = battle.shownDamage = 0;
-    battle.typeCharge = {};
-    $('#battle').classList.remove('resolving', 'attack-release');
-    $('#combobar').style.width = '0%';
-    $('#combo').textContent = '残った仲間で パワーをためよう！';
-    $('#clock').textContent = '10.0';
-    $('#timebar').style.width = '100%';
-    $('#start').hidden = false;
-    updateCharge();
+    prepare(false);
     $('#start').click();
   }
   roster.onclick = (event) => {
     const button = event.target.closest('[data-battle-member]');
-    if (button && !button.disabled && battle.phase === 'skills') {
-      selected = Number(button.dataset.battleMember);
-      targetId = null;
-      render();
+    if (button && !button.disabled && ['ready', 'skills'].includes(battle.phase)) {
+      const id = Number(button.dataset.battleMember);
+      if (battle.phase === 'skills' && selected === id) closeSkills();
+      else openSkills(id);
       sfx('dexPage');
     }
   };
@@ -348,6 +362,15 @@
   $('#turn-use-skill').onclick = (event) => {
     if (!event.currentTarget.disabled) void useSkill(event.currentTarget.dataset.battleSkill);
   };
-  $('#turn-next').onclick = next;
-  window.PokekoroTurns = Object.freeze({ init, begin, charge, aliveParty, render, resolve });
+  $('#turn-next').onclick = closeSkills;
+  window.PokekoroTurns = Object.freeze({
+    init,
+    begin,
+    charge,
+    aliveParty,
+    render,
+    resolve,
+    prepare,
+    advance: next,
+  });
 })();

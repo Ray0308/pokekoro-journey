@@ -924,7 +924,12 @@ canvas.onlostpointercapture = (e) => {
   if (e.pointerId === activePuzzlePointer) resetPuzzlePointer();
 };
 $('#start').onclick = async () => {
-  if (preparing || running || (battle.combat && !window.PokekoroTurns.begin())) return;
+  if (preparing || running) return;
+  if (battle.combat && battle.counterPending) {
+    await window.PokekoroTurns.advance();
+    return;
+  }
+  if (battle.combat && !window.PokekoroTurns.begin()) return;
   preparing = true;
   $('#start').hidden = true;
   const epoch = battleEpoch;
@@ -1497,8 +1502,8 @@ $('#encounter-go').onclick = () => {
   battle.roundStarted = true;
   document.dispatchEvent(new CustomEvent('battle:enter'));
   fitBattle();
-  // 交代後だけは明示した『バトル スタート』から既存カウントダウンへ進む。
-  if (battle.continuation) $('#start').click();
+  // 交代後も自動でパズルへ進まず、新しい相手を見ながら技やスタートを選べるようにする。
+  window.PokekoroTurns?.prepare();
 };
 $('#encounter').addEventListener('cancel', (e) => e.preventDefault());
 // モバイルでは visualViewport を優先し、ブラウザUIで狭くなった高さに合わせる。

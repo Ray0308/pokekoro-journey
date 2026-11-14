@@ -95,4 +95,6 @@ async function showNextTrainerEncounter() {
   $('#encounter-img').alt = battle.m.label;
   $('#encounter-go').disabled = false;
   tone(740, 0.12);
+  // 次の相手は先に戦闘画面へ出す。パズルの開始はそこでスタートを押すまで待つ。
+  $('#encounter-go').click();
 }

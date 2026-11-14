@@ -337,7 +337,7 @@
     font-size: 9px;
   }
 }
-/* 合間は盤面の場所を広い技メニューへ切り替える。選択肢と次へボタンを一緒に見せる。 */
+/* 仲間のタップ時だけ短い技解説を開く。対象選択が必要な技には行を追加する。 */
 #battle.in-skill-break .weakness-tip,
 #battle.in-skill-break .time-track,
 #battle.in-skill-break .battleinfo,
@@ -347,11 +347,18 @@
 #battle.in-skill-break .puzzle-stage {
   width: 100%;
   max-width: 420px;
-  height: max(var(--puzzle-size), 240px);
-  min-height: 230px;
+  height: max(var(--puzzle-size), 180px);
+  min-height: 180px;
   touch-action: pan-y;
 }
+#battle.in-skill-break[data-skill-targeted='true'] .puzzle-stage {
+  height: max(var(--puzzle-size), 240px);
+  min-height: 230px;
+}
 #battle.in-skill-break canvas {
+  visibility: hidden;
+}
+#battle.in-skill-break #start {
   visibility: hidden;
 }
 #turn-actions button {
