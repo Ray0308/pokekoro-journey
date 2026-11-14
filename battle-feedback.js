@@ -23,7 +23,7 @@
     dialog
       .querySelectorAll('.battle-reward-fx,.power-note,#battle-power-tag')
       .forEach((e) => e.remove());
-    dialog.classList.remove('enemy-defeated', 'power-breakthrough');
+    dialog.classList.remove('enemy-defeated', 'power-breakthrough', 'trainer-complete');
     delete dialog.dataset.attackTier;
     delete dialog.dataset.comboTier;
     for (const key of ['--attack-color', '--attack-size', '--impact-scale'])
@@ -131,9 +131,10 @@
     );
     sound('impact', tier);
   }
-  function defeat(tier) {
+  function defeat(tier, complete = false) {
     dialog.classList.add('enemy-defeated');
-    burst(document.querySelector('.enemy'), tier >= 3 ? 24 : 16, '#ffdb63', true);
+    dialog.classList.toggle('trainer-complete', complete);
+    burst(document.querySelector('.enemy'), complete || tier >= 3 ? 24 : 16, '#ffdb63', true);
     sound('knockout', tier);
   }
   document.addEventListener('title:start', reset);

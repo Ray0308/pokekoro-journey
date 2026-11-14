@@ -232,3 +232,20 @@
     transition: none;
   }
 }
+
+/* 最後だけ金色の決着表示。紙吹雪は既存の星に絞り、ボールを散らさない。 */
+#battle.trainer-complete #ready-overlay {
+  border: 2px solid #d5ad49;
+  background: #fff6daed;
+  color: #75531a;
+}
+#battle.trainer-complete #ready-overlay strong {
+  color: #876012;
+}
+#battle.trainer-complete .enemy {
+  box-shadow: inset 0 0 0 2px #e2bc61;
+}
+
+#battle.trainer-complete #ready-overlay span {
+  color: #725821;
+}

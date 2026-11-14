@@ -381,38 +381,85 @@
   box-shadow: none;
 }
 /* A small RPG status plate and a location-specific encounter field. */
-#trainer-roster {
+#trainer-roster,
+#encounter-roster,
+.trainer-victory-balls {
   display: flex;
   align-items: center;
-  gap: 3px;
-  min-height: 13px;
+  gap: 5px;
+  min-height: 18px;
 }
-#trainer-roster[hidden] {
+#trainer-roster[hidden],
+#encounter-roster[hidden] {
   display: none;
 }
-#trainer-roster > i {
+.trainer-ball {
+  position: relative;
   display: block;
-  width: 10px;
-  height: 10px;
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
   flex-shrink: 0;
-  border: 1px solid #3d5044;
+  border: 2px solid #344a43;
   border-radius: 50%;
-  background: linear-gradient(#da6559 0 44%, #3d5044 44% 57%, #fffdf1 57%);
+  background: linear-gradient(#eb5a50 0 43%, #344a43 43% 57%, #fffdf3 57%);
 }
-#trainer-roster > i.defeated {
-  background: #829381;
-  opacity: 0.35;
+.trainer-ball > b {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 6px;
+  height: 6px;
+  box-sizing: border-box;
+  border: 1px solid #344a43;
+  border-radius: 50%;
+  background: #fffdf3;
 }
-#trainer-roster > i.active {
-  outline: 2px solid #dab054;
+.trainer-ball.defeated {
+  border-color: #818c85;
+  background: linear-gradient(#9da7a0 0 43%, #818c85 43% 57%, #d1d6cf 57%);
+  opacity: 0.55;
+}
+.trainer-ball.defeated > b {
+  border-color: #818c85;
+  background: #cbd2c9;
+}
+.trainer-ball.active {
+  outline: 2px solid #c69e3d;
   outline-offset: 1px;
 }
-#battle .enemy #trainer-roster > small {
+#encounter-roster {
+  position: relative;
+  justify-content: center;
+  margin: 0 auto 10px;
+}
+#encounter.trainer-last-pokemon {
+  border-color: #e1b455;
+}
+#encounter.trainer-last-pokemon #encounter-label {
+  color: #80601e;
+  font-weight: 900;
+}
+.trainer-victory-heading {
+  padding: 13px 8px;
+  margin-bottom: 12px;
+  border: 2px solid #d8b763;
+  border-radius: 12px;
+  background: #fff5d2;
+  color: #6d5123;
+}
+.trainer-victory-heading > small {
   display: block;
-  margin-left: auto;
-  font-size: 9px;
-  white-space: nowrap;
-  color: #596b56;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+.trainer-victory-heading > h2 {
+  margin: 8px 0 12px;
+}
+.trainer-victory-balls {
+  justify-content: center;
 }
 #battle .enemy {
   min-height: 128px;
@@ -698,5 +745,61 @@
   }
   #battle .enemy .enemy-hp-row {
     height: 9px;
+  }
+}
+
+/* 横持ちでは立ち絵と操作を左右に分け、台詞中も開始ボタンを画面内に保つ。 */
+@media (max-height: 450px) {
+  #encounter[open] {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto auto auto minmax(0, 1fr) auto;
+    gap: 5px 14px;
+    align-items: center;
+    max-height: calc(var(--app-height, 100dvh) - 16px);
+    padding: 14px 16px;
+    box-sizing: border-box;
+  }
+  #encounter .encounter-portrait {
+    grid-column: 1;
+    grid-row: 1 / 6;
+    justify-self: center;
+    width: min(100%, 180px);
+    height: min(48dvh, 180px);
+    margin: 0;
+  }
+  #encounter-roster {
+    grid-column: 2;
+    grid-row: 1;
+    margin: 0;
+  }
+  #encounter-label {
+    grid-column: 2;
+    grid-row: 2;
+    font-size: 12px;
+  }
+  #encounter-name {
+    grid-column: 2;
+    grid-row: 3;
+    margin: 4px 0;
+    font-size: 20px;
+    line-height: 1.3;
+  }
+  #encounter #encounter-speech {
+    grid-column: 2;
+    grid-row: 4;
+    margin: 0;
+    padding: 5px 7px;
+    font-size: 12px;
+    max-height: 95px;
+    overflow: auto;
+  }
+  #encounter-go {
+    grid-column: 2;
+    grid-row: 5;
+    min-height: 44px;
+    margin: 0;
+    padding: 9px 4px;
+    font-size: 13px;
   }
 }

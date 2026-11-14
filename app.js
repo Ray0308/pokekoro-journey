@@ -1026,6 +1026,8 @@ function markBattleVictory() {
 }
 // 勝利確定後は撤退などで敗北へ戻さない。rewardResolved で報酬の二重付与を防ぐ。
 function endBattle(win) {
+  // 古いラウンドからの重複呼び出しで、次の送球SEや演出を止めない。
+  if (!battle || battle.rewardResolved || (battle.series && !battle.roundStarted)) return;
   window.PokekoroBattleFX?.reset();
   window.PokekoroSfx?.stopAll();
   document.dispatchEvent(new CustomEvent('battle:audiofocus', { detail: { active: false } }));
@@ -1033,8 +1035,6 @@ function endBattle(win) {
     endSafari(win);
     return;
   }
-  if (!battle || battle.rewardResolved) return;
-  if (battle.series && !battle.roundStarted) return;
   if (battle.victory) win = true;
   if (win && hasNextTrainerPokemon()) {
     nextTrainerRound();
@@ -1080,7 +1080,7 @@ function endBattle(win) {
     state.balls += 2;
     render();
     result(
-      `<h2>${battle.boss ? (activeMap().leagueFinal ? battle.trainerAppearance.name + 'に勝利！' : activeMap().name + 'クリア！') : 'トレーナーに勝利！'}</h2><p>${battle.trainerAppearance.name}の ${battle.series.team.length}ひきに かった！<br>アイテムを てにいれた！</p>${rewardItemsHtml([{ id: 'super', count: battle.boss ? 3 : 1 }, { id: 'normal', count: 2 }, ...(masterDrop ? [{ id: 'master', count: 1 }] : []), ...(ticket ? [{ id: 'rainbow', count: 1 }] : [])])}${earnedBadge ? `<div class="reward-badge"><img src="${activeMap().badgeImage}" alt="${earnedBadge}"><span><small>バッジを てにいれた！</small><strong>${earnedBadge}</strong></span></div>` : ''}${ticket ? '<button id="reward-rainbow" class="rainbow-action">にじのくもへ 行く</button>' : ''}<button id="done" class="primary">${battle.boss ? '次のマップへ' : 'マップへ もどる'}</button>`,
+      `<div class="trainer-victory-heading"><small>しょうぶ けっちゃく！</small><h2>${battle.boss ? (activeMap().leagueFinal ? battle.trainerAppearance.name + 'に勝利！' : activeMap().name + 'クリア！') : 'トレーナーに勝利！'}</h2><div class="trainer-victory-balls" role="img" aria-label="相手のポケモンをすべて倒した">${trainerRosterMarkup(battle.series, true)}</div></div><p>${battle.trainerAppearance.name}の ${battle.series.team.length}ひきに かった！<br>アイテムを てにいれた！</p>${rewardItemsHtml([{ id: 'super', count: battle.boss ? 3 : 1 }, { id: 'normal', count: 2 }, ...(masterDrop ? [{ id: 'master', count: 1 }] : []), ...(ticket ? [{ id: 'rainbow', count: 1 }] : [])])}${earnedBadge ? `<div class="reward-badge"><img src="${activeMap().badgeImage}" alt="${earnedBadge}"><span><small>バッジを てにいれた！</small><strong>${earnedBadge}</strong></span></div>` : ''}${ticket ? '<button id="reward-rainbow" class="rainbow-action">にじのくもへ 行く</button>' : ''}<button id="done" class="primary">${battle.boss ? '次のマップへ' : 'マップへ もどる'}</button>`,
     );
     if (earnedBadge) sfx('badge');
     else sfx('success');
@@ -1412,7 +1412,9 @@ async function showEncounter(immediate) {
     name = $('#encounter-name'),
     go = $('#encounter-go'),
     epoch = battleEpoch;
-  dialog.classList.remove('boss-encounter');
+  dialog.classList.remove('boss-encounter', 'trainer-last-pokemon');
+  setTrainerRoster($('#encounter-roster'), battle.series);
+  $('#encounter-go').textContent = 'バトルへ';
   // 名前の未登録と画像の未登録は別。アートがあれば番号表示の相手にもシルエット演出を使う。
   dialog.dataset.numberOnly = String(!battle.m.portrait);
   if (battle.continuation) {
@@ -1462,12 +1464,14 @@ async function showEncounter(immediate) {
   tone(660, 0.12);
 }
 $('#encounter-go').onclick = () => {
-  if ($('#encounter-go').disabled) return;
+  if (!battle || $('#encounter-go').disabled || !$('#encounter').open) return;
   $('#encounter').close();
   $('#battle').showModal();
   battle.roundStarted = true;
   document.dispatchEvent(new CustomEvent('battle:enter'));
   fitBattle();
+  // 交代後だけは明示した『バトル スタート』から既存カウントダウンへ進む。
+  if (battle.continuation) $('#start').click();
 };
 $('#encounter').addEventListener('cancel', (e) => e.preventDefault());
 // モバイルでは visualViewport を優先し、ブラウザUIで狭くなった高さに合わせる。
@@ -1503,7 +1507,9 @@ function updateCharge(value = battle.damage) {
       ? 'なかよし目標 達成！ もっとためて 捕獲率アップ！'
       : `あと ${Math.max(0, battle.total - value)} で なかよし目標！`
     : p >= 1
-      ? '撃破ライン突破！ もっとためて捕獲率アップ！'
+      ? battle.trainer
+        ? '撃破ライン突破！ もっとためて 全力アタック！'
+        : '撃破ライン突破！ もっとためて捕獲率アップ！'
       : `あと ${Math.max(0, battle.total - value)} パワーで撃破ライン！`;
 }
 // 30秒のパズル終了後に蓄積分を一斉解放する。演出の各待機後に世代を確認する。
@@ -1588,24 +1594,48 @@ async function resolveAttack() {
   battle.hp = remaining;
   updateHP();
   $('#chargebar').style.width = '0%';
-  if (remaining === 0) markBattleVictory();
-  await wait(650);
+  if (remaining === 0) {
+    markBattleVictory();
+    if (battle.trainer) $('#leave').disabled = true;
+  }
+  await wait(battle.trainer ? TRAINER_PRESENTATION.impactSettleMs : 650);
   if (epoch !== battleEpoch) return;
   document.dispatchEvent(new CustomEvent('battle:audiofocus', { detail: { active: false } }));
-  if (remaining === 0) {
-    window.PokekoroBattleFX?.defeat(tier);
+  if (remaining === 0 && battle.trainer) {
+    const complete = !hasNextTrainerPokemon();
+    window.PokekoroBattleFX?.defeat(tier, complete);
+    d.remove();
+    $('#ready-overlay').innerHTML = complete
+      ? '<strong>ぜんぶ たおした！</strong><span>' +
+        battle.trainerAppearance.name +
+        'に 勝利！</span>'
+      : '<strong>' + battle.m.label + 'を<br>たおした！</strong><span>よし！ このちょうし！</span>';
+    $('#puzzle-tip').textContent = complete
+      ? 'みんなの力で 大しょうり！'
+      : 'つぎの ポケモンが くるぞ！';
+    await wait(
+      complete ? TRAINER_PRESENTATION.completionHoldMs : TRAINER_PRESENTATION.defeatedHoldMs,
+    );
+    if (epoch !== battleEpoch) return;
+  } else {
+    // 野生・負けた時の流れは従来どおり。捕獲と報酬の条件には触れない。
+    if (remaining === 0) {
+      window.PokekoroBattleFX?.defeat(tier);
+      $('#ready-overlay').innerHTML =
+        '<strong>げきは！！</strong><span>' + maxCombo + ' コンボの力が とどいた！</span>';
+    } else
+      $('#ready-overlay').innerHTML =
+        '<strong>あと ' +
+        remaining +
+        ' パワー！</strong><span>つぎは もっと つないでみよう！</span>';
+    await wait(1000);
+    if (epoch !== battleEpoch) return;
+    d.remove();
     $('#ready-overlay').innerHTML =
-      '<strong>げきは！！</strong><span>' + maxCombo + ' コンボの力が とどいた！</span>';
-  } else
-    $('#ready-overlay').innerHTML =
-      '<strong>あと ' + remaining + ' パワー！</strong><span>つぎは もっと つないでみよう！</span>';
-  await wait(1000);
-  if (epoch !== battleEpoch) return;
-  d.remove();
-  $('#ready-overlay').innerHTML =
-    `<strong>${remaining === 0 ? (hasNextTrainerPokemon() ? 'つぎの ポケモン！' : 'やった！ 勝利！') : 'おしかった…！'}</strong><span>${remaining === 0 ? (hasNextTrainerPokemon() ? 'しょうぶは まだまだ！' : 'みんなのパワーで 大しょうり！') : 'ながく つなぐと たくさん たまるよ！'}</span>`;
-  await wait(700);
-  if (epoch !== battleEpoch) return;
+      `<strong>${remaining === 0 ? 'やった！ 勝利！' : 'おしかった…！'}</strong><span>${remaining === 0 ? 'みんなのパワーで 大しょうり！' : 'ながく つなぐと たくさん たまるよ！'}</span>`;
+    await wait(700);
+    if (epoch !== battleEpoch) return;
+  }
   battle.phase = 'finished';
   endBattle(remaining === 0);
 }
