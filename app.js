@@ -431,6 +431,14 @@ function tileLabel(kind) {
 }
 // Use the entire route for tangents, including the travelled prefix, so both roads align.
 function routePath(last = routePoints.length - 1) {
+  // 迷路の専用ルートは角を補い、床の通路に沿う折れ線で描く。
+  // マス番号は増やさず、進行済み表示も同じ区間を使う。
+  if (activeMap().routeVia) {
+    const nodes = mapRoutePoints();
+    const points = [nodes[0]];
+    for (let i = 0; i < last; i++) points.push(...(activeMap().routeVia[i] || []), nodes[i + 1]);
+    return points.map(([x, y], i) => `${i ? 'L' : 'M'} ${x * 9} ${y * 9}`).join(' ');
+  }
   const points = mapRoutePoints().map(([x, y]) => [x * 9, y * 9]);
   let d = `M ${points[0][0]} ${points[0][1]}`;
   for (let i = 0; i < last; i++) {

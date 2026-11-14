@@ -574,7 +574,44 @@ const MAPS = Object.freeze({
   'celadon-gym': Object.freeze({
     'name': 'タマムシジム',
     'kind': 'garden',
-    'background': 'assets/map/placeholders/garden.svg',
+    'background': 'assets/map/celadon-gym.webp',
+    'backgroundPlaceholder': false,
+    'aspectRatio': 1280 / 1169,
+    // 左の庭を巡り、中央通路へ戻って奥のエリカに到着する。
+    'routePoints': [
+      [50, 91],
+      [50, 73],
+      [50, 55],
+      [36, 55],
+      [19, 58],
+      [15, 44],
+      [29, 44],
+      [34, 31],
+      [20, 25],
+      [20, 35],
+      [8, 35],
+      [8, 59],
+      [8, 81],
+      [32, 81],
+      [50, 17],
+    ],
+    // 生け垣の角で曲がる。最後は既存マスを再発火せず、通路だけを戻る。
+    'routeVia': {
+      3: [
+        [27, 55],
+        [27, 58],
+      ],
+      4: [[15, 58]],
+      6: [[34, 44]],
+      7: [[34, 25]],
+      13: [
+        [40, 81],
+        [40, 71],
+        [27, 71],
+        [27, 55],
+        [50, 55],
+      ],
+    },
     'trainerIcon': 'assets/map/viridian-trainer.webp',
     'boss': {
       'name': 'エリカ',

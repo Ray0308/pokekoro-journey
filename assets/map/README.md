@@ -66,3 +66,6 @@
 
 ## rock-tunnel.webp
 ユーザー提供のイワヤマトンネル背景。1254×1254の全体構図・比率を維持してWebP化。原本はoriginals/rock-tunnel.jpg。専用15マスを下の入口から岩の間、左側の通路、右上の出口へ配置。戦闘背景と共通使用。
+
+## celadon-gym.webp
+ユーザー提供のタマムシジム背景。1280×1169の全体構図を維持してWebP化。原本はoriginals/celadon-gym.jpg。左庭園から中央通路へ戻り、奥のエリカへ進む15マスをroutePointsで指定。routeViaは通路の角を曲がる描画専用の補助点で、マスやイベントは増やさない。
