@@ -733,7 +733,7 @@ function openBattle(trainer, boss, continuation = null, practice = false) {
   elapsed = 0;
   running = false;
   path = [];
-  grid = Array.from({ length: 36 }, () => randomPartyType());
+  grid = Array.from({ length: PUZZLE_LAYOUT.count }, () => randomPartyType());
   $('#kind').textContent =
     boss && activeMap().boss?.wild
       ? '⚑ ' + activeMap().name + '・最深部'
@@ -763,7 +763,7 @@ function openBattle(trainer, boss, continuation = null, practice = false) {
     '<strong>3つ つないで<br>パワーをためよう！</strong><span>' +
     battleDuration() +
     '秒後に まとめてアタック！</span>';
-  $('#combo').textContent = '属性を3個以上つなごう';
+  $('#combo').textContent = '0 コンボ';
   $('#chain').textContent = '0つなぎ';
   $('#start').hidden = false;
   updateHP();
@@ -794,9 +794,9 @@ function updateHP() {
   window.PokekoroBattleScene?.update(battle, state.owned);
 }
 const canvas = $('#board'),
-  ctx = canvas.getContext('2d'); // 描画だけを担当する。ピースの判定には canvas の内部座標（420×420）を使う。
+  ctx = canvas.getContext('2d'); // 描画だけを担当する。ピースの判定には canvas の内部座標（420×350）を使う。
 function draw() {
-  ctx.clearRect(0, 0, 420, 420);
+  ctx.clearRect(0, 0, PUZZLE_LAYOUT.width, PUZZLE_LAYOUT.height);
   // Draw the connector beneath the pieces, so their symbols stay unobscured.
   if (path.length) {
     ctx.strokeStyle = '#ba953c';
@@ -814,7 +814,7 @@ function draw() {
     ctx.lineWidth = 5;
     ctx.stroke();
   }
-  for (let i = 0; i < 36; i++) {
+  for (let i = 0; i < grid.length; i++) {
     const x = (i % 6) * 70 + 35,
       y = Math.floor(i / 6) * 70 + 35,
       selected = path.includes(i);
@@ -840,8 +840,8 @@ function draw() {
 function cell(e) {
   let r = canvas.getBoundingClientRect(),
     x = ((e.clientX - r.left) * 420) / r.width,
-    y = ((e.clientY - r.top) * 420) / r.height;
-  if (x < 0 || y < 0 || x >= 420 || y >= 420) return -1;
+    y = ((e.clientY - r.top) * PUZZLE_LAYOUT.height) / r.height;
+  if (x < 0 || y < 0 || x >= 420 || y >= PUZZLE_LAYOUT.height) return -1;
   return Math.floor(y / 70) * 6 + Math.floor(x / 70);
 }
 canvas.onpointerdown = (e) => {
@@ -1296,7 +1296,7 @@ function attackFX(cells, type, damage, effectiveness, count) {
   let html = '';
   for (const cell of cells) {
     const x = (((cell % 6) + 0.5) / 6) * 100,
-      y = ((Math.floor(cell / 6) + 0.5) / 6) * 100;
+      y = ((Math.floor(cell / 6) + 0.5) / PUZZLE_LAYOUT.rows) * 100;
     for (
       let j = 0;
       j < (reduceMotion ? 1 : Math.min(5, Math.max(2, Math.floor(72 / cells.length))));
@@ -1532,7 +1532,7 @@ function fitBattle() {
   let availableWidth = dialog.clientWidth - horizontal;
   let availableHeight;
   if (height <= 450 && width >= 600 && battle?.combat) {
-    // 横持ちは既存の左右分割。右列の幅と高さをどちらも超えない正方形にする。
+    // 横持ちは既存の左右分割。右列の幅と高さを超えず、ブロックを正方形に保つ。
     availableWidth = (availableWidth - (parseFloat(style.columnGap) || 0)) / 2;
     availableHeight = height - vertical - 60;
   } else {
@@ -1567,7 +1567,14 @@ function fitBattle() {
       gap * (fixed.length + 1) -
       8;
   }
-  const size = Math.max(120, Math.min(420, availableWidth - 6, availableHeight));
+  const size = Math.max(
+    120,
+    Math.min(
+      420,
+      availableWidth - 6,
+      (availableHeight * PUZZLE_LAYOUT.columns) / PUZZLE_LAYOUT.rows,
+    ),
+  );
   dialog.style.setProperty('--puzzle-size', `${Math.floor(size)}px`);
 }
 window.addEventListener('resize', fitBattle);
@@ -1774,7 +1781,8 @@ function flyCharge(cells, type, amount) {
     ty = gauge.top - dialog.top + gauge.height / 2;
   for (const [j, cell] of cells.entries()) {
     const x = board.left - dialog.left + (((cell % 6) + 0.5) * board.width) / 6,
-      y = board.top - dialog.top + ((Math.floor(cell / 6) + 0.5) * board.height) / 6,
+      y =
+        board.top - dialog.top + ((Math.floor(cell / 6) + 0.5) * board.height) / PUZZLE_LAYOUT.rows,
       light = document.createElement('i');
     light.className = 'charge-light';
     light.style.cssText = `left:${x}px;top:${y}px;--dx:${tx - x}px;--dy:${ty - y}px;--spark:${colors[type]};animation-delay:${reduceMotion ? 0 : 110 + j * 12}ms`;

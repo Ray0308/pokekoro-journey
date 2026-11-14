@@ -58,7 +58,7 @@ const PokemonSkillRules = (() => {
       pool = context.pool;
     if (
       !Array.isArray(board) ||
-      board.length !== 36 ||
+      ![PUZZLE_LAYOUT.count, 36].includes(board.length) ||
       board.some((t) => !Number.isInteger(t) || t < 0 || t > 17) ||
       !Array.isArray(pool) ||
       !pool.length ||
@@ -171,7 +171,8 @@ const PokemonSkillRules = (() => {
         Math.min(n - 1, Math.floor(Math.max(0, Math.min(1, Number(rng()) || 0)) * n));
       const before = [...plan.board];
       if (skill.mode === 'redraw') {
-        for (let i = 0; i < 36; i++) plan.board[i] = plan.pool[randomIndex(plan.pool.length)];
+        for (let i = 0; i < plan.board.length; i++)
+          plan.board[i] = plan.pool[randomIndex(plan.pool.length)];
         // 同じ盤面を引き直した場合も、有効な別属性があれば最低1マスは変える。
         if (plan.board.every((t, i) => t === before[i])) {
           const i = plan.board.findIndex((t) => plan.pool.some((p) => p !== t));

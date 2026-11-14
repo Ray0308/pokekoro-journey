@@ -1,0 +1,217 @@
+/* 縦持ちは「敵のステージ → 仲間 → 細いゲージ → 盤面」のまとまりで見せる。
+   6列×5段の盤面でブロックの正方形を保ち、ステージと盤面に余白を配分する。 */
+@media (min-height: 451px), (max-width: 599px) {
+  #battle {
+    gap: 2px;
+    padding: 6px 8px max(6px, env(safe-area-inset-bottom));
+  }
+  #battle .battlehead {
+    order: 0;
+    height: 28px;
+  }
+  #battle .battlehead strong {
+    font-size: 17px;
+    min-width: 60px;
+    line-height: 22px;
+    padding: 1px 6px;
+  }
+  #battle #leave {
+    min-height: 27px;
+    padding: 3px 7px;
+    font-size: 11px;
+  }
+  #battle .enemy,
+  #battle.turn-battle .enemy {
+    order: 1;
+    flex: 1 1 auto;
+    min-height: clamp(126px, 24dvh, 240px);
+    max-height: none;
+    border: 0;
+    border-radius: 8px;
+    margin: 2px 0 4px;
+    overflow: hidden;
+  }
+  #battle-backdrop {
+    opacity: 0.55;
+    background-position: center;
+  }
+  #battle .enemy > img#enemyimg {
+    left: 66%;
+    bottom: 20px;
+    width: 65%;
+    height: 91%;
+    max-height: none;
+  }
+  #battle .battle-platform {
+    left: 66%;
+    width: 63%;
+    bottom: 14px;
+    height: 12%;
+  }
+  /* 名前・属性・相手の残数は左上。大きな不透明カードで背景と立ち絵を隠さない。 */
+  #battle .enemy > .enemy-status {
+    display: contents;
+  }
+  #battle .enemy .enemy-name-row {
+    position: absolute;
+    top: 7px;
+    left: 8px;
+    max-width: 58%;
+    z-index: 3;
+    gap: 4px;
+  }
+  #battle .enemy .enemy-name-row h2 {
+    font-size: 15px;
+    line-height: 20px;
+    padding: 2px 6px;
+    border: 0;
+    border-radius: 4px;
+    box-shadow: none;
+    background: #fffdf0e8;
+  }
+  #battle .enemy img#enemy-owned {
+    width: 12px;
+    height: 12px;
+  }
+  #battle #enemy-types {
+    position: absolute;
+    top: 34px;
+    left: 9px;
+    z-index: 3;
+  }
+  #battle #trainer-roster {
+    position: absolute;
+    top: 56px;
+    left: 10px;
+    z-index: 3;
+  }
+  #battle .enemy .enemy-hp-row {
+    position: absolute;
+    left: 8px;
+    right: 8px;
+    bottom: 6px;
+    height: 7px;
+    width: auto;
+    z-index: 3;
+  }
+  #battle .enemy-hp-row > b {
+    font-size: 8px;
+  }
+  #battle .enemy .enemy-hp-row .hp {
+    height: 7px;
+  }
+  #battle .enemy .enemy-status #hptext {
+    position: absolute;
+    bottom: 16px;
+    right: 8px;
+    padding: 1px 4px;
+    line-height: 11px;
+    border-radius: 3px;
+    background: #fffdf0dc;
+    z-index: 3;
+  }
+  #battle #battle-location {
+    display: none;
+  }
+  #battle #battle-party {
+    order: 2;
+    gap: 3px;
+  }
+  #battle #battle-party button {
+    height: 51px;
+    padding-top: 1px;
+    border-radius: 5px;
+  }
+  #battle #battle-party img {
+    width: 34px;
+    height: 33px;
+  }
+  #battle #battle-party span {
+    font-size: 8px;
+  }
+  #battle #battle-turn-status {
+    order: 3;
+    font-size: 9px;
+    min-height: 12px;
+    line-height: 12px;
+    color: #667b69;
+  }
+  /* パワー表示は一枚の細いバーへ集約する。 */
+  #battle .attack-charge {
+    order: 4;
+    position: relative;
+    height: 25px;
+    min-height: 25px;
+    flex: 0 0 25px;
+    margin: 1px 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    box-shadow: none;
+  }
+  #battle .attack-charge > div:first-child {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    padding: 0 7px;
+    z-index: 1;
+  }
+  #battle .attack-charge strong {
+    font-size: 10px;
+  }
+  #battle .attack-charge #charge-value {
+    font-size: 17px;
+    line-height: 20px;
+  }
+  #battle .attack-charge-track {
+    position: absolute;
+    inset: 0;
+    height: 25px;
+    border-radius: 5px;
+  }
+  #battle .attack-charge-track b {
+    display: none;
+  }
+  #battle #battle-power-tag {
+    font-size: 9px;
+    padding: 1px 4px;
+  }
+  #battle #battle-power-tag[data-tier='0'] {
+    visibility: hidden;
+  }
+  #battle .time-track {
+    order: 5;
+    height: 3px;
+    margin: 1px 0;
+  }
+  #battle .battleinfo {
+    order: 6;
+    height: 16px;
+    min-height: 16px;
+    font-size: 9px;
+  }
+  #battle .puzzle-stage {
+    order: 7;
+    margin: 0 auto;
+  }
+  #battle .combo-track {
+    order: 8;
+    height: 2px;
+    margin-top: 2px;
+  }
+  #battle #start {
+    left: 20%;
+    right: 20%;
+    bottom: 16px;
+    width: 60%;
+    min-height: 39px;
+    background: #e8c36c;
+    box-shadow: 0 2px #9c803b;
+  }
+}
+
+/* 内部描画も420×350とし、画像を引き伸ばさず正方形のブロックを並べる。 */
+#battle:not(.in-skill-break) .puzzle-stage {
+  height: calc(var(--puzzle-size) * 5 / 6);
+}

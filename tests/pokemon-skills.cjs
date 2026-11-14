@@ -35,6 +35,12 @@ const r=BattleTurnRules,s=PokemonSkillRules;
 const enemy={...POKEDEX[0],types:[],type:null,stats:{...POKEDEX[0].stats,defense:80,specialDefense:80}},base={enemy,enemyHP:5000,hasNextEnemy:false};
 const ready=(ids)=>{const c=r.create(ids);r.begin(c);for(const m of c.members)m.gauge=s.cost(m.id);return c};
 const board=()=>Array.from({length:36},(_,i)=>i%18);
+// 新盤面は30マス。全盤面変更と部分変更のどちらでも配列を伸ばさない。
+for (const id of [63,271,132]) {
+  const fresh=ready([id,7]);const tiles=Array(30).fill(1);
+  const result=r.skill(fresh,id,{...base,targetId:7,board:tiles,pool:[1,2,0],rng:()=>0});
+  assert.ok(result.ok);assert.equal(tiles.length,30);assert.equal(fresh.pendingBoard.length,30);
+}
 // 物理つるのムチと特殊かえんほうしゃはそれぞれ防御/特防を使う。
 let a=ready([1,6]);const wall={...enemy,stats:{...enemy.stats,defense:200,specialDefense:40}};
 assert.ok(r.inspectSkill(a,1,{...base,enemy:wall}).damage<r.inspectSkill(a,1,base).damage);

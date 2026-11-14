@@ -1,4 +1,6 @@
 'use strict';
+// 画面・入力・落下処理で同じ盤面寸法を共有する。
+const PUZZLE_LAYOUT = Object.freeze({ columns: 6, rows: 5, count: 30, width: 420, height: 350 });
 // 属性の集計・パーティー制約・パズル火力を扱う。表示処理から計算式を分離する。
 const POKEMON_TYPE_NAMES = [
   'くさ',
@@ -116,20 +118,21 @@ function randomPartyType(neighbors = []) {
 }
 function refillPuzzle(cleared) {
   const removed = new Set(cleared);
+  const lastRow = grid.length / PUZZLE_LAYOUT.columns - 1;
   for (let col = 0; col < 6; col++) {
     const keep = [];
-    for (let row = 5; row >= 0; row--) {
+    for (let row = lastRow; row >= 0; row--) {
       const i = row * 6 + col;
       if (!removed.has(i)) keep.push(grid[i]);
     }
-    for (let row = 5; row >= 0; row--) grid[row * 6 + col] = keep[5 - row] ?? null;
+    for (let row = lastRow; row >= 0; row--) grid[row * 6 + col] = keep[lastRow - row] ?? null;
   }
-  for (let row = 5; row >= 0; row--)
+  for (let row = lastRow; row >= 0; row--)
     for (let col = 0; col < 6; col++) {
       const i = row * 6 + col;
       if (grid[i] !== null) continue;
       const neighbors = [];
-      if (row < 5) neighbors.push(grid[i + 6]);
+      if (row < lastRow) neighbors.push(grid[i + 6]);
       if (col > 0) neighbors.push(grid[i - 1]);
       if (col < 5) neighbors.push(grid[i + 1]);
       grid[i] = randomPartyType(neighbors);
