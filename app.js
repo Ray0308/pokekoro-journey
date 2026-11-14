@@ -682,7 +682,6 @@ function openBattle(trainer, boss, continuation = null, practice = false) {
     .forEach((node) => node.remove());
   $('#leave').disabled = false;
   $('#battle-fx').innerHTML = '';
-  $('#callout').textContent = '';
   $('#ready-overlay').hidden = false;
   $('#ready-overlay').innerHTML =
     '<strong>3つ つないで<br>パワーをためよう！</strong><span>パズルで 力をためよう！</span>';
@@ -921,8 +920,6 @@ canvas.onpointerup = (e) => {
     $('#combo').textContent =
       `${combo}コンボ ×${(1 + Math.min(combo - 1, 9) * 0.15).toFixed(2)} · +${damage}${battle.safari ? 'なかよし' : 'パワー'}${battle.safari ? '' : ' ' + typeEffectivenessLabel(effectiveness)}`;
     if (power === 0 && battle.combat) {
-      $('#callout').innerHTML =
-        '<strong>ブロックを せいり！</strong><span>仲間が おやすみなので ダメージ0</span>';
       $('#puzzle-tip').textContent = 'どの属性も 消せるよ。戦える仲間の 属性で攻撃！';
     }
     refillPuzzle(path);
@@ -1292,6 +1289,8 @@ function pulse(el, cls) {
   void el.offsetWidth;
   el.classList.add(cls);
 }
+// パズル中は文字を盤面に重ねず、結果は上の情報欄と下の案内に表示する。
+// ブロックの消去エフェクトとSEだけを残し、盤面自体は揺らさない。
 function attackFX(cells, type, damage, effectiveness, count) {
   const layer = $('#battle-fx');
   let html = '';
@@ -1313,17 +1312,12 @@ function attackFX(cells, type, damage, effectiveness, count) {
   setTimeout(() => {
     if (token === fxToken) layer.innerHTML = '';
   }, 650);
-  $('#callout').innerHTML =
-    `<strong>${cells.length >= 7 ? 'すごい!!' : cells.length >= 5 ? 'いいね！' : 'ナイス！'}</strong><span>${count} コンボ!</span>`;
-  pulse($('#callout'), 'callout-pop');
   $('#puzzle-tip').textContent = battle.safari
     ? 'つづけて消して なかよく なろう！'
     : 'つづけて消して パワーアップ！';
   sfx('gem', count);
   window.PokekoroBattleFX?.combo(count, damage, effectiveness, cells.length, type, battle.safari);
   pulse($('#chain'), 'chain-pop');
-  $('#callout').dataset.level = Math.min(count, 6);
-  if ((cells.length >= 7 || count >= 3) && !reduceMotion) pulse($('.puzzle-stage'), 'big-hit');
 }
 let fxToken = 0;
 function celebrate() {

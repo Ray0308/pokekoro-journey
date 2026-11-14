@@ -20,9 +20,7 @@
     for (const t of timers) clearTimeout(t);
     timers.clear();
     highestCombo = highestCharge = 0;
-    dialog
-      .querySelectorAll('.battle-reward-fx,.power-note,#battle-power-tag')
-      .forEach((e) => e.remove());
+    dialog.querySelectorAll('.battle-reward-fx,#battle-power-tag').forEach((e) => e.remove());
     dialog.classList.remove('enemy-defeated', 'power-breakthrough', 'trainer-complete');
     delete dialog.dataset.attackTier;
     delete dialog.dataset.comboTier;
@@ -52,19 +50,7 @@
   function combo(count, damage, effectiveness, cells, type, safari) {
     const tier = count >= 8 ? 3 : count >= 5 ? 2 : count >= 3 ? 1 : 0;
     dialog.dataset.comboTier = tier;
-    const callout = document.querySelector('#callout'),
-      word =
-        count >= 8
-          ? 'とまらない！！'
-          : count >= 5
-            ? 'すごすぎ！！'
-            : count >= 3
-              ? 'いいちょうし！'
-              : cells >= 7
-                ? 'ロングチェイン！'
-                : 'ナイス！';
     const effect = !safari && effectiveness !== 1 ? typeEffectivenessLabel(effectiveness) : '';
-    callout.innerHTML = `<strong>${count}<small> コンボ！</small></strong><span>${effect || word}</span>`;
     const tip = document.querySelector('#puzzle-tip');
     tip.textContent = safari
       ? 'つづけて消して なかよく なろう！'
@@ -79,15 +65,9 @@
       highestCombo = tier;
       sound('comboRise', tier);
     }
-    dialog.querySelectorAll('.power-note').forEach((e) => e.remove());
-    const note = document.createElement('b');
-    note.className = 'power-note';
-    note.style.setProperty('--spark', POKEMON_TYPE_COLORS[type]);
-    note.textContent =
-      !safari && effectiveness === 0 ? 'こうかなし' : '＋' + damage.toLocaleString();
-    document.querySelector('.puzzle-stage').append(note);
-    later(() => note.remove(), 650);
+    // 加算値は既存の #combo に表示済み。盤面を覆う追従文字は出さない。
   }
+
   function charge(value, total, safari, charging) {
     const ratio = value / total,
       tier = ratio >= 1.6 ? 3 : ratio >= 1 ? 2 : ratio >= 0.5 ? 1 : 0;
@@ -142,7 +122,7 @@
     if (document.hidden) {
       for (const t of timers) clearTimeout(t);
       timers.clear();
-      dialog.querySelectorAll('.battle-reward-fx,.power-note').forEach((e) => e.remove());
+      dialog.querySelectorAll('.battle-reward-fx').forEach((e) => e.remove());
     }
   });
   window.PokekoroBattleFX = Object.freeze({ reset, combo, charge, prepare, impact, defeat });
