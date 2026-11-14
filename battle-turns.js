@@ -32,6 +32,15 @@
     $('#battle').classList.toggle('turn-battle', !!current.combat);
     render();
   }
+  // 図鑑のタイプ順をそのまま使い、左上にメイン・右下にサブを描く。
+  function typeBadges(mon) {
+    return pokemonTypes(mon)
+      .map((type, index) => {
+        const cell = TYPE_SYMBOL_CELLS[type];
+        return `<b class="member-type member-type-${index ? 'sub' : 'main'}" data-type="${type}" title="${index ? 'サブ' : 'メイン'}タイプ：${POKEMON_TYPE_NAMES[type]}" style="--member-type:${POKEMON_TYPE_COLORS[type]}"><em style="background-position:${((cell % 6) / 5) * 100}% ${(Math.floor(cell / 6) / 2) * 100}%"></em></b>`;
+      })
+      .join('');
+  }
   function render() {
     roster.hidden = !enabled();
     $('#battle-turn-status').hidden = !enabled();
@@ -59,7 +68,15 @@
           cap = rules.skillCost(m.id),
           used = m.usedTurn === combat.turn,
           ready = m.gauge >= cap && !used;
-        return `<button type="button" data-battle-member="${m.id}" class="${m.fainted ? 'is-fainted' : ready ? 'skill-ready' : ''}" ${!['ready', 'skills'].includes(battle.phase) ? 'disabled' : ''} aria-pressed="${selected === m.id}" aria-label="${mon.label}の技 ${m.fainted ? 'ひんし' : used ? 'このターンは使用済み' : '技ゲージ' + m.gauge + '/' + cap}"><img src="${pokemonPortrait(m.id)}" alt=""><span>${m.fainted ? 'ひんし' : used ? '使用ずみ' : ready ? 'わざ OK' : m.gauge + '/' + cap}</span><i><b style="width:${(100 * m.gauge) / cap}%"></b></i></button>`;
+        return `<button type="button" data-battle-member="${m.id}" class="${m.fainted ? 'is-fainted' : ready ? 'skill-ready' : ''}" ${!['ready', 'skills'].includes(battle.phase) ? 'disabled' : ''} aria-pressed="${selected === m.id}" aria-label="${mon.label} ${pokemonTypes(
+          mon,
+        )
+          .map(
+            (type, index) => (index ? 'サブタイプ ' : 'メインタイプ ') + POKEMON_TYPE_NAMES[type],
+          )
+          .join(
+            '、',
+          )} の技 ${m.fainted ? 'ひんし' : used ? 'このターンは使用済み' : '技ゲージ' + m.gauge + '/' + cap}"><span class="battle-member-portrait" aria-hidden="true"><img src="${pokemonPortrait(m.id)}" alt="">${typeBadges(mon)}</span><span>${m.fainted ? 'ひんし' : used ? '使用ずみ' : ready ? 'わざ OK' : m.gauge + '/' + cap}</span><i><b style="width:${(100 * m.gauge) / cap}%"></b></i></button>`;
       })
       .join('');
     if (battle.phase !== 'skills') return;

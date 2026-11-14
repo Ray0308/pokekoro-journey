@@ -219,13 +219,13 @@
 /* 待機中は盤面を読めない白いぼかしで覆い、開始ボタンだけを中央に置く。
    hidden が付いた瞬間に適用が外れるため、カウントダウンや操作中には残らない。 */
 #battle:not(.in-skill-break):has(#start:not([hidden])) #board {
-  filter: blur(14px);
-  opacity: 0.18;
+  filter: blur(9px);
+  opacity: 1;
 }
 #battle:not(.in-skill-break):has(#start:not([hidden])) #ready-overlay {
-  background: linear-gradient(135deg, #fffffff5, #f4f7eff5);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background: rgb(255 255 255 / 24%);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 #battle #start {
   left: 20%;
@@ -242,4 +242,63 @@
   background: transparent;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
+}
+
+/* 白を塗り重ねず、盤面そのものを一度だけぼかす。 */
+#battle:not(.in-skill-break):has(#start:not([hidden])) .puzzle-stage {
+  overflow: hidden;
+}
+/* タイプは立ち絵の角へ固定し、下の技ゲージと重ねない。 */
+#battle-party .battle-member-portrait {
+  position: relative;
+  display: block;
+  width: 34px;
+  height: 33px;
+  margin: auto;
+}
+#battle-party .member-type {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: 1px solid #fffdf2;
+  border-radius: 4px;
+  background: var(--member-type);
+  box-shadow: 0 1px 2px #263c4050;
+  z-index: 1;
+  pointer-events: none;
+}
+#battle-party .member-type-main {
+  top: 0;
+  left: -7px;
+}
+#battle-party .member-type-sub {
+  bottom: 0;
+  right: -7px;
+}
+#battle-party .member-type em {
+  position: absolute;
+  inset: 1px;
+  background-image: url('assets/types/symbols.png');
+  background-size: 600% 300%;
+  background-repeat: no-repeat;
+}
+#battle-party .is-fainted .member-type {
+  filter: grayscale(0.6);
+  opacity: 0.65;
+}
+@media (max-height: 450px) and (min-width: 600px) {
+  #battle-party .battle-member-portrait {
+    width: 27px;
+    height: 25px;
+  }
+  #battle-party .member-type {
+    width: 12px;
+    height: 12px;
+  }
+  #battle-party .member-type-main {
+    left: -6px;
+  }
+  #battle-party .member-type-sub {
+    right: -6px;
+  }
 }
