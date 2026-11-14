@@ -173,6 +173,11 @@
   margin: 2px 0 5px;
   font-size: 10px;
 }
+#device-skill {
+  margin: 4px 0 8px;
+  font-size: 10px;
+  line-height: 1.6;
+}
 #device-stat-list {
   margin: 0 0 6px;
 }

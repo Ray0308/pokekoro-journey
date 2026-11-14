@@ -125,3 +125,9 @@ HPが0になった現在の相手もグレーにし、進行は`series.index`で
 `pokemon-stats.generated.js`を`pokemon-data.js`より前に読み込む。
 `pokemon-battle-stats.js`が通常攻撃・技・相手HP・ゲージ速度の変換を共有する。
 仕様・出典・計算式は[種族値の反映](docs/pokemon-battle-stats.md)を参照。
+
+## 個別技
+
+`data/pokemon-skills.json`が代表技割当と能力の編集元。`npm run skills:generate`と
+`npm run skills:check`で検査・生成し、`pokemon-skill-rules.js`が判定と発動を共有する。
+仕様とテスト範囲は[個別技](docs/pokemon-skills.md)を参照。

@@ -132,6 +132,70 @@
   font-size: 9px;
   line-height: 1.4;
 }
+.turn-skill-description {
+  margin: 2px 0 5px;
+  font-size: 11px;
+  line-height: 1.6;
+  color: #3d5844;
+  text-align: left;
+}
+.turn-target-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-align: left;
+}
+.turn-targets {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+}
+#turn-skill-options .turn-targets button {
+  min-width: 0;
+  padding: 4px;
+  min-height: 40px;
+  justify-content: flex-start;
+  gap: 3px;
+}
+.turn-targets img {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+.turn-targets span {
+  min-width: 0;
+  font-size: 9px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.turn-targets small {
+  display: block;
+  font-size: 8px;
+}
+.turn-targets [aria-pressed='true'] {
+  outline: 2px solid #46785c;
+  outline-offset: -2px;
+  background: #e5efdc !important;
+}
+#turn-skill-options [data-battle-skill] {
+  border-color: #839c75;
+  background: #f4efd1;
+}
+#battle-party .just-restored {
+  animation: skill-restored 450ms ease-out;
+}
+@keyframes skill-restored {
+  50% {
+    background: #fff2b0;
+    box-shadow: 0 0 0 2px #90ba75;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #battle-party .just-restored {
+    animation: none;
+  }
+}
 #turn-actions #turn-next {
   flex-shrink: 0;
   min-height: 36px;
@@ -139,6 +203,32 @@
   margin: 0;
   font-size: 11px;
   border-radius: 6px;
+}
+.turn-skill-footer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+  flex-shrink: 0;
+}
+#turn-use-skill {
+  min-width: 0;
+  min-height: 44px;
+  padding: 5px 3px;
+  border: 1px solid #839c75;
+  border-radius: 6px;
+  background: #f4efd1;
+  box-shadow: none;
+  color: #345641;
+}
+#turn-use-skill strong {
+  display: block;
+  font-size: 11px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+#turn-use-skill small {
+  display: block;
+  font-size: 9px;
 }
 #battle.turn-battle #start {
   min-height: 36px;

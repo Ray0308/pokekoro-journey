@@ -23,6 +23,8 @@ for (const file of [
   'party-rules.js',
   'type-chart.generated.js',
   'type-effectiveness.js',
+  'pokemon-skills.generated.js',
+  'pokemon-skill-rules.js',
   'battle-turn-rules.js',
 ])
   vm.runInContext(fs.readFileSync(file, 'utf8'), context);
@@ -54,7 +56,7 @@ assert.equal(split.members[0].gauge, joined.members[0].gauge);
 assert.equal(split.members[0].gaugeProgress, joined.members[0].gaugeProgress);
 assert.equal(joined.members[0].gauge, 8);
 const fast = rules.create([101]); rules.charge(fast, 6, 10);
-assert.equal(fast.members[0].gauge, 12); assert.equal(fast.members[0].gaugeProgress, 0);
+assert.equal(fast.members[0].gauge, 13); assert.equal(fast.members[0].gaugeProgress, 0);
 rules.charge(split, 5, 100); assert.equal(split.members[0].gauge, 12);
 rules.retaliate(split, () => 0); assert.equal(split.members[0].gaugeProgress, 0);
 rules.charge(split, 5, 100); assert.equal(split.members[0].gauge, 0);

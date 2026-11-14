@@ -186,6 +186,9 @@
     document.querySelector('#device-battle-style').textContent = seen
       ? `${PokemonBattleStats.style(mon)} ｜ わざの溜まり：${PokemonBattleStats.gaugeLabel(mon)}`
       : '';
+    document.querySelector('#device-skill').textContent = seen
+      ? `${PokemonSkillRules.forPokemon(selected).name}（ゲージ${PokemonSkillRules.cost(selected)}）：${PokemonSkillRules.description(selected)}`
+      : '';
     document.querySelector('#device-stat-list').innerHTML = seen
       ? [
           ['hp', 'HP'],

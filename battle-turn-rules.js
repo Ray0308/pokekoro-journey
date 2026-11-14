@@ -1,14 +1,24 @@
 'use strict';
 // 戦闘中だけの状態。セーブや元のパーティーは書き換えず、次の戦闘では全員復帰する。
 const BattleTurnRules = (() => {
-  const config = Object.freeze({ seconds: 10, gauge: 12, skillPower: 12, boost: 1.5 });
+  const config = Object.freeze({ seconds: 10 });
   function create(party) {
     return {
       turn: 0,
       boost: 1,
       nextBoost: 1,
       guard: false,
-      members: party.map((id) => ({ id, gauge: 0, gaugeProgress: 0, fainted: false })),
+      supportTurn: -1,
+      reviveUsed: false,
+      lastCounterFainted: false,
+      pendingBoard: null,
+      members: party.map((id) => ({
+        id,
+        gauge: 0,
+        gaugeProgress: 0,
+        fainted: false,
+        usedTurn: -1,
+      })),
     };
   }
   const alive = (combat) => combat.members.filter((m) => !m.fainted).map((m) => m.id);
@@ -28,38 +38,18 @@ const BattleTurnRules = (() => {
       const mon = POKEDEX[member.id - 1];
       if (member.fainted || !pokemonTypes(mon).includes(type)) continue;
       const progress = (member.gaugeProgress || 0) + cells * PokemonBattleStats.gaugeUnits(mon);
-      member.gauge = Math.min(config.gauge, member.gauge + Math.floor(progress / unit));
-      member.gaugeProgress = member.gauge === config.gauge ? 0 : progress % unit;
+      const cap = PokemonSkillRules.cost(member.id);
+      member.gauge = Math.min(cap, member.gauge + Math.floor(progress / unit));
+      member.gaugeProgress = member.gauge === cap ? 0 : progress % unit;
     }
   }
-  function attackDamage(id, enemy) {
-    const mon = POKEDEX[id - 1];
-    return Math.round(
-      PokemonBattleStats.power(mon, enemy) *
-        config.skillPower *
-        pokemonTypeMultiplier(mon.type, enemy),
-    );
-  }
-  function skill(combat, id, kind, enemy) {
-    const member = combat.members.find((m) => m.id === id);
-    if (!member || member.fainted || member.gauge < config.gauge) return { ok: false };
-    let damage = 0;
-    if (kind === 'attack') {
-      damage = attackDamage(id, enemy);
-      if (damage === 0) return { ok: false, reason: 'この相手には こうかがないよ' };
-    } else if (kind === 'boost') {
-      if (combat.nextBoost > 1) return { ok: false };
-      combat.nextBoost = config.boost;
-    } else if (kind === 'guard') {
-      if (combat.guard) return { ok: false };
-      combat.guard = true;
-    } else return { ok: false };
-    member.gauge -= config.gauge;
-    return { ok: true, damage };
+  function attackDamage(id, enemy, combat = create([id]), enemyHP = 1000) {
+    return PokemonSkillRules.attackDamage(combat, { id }, { enemy, enemyHP });
   }
   function retaliate(combat, rng = Math.random) {
     if (combat.guard) {
       combat.guard = false;
+      combat.lastCounterFainted = false;
       return { blocked: true };
     }
     const candidates = combat.members.filter((m) => !m.fainted);
@@ -71,6 +61,7 @@ const BattleTurnRules = (() => {
     member.fainted = true;
     member.gauge = 0;
     member.gaugeProgress = 0;
+    combat.lastCounterFainted = true;
     return { blocked: false, id: member.id };
   }
   return Object.freeze({
@@ -81,7 +72,10 @@ const BattleTurnRules = (() => {
     begin,
     charge,
     attackDamage,
-    skill,
+    skill: PokemonSkillRules.use,
+    inspectSkill: PokemonSkillRules.inspect,
+    skillCost: PokemonSkillRules.cost,
+    skillFor: PokemonSkillRules.forPokemon,
     retaliate,
   });
 })();
