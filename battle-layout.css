@@ -302,3 +302,37 @@
     right: -6px;
   }
 }
+
+/* 明るい盤面でも数字・GOを読める濃色と明るい下地を組み合わせる。 */
+#battle #ready-overlay strong.countdown-number {
+  color: #244d3b;
+  background: #fff9e4ed;
+  border: 2px solid #cfad55;
+  border-radius: 16px;
+  min-width: 1.8em;
+  padding: 0 16px;
+  text-shadow: 0 2px #fffdf4;
+  box-shadow: 0 3px 0 #8c733c55;
+  -webkit-text-stroke: 0;
+}
+/* GOの短い表示時間でも、出始めから文字を不透明にする。 */
+#battle #ready-overlay strong.countdown-number {
+  opacity: 1;
+  animation: countdown-readable 160ms ease-out both;
+}
+@keyframes countdown-readable {
+  from {
+    opacity: 1;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #battle #ready-overlay strong.countdown-number {
+    animation: none;
+    transform: none;
+  }
+}

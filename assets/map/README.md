@@ -72,3 +72,6 @@
 
 ## rocket-hideout.webp
 ユーザー提供のロケット団アジト背景。1254×1254の全体構図・比率を維持してWebP化。原本はoriginals/rocket-hideout.jpg。中央下から左右の区画を巡り、北側出口のサカキへ至る15マスをroutePoints、通路の曲がり角をrouteViaで指定。戦闘背景と共通使用。シルフカンパニーの背景設定とは分離。
+
+## celadon-gym-v2.webp
+再提供されたタマムシジム背景。1254×1254の全体構図を維持してWebP化。原本はoriginals/celadon-gym-v2.jpg。旧版は保持し、現行のマップ・戦闘背景はv2を参照する。新しい通路と階段に専用の15マス・routeViaを配置し、奥中央のエリカへ到着する。
