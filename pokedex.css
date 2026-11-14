@@ -146,6 +146,67 @@
   font-size: 9px;
   color: #5a7867;
 }
+/* 詳細は任意で開く。小画面・横画面でも本文ごとスクロールし、操作ボタンを押せる。 */
+.device-text:has(#device-stats[open]) {
+  max-height: 270px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+#device-stats {
+  margin-top: 8px;
+  padding-top: 7px;
+  border-top: 1px solid #8eaa7e;
+  color: #345641;
+  text-align: left;
+  font-size: 11px;
+}
+#device-stats[hidden] {
+  display: none;
+}
+#device-stats summary {
+  cursor: pointer;
+  min-height: 28px;
+  line-height: 28px;
+  font-weight: 700;
+}
+#device-battle-style {
+  margin: 2px 0 5px;
+  font-size: 10px;
+}
+#device-stat-list {
+  margin: 0 0 6px;
+}
+#device-stat-list > div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 22px;
+}
+#device-stat-list dt {
+  flex: 0 0 58px;
+}
+#device-stat-list dd {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+}
+#device-stat-list meter {
+  width: 100%;
+  height: 9px;
+  accent-color: #548865;
+}
+#device-stat-list b {
+  flex: 0 0 25px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+#device-stats > small {
+  display: block;
+  line-height: 1.6;
+}
 .device-actions {
   display: flex;
   gap: 8px;

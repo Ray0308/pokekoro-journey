@@ -5,6 +5,8 @@ const vm = require('node:vm');
 const ctx = vm.createContext({});
 for (const file of [
   'pokemon-data.generated.js',
+  'pokemon-stats.generated.js',
+  'pokemon-battle-stats.js',
   'pokemon-data.js',
   'party-rules.js',
   'pokedex-filters.js',

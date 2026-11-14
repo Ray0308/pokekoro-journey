@@ -8,7 +8,7 @@ const BattleTurnRules = (() => {
       boost: 1,
       nextBoost: 1,
       guard: false,
-      members: party.map((id) => ({ id, gauge: 0, fainted: false })),
+      members: party.map((id) => ({ id, gauge: 0, gaugeProgress: 0, fainted: false })),
     };
   }
   const alive = (combat) => combat.members.filter((m) => !m.fainted).map((m) => m.id);
@@ -21,17 +21,30 @@ const BattleTurnRules = (() => {
     return true;
   }
   function charge(combat, type, cells) {
-    for (const member of combat.members)
-      if (!member.fainted && pokemonTypes(POKEDEX[member.id - 1]).includes(type))
-        member.gauge = Math.min(config.gauge, member.gauge + Math.max(0, cells));
+    if (!Number.isSafeInteger(cells) || cells <= 0) return;
+    const unit = PokemonBattleStats.config.gaugeUnit;
+    for (const member of combat.members) {
+      const mon = POKEDEX[member.id - 1];
+      if (member.fainted || !pokemonTypes(mon).includes(type)) continue;
+      const progress = (member.gaugeProgress || 0) + cells * PokemonBattleStats.gaugeUnits(mon);
+      member.gauge = Math.min(config.gauge, member.gauge + Math.floor(progress / unit));
+      member.gaugeProgress = member.gauge === config.gauge ? 0 : progress % unit;
+    }
+  }
+  function attackDamage(id, enemy) {
+    const mon = POKEDEX[id - 1];
+    return Math.round(
+      PokemonBattleStats.power(mon, enemy) *
+        config.skillPower *
+        pokemonTypeMultiplier(mon.type, enemy),
+    );
   }
   function skill(combat, id, kind, enemy) {
     const member = combat.members.find((m) => m.id === id);
     if (!member || member.fainted || member.gauge < config.gauge) return { ok: false };
     let damage = 0;
     if (kind === 'attack') {
-      const mon = POKEDEX[id - 1];
-      damage = Math.round(mon.power * config.skillPower * pokemonTypeMultiplier(mon.type, enemy));
+      damage = attackDamage(id, enemy);
       if (damage === 0) return { ok: false, reason: 'この相手には こうかがないよ' };
     } else if (kind === 'boost') {
       if (combat.nextBoost > 1) return { ok: false };
@@ -56,7 +69,18 @@ const BattleTurnRules = (() => {
       ];
     member.fainted = true;
     member.gauge = 0;
+    member.gaugeProgress = 0;
     return { blocked: false, id: member.id };
   }
-  return Object.freeze({ config, create, alive, canContinue, begin, charge, skill, retaliate });
+  return Object.freeze({
+    config,
+    create,
+    alive,
+    canContinue,
+    begin,
+    charge,
+    attackDamage,
+    skill,
+    retaliate,
+  });
 })();

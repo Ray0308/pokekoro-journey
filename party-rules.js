@@ -73,13 +73,15 @@ function partyTypeError(next) {
   if (partyTypes(next).length < 3) return 'パーティーには 3属性以上 必要です';
   return '';
 }
-function pokemonTypePower(mon, type) {
+function pokemonTypePower(mon, type, enemy = null) {
   const ts = pokemonTypes(mon),
     index = ts.indexOf(type);
-  return index < 0 ? 0 : mon.power * (ts.length === 1 ? 1 : index === 0 ? 0.8 : 0.5);
+  const power = enemy ? PokemonBattleStats.power(mon, enemy) : mon.power;
+  return index < 0 ? 0 : power * (ts.length === 1 ? 1 : index === 0 ? 0.8 : 0.5);
 }
-function partyTypePower(party, type) {
-  return party.reduce((sum, id) => sum + pokemonTypePower(POKEDEX[id - 1], type), 0);
+function partyTypePower(party, type, enemy = null) {
+  // 同じ属性でも物理型・特殊型を一匹ずつ相手の防御・特防へ照合してから合算する。
+  return party.reduce((sum, id) => sum + pokemonTypePower(POKEDEX[id - 1], type, enemy), 0);
 }
 // Tune the reward and refill help here; all party types remain eligible.
 const MULTITYPE_BALANCE = Object.freeze({ baseline: 3, neighborChance: 0.25 });

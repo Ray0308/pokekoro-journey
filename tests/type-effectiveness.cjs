@@ -8,6 +8,8 @@ const root = path.resolve(__dirname, '..');
 const context = vm.createContext({});
 for (const file of [
   'pokemon-data.generated.js',
+  'pokemon-stats.generated.js',
+  'pokemon-battle-stats.js',
   'pokemon-data.js',
   'party-rules.js',
   'type-chart.generated.js',

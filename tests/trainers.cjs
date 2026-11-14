@@ -6,6 +6,8 @@ const root = path.resolve(__dirname, '..');
 const context = vm.createContext({ assert: require('node:assert/strict') });
 for (const file of [
   'pokemon-data.generated.js',
+  'pokemon-stats.generated.js',
+  'pokemon-battle-stats.js',
   'pokemon-data.js',
   'map-config.js',
   'rainbow-config.js',

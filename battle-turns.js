@@ -57,9 +57,10 @@
     $('#turn-skill-help').textContent = ready
       ? 'ゲージを使う？ 温存してもいいよ'
       : `上の仲間を選ぼう。ゲージ${rules.config.gauge}で技が使えるよ`;
-    const damage = mon
-      ? Math.round(mon.power * rules.config.skillPower * pokemonTypeMultiplier(mon.type, battle.m))
-      : 0;
+    if (mon)
+      $('#turn-skill-help').textContent +=
+        ` ｜ ${PokemonBattleStats.style(mon)}・わざの溜まり：${PokemonBattleStats.gaugeLabel(mon)}`;
+    const damage = mon ? rules.attackDamage(mon.id, battle.m) : 0;
     $('#turn-skill-options').innerHTML = [
       [
         'attack',

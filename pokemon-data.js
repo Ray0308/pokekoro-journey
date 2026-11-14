@@ -1,5 +1,5 @@
 'use strict';
-// 全国図鑑番号はセーブのキー。表示データと、このゲーム独自の攻撃力を分離する。
+// 全国図鑑番号はセーブのキー。公式の種族値と、本作のなかよし計算用の火力を分離する。
 const POKEDEX_SIZE = 1025;
 const POKEMON_OVERRIDES = Object.freeze({
   1: { power: 11 },
@@ -30,6 +30,8 @@ const POKEDEX = Object.freeze(
       label: metadata.name,
       type: metadata.types[0],
       types: Object.freeze([...metadata.types]),
+      stats: POKEMON_BASE_STATS[i],
+      // サファリのなかよし量・編成表示で使う旧値。戦闘火力はPokemonBattleStatsで計算する。
       power: known?.power ?? 11,
       image: known?.image ?? `assets/pokemon/official-artwork/${id}.svg`,
       portrait: known?.portrait ?? `assets/pokemon/official-artwork/${id}.svg`,

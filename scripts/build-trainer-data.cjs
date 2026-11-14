@@ -93,6 +93,7 @@ async function main() {
   const context = vm.createContext({});
   for (const file of [
     'pokemon-data.generated.js',
+    'pokemon-stats.generated.js',
     'pokemon-data.js',
     'map-config.js',
     'rainbow-config.js',

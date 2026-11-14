@@ -690,6 +690,9 @@ function openBattle(trainer, boss, continuation = null) {
   if (isSafari() && boss)
     m = { ...m, label: { 115: 'ガルーラ', 113: 'ラッキー', 128: 'ケンタロス' }[id] };
   markPokemonSeen(id);
+  // 通常の野生は番号の剰余ではなく種族値で差を付ける。トレーナーのレベル・エース補正は維持。
+  const baseHP = member?.hp ?? (boss ? 620 : isSafari() ? 300 + ((m.id - 1) % 3) * 65 : 365);
+  const totalHP = isSafari() ? baseHP : PokemonBattleStats.enemyHP(m, baseHP);
   battle = {
     m,
     trainer,
@@ -705,8 +708,8 @@ function openBattle(trainer, boss, continuation = null) {
     damage: 0,
     shownDamage: 0,
     phase: 'ready',
-    hp: member?.hp ?? (boss ? 620 : 300 + ((m.id - 1) % 3) * 65),
-    total: member?.hp ?? (boss ? 620 : 300 + ((m.id - 1) % 3) * 65),
+    hp: totalHP,
+    total: totalHP,
   };
   window.PokekoroTurns?.init(battle);
   combo = maxCombo = 0;
@@ -883,7 +886,11 @@ canvas.onpointerup = (e) => {
     maxCombo = Math.max(maxCombo, combo);
     lastClear = now;
     let t = grid[path[0]],
-      power = partyTypePower(window.PokekoroTurns?.aliveParty() || state.party, t);
+      power = partyTypePower(
+        window.PokekoroTurns?.aliveParty() || state.party,
+        t,
+        battle.safari ? null : battle.m,
+      );
     const effectiveness = battleTypeMultiplier(t, battle);
     let damage = Math.round(
       puzzleCharge(power, path.length, combo, effectiveness, battle.puzzleTypes.length) *

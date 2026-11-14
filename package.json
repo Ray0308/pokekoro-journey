@@ -1,6 +1,6 @@
 {
   "name": "pokekoro-journey",
-  "version": "0.9.2-30",
+  "version": "0.9.2-31",
   "private": true,
   "description": "ポケコロジャーニーの整形・検証用ツール",
   "scripts": {
@@ -9,12 +9,14 @@
     "check:syntax": "node tools/check-syntax.cjs",
     "data:generate": "node scripts/import-pokemon-data.cjs",
     "data:check": "node scripts/import-pokemon-data.cjs --check",
-    "test": "npm run data:check && npm run types:check && node tests/type-effectiveness.cjs && node tests/battle-turns.cjs && npm run trainers:check && node tests/trainers.cjs && node tests/pokemon-data.cjs && node tests/pokemon-descriptions.cjs && node tests/pokedex-filters.cjs && node tests/type-balls.cjs && node tests/pokemon-art.cjs && node tests/retro-music.cjs",
+    "test": "npm run stats:check && npm run data:check && npm run types:check && node tests/type-effectiveness.cjs && node tests/battle-turns.cjs && node tests/pokemon-battle-stats.cjs && npm run trainers:check && node tests/trainers.cjs && node tests/pokemon-data.cjs && node tests/pokemon-descriptions.cjs && node tests/pokedex-filters.cjs && node tests/type-balls.cjs && node tests/pokemon-art.cjs && node tests/retro-music.cjs",
     "music:generate": "node scripts/compose-map-themes.cjs",
     "trainers:generate": "node scripts/build-trainer-data.cjs",
     "trainers:check": "node scripts/build-trainer-data.cjs --check",
     "types:generate": "node scripts/build-type-chart.cjs",
-    "types:check": "node scripts/build-type-chart.cjs --check"
+    "types:check": "node scripts/build-type-chart.cjs --check",
+    "stats:generate": "node scripts/import-pokemon-stats.cjs",
+    "stats:check": "node scripts/import-pokemon-stats.cjs --check"
   },
   "devDependencies": {
     "acorn": "8.15.0",

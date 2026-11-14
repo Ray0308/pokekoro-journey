@@ -12,6 +12,8 @@ const reference = JSON.parse(
 const context = vm.createContext({});
 for (const file of [
   'pokemon-data.generated.js',
+  'pokemon-stats.generated.js',
+  'pokemon-battle-stats.js',
   'pokemon-data.js',
   'party-rules.js',
   'map-config.js',
@@ -37,6 +39,8 @@ for (let index = 0; index < 1025; index++) {
   assert.equal(mon.type, mon.types[0]);
   assert.equal(mon.placeholder, false);
   assert.equal(mon.power, index < 9 ? [11, 14, 17][index % 3] : 11);
+  assert.equal(Object.keys(mon.stats).length, 6);
+  assert.ok(Object.values(mon.stats).every((value) => Number.isInteger(value) && value > 0));
 }
 assert.deepEqual(entries[247].types, [12, 15]); // バンギラス: いわ・あく。じめんに戻さない。
 assert.equal(entries[445].name, 'ゴンベ');

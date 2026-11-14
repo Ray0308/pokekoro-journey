@@ -4,6 +4,8 @@ const vm = require('node:vm');
 const c = vm.createContext({ assert });
 for (const file of [
   'pokemon-data.generated.js',
+  'pokemon-stats.generated.js',
+  'pokemon-battle-stats.js',
   'pokemon-data.js',
   'party-rules.js',
   'type-chart.generated.js',
@@ -30,9 +32,9 @@ r.charge(combat,1,36);assert.equal(combat.members[0].gauge,0);
 assert.equal(r.skill(combat,4,'attack',POKEDEX[0]).ok,false);
 assert.equal(r.skill(combat,6,'attack',POKEDEX[73]).ok,true); // いわ/じめんに炎は半減。
 assert.equal(combat.members[1].gauge,0);
-const water=r.create([7]);r.charge(water,2,12);
-assert.equal(r.skill(water,7,'attack',POKEDEX[73]).damage,528); // 4倍も技へ反映。
-const ghost=r.create([446]);r.charge(ghost,5,12);
+const water=r.create([7]);r.charge(water,2,20);
+assert.equal(r.skill(water,7,'attack',POKEDEX[73]).damage,622); // 4倍も技へ反映。
+const ghost=r.create([446]);r.charge(ghost,5,20);
 assert.equal(r.skill(ghost,446,'attack',POKEDEX[93]).ok,false);assert.equal(ghost.members[0].gauge,12);
 for(let i=combat.turn;i<6;i++)assert.ok(r.begin(combat));
 assert.equal(r.canContinue(combat),false);assert.equal(r.begin(combat),false);

@@ -118,3 +118,10 @@ HPが0になった現在の相手もグレーにし、進行は`series.index`で
 `battle-turn-rules.js`はDOMを使わない戦闘ルール、`battle-turns.js`は画面と非同期進行、
 `battle-turns.css`は戦闘中の仲間と合間の技メニューを担当する。
 詳しくは[ターン戦闘](docs/battle-turns.md)を参照。
+
+## 種族値の取り込みと計算
+
+`npm run stats:generate`と`npm run stats:check`で固定版CSVから6項目を生成・検証する。
+`pokemon-stats.generated.js`を`pokemon-data.js`より前に読み込む。
+`pokemon-battle-stats.js`が通常攻撃・技・相手HP・ゲージ速度の変換を共有する。
+仕様・出典・計算式は[種族値の反映](docs/pokemon-battle-stats.md)を参照。

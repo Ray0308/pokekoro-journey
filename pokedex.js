@@ -178,6 +178,29 @@
     document.querySelector('#device-description').textContent = !seen
       ? 'まだ であっていません。'
       : mon.description || 'せつめいは まだ とうろくされていません。';
+    const stats = document.querySelector('#device-stats');
+    stats.hidden = !seen;
+    // 未遭遇の種族値・役割は出さない。開閉状態も次の個体へ持ち越さない。
+    if (Number(stats.dataset.pokemon) !== selected) stats.open = false;
+    stats.dataset.pokemon = String(selected);
+    document.querySelector('#device-battle-style').textContent = seen
+      ? `${PokemonBattleStats.style(mon)} ｜ わざの溜まり：${PokemonBattleStats.gaugeLabel(mon)}`
+      : '';
+    document.querySelector('#device-stat-list').innerHTML = seen
+      ? [
+          ['hp', 'HP'],
+          ['attack', 'こうげき'],
+          ['defense', 'ぼうぎょ'],
+          ['specialAttack', 'とくこう'],
+          ['specialDefense', 'とくぼう'],
+          ['speed', 'すばやさ'],
+        ]
+          .map(
+            ([key, label]) =>
+              `<div><dt>${label}</dt><dd><meter min="0" max="255" value="${mon.stats[key]}" aria-label="${label}"></meter><b>${mon.stats[key]}</b></dd></div>`,
+          )
+          .join('')
+      : '';
     document.querySelector('#device-owned').textContent = owned
       ? '✓ つかまえた！'
       : 'まだ つかまえていません';
