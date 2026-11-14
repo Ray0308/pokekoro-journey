@@ -5,6 +5,13 @@
   let selected = null;
   const panel = document.querySelector('#turn-actions'),
     roster = document.querySelector('#battle-party');
+  const blackout = document.createElement('div');
+  blackout.id = 'battle-blackout';
+  blackout.hidden = true;
+  blackout.setAttribute('role', 'status');
+  blackout.setAttribute('aria-live', 'assertive');
+  blackout.innerHTML = '<strong>めのまえが<br>まっくらになった…</strong>';
+  $('#battle').append(blackout);
   const enabled = () => !!battle?.combat && !battle.safari;
   const wait = (ms) =>
     new Promise((resolve) => setTimeout(resolve, reduceMotion ? Math.min(ms, 120) : ms));
@@ -13,7 +20,8 @@
     if (current.series) current.series.combat = current.combat;
     current.attackTotal = 0;
     selected = null;
-    $('#battle').classList.remove('in-skill-break');
+    $('#battle').classList.remove('in-skill-break', 'party-wiped-out');
+    blackout.hidden = true;
     $('#turn-next').disabled = false;
     panel.hidden = true;
     $('#battle').classList.toggle('turn-battle', !!current.combat);
@@ -37,7 +45,7 @@
         combat.members.find((m) => !m.fainted)?.id ??
         null;
     $('#battle-turn-status').textContent =
-      `${Math.max(1, combat.turn)} / ${rules.config.maxTurns}ターン・${rules.config.seconds}秒${combat.guard ? ' ｜ ガード待機' : ''}${combat.nextBoost > 1 ? ' ｜ 次は×1.5' : ''}${combat.boost > 1 && battle.phase === 'charging' ? ' ｜ 攻撃×1.5' : ''}`;
+      `${Math.max(1, combat.turn)}ターン目・${rules.config.seconds}秒 ｜ のこり${rules.alive(combat).length}匹${combat.guard ? ' ｜ ガード待機' : ''}${combat.nextBoost > 1 ? ' ｜ 次は×1.5' : ''}${combat.boost > 1 && battle.phase === 'charging' ? ' ｜ 攻撃×1.5' : ''}`;
     roster.innerHTML = combat.members
       .map((m) => {
         const mon = POKEDEX[m.id - 1],
@@ -68,30 +76,15 @@
         `${types[mon?.type ?? 5]}・${damage}ダメージ`,
         !ready || damage === 0 || battle.hp === 0,
       ],
-      [
-        'boost',
-        'パワーチャージ',
-        '次の10秒の攻撃 ×1.5',
-        !ready || combat.nextBoost > 1 || combat.turn >= rules.config.maxTurns,
-      ],
-      [
-        'guard',
-        'まもりのかべ',
-        '次の反撃を1回 無効',
-        !ready || combat.guard || combat.turn >= rules.config.maxTurns,
-      ],
+      ['boost', 'パワーチャージ', '次の10秒の攻撃 ×1.5', !ready || combat.nextBoost > 1],
+      ['guard', 'まもりのかべ', '次の反撃を1回 無効', !ready || combat.guard],
     ]
       .map(
         ([kind, name, help, disabled]) =>
           `<button data-battle-skill="${kind}" ${disabled ? 'disabled' : ''}><strong>${name}</strong><small>${help}</small></button>`,
       )
       .join('');
-    $('#turn-next').textContent =
-      battle.hp === 0
-        ? 'つぎのポケモンへ'
-        : combat.turn >= rules.config.maxTurns
-          ? '敵の反撃へ'
-          : '反撃を受けて 次の10秒へ';
+    $('#turn-next').textContent = battle.hp === 0 ? 'つぎのポケモンへ' : '反撃を受けて 次の10秒へ';
   }
   function begin() {
     if (!enabled()) return true;
@@ -118,25 +111,43 @@
   function aliveParty() {
     return enabled() ? rules.alive(battle.combat) : state.party;
   }
+  async function wipeout(epoch) {
+    if (epoch !== battleEpoch || battle.phase === 'wipeout') return;
+    battle.phase = 'wipeout';
+    battle.lossReason = 'めのまえが まっくらになった…';
+    $('#leave').disabled = true;
+    panel.hidden = true;
+    blackout.hidden = false;
+    // 表示直後のレイアウトを確定し、全画面の暗転へ移る。演出を減らす設定ではCSSで即時表示。
+    blackout.getBoundingClientRect();
+    $('#battle').classList.add('party-wiped-out');
+    sfx('fail');
+    // 動きを減らす設定でも文章を読む時間は確保する。新しい戦闘への古い終了処理は進めない。
+    await new Promise((resolve) => setTimeout(resolve, 1800));
+    if (epoch !== battleEpoch) return;
+    battle.phase = 'finished';
+    endBattle(false);
+  }
   async function finish(epoch) {
     if (epoch !== battleEpoch) return;
+    if (hasNextTrainerPokemon() && !rules.canContinue(battle.combat)) {
+      await wipeout(epoch);
+      return;
+    }
     panel.hidden = true;
     $('#battle').classList.remove('in-skill-break');
     battle.phase = 'resolving';
     $('#leave').disabled = true;
-    const exhausted = hasNextTrainerPokemon() && !rules.canContinue(battle.combat);
-    if (!exhausted) markBattleVictory();
-    else battle.lossReason = '６ターンで 相手を全員 たおしきれなかった！';
+    markBattleVictory();
     window.PokekoroBattleFX?.defeat(2, battle.trainer && !hasNextTrainerPokemon());
     $('#ready-overlay').hidden = false;
-    $('#ready-overlay').innerHTML = exhausted
-      ? '<strong>６ターン 終了！</strong><span>あと少し…！ 次こそ勝とう！</span>'
-      : `<strong>${battle.trainer && !hasNextTrainerPokemon() ? 'ぜんぶ たおした！' : battle.m.label + 'を<br>たおした！'}</strong><span>${hasNextTrainerPokemon() ? 'つぎの ポケモンが くるぞ！' : 'みんなの力で 勝利！'}</span>`;
+    $('#ready-overlay').innerHTML =
+      `<strong>${battle.trainer && !hasNextTrainerPokemon() ? 'ぜんぶ たおした！' : battle.m.label + 'を<br>たおした！'}</strong><span>${hasNextTrainerPokemon() ? 'つぎの ポケモンが くるぞ！' : 'みんなの力で 勝利！'}</span>`;
     await wait(750);
     if (epoch !== battleEpoch) return;
     battle.damage = battle.attackTotal;
     battle.phase = 'finished';
-    endBattle(!exhausted);
+    endBattle(true);
   }
   function openSkills() {
     $('#battle').classList.add('in-skill-break');
@@ -191,7 +202,7 @@
     }
     await wait(260);
     if (epoch !== battleEpoch) return;
-    if (battle.hp === 0 && (!hasNextTrainerPokemon() || !rules.canContinue(battle.combat))) {
+    if (battle.hp === 0 && !hasNextTrainerPokemon()) {
       await finish(epoch);
       return;
     }
@@ -228,7 +239,7 @@
     await wait(380);
     if (epoch !== battleEpoch) return;
     $('#turn-next').disabled = false;
-    if (battle.hp === 0 && (!hasNextTrainerPokemon() || !rules.canContinue(battle.combat))) {
+    if (battle.hp === 0 && !hasNextTrainerPokemon()) {
       await finish(epoch);
       return;
     }
@@ -263,16 +274,7 @@
     await wait(650);
     if (epoch !== battleEpoch) return;
     if (!rules.canContinue(battle.combat)) {
-      $('#ready-overlay').innerHTML = rules.alive(battle.combat).length
-        ? '<strong>６ターン 終了！</strong><span>次こそ たおそう！</span>'
-        : '<strong>戦える仲間が いない…</strong><span>次の挑戦では みんな元気に もどるよ</span>';
-      await wait(700);
-      if (epoch !== battleEpoch) return;
-      battle.lossReason = rules.alive(battle.combat).length
-        ? '６ターンで たおしきれなかった！'
-        : '戦える仲間が いなくなった…';
-      battle.phase = 'finished';
-      endBattle(false);
+      await wipeout(epoch);
       return;
     }
     battle.phase = 'ready';

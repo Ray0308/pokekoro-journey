@@ -1,7 +1,7 @@
 'use strict';
 // 戦闘中だけの状態。セーブや元のパーティーは書き換えず、次の戦闘では全員復帰する。
 const BattleTurnRules = (() => {
-  const config = Object.freeze({ seconds: 10, maxTurns: 6, gauge: 12, skillPower: 12, boost: 1.5 });
+  const config = Object.freeze({ seconds: 10, gauge: 12, skillPower: 12, boost: 1.5 });
   function create(party) {
     return {
       turn: 0,
@@ -12,7 +12,8 @@ const BattleTurnRules = (() => {
     };
   }
   const alive = (combat) => combat.members.filter((m) => !m.fainted).map((m) => m.id);
-  const canContinue = (combat) => combat.turn < config.maxTurns && alive(combat).length > 0;
+  // ターン数は経過の表示だけ。防御・復活等で生存できる限り継続し、全滅だけを敗北条件にする。
+  const canContinue = (combat) => alive(combat).length > 0;
   function begin(combat) {
     if (!canContinue(combat)) return false;
     combat.turn++;

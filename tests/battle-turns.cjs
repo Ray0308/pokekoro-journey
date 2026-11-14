@@ -16,7 +16,7 @@ for (const file of [
 vm.runInContext(
   `
 const r=BattleTurnRules, team=[4,6,7,446], combat=r.create(team);
-assert.equal(r.config.seconds,10);assert.equal(r.config.maxTurns,6);
+assert.equal(r.config.seconds,10);assert.equal(r.config.maxTurns,undefined);
 r.charge(combat,1,6);assert.deepEqual(combat.members.map(m=>m.gauge),[6,6,0,0]);
 r.charge(combat,4,6);assert.equal(combat.members[1].gauge,12); // 副タイプも溜まる。
 assert.equal(r.skill(combat,4,'guard',POKEDEX[0]).ok,false);
@@ -36,13 +36,23 @@ const water=r.create([7]);r.charge(water,2,20);
 assert.equal(r.skill(water,7,'attack',POKEDEX[73]).damage,622); // 4倍も技へ反映。
 const ghost=r.create([446]);r.charge(ghost,5,20);
 assert.equal(r.skill(ghost,446,'attack',POKEDEX[93]).ok,false);assert.equal(ghost.members[0].gauge,12);
-for(let i=combat.turn;i<6;i++)assert.ok(r.begin(combat));
-assert.equal(r.canContinue(combat),false);assert.equal(r.begin(combat),false);
+for(let i=combat.turn;i<10;i++)assert.ok(r.begin(combat));
+assert.equal(r.canContinue(combat),true);assert.equal(combat.turn,10);
+// 無防御なら3匹は3回の反撃で全滅。防御があれば同じ匹数でもターン数は伸びる。
+const trio=r.create([4,7,446]);
+for(let i=0;i<3;i++){assert.ok(r.begin(trio));r.retaliate(trio,()=>0);assert.equal(r.canContinue(trio),i<2);}
+assert.equal(trio.turn,3);assert.equal(r.begin(trio),false);
+const protectedTeam=r.create([4]);
+for(let i=0;i<8;i++){assert.ok(r.begin(protectedTeam));protectedTeam.guard=true;r.retaliate(protectedTeam);}
+assert.equal(protectedTeam.turn,8);assert.equal(r.canContinue(protectedTeam),true);
+r.retaliate(protectedTeam,()=>0);assert.equal(r.canContinue(protectedTeam),false);
+// 将来の復活処理が生存状態を戻した場合も、固定ターン制限で阻まれない。
+protectedTeam.members[0].fainted=false;assert.ok(r.begin(protectedTeam));assert.equal(protectedTeam.turn,9);
 const wiped=r.create([7]);r.retaliate(wiped,()=>0);assert.equal(r.canContinue(wiped),false);
 assert.deepEqual(team,[4,6,7,446]);assert.ok(r.create(team).members.every(m=>!m.fainted&&m.gauge===0));
 `,
   c,
 );
 console.log(
-  'PASS: turn limit, type gauges, fainting, shared types, skill costs/effects, immunity, defense and battle-local recovery',
+  'PASS: survival-only continuation, three-member wipeout, extended guarded turns, type gauges, fainting, shared types, skill costs/effects, immunity, defense and battle-local recovery',
 );

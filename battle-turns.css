@@ -271,6 +271,31 @@
 #battle-party .just-hit {
   animation: turn-member-hit 0.45s ease-out;
 }
+/* 全員ひんしのときだけ戦闘画面全体を暗転する。次の戦闘のinitで必ず解除する。 */
+#battle-blackout {
+  position: absolute;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  border-radius: inherit;
+  background: #050508;
+  color: #fff;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 700ms ease;
+}
+#battle-blackout[hidden] {
+  display: none;
+}
+#battle-blackout strong {
+  font-size: clamp(18px, 5vw, 25px);
+  line-height: 2;
+}
+#battle.party-wiped-out #battle-blackout {
+  opacity: 1;
+}
 @keyframes turn-member-hit {
   30% {
     transform: translateX(-3px);
@@ -284,6 +309,9 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
+  #battle-blackout {
+    transition: none;
+  }
   #battle-party .just-hit {
     animation: none;
   }

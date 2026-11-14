@@ -905,8 +905,8 @@ canvas.onpointerup = (e) => {
       `${combo}コンボ ×${(1 + Math.min(combo - 1, 9) * 0.15).toFixed(2)} · +${damage}${battle.safari ? 'なかよし' : 'パワー'}${battle.safari ? '' : ' ' + typeEffectivenessLabel(effectiveness)}`;
     if (power === 0 && battle.combat) {
       $('#callout').innerHTML =
-        '<strong>こうげきできない</strong><span>この属性の仲間は おやすみ</span>';
-      $('#puzzle-tip').textContent = '戦える仲間の 属性をつなごう！';
+        '<strong>ブロックを せいり！</strong><span>仲間が おやすみなので ダメージ0</span>';
+      $('#puzzle-tip').textContent = 'どの属性も 消せるよ。戦える仲間の 属性で攻撃！';
     }
     refillPuzzle(path);
   }
