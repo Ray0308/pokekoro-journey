@@ -1521,27 +1521,54 @@ $('#encounter-go').onclick = () => {
 $('#encounter').addEventListener('cancel', (e) => e.preventDefault());
 // モバイルでは visualViewport を優先し、ブラウザUIで狭くなった高さに合わせる。
 function fitBattle() {
+  const dialog = $('#battle');
+  if (!dialog.open) return;
   const view = window.visualViewport;
   const height = view ? view.height : window.innerHeight;
   const width = view ? view.width : window.innerWidth;
-  const size = Math.max(
-    120,
-    Math.min(
-      420,
-      width - 28,
-      height *
-        (battle?.combat
-          ? height <= 450
-            ? 0.55
-            : height <= 600
-              ? 0.25
-              : 0.28
-          : height <= 600
-            ? 0.36
-            : 0.39),
-    ),
-  );
-  $('#battle').style.setProperty('--puzzle-size', `${size}px`);
+  const style = getComputedStyle(dialog);
+  const horizontal = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+  const vertical = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
+  let availableWidth = dialog.clientWidth - horizontal;
+  let availableHeight;
+  if (height <= 450 && width >= 600 && battle?.combat) {
+    // 横持ちは既存の左右分割。右列の幅と高さをどちらも超えない正方形にする。
+    availableWidth = (availableWidth - (parseFloat(style.columnGap) || 0)) / 2;
+    availableHeight = height - vertical - 60;
+  } else {
+    // 高さの固定割合ではなく、実際に表示している情報欄を引いた残りを盤面へ渡す。
+    // スタートは待機中だけ盤面内に置くため、開始・終了でも盤面のサイズは変わらない。
+    const fixed = [...dialog.children].filter(
+      (node) =>
+        !node.matches(
+          '.enemy,.puzzle-stage,#start,#energy-layer,.battle-reward-fx,.damage-number',
+        ) &&
+        getComputedStyle(node).display !== 'none' &&
+        getComputedStyle(node).position !== 'absolute',
+    );
+    const occupied = fixed.reduce((sum, node) => {
+      const css = getComputedStyle(node);
+      return (
+        sum +
+        node.offsetHeight +
+        (parseFloat(css.marginTop) || 0) +
+        (parseFloat(css.marginBottom) || 0)
+      );
+    }, 0);
+    const enemy = getComputedStyle($('.enemy'));
+    const gap = parseFloat(style.rowGap) || 0;
+    availableHeight =
+      height -
+      vertical -
+      occupied -
+      parseFloat(enemy.minHeight) -
+      (parseFloat(enemy.marginTop) || 0) -
+      (parseFloat(enemy.marginBottom) || 0) -
+      gap * (fixed.length + 1) -
+      8;
+  }
+  const size = Math.max(120, Math.min(420, availableWidth - 6, availableHeight));
+  dialog.style.setProperty('--puzzle-size', `${Math.floor(size)}px`);
 }
 window.addEventListener('resize', fitBattle);
 if (window.visualViewport) window.visualViewport.addEventListener('resize', fitBattle);
@@ -1784,7 +1811,7 @@ for (const event of ['touchstart', 'touchmove'])
   puzzleStage.addEventListener(
     event,
     (e) => {
-      if (e.target.closest('#turn-actions')) return;
+      if (e.target.closest('#turn-actions, #start')) return;
       if (e.cancelable) e.preventDefault();
     },
     { passive: false },

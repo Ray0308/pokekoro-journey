@@ -413,3 +413,112 @@
     animation: none;
   }
 }
+
+/* 操作中は盤面を優先する。重複する常設の案内を外し、6×6の正方形を拡大する。 */
+#battle .puzzle-instruction,
+#battle .weakness-tip,
+#battle #charge-hint {
+  display: none;
+}
+#battle {
+  gap: 2px;
+  padding: 8px 8px max(8px, env(safe-area-inset-bottom));
+}
+#battle .attack-charge {
+  margin: 2px 0;
+  padding: 3px 8px;
+}
+#battle .attack-charge #charge-value {
+  font-size: 20px;
+  line-height: 22px;
+}
+#battle .attack-charge-track {
+  height: 7px;
+}
+#battle .attack-charge-track b {
+  line-height: 7px;
+}
+#battle .time-track {
+  height: 4px;
+  margin: 2px 0;
+}
+#battle .combo-track {
+  height: 3px;
+  margin: 3px 0 0;
+}
+#battle .battleinfo {
+  height: 17px;
+  min-height: 17px;
+}
+#battle .puzzle-stage {
+  margin: 0 auto;
+}
+@media (min-height: 451px), (max-width: 599px) {
+  #battle .enemy,
+  #battle.turn-battle .enemy {
+    min-height: 104px;
+    max-height: 180px;
+  }
+  #battle .enemy > .enemy-status {
+    top: 6px;
+    left: 7px;
+    min-height: 0;
+    padding: 5px 7px;
+    gap: 3px;
+  }
+  #battle .enemy .enemy-name-row h2 {
+    font-size: 14px;
+    line-height: 17px;
+  }
+  #battle .enemy .enemy-status #hptext {
+    line-height: 10px;
+  }
+  #battle-party button {
+    height: 43px;
+  }
+  #battle-party img {
+    height: 24px;
+  }
+  #battle-turn-status {
+    min-height: 13px;
+    line-height: 13px;
+  }
+}
+@media (max-height: 450px) and (min-width: 600px) {
+  #battle.turn-battle .puzzle-stage {
+    grid-row: 2 / 8;
+  }
+  #battle.turn-battle .combo-track {
+    display: none;
+  }
+}
+
+#battle {
+  max-width: 100vw;
+}
+#battle #start {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  z-index: 6;
+  width: calc(100% - 24px);
+  min-height: 44px;
+}
+#battle #start[hidden] {
+  display: none;
+}
+#battle:has(#start:not([hidden])) #ready-overlay > strong,
+#battle:has(#start:not([hidden])) #ready-overlay > span {
+  display: none;
+}
+@media (max-height: 600px) and (max-width: 599px) {
+  #battle .enemy,
+  #battle.turn-battle .enemy {
+    min-height: 100px;
+  }
+}
+
+#battle:has(#start:not([hidden])) #ready-overlay {
+  background: #edf2e52b;
+}
