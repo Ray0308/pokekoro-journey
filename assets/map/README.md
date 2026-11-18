@@ -78,3 +78,9 @@
 
 ## victory-road.webp
 ユーザー提供のチャンピオンロード背景。1254×1254の構図を維持してWebP化。原本はoriginals/victory-road.jpg。右上の入口にスタート、中央台座にボスを配置。上段の階段から洞窟を巡る15マスをroutePoints、通路の角をrouteViaで指定し、戦闘背景にも共通使用。
+
+## seafoam-islands.webp
+提供されたふたごじま背景。1254×1254の構図を維持してWebP化。原本はoriginals/seafoam-islands.jpg。右下の入口から氷の通路を巡り、左上の台座へ至る専用15マスを配置。戦闘背景と共通使用。
+
+## pokemon-tower.webp
+提供されたポケモンタワー背景。1254×1254の構図を維持してWebP化。原本はoriginals/pokemon-tower.jpg。下の入口から墓石の間を巡り、中央の魔法陣へ至る専用15マスを配置。戦闘背景と共通使用。
