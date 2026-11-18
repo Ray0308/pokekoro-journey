@@ -18,12 +18,17 @@
     show();
   }
   function next() {
-    move(OpeningRules.stages[OpeningRules.stages.indexOf(stage()) + 1]);
+    move(OpeningRules.nextStage(state));
   }
   function show() {
     if (!pending()) return;
     busy = true;
     const current = stage();
+    if (['partyLesson', 'diceLesson'].includes(current)) {
+      dialog.close();
+      window.PokekoroPracticeOnboarding.show();
+      return;
+    }
     const [speaker, words] = OPENING_STORY[current];
     const forest = ['meet', 'friend'].includes(current);
     const dex = ['dex', 'register'].includes(current);
@@ -41,9 +46,57 @@
       scene = `<div class="opening-dex"><i></i><strong>ポケモンずかん</strong><div class="opening-dex-screen">${current === 'register' ? [446, state.opening.starterId, 25].map((id) => portrait(id)).join('') : '<span>POKÉDEX<br>READY</span>'}</div><small>${current === 'register' ? '3びき とうろく！' : 'あたらしい ぼうけんの きろく'}</small></div>`;
     if (current === 'depart')
       scene = `<div class="opening-team">${[446, state.opening.starterId, 25].map((id) => `<div>${portrait(id)}<span>${mons[id - 1].label}</span></div>`).join('')}</div>`;
-    dialog.innerHTML = `<div class="opening-heading"><span>はじめての ぼうけん</span><small>${forest ? 'ゴンベとの であい' : 'オーキドけんきゅうじょ'}</small></div><div class="opening-scene">${scene}</div><div class="opening-message"><h2 id="opening-speaker">${speaker}</h2><p>${words}</p></div><div class="opening-actions"></div>`;
+    dialog.innerHTML = `<div class="opening-heading"><span>はじめての ぼうけん</span><small>${forest ? 'ゴンベとの であい' : 'オーキドけんきゅうじょ'}</small></div><div class="opening-scene">${scene}</div><div class="opening-message"><h2 id="opening-speaker">${speaker}</h2><p></p></div><div class="opening-actions"></div>`;
+    // 名前はHTMLとして挿入せず、台詞のテキストとして表示する。
+    dialog.querySelector('.opening-message p').textContent = words.replace(
+      '{playerName}',
+      () => state.playerName || OpeningRules.normalizeName(state.opening.nameDraft),
+    );
     const actions = dialog.querySelector('.opening-actions');
-    if (current === 'choose') {
+    if (current === 'nameInput') {
+      actions.innerHTML =
+        '<form id="opening-name-form"><label for="opening-name">なまえ（8もじまで）</label><input id="opening-name" name="playerName" type="text" autocomplete="off" enterkeyhint="done" aria-describedby="opening-name-help opening-name-error"><small id="opening-name-help">ひらがな・カタカナ・かんじ・えいすうじが つかえるよ</small><p id="opening-name-error" role="alert" hidden></p><button class="primary" type="submit">なまえを かくにん</button></form>';
+      let composing = false;
+      const input = actions.querySelector('input');
+      const error = actions.querySelector('#opening-name-error');
+      input.value = typeof state.opening.nameDraft === 'string' ? state.opening.nameDraft : '';
+      input.addEventListener('compositionstart', () => (composing = true));
+      input.addEventListener('compositionend', () => (composing = false));
+      input.onkeydown = (event) => {
+        // 日本語変換の確定Enterを、名前の送信として扱わない。
+        if (event.key === 'Enter' && (composing || event.isComposing || event.keyCode === 229))
+          event.preventDefault();
+      };
+      input.oninput = () => {
+        state.opening.nameDraft = input.value;
+        error.hidden = true;
+        input.removeAttribute('aria-invalid');
+        save();
+      };
+      actions.querySelector('form').onsubmit = (event) => {
+        event.preventDefault();
+        if (composing) return;
+        const message = OpeningRules.nameError(input.value);
+        if (message) {
+          error.textContent = message;
+          error.hidden = false;
+          input.setAttribute('aria-invalid', 'true');
+          input.focus();
+          return;
+        }
+        state.opening.nameDraft = OpeningRules.normalizeName(input.value);
+        move('nameConfirm');
+      };
+    } else if (current === 'nameConfirm') {
+      actions.innerHTML =
+        '<div class="opening-name-confirm"><button class="primary" id="opening-name-yes">はい</button><button id="opening-name-no">いいえ</button></div>';
+      actions.querySelector('#opening-name-yes').onclick = () => {
+        if (!OpeningRules.confirmName(state)) return;
+        save();
+        show();
+      };
+      actions.querySelector('#opening-name-no').onclick = () => move('nameInput');
+    } else if (current === 'choose') {
       actions.innerHTML = `<div class="opening-starters">${OpeningRules.starters
         .map(
           (id) =>
@@ -92,15 +145,29 @@
             : current === 'depart'
               ? finish
               : next;
+      if (current === 'throw' && state.opening.version >= 3) {
+        const ball = document.createElement('img');
+        ball.src = BALLS[0].image;
+        ball.alt = 'モンスターボール';
+        ball.className = 'practice-capture-ball';
+        button.prepend(ball);
+        button.classList.add('practice-target');
+      }
       actions.append(button);
     }
     if (!dialog.open) dialog.showModal();
     document.dispatchEvent(new CustomEvent('opening:scene'));
-    actions.querySelector('button')?.focus({ preventScroll: true });
+    actions
+      .querySelector(current === 'nameInput' ? 'input' : 'button')
+      ?.focus({ preventScroll: true });
   }
   function practice() {
     if (stage() !== 'practice') return;
     dialog.close();
+    if (state.opening.version >= 3) {
+      window.PokekoroPractice.open();
+      return;
+    }
     openBattle(false, false, null, true);
     $('#kind').textContent = 'つかまえる れんしゅう';
     $('#weakness-tip').textContent = 'かりた ニドラン♂と れんしゅうしよう！';
@@ -176,15 +243,20 @@
   }
   function finish() {
     if (!OpeningRules.complete(state)) return;
+    if (state.opening.version >= 3) state.opening.stage = 'partyLesson';
     save();
     dialog.close();
     busy = false;
     render();
-    $('#roll').focus({ preventScroll: true });
+    if (state.opening.stage === 'partyLesson') window.PokekoroPracticeOnboarding.show();
+    else $('#roll').focus({ preventScroll: true });
     document.dispatchEvent(new CustomEvent('opening:scene'));
   }
   window.PokekoroOpening = Object.freeze({
     pending,
+    practiceComplete() {
+      if (stage() === 'practice' && state.opening.version >= 3) move('throw');
+    },
     canPractice: () => pending() && stage() === 'practice',
     resolvePractice,
     cancelPractice,

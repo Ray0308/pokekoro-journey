@@ -218,3 +218,39 @@
     animation: none;
   }
 }
+
+/* 承認済みの台詞の改行を保ち、名前は長い英数字でも折り返す。 */
+.opening-message p {
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+#opening-name-form {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+#opening-name-form input {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding: 12px;
+  font: inherit;
+  font-size: 18px;
+  color: inherit;
+  background: #fffef7;
+  border: 2px solid #b8c6b3;
+  border-radius: 10px;
+}
+#opening-name-form button,
+.opening-name-confirm button {
+  min-height: 50px;
+}
+#opening-name-error {
+  margin: 0;
+  color: #9c332a;
+}
+.opening-name-confirm {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}

@@ -38,3 +38,53 @@ assert.equal(rules.complete(partial), false);
 console.log(
   'Opening: new/legacy saves, all starters, resume, loan isolation and one-time gifts OK',
 );
+
+// 新規だけ名前経路へ進め、旧版の途中セーブは従来経路を維持する。
+const named = rules.fresh();
+assert.equal(named.opening.version, 3);
+named.opening.stage = 'friend';
+assert.equal(rules.nextStage(named), 'oakGreeting');
+for (const stage of ['meet', 'friend', 'lab', 'world', 'choose', 'practice', 'complete']) {
+  const old = { ...rules.fresh(), opening: { version: 1, stage, starterId: 4 } };
+  const snapshot = structuredClone(old);
+  rules.normalize(old, true);
+  assert.deepEqual(old, snapshot);
+  if (stage === 'friend') assert.equal(rules.nextStage(old), 'lab');
+  if (stage === 'world') assert.equal(rules.nextStage(old), 'choose');
+}
+for (const input of ['', ' ', '　 \t\n', 'あいうえおかきくけ', '123456789'])
+  assert.notEqual(rules.nameError(input), '');
+for (const input of ['さとし', 'サトシ', '智', 'Player01', 'か\u3099'.repeat(8)])
+  assert.equal(rules.nameError(input), '');
+assert.equal(rules.normalizeName('　 サトシ  '), 'サトシ');
+named.opening.stage = 'nameConfirm';
+named.opening.nameDraft = '　ヒカリ　';
+assert.equal(rules.confirmName(named), true);
+assert.equal(named.playerName, 'ヒカリ');
+assert.equal(named.opening.stage, 'nameWelcome');
+assert.equal('nameDraft' in named.opening, false);
+assert.equal(rules.confirmName(named), false);
+assert.equal(rules.normalize(JSON.parse(JSON.stringify(named)), true).playerName, 'ヒカリ');
+const interrupted = rules.fresh();
+interrupted.opening.stage = 'nameConfirm';
+interrupted.opening.nameDraft = 'ハルカ';
+assert.equal(rules.normalize(interrupted, true).opening.stage, 'nameConfirm');
+assert.equal(interrupted.playerName, undefined);
+interrupted.opening.nameDraft = '　';
+assert.equal(rules.normalize(interrupted, true).opening.stage, 'nameInput');
+interrupted.playerName = 'ハルカ';
+assert.equal(rules.normalize(interrupted, true).opening.stage, 'nameWelcome');
+assert.equal(rules.fresh().playerName, undefined);
+console.log('Opening names: validation, Unicode, confirmation, resume and legacy route OK');
+
+// 初回報酬を受け取った後、編成練習中の再読込でも再付与しない。
+const learning = rules.fresh();
+learning.opening.starterId = 4;
+learning.opening.stage = 'depart';
+assert.equal(rules.complete(learning), true);
+learning.opening.stage = 'partyLesson';
+const learningSaved = JSON.parse(JSON.stringify(learning));
+assert.equal(rules.normalize(learningSaved, true).opening.stage, 'partyLesson');
+assert.equal(rules.complete(learningSaved), false);
+assert.equal(learningSaved.balls, 8);
+assert.equal(learningSaved.super, 2);

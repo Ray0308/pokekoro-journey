@@ -629,6 +629,10 @@ async function rollDice() {
     sfx('step');
     render();
   }
+  const arrival = { lessonFinished: null };
+  document.dispatchEvent(new CustomEvent('map:arrived', { detail: arrival }));
+  if (arrival.lessonFinished) await arrival.lessonFinished;
+  if (epoch !== diceEpoch || mapId !== state.mapId) return;
   let s = currentSquares()[state.pos];
   $('#message').textContent = `${n}が出た！ ${tileLabel(s)}に到着。`;
   tone(520, 0.06);
