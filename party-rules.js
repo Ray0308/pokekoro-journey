@@ -138,3 +138,32 @@ function refillPuzzle(cleared) {
       grid[i] = randomPartyType(neighbors);
     }
 }
+
+// 詰み回避用の再配置。通常の編成属性だけを使い、少なくとも1本の3つなぎを保証する。
+// 入力配列は変更しない。攻撃可能な属性が指定されていれば、その中から保証する。
+function refreshedPuzzle(board, pool, preferred = [], rng = Math.random) {
+  const allowed = [...new Set(Array.isArray(pool) ? pool : [])].filter(
+    (type) => Number.isInteger(type) && type >= 0 && type < 18,
+  );
+  if (!allowed.length || !Array.isArray(board) || board.length !== PUZZLE_LAYOUT.count) return null;
+  const pick = (items) =>
+    items[
+      Math.min(
+        items.length - 1,
+        Math.floor(Math.max(0, Math.min(1, Number(rng()) || 0)) * items.length),
+      )
+    ];
+  const result = Array.from({ length: PUZZLE_LAYOUT.count }, () => pick(allowed));
+  const candidates = allowed.filter((type) => preferred.includes(type));
+  const type = pick(candidates.length ? candidates : allowed);
+  const row = pick(Array.from({ length: PUZZLE_LAYOUT.rows }, (_, i) => i));
+  const col = pick(Array.from({ length: PUZZLE_LAYOUT.columns - 2 }, (_, i) => i));
+  const first = row * PUZZLE_LAYOUT.columns + col;
+  for (let i = 0; i < 3; i++) result[first + i] = type;
+  // 乱数が偏って元と完全一致しても、保証した3マス以外を変えられるなら変える。
+  if (allowed.length > 1 && result.every((value, i) => value === board[i])) {
+    const index = first === 0 ? 3 : 0;
+    result[index] = allowed.find((value) => value !== result[index]);
+  }
+  return result;
+}

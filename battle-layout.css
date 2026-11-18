@@ -336,3 +336,37 @@
     transform: none;
   }
 }
+
+/* 操作ボタンは盤面の外へ。無効時も場所を保ち、開始後に盤面が動かないようにする。 */
+#battle .battleinfo {
+  height: 34px;
+  min-height: 34px;
+}
+#battle .battleinfo #combo {
+  flex: 1;
+  min-width: 0;
+}
+#battle #puzzle-refresh {
+  flex: 0 0 auto;
+  min-height: 32px;
+  padding: 4px 7px;
+  font-size: 11px;
+  line-height: 18px;
+  border: 1px solid #9bad92;
+  border-radius: 6px;
+  background: #f4f8ec;
+  color: #355b48;
+  box-shadow: none;
+  touch-action: manipulation;
+}
+#battle #puzzle-refresh:disabled {
+  opacity: 0.42;
+}
+#battle #puzzle-refresh[hidden] {
+  display: none;
+}
+@media (max-height: 450px) and (min-width: 600px) {
+  #battle .battleinfo #chain {
+    display: none;
+  }
+}

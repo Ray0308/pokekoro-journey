@@ -660,6 +660,9 @@ function openBattle(trainer, boss, continuation = null, practice = false) {
     return;
   }
   busy = true;
+  lastPuzzleRefreshAt = -Infinity;
+  $('#puzzle-refresh').disabled = true;
+  $('#puzzle-refresh').hidden = tutorial;
   window.PokekoroSfx?.stopAll();
   document.dispatchEvent(new CustomEvent('battle:audiofocus', { detail: { active: false } }));
   resetDicePresentation();
@@ -965,7 +968,55 @@ $('#start').onclick = async () => {
   startAt = performance.now();
   raf = requestAnimationFrame(tick);
 };
+// タイマーや獲得済みパワーは変えず、なぞり中の選択と連続コンボだけを解除する。
+let lastPuzzleRefreshAt = -Infinity;
+function syncPuzzleRefresh() {
+  $('#puzzle-refresh').disabled =
+    !!battle?.tutorial ||
+    !running ||
+    preparing ||
+    battle?.phase !== 'charging' ||
+    performance.now() - lastPuzzleRefreshAt < 600;
+}
+$('#puzzle-refresh').onclick = () => {
+  if (
+    battle?.tutorial ||
+    !running ||
+    preparing ||
+    battle?.phase !== 'charging' ||
+    performance.now() - lastPuzzleRefreshAt < 600
+  )
+    return;
+  if (performance.now() - startAt >= battleDuration() * 1000) {
+    void resolveAttack();
+    return;
+  }
+  const alive = window.PokekoroTurns?.aliveParty() || state.party;
+  const preferred = battle.puzzleTypes.filter(
+    (type) =>
+      partyTypePower(alive, type, battle.safari ? null : battle.m) > 0 &&
+      (battle.safari || battleTypeMultiplier(type, battle) > 0),
+  );
+  const next = refreshedPuzzle(grid, battle.puzzleTypes, preferred);
+  if (!next) return;
+  const pointer = activePuzzlePointer;
+  resetPuzzlePointer();
+  if (pointer !== null && canvas.hasPointerCapture(pointer)) canvas.releasePointerCapture(pointer);
+  grid = next;
+  combo = 0;
+  lastClear = 0;
+  $('#combo').textContent = '0 コンボ';
+  $('#chain').textContent = '0つなぎ';
+  $('#combobar').style.width = '0%';
+  $('#battle-fx').replaceChildren();
+  clearPuzzleSelection();
+  lastPuzzleRefreshAt = performance.now();
+  draw();
+  syncPuzzleRefresh();
+  sfx('menuOpen');
+};
 function tick(now) {
+  syncPuzzleRefresh();
   if (!running) return;
   elapsed = (now - startAt) / 1000;
   let left = Math.max(0, battleDuration() - elapsed);
@@ -1616,6 +1667,7 @@ function updateCharge(value = battle.damage) {
 // サファリは従来のなかよし処理、戦闘は10秒ターンのコントローラーへ渡す。
 async function resolveAttack() {
   if (!battle || battle.phase === 'resolving' || battle.phase === 'finished') return;
+  $('#puzzle-refresh').disabled = true;
   if (battle.tutorial) return window.PokekoroOpening.resolvePractice();
   if (battle.safari) await resolveSafari();
   else await window.PokekoroTurns.resolve();
