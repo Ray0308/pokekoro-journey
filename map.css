@@ -2266,3 +2266,248 @@ body[data-game-view='party'] .app-version {
   margin: 8px 0;
   font-weight: 800;
 }
+
+/* Trainer wins: a victory crest followed by the actual awarded items. */
+#result:has(.trainer-victory) {
+  padding: 10px;
+  border: 2px solid #ffe7a0;
+  background: linear-gradient(145deg, #fffdf3, #fff5d9);
+  box-shadow:
+    0 0 0 4px #a9813638,
+    0 20px 70px #122c3f60;
+  overflow-y: auto;
+}
+.trainer-victory {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: center;
+}
+.trainer-victory .trainer-victory-heading {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  margin: 0;
+  padding: 14px 10px 16px;
+  border: 1px solid #fff0b2;
+  border-radius: 14px;
+  background:
+    radial-gradient(ellipse at 50% 22%, #ffeba7, transparent 65%),
+    linear-gradient(140deg, #28665c, #134b47);
+  color: #ffe49a;
+  box-shadow:
+    inset 0 0 0 4px #ffffff0d,
+    0 4px 0 #d4ac52;
+}
+.victory-rays {
+  position: absolute;
+  inset: -110%;
+  z-index: -1;
+  background: repeating-conic-gradient(from 8deg, #fff4b31a 0deg 12deg, transparent 12deg 28deg);
+  mask-image: radial-gradient(circle, #000, transparent 65%);
+  animation: victory-rays-in 900ms ease-out both;
+}
+.victory-medal {
+  width: 86px;
+  height: 66px;
+  margin: 0 auto 2px;
+  color: #ffdf7a;
+  filter: drop-shadow(0 3px 0 #916923) drop-shadow(0 0 12px #ffe59080);
+  animation: victory-medal-in 650ms cubic-bezier(0.16, 1.4, 0.4, 1) both;
+}
+.victory-medal svg {
+  width: 100%;
+  height: 100%;
+}
+.trainer-victory .trainer-victory-heading > small {
+  font-size: 10px;
+  color: #fff2c1;
+  letter-spacing: 2px;
+}
+#resultBody .trainer-victory h2 {
+  margin: 5px 0 7px;
+  color: #fff5cf;
+  font-size: clamp(23px, 6.3vw, 30px);
+  line-height: 1.35;
+  text-shadow:
+    0 2px 0 #103f35,
+    0 0 14px #ffde8050;
+}
+.trainer-victory .trainer-victory-balls {
+  gap: 7px;
+}
+.trainer-victory .trainer-ball.defeated {
+  opacity: 1;
+  filter: sepia(1) saturate(1.3);
+}
+#resultBody .victory-opponent {
+  margin: 7px 0 0;
+  font-size: 11px;
+  line-height: 1.5;
+  color: #e7f5df;
+}
+.victory-reward-title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 2px 0 -3px;
+  color: #8a5b1b;
+  font-size: 15px;
+  letter-spacing: 1px;
+}
+.victory-reward-title::before,
+.victory-reward-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #d6b86b;
+}
+.trainer-victory .reward-items {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 3px 0 4px;
+}
+#resultBody .trainer-victory .reward-card {
+  overflow: hidden;
+  min-height: 130px;
+  padding: 12px 6px 9px;
+  border-color: #e2bb60;
+  box-shadow: 0 4px 0 #dbc286;
+  background: radial-gradient(circle at 50% 30%, #fff 8%, #fff4bd 48%, #f7e3a5);
+  animation: victory-reward-in 550ms 200ms cubic-bezier(0.2, 1.2, 0.3, 1) both;
+}
+#resultBody .trainer-victory .reward-card:nth-child(2) {
+  animation-delay: 340ms;
+}
+#resultBody .trainer-victory .reward-card:nth-child(n + 3) {
+  animation-delay: 480ms;
+}
+#resultBody .trainer-victory .reward-card[data-ball='super'] {
+  background: radial-gradient(circle at 50% 30%, #fff 8%, #e0f5ff 48%, #c3e1f1);
+  border-color: #8cbfd3;
+  box-shadow: 0 4px 0 #9dbfcf;
+}
+#resultBody .trainer-victory .reward-card[data-ball='master'],
+#resultBody .trainer-victory .reward-card[data-ball='rainbow'] {
+  background: radial-gradient(circle at 50% 30%, #fff, #f5e5ff 55%, #e4c4ef);
+}
+#resultBody .trainer-victory .reward-card img {
+  width: 64px;
+  height: 64px;
+  background: transparent;
+  box-shadow: none;
+  filter: drop-shadow(0 4px 4px #74532230);
+}
+.trainer-victory .reward-name {
+  min-height: 0;
+  font-size: 11px;
+  color: #365262;
+}
+.trainer-victory .reward-count {
+  font-size: 28px;
+  color: #754611;
+  background: #ffffffa8;
+}
+.trainer-victory .reward-rare {
+  top: 3px;
+  left: 5px;
+  transform: none;
+  z-index: 1;
+}
+#resultBody .trainer-victory .reward-badge {
+  box-sizing: border-box;
+  border: 2px solid #e0b950;
+  background: radial-gradient(ellipse at 25% 50%, #fffbe0, #ffe9a1);
+  animation: victory-reward-in 550ms 480ms both;
+}
+#resultBody .trainer-victory #done {
+  width: 100%;
+  margin: 2px 0 3px;
+  min-height: 48px;
+  font-size: 16px;
+}
+@keyframes victory-medal-in {
+  from {
+    opacity: 0;
+    transform: scale(0.4) rotate(-12deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+@keyframes victory-rays-in {
+  from {
+    opacity: 0;
+    transform: rotate(-16deg);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(0);
+  }
+}
+@keyframes victory-reward-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@media (max-width: 350px) {
+  .trainer-victory {
+    gap: 9px;
+  }
+  .victory-medal {
+    width: 70px;
+    height: 50px;
+  }
+  #resultBody .trainer-victory .reward-card {
+    min-height: 112px;
+    padding: 8px 4px;
+  }
+  #resultBody .trainer-victory .reward-card img {
+    width: 52px;
+    height: 52px;
+  }
+}
+@media (max-height: 450px) {
+  .victory-medal {
+    width: 50px;
+    height: 36px;
+  }
+  .trainer-victory .trainer-victory-heading {
+    padding: 8px;
+  }
+  #resultBody .trainer-victory h2 {
+    font-size: 21px;
+  }
+  .trainer-victory {
+    gap: 8px;
+  }
+  #resultBody .trainer-victory .reward-card {
+    min-height: 85px;
+    padding: 5px;
+  }
+  #resultBody .trainer-victory .reward-card img {
+    width: 38px;
+    height: 38px;
+  }
+  .trainer-victory .reward-count {
+    font-size: 22px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .victory-rays,
+  .victory-medal,
+  #resultBody .trainer-victory .reward-card,
+  #resultBody .trainer-victory .reward-badge {
+    animation: none;
+  }
+}
+.trainer-victory:focus {
+  outline: none;
+}
