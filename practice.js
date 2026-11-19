@@ -315,7 +315,7 @@
     if (model.step === 'skillOpen') enter('skillUse');
     else if (model.step === 'faintOpen') enter('faintTry');
   };
-  $p('#practice-use').onclick = () => {
+  $p('#practice-use').onclick = async () => {
     if (feedback || !['skillUse', 'faintTry'].includes(model.step)) return;
     const result = BattleTurnRules.skill(model.combat, 32, {
       enemy: model.enemy,
@@ -331,6 +331,17 @@
       $p('#practice-result').textContent = result.reason;
       return;
     }
+    const token = generation;
+    feedback = true;
+    await window.PokekoroBattleFX?.skill({
+      category: result.skill.category,
+      type: PokemonSkillRules.attackType(result.skill, POKEDEX[31]),
+      source: $p('[data-practice-member="32"]'),
+      host: dialog,
+      enemy: $p('.practice-enemy img'),
+    });
+    if (token !== generation || !active()) return;
+    feedback = false;
     model.hp -= result.damage;
     render();
     void praise(`どくばり！ ${result.damage}ダメージ！ できたね！`, 'neutral');

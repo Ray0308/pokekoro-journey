@@ -15,12 +15,14 @@
     timers.add(id);
     return id;
   };
-  const counterAnimations = new Set();
+  const effectAnimations = new Set();
   const sound = (name, value) => window.PokekoroSfx?.play(name, value);
   function reset() {
-    for (const animation of counterAnimations) animation.cancel();
-    counterAnimations.clear();
-    document.querySelectorAll('.enemy-counter-effect').forEach((node) => node.remove());
+    for (const animation of effectAnimations) animation.cancel();
+    effectAnimations.clear();
+    document
+      .querySelectorAll('.enemy-counter-effect,.enemy-skill-effect')
+      .forEach((node) => node.remove());
     for (const t of timers) clearTimeout(t);
     timers.clear();
     highestCombo = highestCharge = 0;
@@ -122,15 +124,15 @@
     sound('knockout', tier);
   }
   // 反撃中だけの見た目。既存transformを壊さず、キャンセル時も待機を解放する。
-  function counterAnimate(node, frames, duration) {
+  function effectAnimate(node, frames, duration) {
     if (!node?.animate) return Promise.resolve();
     const animation = node.animate(frames, { duration, easing: 'ease-out' });
-    counterAnimations.add(animation);
-    return animation.finished.catch(() => {}).finally(() => counterAnimations.delete(animation));
+    effectAnimations.add(animation);
+    return animation.finished.catch(() => {}).finally(() => effectAnimations.delete(animation));
   }
   function counterWindup(host = dialog, enemy = host.querySelector('#enemyimg')) {
     if (!host.open || !enemy || motion.matches) return;
-    void counterAnimate(
+    void effectAnimate(
       enemy,
       [
         { translate: '0 0', scale: '1' },
@@ -165,7 +167,7 @@
     host.append(effect);
     try {
       // 動きを減らす設定では弾を飛ばさず、対象の短い発光だけにする。
-      await counterAnimate(
+      await effectAnimate(
         effect,
         motion.matches
           ? [{ opacity: 0 }, { opacity: 1 }, { opacity: 0 }]
@@ -182,6 +184,164 @@
       );
     } finally {
       effect.remove();
+    }
+  }
+  // 技の計算結果を見せるだけの共通演出。対象DOMは毎回描画後に渡す。
+  async function skillEffect({
+    category,
+    type,
+    source,
+    targets = [],
+    host = dialog,
+    enemy = host.querySelector('#enemyimg'),
+    board = host.querySelector('#board'),
+    changed = [],
+  }) {
+    if (!host.open || !source) return;
+    const color =
+      category === 'revive'
+        ? '#76cf9c'
+        : category === 'guard'
+          ? '#74d6f2'
+          : category === 'boost'
+            ? '#ffd267'
+            : category === 'support'
+              ? '#c19af7'
+              : POKEMON_TYPE_COLORS[type] || '#fff2a6';
+    const point = (target) => {
+      const r = target.getBoundingClientRect(),
+        h = host.getBoundingClientRect();
+      return {
+        x: r.left + r.width / 2 - h.left + host.scrollLeft - host.clientLeft,
+        y: r.top + r.height / 2 - h.top + host.scrollTop - host.clientTop,
+      };
+    };
+    const make = (target, kind) => {
+      const node = document.createElement('i'),
+        p = point(target);
+      node.className = 'enemy-skill-effect ' + kind;
+      node.setAttribute('aria-hidden', 'true');
+      node.style.left = p.x + 'px';
+      node.style.top = p.y + 'px';
+      node.style.setProperty('--skill-color', color);
+      host.append(node);
+      return node;
+    };
+    const play = async (node, frames, ms) => {
+      try {
+        await effectAnimate(
+          node,
+          motion.matches ? [{ opacity: 0 }, { opacity: 1 }, { opacity: 0 }] : frames,
+          motion.matches ? 90 : ms,
+        );
+      } finally {
+        node.remove();
+      }
+    };
+    const pulse = (target, kind = 'skill-ring') =>
+      play(
+        make(target, kind),
+        [
+          { scale: '0.6', opacity: 0 },
+          { scale: '1', opacity: 1, offset: 0.35 },
+          { scale: '1.5', opacity: 0 },
+        ],
+        360,
+      );
+    const fly = async (target) => {
+      const a = point(source),
+        b = point(target);
+      await play(
+        make(target, 'skill-orb'),
+        [
+          { translate: a.x - b.x + 'px ' + (a.y - b.y) + 'px', scale: '0.5', opacity: 0 },
+          { opacity: 1, offset: 0.15 },
+          { translate: '0 0', scale: '1.2', opacity: 1 },
+        ],
+        300,
+      );
+    };
+    await pulse(source, 'skill-cast');
+    // 撤退・交代のresetでキャンセルされた古い演出は続けない。
+    if (!host.open || !source.isConnected) return;
+    if (category === 'attack' && enemy) {
+      await fly(enemy);
+      if (host.open && source.isConnected) await pulse(enemy, 'skill-impact');
+    } else if (category === 'guard') {
+      await Promise.all(
+        (targets.length ? targets : [source]).map((target) => pulse(target, 'skill-shield')),
+      );
+    } else if (category === 'boost') {
+      await Promise.all(
+        (targets.length ? targets : [source]).map((target) =>
+          play(
+            make(target, 'skill-rise'),
+            [
+              { translate: '0 10px', opacity: 0 },
+              { translate: '0 -2px', opacity: 1, offset: 0.4 },
+              { translate: '0 -18px', opacity: 0 },
+            ],
+            380,
+          ),
+        ),
+      );
+    } else if (category === 'support') {
+      await Promise.all(
+        targets.map(async (target) => {
+          await fly(target);
+          if (host.open && source.isConnected) await pulse(target);
+        }),
+      );
+    } else if (category === 'revive') {
+      await Promise.all(
+        targets.map(async (target) => {
+          const glow = pulse(target, 'skill-revive');
+          await effectAnimate(
+            target,
+            motion.matches
+              ? [{ opacity: 0.4 }, { opacity: 1 }]
+              : [
+                  { opacity: 0.3, translate: '0 7px' },
+                  { opacity: 1, translate: '0 0' },
+                ],
+            motion.matches ? 90 : 380,
+          );
+          await glow;
+        }),
+      );
+    } else if (category === 'board' && board) {
+      const r = board.getBoundingClientRect(),
+        h = host.getBoundingClientRect();
+      await Promise.all(
+        changed.map((index) => {
+          const node = make(board, 'skill-cell');
+          node.style.width = r.width / 6 - 4 + 'px';
+          node.style.height = r.height / 5 - 4 + 'px';
+          node.style.left =
+            r.left -
+            h.left +
+            host.scrollLeft -
+            host.clientLeft +
+            (((index % 6) + 0.5) * r.width) / 6 +
+            'px';
+          node.style.top =
+            r.top -
+            h.top +
+            host.scrollTop -
+            host.clientTop +
+            ((Math.floor(index / 6) + 0.5) * r.height) / 5 +
+            'px';
+          return play(
+            node,
+            [
+              { scale: '0.75', opacity: 0 },
+              { scale: '1', opacity: 1, offset: 0.4 },
+              { scale: '1.05', opacity: 0 },
+            ],
+            400,
+          );
+        }),
+      );
     }
   }
   document.addEventListener('title:start', reset);
@@ -201,5 +361,6 @@
     defeat,
     counterWindup,
     counterHit,
+    skill: skillEffect,
   });
 })();

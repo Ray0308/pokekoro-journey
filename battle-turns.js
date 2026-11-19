@@ -286,6 +286,7 @@
   async function useSkill(moveId) {
     if (!enabled() || battle.phase !== 'skills') return;
     if (rules.skillFor(selected).id !== Number(moveId)) return;
+    const boardBefore = [...grid];
     const outcome = rules.skill(battle.combat, selected, skillContext());
     if (!outcome.ok) return;
     const epoch = battleEpoch;
@@ -307,6 +308,31 @@
     );
     for (const id of outcome.affected)
       roster.querySelector(`[data-battle-member="${id}"]`)?.classList.add('just-restored');
+    if (outcome.skill.category === 'board') {
+      // 技解説で隠した盤面を戻し、変化したマスを操作不能のまま見せる。
+      $('#battle').classList.remove('in-skill-break');
+      panel.hidden = true;
+      $('#ready-overlay').hidden = true;
+      draw();
+    }
+    const recipients = ['boost', 'guard'].includes(outcome.skill.category)
+      ? rules.alive(battle.combat)
+      : outcome.affected;
+    await window.PokekoroBattleFX?.skill({
+      category: outcome.skill.category,
+      type:
+        outcome.skill.category === 'attack'
+          ? PokemonSkillRules.attackType(outcome.skill, POKEDEX[selected - 1])
+          : POKEDEX[selected - 1].type,
+      source: roster.querySelector(`[data-battle-member="${selected}"]`),
+      targets: recipients
+        .map((id) => roster.querySelector(`[data-battle-member="${id}"]`))
+        .filter(Boolean),
+      changed: grid
+        .map((value, index) => (value !== boardBefore[index] ? index : -1))
+        .filter((index) => index >= 0),
+    });
+    if (epoch !== battleEpoch) return;
     if (outcome.damage) {
       battle.hp = Math.max(0, battle.hp - outcome.damage);
       battle.attackTotal += outcome.damage;
@@ -317,7 +343,6 @@
         if (!hasNextTrainerPokemon()) $('#leave').disabled = true;
       }
     }
-    await wait(380);
     if (epoch !== battleEpoch) return;
     $('#turn-next').disabled = false;
     if (battle.hp === 0) {

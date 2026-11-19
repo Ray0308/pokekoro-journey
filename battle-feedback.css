@@ -267,3 +267,62 @@
   border: 3px solid #55b8d2;
   box-shadow: 0 0 8px 3px #7ee7ffd0;
 }
+
+/* 技の発動中だけ表示。仲間・敵・変化したマスの位置を示し、入力を遮らない。 */
+.enemy-skill-effect {
+  position: absolute;
+  z-index: 45;
+  pointer-events: none;
+  width: 46px;
+  height: 46px;
+  margin: -23px 0 0 -23px;
+  border: 3px solid var(--skill-color);
+  border-radius: 50%;
+  box-shadow: 0 0 12px var(--skill-color);
+  box-sizing: border-box;
+}
+.enemy-skill-effect.skill-orb {
+  width: 16px;
+  height: 16px;
+  margin: -8px 0 0 -8px;
+  background: radial-gradient(circle, #fff, var(--skill-color));
+  border: 0;
+}
+.enemy-skill-effect.skill-cast {
+  border-style: dashed;
+}
+.enemy-skill-effect.skill-impact {
+  border-width: 6px;
+  border-radius: 30%;
+}
+.enemy-skill-effect.skill-shield {
+  height: 54px;
+  margin-top: -27px;
+  background: #88ddf333;
+  clip-path: polygon(50% 0, 100% 18%, 88% 72%, 50% 100%, 12% 72%, 0 18%);
+}
+.enemy-skill-effect.skill-rise {
+  border: 0;
+  box-shadow: none;
+}
+.enemy-skill-effect.skill-rise::before {
+  content: '↑↑';
+  display: block;
+  color: var(--skill-color);
+  font-size: 32px;
+  font-style: normal;
+  font-weight: bold;
+  text-align: center;
+  text-shadow: 0 1px 3px #664f21;
+}
+.enemy-skill-effect.skill-revive {
+  border-style: double;
+  border-width: 6px;
+  background: #82dc9c22;
+}
+.enemy-skill-effect.skill-cell {
+  margin: 0;
+  border-radius: 8px;
+  transform: translate(-50%, -50%);
+  background: #fff4a62b;
+}
