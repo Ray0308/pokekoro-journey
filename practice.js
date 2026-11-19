@@ -84,7 +84,7 @@
     $p('#practice-roster').innerHTML = model.combat.members
       .map(
         (m) =>
-          `<button data-practice-member="${m.id}" class="${m.fainted ? 'fainted' : ''} ${['skillOpen', 'faintOpen'].includes(model.step) && m.id === 32 ? 'practice-target' : ''}" ${!['skillOpen', 'faintOpen'].includes(model.step) || m.id !== 32 ? 'disabled' : ''}><img src="${pokemonPortrait(m.id)}" alt="${POKEDEX[m.id - 1].label}"><span>${m.fainted ? 'ひんし' : m.gauge + '/' + PokemonSkillRules.cost(m.id)}</span></button>`,
+          `<button data-practice-member="${m.id}" style="--ready-type:${POKEMON_TYPE_COLORS[POKEDEX[m.id - 1].type]}" class="${!m.fainted && m.gauge >= PokemonSkillRules.cost(m.id) ? 'skill-ready' : ''} ${m.fainted ? 'fainted' : ''} ${['skillOpen', 'faintOpen'].includes(model.step) && m.id === 32 ? 'practice-target' : ''}" ${!['skillOpen', 'faintOpen'].includes(model.step) || m.id !== 32 ? 'disabled' : ''}><img src="${pokemonPortrait(m.id)}" alt="${POKEDEX[m.id - 1].label}"><span>${m.fainted ? 'ひんし' : m.gauge + '/' + PokemonSkillRules.cost(m.id)}</span></button>`,
       )
       .join('');
     $p('#practice-start').hidden = !['round', 'counter'].includes(model.step) || running;
@@ -287,6 +287,7 @@
         false,
         dialog,
         $p('.practice-enemy img'),
+        model.enemy.type,
       );
       if (token !== generation || !active()) return;
       feedback = false;

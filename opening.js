@@ -229,18 +229,33 @@
   }
   async function capture() {
     if (throwing || stage() !== 'throw') return;
-    throwing = capturePending = true;
+    throwing = true;
     dialog.close();
     $('#result').showModal();
-    try {
-      await playCaptureThrow(BALLS[0], mons[24]);
-      sfx('success');
-      move('caught');
-    } finally {
-      throwing = capturePending = false;
-      $('#result').close();
-    }
+    window.PokekoroCaptureGesture.open({
+      host: $('#result'),
+      body: $('#resultBody'),
+      ball: BALLS[0],
+      mon: mons[24],
+      onCancel: () => {
+        throwing = false;
+        $('#result').close();
+        dialog.showModal();
+      },
+      onThrow: async () => {
+        capturePending = true;
+        try {
+          await playCaptureThrow(BALLS[0], mons[24]);
+          sfx('success');
+          move('caught');
+        } finally {
+          throwing = capturePending = false;
+          $('#result').close();
+        }
+      },
+    });
   }
+
   function finish() {
     if (!OpeningRules.complete(state)) return;
     if (state.opening.version >= 3) state.opening.stage = 'partyLesson';

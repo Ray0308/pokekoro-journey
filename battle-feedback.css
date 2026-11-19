@@ -326,3 +326,47 @@
   transform: translate(-50%, -50%);
   background: #fff4a62b;
 }
+
+/* 反撃は相手のメイン属性色・記号・形・軌道を使う。ガードは青い防御枠を重ねる。 */
+.enemy-counter-effect {
+  width: 28px;
+  height: 28px;
+  margin: -14px;
+  background: var(--counter-color);
+  box-shadow: 0 0 12px 4px var(--counter-color);
+}
+.counter-symbol {
+  display: block;
+  position: absolute;
+  inset: 4px;
+  background-image: url('assets/types/symbols.png');
+  background-size: 600% 300%;
+}
+.enemy-counter-effect[data-kind='flame'] {
+  border-radius: 70% 15% 60% 45%;
+}
+.enemy-counter-effect[data-kind='drop'] {
+  border-radius: 70% 20% 70% 70%;
+}
+.enemy-counter-effect[data-kind='leaf'] {
+  border-radius: 75% 5% 75% 5%;
+}
+.enemy-counter-effect[data-kind='bolt'] {
+  clip-path: polygon(55% 0, 20% 55%, 45% 55%, 30% 100%, 85% 40%, 58% 40%, 80% 0);
+}
+.enemy-counter-effect[data-kind='ice'],
+.enemy-counter-effect[data-kind='star'] {
+  border-radius: 15%;
+}
+.enemy-counter-effect[data-kind='rock'],
+.enemy-counter-effect[data-kind='metal'] {
+  border-radius: 25% 45% 20% 35%;
+}
+.enemy-counter-effect[data-kind='psychic'],
+.enemy-counter-effect[data-kind='ghost'] {
+  border: 3px double #fff;
+}
+.enemy-counter-effect.is-guard {
+  clip-path: none;
+  border-radius: 50%;
+}

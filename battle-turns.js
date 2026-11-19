@@ -4,6 +4,7 @@
   const rules = BattleTurnRules;
   let selected = null,
     targetId = null;
+  let resumeAfterCounter = false;
   const panel = document.querySelector('#turn-actions'),
     roster = document.querySelector('#battle-party');
   const blackout = document.createElement('div');
@@ -16,12 +17,59 @@
   const enabled = () => !!battle?.combat && !battle.safari;
   const wait = (ms) =>
     new Promise((resolve) => setTimeout(resolve, reduceMotion ? Math.min(ms, 120) : ms));
+  const startConfirm = document.createElement('dialog');
+  startConfirm.id = 'skill-start-confirm';
+  startConfirm.setAttribute('aria-labelledby', 'skill-confirm-title');
+  startConfirm.innerHTML =
+    '<h2 id="skill-confirm-title">わざを つかわずに はじめる？</h2><p></p><div><button id="skill-check" class="primary">わざを みる</button><button id="skill-continue">そのまま スタート</button></div>';
+  document.body.append(startConfirm);
+  async function confirmStart() {
+    if (!enabled()) return true;
+    if (resumeAfterCounter) {
+      resumeAfterCounter = false;
+      return true;
+    }
+    if (battle.phase !== 'ready' || startConfirm.open) return false;
+    const combat = battle.combat;
+    const ready = combat.members.filter((m) => {
+      if (m.fainted || m.usedTurn === combat.turn || m.gauge < rules.skillCost(m.id)) return false;
+      const target = PokemonSkillRules.targets(combat, m.id)[0];
+      return rules.inspectSkill(combat, m.id, { ...skillContext(), targetId: target?.id }).ok;
+    });
+    if (!ready.length) return true;
+    const epoch = battleEpoch,
+      turn = combat.turn;
+    startConfirm.querySelector('p').textContent =
+      ready.map((m) => POKEDEX[m.id - 1].label).join('・') + 'の わざが つかえるよ！';
+    const answer = new Promise((resolve) =>
+      startConfirm.addEventListener('close', () => resolve(startConfirm.returnValue), {
+        once: true,
+      }),
+    );
+    startConfirm.returnValue = '';
+    $('#skill-check').onclick = () => startConfirm.close('skills');
+    $('#skill-continue').onclick = () => startConfirm.close('start');
+    startConfirm.showModal();
+    $('#skill-check').focus();
+    const choice = await answer;
+    if (
+      epoch !== battleEpoch ||
+      !enabled() ||
+      battle.combat.turn !== turn ||
+      battle.phase !== 'ready'
+    )
+      return false;
+    if (choice === 'skills') openSkills(ready[0].id);
+    return choice === 'start';
+  }
   function init(current) {
     current.combat =
       current.safari || current.tutorial
         ? null
         : current.series?.combat || rules.create(state.party);
     if (current.series) current.series.combat = current.combat;
+    resumeAfterCounter = false;
+    startConfirm.close();
     current.attackTotal = 0;
     selected = null;
     targetId = null;
@@ -68,7 +116,7 @@
           cap = rules.skillCost(m.id),
           used = m.usedTurn === combat.turn,
           ready = m.gauge >= cap && !used;
-        return `<button type="button" data-battle-member="${m.id}" class="${m.fainted ? 'is-fainted' : ready ? 'skill-ready' : ''}" ${!['ready', 'skills'].includes(battle.phase) ? 'disabled' : ''} aria-pressed="${selected === m.id}" aria-label="${mon.label} ${pokemonTypes(
+        return `<button type="button" data-battle-member="${m.id}" style="--ready-type:${POKEMON_TYPE_COLORS[mon.type]}" class="${m.fainted ? 'is-fainted' : ready ? 'skill-ready' : ''}" ${!['ready', 'skills'].includes(battle.phase) ? 'disabled' : ''} aria-pressed="${selected === m.id}" aria-label="${mon.label} ${pokemonTypes(
           mon,
         )
           .map(
@@ -372,6 +420,9 @@
     await window.PokekoroBattleFX?.counterHit(
       hit.blocked ? roster : roster.querySelector(`[data-battle-member="${hit.id}"]`),
       hit.blocked,
+      undefined,
+      undefined,
+      battle.m.type,
     );
     if (epoch !== battleEpoch) return;
     render();
@@ -390,6 +441,7 @@
       return;
     }
     prepare(false);
+    resumeAfterCounter = true;
     $('#start').click();
   }
   roster.onclick = (event) => {
@@ -416,6 +468,7 @@
   $('#turn-next').onclick = closeSkills;
   window.PokekoroTurns = Object.freeze({
     init,
+    confirmStart,
     begin,
     charge,
     aliveParty,

@@ -2204,3 +2204,65 @@ body[data-game-view='party'] .app-version {
   small {
   display: none;
 }
+
+/* 捕獲の投球操作。ボール上だけスクロールを抑え、失敗・キャンセルでは在庫を使わない。 */
+#capture-gesture .swipe-field {
+  position: relative;
+  height: clamp(220px, 43dvh, 340px);
+  overflow: visible;
+  border: 1px solid #96af96;
+  border-radius: 16px;
+  background: linear-gradient(#d5eccc, #f9f8df);
+}
+#resultBody #capture-gesture .swipe-target {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  width: 140px;
+  height: 140px;
+  max-height: 48%;
+  object-fit: contain;
+  transform: translateX(-50%);
+}
+#capture-gesture .swipe-arrow {
+  position: absolute;
+  bottom: 90px;
+  left: calc(50% - 14px);
+  font-size: 38px;
+  color: #4c8560;
+}
+#capture-gesture .swipe-ball {
+  position: absolute;
+  bottom: 14px;
+  left: calc(50% - 36px);
+  width: 72px;
+  height: 72px;
+  min-height: 72px;
+  padding: 4px;
+  border: 2px solid #bd9943;
+  border-radius: 50%;
+  background: #fffdf3;
+  box-shadow: 0 5px 0 #9d804c;
+  touch-action: none;
+  cursor: grab;
+  user-select: none;
+}
+#resultBody #capture-gesture .swipe-ball img {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+#capture-gesture .swipe-ball.dragging {
+  cursor: grabbing;
+}
+#capture-gesture .swipe-help {
+  font-weight: 800;
+  color: #315b44;
+}
+#capture-gesture .swipe-ball-name {
+  margin: 8px 0;
+  font-weight: 800;
+}

@@ -944,7 +944,10 @@ canvas.onlostpointercapture = (e) => {
   if (e.pointerId === activePuzzlePointer) resetPuzzlePointer();
 };
 $('#start').onclick = async () => {
-  if (preparing || running) return;
+  if (preparing || running || !battle) return;
+  const startEpoch = battleEpoch;
+  if (battle.combat && !(await window.PokekoroTurns.confirmStart())) return;
+  if (startEpoch !== battleEpoch || preparing || running || !battle) return;
   if (battle.combat && battle.counterPending) {
     await window.PokekoroTurns.advance();
     return;
@@ -1196,7 +1199,7 @@ function endBattle(win) {
   );
   battle.captureBase = base;
   result(
-    `<small>${cloudBoss ? 'にじのくものボス クリア！' : battle.boss ? '最深部クリア！' : 'CATCH CHANCE'}</small><h2>${battle.m.label}を捕まえよう！</h2><img src="${img(battle.m.id)}" alt="${battle.m.label}"><p>ボールを選んで捕獲に挑戦。<br>ためたパワー・最大コンボで確率アップ！</p>${masterDrop ? '<div class="capture-bonus"><img src="assets/master-ball.webp" alt="">マスターボール ×1 獲得！</div>' : ''}${ticket ? `<div class="capture-bonus"><img src="${RAINBOW_CONFIG.ticketImage}" alt="">虹のチケット ×1 獲得！</div>` : ''}<div class="ball-options">${BALLS.map((b) => `<button id="${b.id}" class="primary ball-choice" ${state[b.key] ? '' : 'disabled'}><img src="${b.image}" alt=""><span>${b.name}<small>成功 ${Math.round(Math.min(b.cap, base + b.bonus) * 100)}%・残り ${state[b.key]}個</small></span></button>`).join('')}</div>${typeBallPickerButton(state)}<button id="skip">${cloudBoss ? '捕まえず 旅に戻る' : '見送る'}</button>`,
+    `<small>${cloudBoss ? 'にじのくものボス クリア！' : battle.boss ? '最深部クリア！' : 'CATCH CHANCE'}</small><h2>${battle.m.label}を捕まえよう！</h2><img src="${img(battle.m.id)}" alt="${battle.m.label}"><p>ボールをえらんで、上へスワイプ！<br>ためたパワー・最大コンボで確率アップ！</p>${masterDrop ? '<div class="capture-bonus"><img src="assets/master-ball.webp" alt="">マスターボール ×1 獲得！</div>' : ''}${ticket ? `<div class="capture-bonus"><img src="${RAINBOW_CONFIG.ticketImage}" alt="">虹のチケット ×1 獲得！</div>` : ''}<div class="ball-options">${BALLS.map((b) => `<button id="${b.id}" class="primary ball-choice" ${state[b.key] ? '' : 'disabled'}><img src="${b.image}" alt=""><span>${b.name}<small>成功 ${Math.round(Math.min(b.cap, base + b.bonus) * 100)}%・残り ${state[b.key]}個</small></span></button>`).join('')}</div>${typeBallPickerButton(state)}<button id="skip">${cloudBoss ? '捕まえず 旅に戻る' : '見送る'}</button>`,
   );
   BALLS.forEach((b) => {
     $('#' + b.id).onclick = () => catchMon(b.id, ballCatchChance(b, base, battle.m));
@@ -1238,7 +1241,7 @@ $('#result').addEventListener('cancel', (e) => {
   if (capturePending || state.pendingMapId || rainbowExitReady()) e.preventDefault();
 });
 // 投球開始時に在庫を減らして保存する。連打は capturePending で弾く。
-async function catchMon(ballId, chance) {
+async function catchMon(ballId, chance, thrown = false) {
   if (battle?.tutorial || window.PokekoroOpening?.pending()) return;
   if (capturePending) return;
   const selected = [...BALLS, ...TYPE_BALLS].find((b) => b.id === ballId);
@@ -1248,6 +1251,19 @@ async function catchMon(ballId, chance) {
     captureBallStock(selected, state) < 1
   )
     return;
+  if (!thrown) {
+    const epoch = battleEpoch;
+    window.PokekoroCaptureGesture.open({
+      host: $('#result'),
+      body: $('#resultBody'),
+      ball: selected,
+      mon: battle.m,
+      onThrow: () => {
+        if (epoch === battleEpoch) void catchMon(ballId, chance, true);
+      },
+    });
+    return;
+  }
   if (Number.isInteger(selected.typeIndex)) state.typeBalls[selected.typeIndex]--;
   else state[selected.key]--;
   if (Number.isFinite(battle.captureBase))

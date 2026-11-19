@@ -147,6 +147,7 @@
     blocked,
     host = dialog,
     enemy = host.querySelector('#enemyimg'),
+    type = 5,
   ) {
     if (!host.open || !target || !enemy) return;
     const bounds = host.getBoundingClientRect();
@@ -161,6 +162,35 @@
       to = center(target);
     const effect = document.createElement('i');
     effect.className = 'enemy-counter-effect' + (blocked ? ' is-guard' : '');
+    const kind =
+      [
+        'leaf',
+        'flame',
+        'drop',
+        'poison',
+        'wind',
+        'impact',
+        'bolt',
+        'ice',
+        'impact',
+        'ground',
+        'psychic',
+        'leaf',
+        'rock',
+        'ghost',
+        'dragon',
+        'dark',
+        'metal',
+        'star',
+      ][type] || 'impact';
+    effect.dataset.kind = kind;
+    effect.dataset.type = String(type);
+    effect.style.setProperty('--counter-color', POKEMON_TYPE_COLORS[type] || '#ffd76b');
+    const symbol = document.createElement('b'),
+      cell = TYPE_SYMBOL_CELLS[type] ?? TYPE_SYMBOL_CELLS[5];
+    symbol.className = 'counter-symbol';
+    symbol.style.backgroundPosition = `${((cell % 6) / 5) * 100}% ${(Math.floor(cell / 6) / 2) * 100}%`;
+    effect.append(symbol);
     effect.setAttribute('aria-hidden', 'true');
     effect.style.left = to.x + 'px';
     effect.style.top = to.y + 'px';
@@ -177,8 +207,18 @@
                 scale: '0.5',
                 opacity: 0,
               },
-              { opacity: 1, offset: 0.15 },
-              { translate: '0 0', scale: blocked ? '2.5' : '1.8', opacity: 1 },
+              {
+                translate: `${(from.x - to.x) * 0.5}px ${(from.y - to.y) * 0.5 - (kind === 'drop' || kind === 'leaf' ? 26 : 0)}px`,
+                rotate:
+                  kind === 'rock' || kind === 'metal'
+                    ? '160deg'
+                    : kind === 'bolt'
+                      ? '-15deg'
+                      : '0deg',
+                opacity: 1,
+                offset: 0.5,
+              },
+              { translate: '0 0', rotate: '0deg', scale: blocked ? '2.5' : '1.8', opacity: 1 },
             ],
         motion.matches ? 90 : 280,
       );

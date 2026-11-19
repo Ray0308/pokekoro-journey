@@ -522,3 +522,53 @@
 #battle:has(#start:not([hidden])) #ready-overlay {
   background: #edf2e52b;
 }
+
+/* メイン属性色の光で、今使える技を目に留める。動きを減らす設定でも輪郭は残す。 */
+#battle-party button.skill-ready:not(.is-fainted),
+#practice-roster button.skill-ready {
+  border: 2px solid var(--ready-type);
+  box-shadow:
+    0 0 8px 2px var(--ready-type),
+    inset 0 0 5px var(--ready-type);
+  animation: skill-ready-glow 1.4s ease-in-out infinite alternate;
+}
+#battle-party .skill-ready .battle-member-portrait {
+  border-radius: 10px;
+  box-shadow: 0 0 8px 2px var(--ready-type);
+}
+@keyframes skill-ready-glow {
+  from {
+    box-shadow:
+      0 0 4px var(--ready-type),
+      inset 0 0 2px var(--ready-type);
+  }
+  to {
+    box-shadow:
+      0 0 10px 3px var(--ready-type),
+      inset 0 0 5px var(--ready-type);
+  }
+}
+#skill-start-confirm {
+  width: min(90vw, 380px);
+  padding: 20px;
+  border: 3px solid #78906c;
+  border-radius: 14px;
+  background: #fffdf1;
+  color: #294938;
+}
+#skill-start-confirm h2 {
+  font-size: 19px;
+}
+#skill-start-confirm > div {
+  display: grid;
+  gap: 8px;
+}
+#skill-start-confirm button {
+  min-height: 44px;
+}
+@media (prefers-reduced-motion: reduce) {
+  #battle-party button.skill-ready,
+  #practice-roster button.skill-ready {
+    animation: none;
+  }
+}
