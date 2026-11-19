@@ -2565,3 +2565,7 @@ body[data-game-view='party'] .app-version {
   left: 50%;
   transform: translateX(-50%);
 }
+/* 北側の扉でも現在地の吹き出しを上端で切らない。 */
+#map[data-map='rocket-hideout'] .node-goal.current .player-marker {
+  bottom: calc(100% + 12px);
+}
