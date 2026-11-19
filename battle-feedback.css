@@ -249,3 +249,21 @@
 #battle.trainer-complete #ready-overlay span {
   color: #725821;
 }
+
+/* 敵から仲間への反撃。入力を奪わず、パズルの操作中には生成しない。 */
+.enemy-counter-effect {
+  position: absolute;
+  z-index: 40;
+  pointer-events: none;
+  width: 18px;
+  height: 18px;
+  margin: -9px 0 0 -9px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 0 22%, #ffd76b 30% 60%, #e98546 75%);
+  box-shadow: 0 0 8px 3px #ffc462b3;
+}
+.enemy-counter-effect.is-guard {
+  background: #e5fbff;
+  border: 3px solid #55b8d2;
+  box-shadow: 0 0 8px 3px #7ee7ffd0;
+}

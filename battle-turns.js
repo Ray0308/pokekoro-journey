@@ -340,9 +340,15 @@
     panel.hidden = true;
     $('#ready-overlay').hidden = false;
     $('#ready-overlay').innerHTML = '<strong>敵の反撃！</strong><span>みんな、きをつけて！</span>';
+    window.PokekoroBattleFX?.counterWindup();
     await wait(220);
     if (epoch !== battleEpoch) return;
     const hit = rules.retaliate(battle.combat);
+    await window.PokekoroBattleFX?.counterHit(
+      hit.blocked ? roster : roster.querySelector(`[data-battle-member="${hit.id}"]`),
+      hit.blocked,
+    );
+    if (epoch !== battleEpoch) return;
     render();
     if (hit.id) roster.querySelector(`[data-battle-member="${hit.id}"]`)?.classList.add('just-hit');
     $('#ready-overlay').innerHTML = hit.blocked

@@ -15,8 +15,12 @@
     timers.add(id);
     return id;
   };
+  const counterAnimations = new Set();
   const sound = (name, value) => window.PokekoroSfx?.play(name, value);
   function reset() {
+    for (const animation of counterAnimations) animation.cancel();
+    counterAnimations.clear();
+    document.querySelectorAll('.enemy-counter-effect').forEach((node) => node.remove());
     for (const t of timers) clearTimeout(t);
     timers.clear();
     highestCombo = highestCharge = 0;
@@ -117,6 +121,69 @@
     burst(document.querySelector('.enemy'), complete || tier >= 3 ? 24 : 16, '#ffdb63', true);
     sound('knockout', tier);
   }
+  // 反撃中だけの見た目。既存transformを壊さず、キャンセル時も待機を解放する。
+  function counterAnimate(node, frames, duration) {
+    if (!node?.animate) return Promise.resolve();
+    const animation = node.animate(frames, { duration, easing: 'ease-out' });
+    counterAnimations.add(animation);
+    return animation.finished.catch(() => {}).finally(() => counterAnimations.delete(animation));
+  }
+  function counterWindup(host = dialog, enemy = host.querySelector('#enemyimg')) {
+    if (!host.open || !enemy || motion.matches) return;
+    void counterAnimate(
+      enemy,
+      [
+        { translate: '0 0', scale: '1' },
+        { translate: '0 -7px', scale: '1.05', offset: 0.55 },
+        { translate: '0 8px', scale: '1' },
+      ],
+      220,
+    );
+  }
+  async function counterHit(
+    target,
+    blocked,
+    host = dialog,
+    enemy = host.querySelector('#enemyimg'),
+  ) {
+    if (!host.open || !target || !enemy) return;
+    const bounds = host.getBoundingClientRect();
+    const center = (node) => {
+      const r = node.getBoundingClientRect();
+      return {
+        x: r.left + r.width / 2 - bounds.left + host.scrollLeft - host.clientLeft,
+        y: r.top + r.height / 2 - bounds.top + host.scrollTop - host.clientTop,
+      };
+    };
+    const from = center(enemy),
+      to = center(target);
+    const effect = document.createElement('i');
+    effect.className = 'enemy-counter-effect' + (blocked ? ' is-guard' : '');
+    effect.setAttribute('aria-hidden', 'true');
+    effect.style.left = to.x + 'px';
+    effect.style.top = to.y + 'px';
+    host.append(effect);
+    try {
+      // 動きを減らす設定では弾を飛ばさず、対象の短い発光だけにする。
+      await counterAnimate(
+        effect,
+        motion.matches
+          ? [{ opacity: 0 }, { opacity: 1 }, { opacity: 0 }]
+          : [
+              {
+                translate: from.x - to.x + 'px ' + (from.y - to.y) + 'px',
+                scale: '0.5',
+                opacity: 0,
+              },
+              { opacity: 1, offset: 0.15 },
+              { translate: '0 0', scale: blocked ? '2.5' : '1.8', opacity: 1 },
+            ],
+        motion.matches ? 90 : 280,
+      );
+    } finally {
+      effect.remove();
+    }
+  }
   document.addEventListener('title:start', reset);
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
@@ -125,5 +192,14 @@
       dialog.querySelectorAll('.battle-reward-fx').forEach((e) => e.remove());
     }
   });
-  window.PokekoroBattleFX = Object.freeze({ reset, combo, charge, prepare, impact, defeat });
+  window.PokekoroBattleFX = Object.freeze({
+    reset,
+    combo,
+    charge,
+    prepare,
+    impact,
+    defeat,
+    counterWindup,
+    counterHit,
+  });
 })();

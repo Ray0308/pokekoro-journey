@@ -271,12 +271,25 @@
     dialog.classList.add('practice-attack');
     void praise(`みんなで アタック！ ${model.power}パワー！ じょうず！`, 'charge');
   }
-  $p('#practice-start').onclick = () => {
+  $p('#practice-start').onclick = async () => {
     if (feedback || running) return;
     if (model.step === 'counter') {
+      const token = generation;
+      feedback = true;
+      window.PokekoroBattleFX?.counterWindup(dialog, $p('.practice-enemy img'));
+      await new Promise((resolve) => setTimeout(resolve, 220));
+      if (token !== generation || !active()) return;
       const hit = BattleTurnRules.retaliate(model.combat, () => 0);
       if (hit.id !== 32 || BattleTurnRules.alive(model.combat).length !== 2)
         throw Error('反撃練習の条件が不正');
+      await window.PokekoroBattleFX?.counterHit(
+        $p('[data-practice-member="32"]'),
+        false,
+        dialog,
+        $p('.practice-enemy img'),
+      );
+      if (token !== generation || !active()) return;
+      feedback = false;
       model.step = 'faintOpen';
       render();
       sound('hit');
