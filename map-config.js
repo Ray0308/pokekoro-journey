@@ -235,7 +235,7 @@ const MAPS = Object.freeze({
   'pewter-gym': Object.freeze({
     'name': 'ニビジム',
     'kind': 'stone',
-    'background': 'assets/map/pewter-gym.webp',
+    'background': 'assets/map/pewter-gym-v2.webp',
     'trainerIcon': 'assets/map/viridian-trainer.webp',
     'boss': {
       'name': 'タケシ',
@@ -266,10 +266,45 @@ const MAPS = Object.freeze({
     'chapter': 3,
     'nextMap': 'mt-moon',
     'badge': 'グレーバッジ',
-    'aspectRatio': 1.0949529512403764,
-    'routeInset': { 'x': 4, 'y': 12, 'scaleX': 0.92, 'scaleY': 0.78 },
+    'aspectRatio': 1,
     'backgroundPlaceholder': false,
     'badgeImage': 'assets/badges/boulder.webp',
+    // 新背景の石畳に沿い、入口から奥の台座へ15マスで進む。
+    'routePoints': [
+      [50.0, 91.0],
+      [73.0, 76.0],
+      [59.92, 70.0],
+      [40.85, 70.0],
+      [27.0, 64.77],
+      [36.31, 55.0],
+      [55.38, 55.0],
+      [74.46, 55.0],
+      [78.46, 41.0],
+      [59.38, 41.0],
+      [40.31, 41.0],
+      [21.23, 41.0],
+      [23.85, 27.0],
+      [42.92, 27.0],
+      [50.0, 15.0],
+    ],
+    'routeVia': {
+      '0': [
+        [50, 80],
+        [73, 80],
+      ],
+      '1': [[73, 70]],
+      '3': [[27, 70]],
+      '4': [[27, 55]],
+      '7': [
+        [79, 55],
+        [79, 41],
+      ],
+      '11': [
+        [20, 41],
+        [20, 27],
+      ],
+      '13': [[50, 27]],
+    },
   }),
   'mt-moon': Object.freeze({
     'name': 'おつきみやま',
