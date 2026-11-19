@@ -2178,28 +2178,59 @@ body[data-game-view='party'] .app-version {
 
 /* 並行道路・橋・ゴミ箱間の狭い通路では丸と繰り返しラベルを控え、番号と道筋を読める余白を作る。
    名称はaria-labelに残し、現在地・開始・交換所・ゴールの説明は表示する。 */
-#map:is([data-map='cerulean-city'], [data-map='cerulean-gym'], [data-map='vermilion-gym']) .tile {
+#map:is(
+    [data-map='cerulean-city'],
+    [data-map='cerulean-gym'],
+    [data-map='vermilion-gym'],
+    [data-map='ss-anne']
+  )
+  .tile {
   width: 7.5%;
   height: 7.5%;
 }
-#map:is([data-map='cerulean-city'], [data-map='cerulean-gym'], [data-map='vermilion-gym'])
+#map:is(
+    [data-map='cerulean-city'],
+    [data-map='cerulean-gym'],
+    [data-map='vermilion-gym'],
+    [data-map='ss-anne']
+  )
   .tile.node-goal {
   width: 9%;
   height: 9%;
 }
-#map:is([data-map='cerulean-city'], [data-map='cerulean-gym'], [data-map='vermilion-gym'])
+#map:is(
+    [data-map='cerulean-city'],
+    [data-map='cerulean-gym'],
+    [data-map='vermilion-gym'],
+    [data-map='ss-anne']
+  )
   .tile
   small {
   bottom: -10px;
   line-height: 10px;
 }
-#map:is([data-map='cerulean-city'], [data-map='cerulean-gym'], [data-map='vermilion-gym'])
+#map:is(
+    [data-map='cerulean-city'],
+    [data-map='cerulean-gym'],
+    [data-map='vermilion-gym'],
+    [data-map='ss-anne']
+  )
   .node-wild:not(.current)
   small,
-#map:is([data-map='cerulean-city'], [data-map='cerulean-gym'], [data-map='vermilion-gym'])
+#map:is(
+    [data-map='cerulean-city'],
+    [data-map='cerulean-gym'],
+    [data-map='vermilion-gym'],
+    [data-map='ss-anne']
+  )
   .node-item:not(.current)
   small,
-#map:is([data-map='cerulean-city'], [data-map='cerulean-gym'], [data-map='vermilion-gym'])
+#map:is(
+    [data-map='cerulean-city'],
+    [data-map='cerulean-gym'],
+    [data-map='vermilion-gym'],
+    [data-map='ss-anne']
+  )
   .node-trainer:not(.current)
   small {
   display: none;
@@ -2510,4 +2541,10 @@ body[data-game-view='party'] .app-version {
 }
 .trainer-victory:focus {
   outline: none;
+}
+
+/* 船尾の入口前は、ボス説明を上へ逃がして手前のマスと離す。 */
+#map[data-map='ss-anne'] .tile.node-goal small {
+  top: -11px;
+  bottom: auto;
 }
