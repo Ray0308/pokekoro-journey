@@ -2175,3 +2175,23 @@ body[data-game-view='party'] .app-version {
   width: 18px;
   height: 18px;
 }
+
+/* ハナダの並行道路では丸と繰り返しラベルを控え、番号と道筋を読める余白を作る。
+   名称はaria-labelに残し、現在地・開始・交換所・ゴールの説明は表示する。 */
+#map[data-map='cerulean-city'] .tile {
+  width: 7.5%;
+  height: 7.5%;
+}
+#map[data-map='cerulean-city'] .tile.node-goal {
+  width: 9%;
+  height: 9%;
+}
+#map[data-map='cerulean-city'] .tile small {
+  bottom: -10px;
+  line-height: 10px;
+}
+#map[data-map='cerulean-city'] .node-wild:not(.current) small,
+#map[data-map='cerulean-city'] .node-item:not(.current) small,
+#map[data-map='cerulean-city'] .node-trainer:not(.current) small {
+  display: none;
+}
