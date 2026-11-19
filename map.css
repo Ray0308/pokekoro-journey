@@ -2183,7 +2183,8 @@ body[data-game-view='party'] .app-version {
     [data-map='cerulean-gym'],
     [data-map='vermilion-gym'],
     [data-map='ss-anne'],
-    [data-map='celadon-city']
+    [data-map='celadon-city'],
+    [data-map='rocket-hideout']
   )
   .tile {
   width: 7.5%;
@@ -2194,7 +2195,8 @@ body[data-game-view='party'] .app-version {
     [data-map='cerulean-gym'],
     [data-map='vermilion-gym'],
     [data-map='ss-anne'],
-    [data-map='celadon-city']
+    [data-map='celadon-city'],
+    [data-map='rocket-hideout']
   )
   .tile.node-goal {
   width: 9%;
@@ -2205,7 +2207,8 @@ body[data-game-view='party'] .app-version {
     [data-map='cerulean-gym'],
     [data-map='vermilion-gym'],
     [data-map='ss-anne'],
-    [data-map='celadon-city']
+    [data-map='celadon-city'],
+    [data-map='rocket-hideout']
   )
   .tile
   small {
@@ -2217,7 +2220,8 @@ body[data-game-view='party'] .app-version {
     [data-map='cerulean-gym'],
     [data-map='vermilion-gym'],
     [data-map='ss-anne'],
-    [data-map='celadon-city']
+    [data-map='celadon-city'],
+    [data-map='rocket-hideout']
   )
   .node-wild:not(.current)
   small,
@@ -2226,7 +2230,8 @@ body[data-game-view='party'] .app-version {
     [data-map='cerulean-gym'],
     [data-map='vermilion-gym'],
     [data-map='ss-anne'],
-    [data-map='celadon-city']
+    [data-map='celadon-city'],
+    [data-map='rocket-hideout']
   )
   .node-item:not(.current)
   small,
@@ -2235,7 +2240,8 @@ body[data-game-view='party'] .app-version {
     [data-map='cerulean-gym'],
     [data-map='vermilion-gym'],
     [data-map='ss-anne'],
-    [data-map='celadon-city']
+    [data-map='celadon-city'],
+    [data-map='rocket-hideout']
   )
   .node-trainer:not(.current)
   small {
