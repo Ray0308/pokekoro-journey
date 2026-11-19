@@ -20,13 +20,30 @@
       : '<span class="enemy-type-unknown">タイプ ？？？</span>';
     setTrainerRoster(document.querySelector('#trainer-roster'), battle.series, battle.hp <= 0);
     ownedMark.hidden = !owned.includes(battle.m.id);
-    const ratio = Math.max(0, battle.hp / battle.total);
+    const maximum = Math.max(1, battle.total),
+      remaining = Math.max(0, Math.min(maximum, Math.ceil(battle.hp))),
+      ratio = remaining / maximum,
+      percent = remaining === 0 ? 0 : Math.max(1, Math.round(ratio * 100));
     status.dataset.hp = ratio <= 0.2 ? 'low' : ratio <= 0.5 ? 'mid' : 'high';
-    hpRow.setAttribute('aria-valuemax', String(battle.total));
-    hpRow.setAttribute('aria-valuenow', String(Math.max(0, Math.ceil(battle.hp))));
-    document.querySelector('#hptext').textContent = battle.safari
-      ? '倒さずに なかよく なろう！'
-      : `${battle.level ? 'Lv.' + battle.level + ' · ' : ''}${Math.max(0, Math.ceil(battle.hp))} / ${battle.total}`;
+    hpRow.setAttribute('aria-valuemax', String(maximum));
+    hpRow.setAttribute('aria-valuenow', String(remaining));
+    hpRow.setAttribute('aria-valuetext', `HP ${remaining} / ${maximum}、のこり${percent}%`);
+    const text = document.querySelector('#hptext');
+    // HPの計算には触れず、数値と残量を同じ場所にまとめて読めるようにする。
+    if (battle.safari) text.textContent = '倒さずに なかよく なろう！';
+    else {
+      const level = document.createElement('span'),
+        numbers = document.createElement('span'),
+        value = document.createElement('b'),
+        share = document.createElement('small');
+      level.className = 'enemy-level';
+      level.textContent = battle.level ? `Lv.${battle.level}` : '';
+      numbers.className = 'enemy-hp-numbers';
+      value.textContent = String(remaining);
+      share.textContent = `${percent}%`;
+      numbers.append(value, ` / ${maximum} `, share);
+      text.replaceChildren(level, numbers);
+    }
   }
   function set(map, battle, owned) {
     backdrop.style.backgroundImage = `url("${map.background}")`;

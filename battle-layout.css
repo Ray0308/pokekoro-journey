@@ -370,3 +370,134 @@
     display: none;
   }
 }
+
+/* HPは背景から独立した明るい帯にまとめる。盤面の大きさや戦闘の計算は変えない。 */
+#battle .enemy-vitals {
+  box-sizing: border-box;
+  padding: 6px 8px;
+  border: 1px solid #536c59;
+  border-radius: 8px;
+  background: #fffff5f5;
+  box-shadow: 0 2px 0 #263f342b;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 5px;
+}
+#battle .enemy .enemy-hp-row {
+  position: static;
+  inset: auto;
+  order: 1;
+  width: 100%;
+  height: 13px;
+}
+#battle .enemy-hp-row > b {
+  font-size: 11px;
+  color: #294938;
+  letter-spacing: 0;
+}
+#battle .enemy .enemy-hp-row .hp {
+  height: 13px;
+  border: 1px solid #304c3a;
+  border-radius: 5px;
+  background: #cad3c6;
+  box-shadow: inset 0 1px 2px #18332440;
+}
+#battle .enemy .hp i {
+  height: 100%;
+  background: linear-gradient(#50c98a, #208754);
+  transition: width 280ms ease-out;
+}
+#battle .enemy .enemy-status[data-hp='mid'] .hp i {
+  background: linear-gradient(#f2ce65, #bb861b);
+}
+#battle .enemy .enemy-status[data-hp='low'] .hp i {
+  background: linear-gradient(#f48d7d, #cb4035);
+}
+#battle .enemy .enemy-status #hptext {
+  position: static;
+  inset: auto;
+  order: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 2px 6px;
+  margin: 0;
+  padding: 0;
+  background: none;
+  color: #253d30;
+  font:
+    700 12px/15px Arial,
+    sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+#battle .enemy-hp-numbers {
+  white-space: nowrap;
+}
+#battle .enemy-hp-numbers b {
+  font-size: 15px;
+  color: #162f22;
+}
+#battle .enemy-hp-numbers small {
+  display: inline;
+  margin-left: 4px;
+  padding: 1px 4px;
+  border-radius: 4px;
+  background: #e1e9dc;
+  font:
+    700 11px/14px Arial,
+    sans-serif;
+}
+#battle .enemy-level {
+  color: #4a6050;
+  font-size: 11px;
+}
+#battle.safari-puzzle .enemy .enemy-status #hptext {
+  display: block;
+  font-size: 10px;
+}
+@media (min-height: 451px), (max-width: 599px) {
+  #battle .enemy-vitals {
+    position: absolute;
+    left: 8px;
+    right: 8px;
+    bottom: 5px;
+    margin: 0;
+    z-index: 4;
+  }
+  #battle .enemy > img#enemyimg {
+    bottom: 45px;
+    height: calc(100% - 49px);
+  }
+  #battle .battle-platform {
+    bottom: 42px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #battle .enemy .hp i {
+    transition: none;
+  }
+}
+
+#battle .enemy-hp-numbers {
+  margin-left: auto;
+  white-space: nowrap;
+}
+#battle .enemy-hp-numbers small {
+  letter-spacing: 0;
+}
+@media (min-width: 600px) and (max-height: 450px) {
+  #battle .enemy > .enemy-status {
+    top: 4px;
+    left: 8px;
+    min-height: 0;
+    padding: 3px 5px;
+    gap: 2px;
+  }
+  #battle .enemy-vitals {
+    margin-top: 1px;
+    padding: 4px 5px;
+    gap: 2px;
+  }
+}
