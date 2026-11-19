@@ -2184,7 +2184,8 @@ body[data-game-view='party'] .app-version {
     [data-map='vermilion-gym'],
     [data-map='ss-anne'],
     [data-map='celadon-city'],
-    [data-map='rocket-hideout']
+    [data-map='rocket-hideout'],
+    [data-map='pokemon-tower']
   )
   .tile {
   width: 7.5%;
@@ -2196,7 +2197,8 @@ body[data-game-view='party'] .app-version {
     [data-map='vermilion-gym'],
     [data-map='ss-anne'],
     [data-map='celadon-city'],
-    [data-map='rocket-hideout']
+    [data-map='rocket-hideout'],
+    [data-map='pokemon-tower']
   )
   .tile.node-goal {
   width: 9%;
@@ -2208,7 +2210,8 @@ body[data-game-view='party'] .app-version {
     [data-map='vermilion-gym'],
     [data-map='ss-anne'],
     [data-map='celadon-city'],
-    [data-map='rocket-hideout']
+    [data-map='rocket-hideout'],
+    [data-map='pokemon-tower']
   )
   .tile
   small {
@@ -2221,7 +2224,8 @@ body[data-game-view='party'] .app-version {
     [data-map='vermilion-gym'],
     [data-map='ss-anne'],
     [data-map='celadon-city'],
-    [data-map='rocket-hideout']
+    [data-map='rocket-hideout'],
+    [data-map='pokemon-tower']
   )
   .node-wild:not(.current)
   small,
@@ -2231,7 +2235,8 @@ body[data-game-view='party'] .app-version {
     [data-map='vermilion-gym'],
     [data-map='ss-anne'],
     [data-map='celadon-city'],
-    [data-map='rocket-hideout']
+    [data-map='rocket-hideout'],
+    [data-map='pokemon-tower']
   )
   .node-item:not(.current)
   small,
@@ -2241,7 +2246,8 @@ body[data-game-view='party'] .app-version {
     [data-map='vermilion-gym'],
     [data-map='ss-anne'],
     [data-map='celadon-city'],
-    [data-map='rocket-hideout']
+    [data-map='rocket-hideout'],
+    [data-map='pokemon-tower']
   )
   .node-trainer:not(.current)
   small {
@@ -2568,4 +2574,14 @@ body[data-game-view='party'] .app-version {
 /* 北側の扉でも現在地の吹き出しを上端で切らない。 */
 #map[data-map='rocket-hideout'] .node-goal.current .player-marker {
   bottom: calc(100% + 12px);
+}
+
+/* 墓石の間では床が見える大きさに抑え、階段を入口と出口にする。 */
+#map[data-map='pokemon-tower'] .tile {
+  width: 6%;
+  height: 6%;
+}
+#map[data-map='pokemon-tower'] .tile.node-goal {
+  width: 8%;
+  height: 8%;
 }
