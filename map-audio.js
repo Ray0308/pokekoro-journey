@@ -27,7 +27,9 @@
   function victory() {
     return (
       !!battle?.victory &&
-      (document.querySelector('#battle').open || document.querySelector('#result').open)
+      (document.querySelector('#battle').open ||
+        (document.querySelector('#result').open &&
+          document.querySelector('#result').dataset.audio === 'victory'))
     );
   }
   function encounter() {
@@ -42,6 +44,12 @@
       document.querySelector('#opening[open][data-scene="dex"]')
     )
       return 'pokedex';
+    if (
+      (encounter() && battle?.safari) ||
+      (document.querySelector('#result').open &&
+        document.querySelector('#result').dataset.audio === 'safari')
+    )
+      return 'water';
     return victory()
       ? battle.trainer
         ? 'trainerVictory'
@@ -65,7 +73,7 @@
             ? ':not(#encounter):not(#battle)'
             : '';
     return !document.querySelector(
-      'dialog[open]:not(#opening):not(#pokedex-device):not(#game-menu):not(#item-bag):not(#title-options):not(#ball-exchange):not(#kurt-house):not(#type-ball-picker):not(#debug-tools):not(#debug-roll-picker)' +
+      'dialog[open]:not(#opening):not(#pokedex-device):not(#game-menu):not(#item-bag):not(#title-options):not(#ball-exchange):not(#kurt-house):not(#type-ball-picker):not(#debug-tools):not(#debug-roll-picker):not(#result):not(#guide):not(#skill-start-confirm)' +
         exceptions,
     );
   }
@@ -74,13 +82,16 @@
     try {
       const AC = window.AudioContext || window.webkitAudioContext;
       if (!context && AC) context = new AC({ latencyHint: 'interactive' });
-      if (context?.state === 'suspended') context.resume().catch(() => {});
+      if (context && !['running', 'closed'].includes(context.state))
+        context.resume().catch(() => {});
     } catch {}
   }
   function position() {
-    return active
-      ? (active.offset + Math.max(0, context.currentTime - active.time)) % active.buffer.duration
-      : audio.currentTime || 0;
+    if (!active) return audio.currentTime || 0;
+    const raw = active.offset + Math.max(0, context.currentTime - active.time);
+    return raw < active.end
+      ? raw
+      : active.start + ((raw - active.end) % (active.end - active.start));
   }
   function dispose(record, when) {
     if (!record) return;
@@ -99,7 +110,10 @@
       positions.set(active.key, position());
       const old = active;
       active = null;
-      dispose(old, context.currentTime);
+      old.gain.gain.cancelScheduledValues(context.currentTime);
+      old.gain.gain.setValueAtTime(old.gain.gain.value, context.currentTime);
+      old.gain.gain.linearRampToValueAtTime(0, context.currentTime + 0.025);
+      dispose(old, context.currentTime + 0.03);
     }
     if (!audio.paused) {
       positions.set(visibleTheme, audio.currentTime);
@@ -125,9 +139,19 @@
     }
     if (pending.has(key)) return pending.get(key);
     const promise = (async () => {
-      const response = await fetch(MAP_MUSIC_TRACKS[key], { cache: 'force-cache' });
-      if (!response.ok) throw Error('music ' + key);
-      const bytes = await response.arrayBuffer();
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 8000);
+      let response, bytes;
+      try {
+        response = await fetch(MAP_MUSIC_TRACKS[key], {
+          cache: 'force-cache',
+          signal: controller.signal,
+        });
+        if (!response.ok) throw Error('music ' + key);
+        bytes = await response.arrayBuffer();
+      } finally {
+        clearTimeout(timer);
+      }
       const Offline = window.OfflineAudioContext || window.webkitOfflineAudioContext;
       if (!Offline) throw Error('no decoder');
       const decoder = new Offline(2, 1, 24000);
@@ -135,6 +159,19 @@
         const result = decoder.decodeAudioData(bytes, resolve, reject);
         result?.catch(reject);
       });
+      // デコード後のループ端を4msだけゼロへ寄せ、MP3端のクリックを抑える。
+      const bounds = mapMusicBounds(key, buffer.duration),
+        start = Math.floor(bounds.start * buffer.sampleRate),
+        end = Math.min(buffer.length, Math.floor(bounds.end * buffer.sampleRate));
+      const fade = Math.min(Math.floor(buffer.sampleRate * 0.004), Math.floor((end - start) / 4));
+      for (let channel = 0; channel < buffer.numberOfChannels; channel++) {
+        const samples = buffer.getChannelData(channel);
+        for (let i = 0; i < fade; i++) {
+          const level = i / fade;
+          samples[start + i] *= level;
+          samples[end - 1 - i] *= level;
+        }
+      }
       buffers.set(key, buffer);
       trimCache();
       return buffer;
@@ -151,7 +188,8 @@
     if (battle?.trainer && encounter()) {
       warm('trainerBattle');
       warm('trainerVictory');
-    } else if (encounter() && !battle?.safari) warm('victory');
+    } else if (encounter() && battle?.safari) warm('water');
+    else if (encounter()) warm('victory');
     else if (!encounter()) {
       warm('pokedex');
       warm('wild');
@@ -175,39 +213,78 @@
       gain = context.createGain();
     source.buffer = buffer;
     source.loop = true;
+    const bounds = mapMusicBounds(key, buffer.duration);
+    source.loopStart = bounds.start;
+    source.loopEnd = bounds.end;
+    if (!audio.paused) audio.pause();
     source.connect(gain).connect(context.destination);
     const now = context.currentTime,
-      offset = (positions.get(key) ?? MAP_MUSIC_CUE[key] ?? 0) % buffer.duration;
-    gain.gain.setValueAtTime(musicGain(key), now);
+      saved = positions.get(key) ?? bounds.start,
+      offset = saved >= bounds.start && saved < bounds.end ? saved : bounds.start;
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(musicGain(key), now + 0.035);
     source.start(now + (immediate ? 0 : 0.006), offset);
-    active = { key, source, gain, buffer, offset, time: now + (immediate ? 0 : 0.006) };
+    active = {
+      key,
+      source,
+      gain,
+      buffer,
+      offset,
+      start: bounds.start,
+      end: bounds.end,
+      time: now + (immediate ? 0 : 0.006),
+    };
     visibleTheme = key;
     audio.dataset.theme = key;
     audio.dataset.playing = 'true';
     audio.dataset.backend = 'decoded';
     if (old) {
       old.gain.gain.setValueAtTime(old.gain.gain.value, now);
-      old.gain.gain.linearRampToValueAtTime(0, now + 0.014);
-      dispose(old, now + 0.016);
+      old.gain.gain.linearRampToValueAtTime(0, now + 0.06);
+      dispose(old, now + 0.065);
     }
     trimCache();
   }
   function fallback(key) {
+    const token = request;
+    wanted = key;
+    audio.dataset.request = String(token);
     if (visibleTheme !== key || !audio.src) {
       audio.src = MAP_MUSIC_TRACKS[key];
       audio.currentTime = positions.get(key) ?? MAP_MUSIC_CUE[key] ?? 0;
-      visibleTheme = key;
     }
+    visibleTheme = key;
     audio.volume = musicGain(key);
     audio.dataset.theme = key;
     audio.dataset.backend = 'media';
     audio
       .play()
       ?.then(() => {
+        if (token !== request || !canPlay() || theme() !== key) {
+          if (audio.dataset.theme === key && audio.dataset.request === String(token)) audio.pause();
+          return;
+        }
+        if (active) {
+          positions.set(active.key, position());
+          const old = active;
+          active = null;
+          old.gain.gain.setTargetAtTime(0, context.currentTime, 0.015);
+          dispose(old, context.currentTime + 0.06);
+        }
+        visibleTheme = key;
+        wanted = null;
         audio.dataset.playing = String(!audio.paused);
       })
-      .catch(() => {});
+      .catch(() => {
+        if (token === request) wanted = null;
+      });
   }
+  audio.addEventListener('timeupdate', () => {
+    if (audio.paused || !Number.isFinite(audio.duration)) return;
+    const bounds = mapMusicBounds(audio.dataset.theme, audio.duration);
+    if (audio.currentTime >= bounds.end || audio.currentTime < bounds.start)
+      audio.currentTime = bounds.start;
+  });
   function sync(immediate = false) {
     if (!canPlay()) {
       pause();
@@ -215,6 +292,7 @@
     }
     const key = theme();
     if (active?.key === key) {
+      unlock();
       // 曲の準備中に図鑑を閉じた場合、古い切替要求を残して再表示を妨げない。
       if (wanted && wanted !== key) {
         request++;
@@ -223,13 +301,13 @@
       audio.dataset.playing = 'true';
       return;
     }
+    if (!active && !audio.paused && audio.dataset.theme === key) return;
     if (wanted === key) return;
     wanted = key;
     const token = ++request;
     unlock();
-    if (!context) {
+    if (!context || failed.has(key)) {
       fallback(key);
-      wanted = null;
       return;
     }
     if (buffers.has(key)) {
@@ -248,7 +326,7 @@
         if (token !== request || !canPlay()) return;
         wanted = null;
         failed.add(key);
-        if (!active) fallback(key);
+        fallback(key);
       });
     warmScene();
   }
@@ -280,7 +358,7 @@
       warm('trainerBattle');
       warm('trainerVictory');
     } else {
-      warm('wild');
+      warm(battle?.safari ? 'water' : 'wild');
       if (!battle?.safari) warm('victory');
     }
   });
@@ -355,7 +433,7 @@
     prepareScene: async (key) => {
       if (!enabled || !MAP_MUSIC_TRACKS[key]) return;
       try {
-        await load(key);
+        await Promise.race([load(key), new Promise((resolve) => setTimeout(resolve, 1500))]);
         sync();
         await Promise.resolve();
       } catch {}
@@ -363,12 +441,14 @@
     inspect: () => ({
       theme: visibleTheme,
       wanted,
-      playing: !!active || !audio.paused,
+      playing: !!(active && context?.state === 'running') || !audio.paused,
       position: position(),
       backend: audio.dataset.backend,
       cached: [...buffers.keys()],
       volume: musicGain(visibleTheme || 'field'),
       narration,
+      loop: active ? { start: active.start, end: active.end } : null,
+      failed: [...failed],
     }),
     sync,
   });

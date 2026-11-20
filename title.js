@@ -75,6 +75,14 @@
   bgm.id = 'title-bgm';
   bgm.src = config.audio.titleBgm;
   bgm.loop = true;
+  bgm.addEventListener('timeupdate', () => {
+    if (
+      !bgm.paused &&
+      Number.isFinite(bgm.duration) &&
+      bgm.currentTime >= Math.max(0.1, bgm.duration - (config.audio.loopTailSeconds || 0))
+    )
+      bgm.currentTime = 0;
+  });
   bgm.preload = 'auto';
   bgm.volume = config.audio.volume * (window.PokekoroAudioMix?.get('bgm') ?? 0.75);
   document.body.append(bgm);
@@ -115,7 +123,8 @@
           .connect(musicContext.destination);
         bgm.volume = 1;
       }
-      if (musicContext.state === 'suspended') musicContext.resume().catch(() => {});
+      if (!['running', 'closed'].includes(musicContext.state))
+        musicContext.resume().catch(() => {});
     } catch {
       /* Media-element volume remains the fallback. */
     }
@@ -123,9 +132,10 @@
   function restoreMusicVolume() {
     if (musicGain) {
       musicGain.gain.cancelScheduledValues(musicContext.currentTime);
-      musicGain.gain.setValueAtTime(
+      musicGain.gain.setTargetAtTime(
         config.audio.volume * (window.PokekoroAudioMix?.get('bgm') ?? 0.75),
         musicContext.currentTime,
+        0.03,
       );
     } else bgm.volume = config.audio.volume * (window.PokekoroAudioMix?.get('bgm') ?? 0.75);
   }
@@ -160,7 +170,8 @@
         const source = musicContext.createBufferSource();
         source.buffer = cryBuffer;
         cryGain = musicContext.createGain();
-        cryGain.gain.value = window.PokekoroAudioMix?.get('se') ?? 1;
+        cryGain.gain.value =
+          (config.audio.cryVolume ?? 1) * (window.PokekoroAudioMix?.get('se') ?? 1);
         source.connect(cryGain).connect(musicContext.destination);
         crySource = source;
         source.onended = () => {
@@ -173,7 +184,7 @@
         source.start(0, config.audio.cryOffsetSeconds || 0);
         return;
       }
-      cry.volume = window.PokekoroAudioMix?.get('se') ?? 1;
+      cry.volume = (config.audio.cryVolume ?? 1) * (window.PokekoroAudioMix?.get('se') ?? 1);
       cry.currentTime = 0;
       cry.addEventListener('ended', finish);
       cry.addEventListener('error', finish);
@@ -437,7 +448,7 @@
 
   document.addEventListener('audio:mixchange', () => {
     restoreMusicVolume();
-    cry.volume = window.PokekoroAudioMix?.get('se') ?? 1;
+    cry.volume = (config.audio.cryVolume ?? 1) * (window.PokekoroAudioMix?.get('se') ?? 1);
     if (cryGain && musicContext)
       cryGain.gain.setTargetAtTime(cry.volume, musicContext.currentTime, 0.015);
   });

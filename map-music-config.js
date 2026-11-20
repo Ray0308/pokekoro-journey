@@ -23,21 +23,41 @@ function mapMusicTheme(mapId) {
     ['mt-moon', 'diglett-cave', 'rock-tunnel', 'seafoam-islands', 'cerulean-cave'].includes(mapId)
   )
     return 'cave';
-  if (['hideout', 'tower', 'mansion'].includes(map.kind)) return 'hideout';
+  if (map.kind === 'tower') return 'cave';
+  if (['hideout', 'mansion'].includes(map.kind)) return 'hideout';
   if (mapId === 'ss-anne' || mapId === 'rainbow-cloud') return 'water';
   return 'field';
 }
 
-// The supplied field recording is quieter than the synthesized themes.
+// 実音源のRMS測定に基づき、通常BGMの平均音量を概ね揃える。図鑑は読み上げ用に控えめ。
+const MAP_MUSIC_LEVELS = Object.freeze({
+  field: 0.4,
+  wild: 0.26,
+  trainer: 0.405,
+  trainerBattle: 0.225,
+  victory: 0.61,
+  trainerVictory: 0.74,
+  gym: 0.304,
+  cave: 0.354,
+  hideout: 0.389,
+  league: 0.233,
+  water: 0.311,
+  pokedex: 0.205,
+});
 function mapMusicVolume(theme) {
-  return theme === 'pokedex'
-    ? 0.25
-    : theme === 'field'
-      ? 0.5
-      : theme === 'wild'
-        ? 0.36
-        : MAP_AUDIO.volume;
+  return MAP_MUSIC_LEVELS[theme] ?? MAP_AUDIO.volume;
 }
-
-// Measured first musical onset: keep the tiny pre-attack, skip the export lead-in.
-const MAP_MUSIC_CUE = Object.freeze({ trainerBattle: 0.62 });
+// MP3書き出し時の前後の無音を、初回だけでなく繰り返しでも除外する。
+const MAP_MUSIC_CUE = Object.freeze({
+  field: 0.08,
+  wild: 0.08,
+  trainer: 0.28,
+  trainerBattle: 0.62,
+  victory: 0.47,
+  trainerVictory: 0.77,
+});
+const MAP_MUSIC_TAIL = Object.freeze({ field: 4.0, trainer: 0.47, trainerVictory: 0.95 });
+function mapMusicBounds(key, duration) {
+  const start = Math.min(MAP_MUSIC_CUE[key] ?? 0, Math.max(0, duration - 0.1));
+  return { start, end: Math.max(start + 0.05, duration - (MAP_MUSIC_TAIL[key] ?? 0)) };
+}

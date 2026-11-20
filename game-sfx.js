@@ -52,7 +52,7 @@
           data[i] = seed / 2147483648 - 1;
         }
       }
-      if (context.state === 'suspended') context.resume().catch(() => {});
+      if (!['running', 'closed'].includes(context.state)) context.resume().catch(() => {});
       return context.state !== 'closed';
     } catch {
       return false;
@@ -122,7 +122,8 @@
     filter.type = 'bandpass';
     filter.frequency.value = frequency;
     filter.Q.value = 0.8;
-    g.gain.setValueAtTime(volume, now);
+    g.gain.setValueAtTime(0.0001, now);
+    g.gain.exponentialRampToValueAtTime(volume, now + 0.003);
     g.gain.exponentialRampToValueAtTime(0.0001, now + duration);
     source
       .connect(filter)
@@ -397,5 +398,12 @@
     stopAll,
     tone: (f, d) => note(f, d, 0, 0.12),
     config: CONFIG,
+    inspect: () => ({
+      enabled,
+      voices: voices.size,
+      rolling: !!rollMode,
+      volume: master?.gain.value ?? CONFIG.volume * (window.PokekoroAudioMix?.get('se') ?? 1),
+      state: context?.state ?? 'locked',
+    }),
   });
 })();

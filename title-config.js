@@ -17,6 +17,8 @@ window.POKEKORO_TITLE = Object.freeze({
   audio: Object.freeze({
     titleBgm: 'assets/audio/title-opening.mp3',
     volume: 0.35,
+    loopTailSeconds: 5.1,
+    cryVolume: 0.6,
     startCry: 'assets/audio/munchlax-cry.mp3',
     cryMs: 2100,
     cryOffsetSeconds: 0.025,

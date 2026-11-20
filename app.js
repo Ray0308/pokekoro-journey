@@ -1245,6 +1245,12 @@ function advanceMap() {
 }
 function result(html, victoryFeedback = true) {
   $('#resultBody').innerHTML = html;
+  $('#result').dataset.audio =
+    victoryFeedback && battle?.safari
+      ? 'safari'
+      : victoryFeedback && battle?.victory
+        ? 'victory'
+        : 'map';
   $('#result').showModal();
   if (victoryFeedback && battle && battle.hp === 0) {
     celebrate();
