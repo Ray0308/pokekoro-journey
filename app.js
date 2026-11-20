@@ -496,6 +496,14 @@ function drawRoute() {
   return (
     `<img class="map-art" src="${activeMap().background}" alt="">` +
     decoration +
+    (activeMap().routeBridges
+      ? `<svg class="route-bridges" viewBox="0 0 900 900" preserveAspectRatio="none" aria-hidden="true">${activeMap()
+          .routeBridges.map(
+            ([x1, y1, x2, y2]) =>
+              `<path d="M ${x1 * 9} ${y1 * 9} L ${x2 * 9} ${y2 * 9}" fill="none" stroke="#795534" stroke-width="36" stroke-linecap="square"/><path d="M ${x1 * 9} ${y1 * 9} L ${x2 * 9} ${y2 * 9}" fill="none" stroke="#e6ba79" stroke-width="28" stroke-linecap="square"/><path d="M ${x1 * 9} ${y1 * 9} L ${x2 * 9} ${y2 * 9}" fill="none" stroke="#a47a4b" stroke-width="27" stroke-dasharray="2 6"/>`,
+          )
+          .join('')}</svg>`
+      : '') +
     svg +
     currentSquares()
       .map((s, i) => {
