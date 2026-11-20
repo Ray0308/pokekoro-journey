@@ -30,3 +30,24 @@ const RAINBOW_IDS = Object.freeze([...new Set(Object.values(RAINBOW_POOLS).flat(
 const NORMAL_ENCOUNTER_IDS = Object.freeze(
   POKEDEX.map((m) => m.id).filter((id) => !RAINBOW_IDS.includes(id)),
 );
+
+// 洞窟の捕獲後ローテーション。幻と進化前のコスモッグ/コスモウムは含めない。
+const CAVE_LEGENDARY_IDS = Object.freeze(
+  RAINBOW_POOLS.legendary.filter((id) => ![150, 789, 790].includes(id)),
+);
+function nextCaveLegendary(owned, previous = null, rng = Math.random) {
+  const missing = CAVE_LEGENDARY_IDS.filter((id) => !owned.includes(id));
+  const pool = missing.length ? missing : CAVE_LEGENDARY_IDS.filter((id) => id !== previous);
+  const roll = Math.max(0, Math.min(1 - Number.EPSILON, Number(rng()) || 0));
+  return pool[Math.floor(roll * pool.length)];
+}
+function resolveCaveBoss(stock, rng = Math.random) {
+  if (!stock.owned.includes(150)) return 150;
+  const missing = CAVE_LEGENDARY_IDS.filter((id) => !stock.owned.includes(id));
+  if (
+    CAVE_LEGENDARY_IDS.includes(stock.caveBossId) &&
+    (!missing.length || missing.includes(stock.caveBossId))
+  )
+    return stock.caveBossId;
+  return nextCaveLegendary(stock.owned, stock.caveBossId, rng);
+}

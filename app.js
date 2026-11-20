@@ -79,6 +79,10 @@ state.tour = Number.isSafeInteger(state.tour) && state.tour > 0 ? state.tour : 1
 normalizeTypeBalls(state);
 // 旧セーブの所持・進行を維持し、ライバルの系統とボス勝利記録だけを補完する。
 normalizeTrainerState(state);
+state.caveBossId =
+  state.caveBossId === 150 || CAVE_LEGENDARY_IDS.includes(state.caveBossId)
+    ? state.caveBossId
+    : null;
 // 周回・マップごとの再挑戦記録。撤退や野生戦では加算しない。
 state.bossLosses =
   state.bossLosses && typeof state.bossLosses === 'object' && !Array.isArray(state.bossLosses)
@@ -245,6 +249,10 @@ function rainbowExitReady() {
   return isRainbow() && state.rainbowVisit?.exitPending;
 }
 function activeBossId() {
+  if (state.mapId === 'cerulean-cave') {
+    state.caveBossId = resolveCaveBoss(state);
+    return state.caveBossId;
+  }
   return isRainbow()
     ? state.rainbowVisit?.bossId || RAINBOW_CONFIG.bossIds[0]
     : activeMap().boss?.pokemonId || 9;
@@ -1155,7 +1163,7 @@ function renderJourney() {
     const map = MAPS[id],
       current = id === state.mapId,
       done = cleared.has(id);
-    return `<li class="${current ? 'journey-current' : ''} ${done ? 'journey-cleared' : ''}" ${current ? 'aria-current="step"' : ''}><span class="journey-step">${String(i + 1).padStart(2, '0')}</span><div><strong>${map.name}</strong><small>${map.boss.role}：${map.boss.name}</small>${done && !current ? `<button data-revisit="${id}">このマップへ 行く</button>` : ''}</div><span class="journey-status">${current ? 'いまここ' : done ? '✓ クリア' : 'これから'}</span></li>`;
+    return `<li class="${current ? 'journey-current' : ''} ${done ? 'journey-cleared' : ''}" ${current ? 'aria-current="step"' : ''}><span class="journey-step">${String(i + 1).padStart(2, '0')}</span><div><strong>${map.name}</strong><small>${map.boss.role}：${id === 'cerulean-cave' && state.owned.includes(150) ? (state.mapId === id ? mons[activeBossId() - 1].label : '伝説のポケモン') : map.boss.name}</small>${done && !current ? `<button data-revisit="${id}">このマップへ 行く</button>` : ''}</div><span class="journey-status">${current ? 'いまここ' : done ? '✓ クリア' : 'これから'}</span></li>`;
   }).join('');
   if (state.mapReturn)
     $('#journey-summary').innerHTML +=
@@ -1490,6 +1498,8 @@ async function catchMon(ballId, chance, thrown = false) {
   if (ok) {
     if (duplicate) state.balls += 2;
     else state.owned.push(battle.m.id);
+    if (state.mapId === 'cerulean-cave' && battle.boss)
+      state.caveBossId = nextCaveLegendary(state.owned, battle.m.id);
   }
   render();
   showCaptureOutcome(battle.m, ok, duplicate);

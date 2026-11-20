@@ -82,7 +82,7 @@ const generated =
   ').map(([id,entries])=>[id,Object.freeze(entries.map(entry=>Object.freeze(entry)))])));\n';
 const name = (id) => game.mons[id - 1].label;
 let doc =
-  '# 地域別の出現候補・ボス情報\n\n0.9.2.85。全世代を残す本作独自の設定で、原作の生息地・出現率を再現した表ではない。伝説・幻は通常抽選から除外し、にじのくもを維持。ハナダの洞窟最深部のミュウツーは既存の例外。\n\n進化段階の重みは10/4/1、地域の代表候補はさらに3倍。同じマップでは遭遇のたびに独立抽選。捕獲確率・敵HP・報酬は変更しない。\n\n';
+  '# 地域別の出現候補・ボス情報\n\n0.9.2.86。全世代を残す本作独自の設定で、原作の生息地・出現率を再現した表ではない。伝説・幻は通常抽選から除外し、にじのくもを維持。ハナダの洞窟最深部はミュウツー未所持なら固定。所持後は幻・コスモッグ・コスモウム・ミュウツーを除く伝説へ交代し、未捕獲を優先する例外。\n\n進化段階の重みは10/4/1、地域の代表候補はさらに3倍。同じマップでは遭遇のたびに独立抽選。捕獲確率・敵HP・報酬は変更しない。\n\n';
 for (const id of game.order) {
   const rule = rules.maps[id];
   doc +=
@@ -101,11 +101,14 @@ for (const id of game.order) {
     '\n\n';
 }
 const rosters = JSON.parse(read('data/trainer-rosters.json'));
-doc += '## ボスの設定元（編成は変更なし）\n\n| マップ | 相手・設定元 |\n| --- | --- |\n';
+doc += '## ボスの設定元（トレーナー編成は維持）\n\n| マップ | 相手・設定元 |\n| --- | --- |\n';
 for (const id of game.order) {
   let text;
   if (game.maps[id].boss.wild)
-    text = id === 'safari-zone' ? 'ガルーラ／ラッキー／ケンタロスから抽選' : 'ミュウツー';
+    text =
+      id === 'safari-zone'
+        ? 'ガルーラ／ラッキー／ケンタロスから抽選'
+        : 'ミュウツー未所持なら固定。捕獲後は未捕獲の別の伝説を優先して交代';
   else if (rosters.bosses[id])
     text =
       game.maps[id].boss.name +
