@@ -32,6 +32,7 @@
     const [speaker, words] = OPENING_STORY[current];
     const forest = ['meet', 'friend'].includes(current);
     const dex = ['dex', 'register'].includes(current);
+    dialog.dataset.stage = current;
     dialog.dataset.scene = forest ? 'forest' : dex ? 'dex' : 'lab';
     const chosen = preview || state.opening.starterId;
     let scene = forest
@@ -155,6 +156,7 @@
       }
       actions.append(button);
     }
+    if (current === 'register') sfx('success');
     if (!dialog.open) dialog.showModal();
     document.dispatchEvent(new CustomEvent('opening:scene'));
     actions

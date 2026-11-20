@@ -84,8 +84,10 @@ function typeBallPickerButton(stock) {
     render();
     quantity.value = state.balls >= KURT_CONFIG.cost ? 1 : 0;
     update();
-    status.textContent =
-      TYPE_BALLS[selectedType].name + 'を ' + quote.quantity + '個 つくってもらった！';
+    status.classList.remove('exchange-complete');
+    status.innerHTML = `<span class="exchange-received"><img src="${TYPE_BALLS[selectedType].image}" alt=""><span><strong>できあがり！ ${TYPE_BALLS[selectedType].name} ×${quote.quantity}</strong><small>ガンテツが 心をこめて つくったよ！<br>もちもの：${quote.typeStock}こ</small></span></span>`;
+    void status.offsetWidth;
+    status.classList.add('exchange-complete');
     window.PokekoroSfx?.play('success');
     setTimeout(() => {
       trading = false;
@@ -143,6 +145,7 @@ function typeBallPickerButton(stock) {
       render();
       selectedType = partyTypes(state.party)[0] ?? 0;
       quantity.value = state.balls >= KURT_CONFIG.cost ? 1 : 0;
+      status.classList.remove('exchange-complete');
       status.textContent = '好きな属性を えらんでおくれ！';
       choices.innerHTML = TYPE_BALLS.map(
         (ball) =>

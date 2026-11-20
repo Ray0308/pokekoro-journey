@@ -370,3 +370,105 @@
   clip-path: none;
   border-radius: 50%;
 }
+
+.retry-result {
+  text-align: center;
+  color: #355b68;
+}
+.retry-result h2 {
+  color: #386983;
+  font-size: clamp(20px, 5vw, 27px);
+}
+.retry-partners {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 16px 0;
+}
+.retry-partners img {
+  width: clamp(35px, 12vw, 55px);
+  height: 60px;
+  object-fit: contain;
+}
+.retry-experience {
+  background: linear-gradient(120deg, #fff5cb, #e4f5f0);
+  border: 2px solid #d3b45c;
+  border-radius: 16px;
+  padding: 16px;
+  margin: 16px 0;
+  animation: exchange-received-in 450ms ease-out both;
+}
+.retry-experience strong,
+.retry-experience span {
+  display: block;
+}
+.retry-experience strong {
+  color: #876124;
+  font-size: 23px;
+  margin-bottom: 8px;
+}
+.retry-actions {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+.retry-actions button {
+  width: 100%;
+  min-height: 60px;
+}
+.retry-actions small {
+  display: block;
+  font-size: 12px;
+  margin-top: 4px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .retry-experience {
+    animation: none;
+  }
+}
+/* 再出発の2択を報酬より目立たせ、縦長のカードで押し出さない。 */
+.retry-result .reward-items {
+  display: block;
+  margin: 8px 0 12px;
+}
+#resultBody .retry-result .reward-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px;
+  min-height: 0;
+  border-radius: 12px;
+}
+#resultBody .retry-result .reward-card img {
+  width: 34px;
+  height: 34px;
+  margin: 0;
+}
+.retry-result .reward-name {
+  font-size: 11px;
+}
+.retry-result .reward-count {
+  margin: 0;
+  padding: 2px 8px;
+  font-size: 20px;
+}
+.retry-result p {
+  margin: 10px 0;
+  font-size: 13px;
+}
+.retry-result .retry-partners {
+  margin: 8px 0;
+}
+.retry-result .retry-experience {
+  padding: 10px;
+  margin: 10px 0;
+}
+.retry-result .retry-experience strong {
+  font-size: 20px;
+  margin-bottom: 4px;
+}
+.retry-result .retry-experience span {
+  font-size: 13px;
+}

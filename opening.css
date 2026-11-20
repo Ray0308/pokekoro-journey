@@ -254,3 +254,29 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
 }
+
+#opening[data-stage='register'] .opening-dex {
+  box-shadow:
+    0 0 0 5px #ffe6a5,
+    0 0 32px #ffc94d99;
+  animation: dex-gift-reveal 650ms ease-out both;
+}
+#opening[data-stage='register'] .opening-dex-screen img {
+  animation: dex-gift-reveal 650ms ease-out both;
+}
+@keyframes dex-gift-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.88);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #opening[data-stage='register'] .opening-dex,
+  #opening[data-stage='register'] .opening-dex-screen img {
+    animation: none;
+  }
+}

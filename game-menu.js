@@ -73,7 +73,7 @@
     document.querySelector('#item-bag-rainbow').before(typed);
     const ticket = state.rainbowTickets[0];
     document.querySelector('#item-bag-rainbow').innerHTML =
-      `<div class="bag-ticket"><img src="${RAINBOW_CONFIG.ticketImage}" alt=""><div><strong>虹のチケット ×${state.rainbowTickets.length}</strong><small>${ticket ? '帰り：' + MAPS[ticket.returnMapId].name : 'ボスから まれに 手に入るよ'}</small></div><button id="bag-use-ticket" ${ticket && !isRainbow() ? '' : 'disabled'}>つかう</button></div>`;
+      `<div class="bag-ticket"><img src="${RAINBOW_CONFIG.ticketImage}" alt=""><div><strong>虹のチケット ×${state.rainbowTickets.length}</strong><small>${ticket ? '帰り：' + MAPS[ticket.returnMapId].name : 'ボスから まれに 手に入るよ'}</small></div><button id="bag-use-ticket" ${ticket && !isRainbow() && !state.mapReturn ? '' : 'disabled'}>つかう</button></div>`;
     document.querySelector('#bag-use-ticket').onclick = () => {
       if (!ticket || isRainbow()) return;
       bag.close();

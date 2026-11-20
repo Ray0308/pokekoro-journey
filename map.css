@@ -2885,3 +2885,15 @@ body[data-game-view='party'] .app-version {
   left: 50%;
   transform: translateX(-50%);
 }
+
+#journey-list [data-revisit],
+#return-adventure {
+  min-height: 44px;
+  padding: 8px 12px;
+  margin-top: 6px;
+  font-size: 12px;
+  background: #e6f5f5;
+  color: #245868;
+  border: 1px solid #75acb6;
+  box-shadow: none;
+}

@@ -501,3 +501,7 @@
     gap: 2px;
   }
 }
+/* 横持ちのgrid指定で閉じたdialogを再表示しない。 */
+#battle:not([open]) {
+  display: none;
+}

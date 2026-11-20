@@ -79,6 +79,41 @@ state.tour = Number.isSafeInteger(state.tour) && state.tour > 0 ? state.tour : 1
 normalizeTypeBalls(state);
 // 旧セーブの所持・進行を維持し、ライバルの系統とボス勝利記録だけを補完する。
 normalizeTrainerState(state);
+// 周回・マップごとの再挑戦記録。撤退や野生戦では加算しない。
+state.bossLosses =
+  state.bossLosses && typeof state.bossLosses === 'object' && !Array.isArray(state.bossLosses)
+    ? state.bossLosses
+    : {};
+for (const key of Object.keys(state.bossLosses))
+  if (
+    !key.startsWith(state.tour + ':') ||
+    !Number.isSafeInteger(state.bossLosses[key]) ||
+    state.bossLosses[key] < 0
+  )
+    delete state.bossLosses[key];
+const savedReturn = state.mapReturn;
+state.mapReturn =
+  savedReturn &&
+  MAP_ORDER.includes(savedReturn.mapId) &&
+  Number.isInteger(savedReturn.pos) &&
+  savedReturn.pos >= 0 &&
+  savedReturn.pos < 15
+    ? {
+        mapId: savedReturn.mapId,
+        pos: savedReturn.pos,
+        lap: Number.isSafeInteger(savedReturn.lap) ? savedReturn.lap : 1,
+        pendingMapId: MAP_ORDER.includes(savedReturn.pendingMapId)
+          ? savedReturn.pendingMapId
+          : null,
+      }
+    : null;
+function bossLossKey() {
+  return state.tour + ':' + state.mapId;
+}
+function bossAssistActive() {
+  return (state.bossLosses[bossLossKey()] || 0) >= 2;
+}
+
 // チケットは入手元と帰還先を保持し、通常マップの周回進行から独立させる。
 function normalizeRainbowTicket(ticket) {
   if (
@@ -243,7 +278,8 @@ function grantRainbowTicket() {
 }
 // 捕獲中・別バトル中の移動を防ぎ、チケット消費と訪問データの作成を一緒に行う。
 function enterRainbow(ticketId) {
-  if (isRainbow() || capturePending || $('#battle').open || $('#encounter').open) return;
+  if (isRainbow() || state.mapReturn || capturePending || $('#battle').open || $('#encounter').open)
+    return;
   if (busy && !($('#result').open && battle?.trainer && battle?.rewardResolved)) return;
   const index = state.rainbowTickets.findIndex((ticket) => ticket.id === ticketId);
   if (index < 0) return;
@@ -289,7 +325,7 @@ function renderRainbowHub() {
     ticket = state.rainbowTickets[0];
   hub.innerHTML = isRainbow()
     ? `<div class="rainbow-hub-card"><strong>にじのくもを ぼうけん中</strong><p>ボス戦のあと：${MAPS[state.rainbowVisit.returnMapId].name}へ</p></div>`
-    : `<div class="rainbow-hub-card"><img src="${RAINBOW_CONFIG.ticketImage}" alt="虹のチケット"><div><strong>虹のチケット ×${state.rainbowTickets.length}</strong><p>${ticket ? '獲得：' + MAPS[ticket.sourceMapId].name + '<br>帰り：' + MAPS[ticket.returnMapId].name : '通常マップのボスから まれに手に入るよ'}</p></div><button id="use-rainbow-ticket" ${ticket ? '' : 'disabled'}>にじのくもへ</button></div>`;
+    : `<div class="rainbow-hub-card"><img src="${RAINBOW_CONFIG.ticketImage}" alt="虹のチケット"><div><strong>虹のチケット ×${state.rainbowTickets.length}</strong><p>${ticket ? '獲得：' + MAPS[ticket.sourceMapId].name + '<br>帰り：' + MAPS[ticket.returnMapId].name : '通常マップのボスから まれに手に入るよ'}</p></div><button id="use-rainbow-ticket" ${ticket && !state.mapReturn ? '' : 'disabled'}>にじのくもへ</button></div>`;
   if (ticket && !isRainbow()) $('#use-rainbow-ticket').onclick = () => enterRainbow(ticket.id);
 }
 function activeMap() {
@@ -713,9 +749,12 @@ function openBattle(trainer, boss, continuation = null, practice = false) {
   if (!tutorial) markPokemonSeen(id);
   // 通常の野生は番号の剰余ではなく種族値で差を付ける。トレーナーのレベル・エース補正は維持。
   const baseHP = member?.hp ?? (boss ? 620 : isSafari() ? 300 + ((m.id - 1) % 3) * 65 : 365);
-  const totalHP = tutorial ? 1 : isSafari() ? baseHP : PokemonBattleStats.enemyHP(m, baseHP);
+  const normalHP = tutorial ? 1 : isSafari() ? baseHP : PokemonBattleStats.enemyHP(m, baseHP);
+  const assisted = !tutorial && boss && !isSafari() && !isRainbow() && bossAssistActive();
+  const totalHP = assisted ? Math.max(1, Math.round(normalHP * 0.9)) : normalHP;
   battle = {
     tutorial,
+    assisted,
     m,
     trainer,
     boss,
@@ -762,6 +801,7 @@ function openBattle(trainer, boss, continuation = null, practice = false) {
   if (matchup?.factor !== 0)
     $('#weakness-tip').textContent +=
       ` · ${battle.puzzleTypes.length}属性 ×${typeDiversityBonus(battle.puzzleTypes.length).toFixed(2)}`;
+  if (assisted) $('#weakness-tip').textContent = '経験を いかそう！ 相手のHP −10％';
   $('#enemyname').textContent = m.label;
   $('#enemyimg').src = pokemonPortrait(m.id);
   $('#enemyimg').alt = m.label;
@@ -1062,14 +1102,71 @@ function renderJourney() {
     const map = MAPS[id],
       current = id === state.mapId,
       done = cleared.has(id);
-    return `<li class="${current ? 'journey-current' : ''} ${done ? 'journey-cleared' : ''}" ${current ? 'aria-current="step"' : ''}><span class="journey-step">${String(i + 1).padStart(2, '0')}</span><div><strong>${map.name}</strong><small>${map.boss.role}：${map.boss.name}</small></div><span class="journey-status">${current ? 'いまここ' : done ? '✓ クリア' : 'これから'}</span></li>`;
+    return `<li class="${current ? 'journey-current' : ''} ${done ? 'journey-cleared' : ''}" ${current ? 'aria-current="step"' : ''}><span class="journey-step">${String(i + 1).padStart(2, '0')}</span><div><strong>${map.name}</strong><small>${map.boss.role}：${map.boss.name}</small>${done && !current ? `<button data-revisit="${id}">このマップへ 行く</button>` : ''}</div><span class="journey-status">${current ? 'いまここ' : done ? '✓ クリア' : 'これから'}</span></li>`;
   }).join('');
+  if (state.mapReturn)
+    $('#journey-summary').innerHTML +=
+      `<br><button id="return-adventure">${MAPS[state.mapReturn.mapId].name}の 冒険に戻る</button>`;
 }
+function canTravel() {
+  return (
+    !busy &&
+    !capturePending &&
+    !isRainbow() &&
+    !window.PokekoroOpening?.pending() &&
+    !document.querySelector('dialog[open]')
+  );
+}
+function revisitMap(id) {
+  if (
+    !canTravel() ||
+    !MAP_ORDER.includes(id) ||
+    !state.clearedMaps.includes(id) ||
+    id === state.mapId
+  )
+    return;
+  if (!state.mapReturn)
+    state.mapReturn = {
+      mapId: state.mapId,
+      pos: state.pos,
+      lap: state.lap,
+      pendingMapId: state.pendingMapId,
+    };
+  state.mapId = id;
+  state.pos = 0;
+  state.lap = 1;
+  state.pendingMapId = null;
+  battleEpoch++;
+  battle = null;
+  resetDicePresentation();
+  showTab('map');
+  render();
+  $('#message').textContent = activeMap().name + 'を もういちど 探索しよう！';
+}
+function returnToAdventure() {
+  if (!canTravel() || !state.mapReturn) return;
+  const origin = state.mapReturn;
+  state.mapReturn = null;
+  Object.assign(state, origin);
+  battleEpoch++;
+  battle = null;
+  resetDicePresentation();
+  showTab('map');
+  render();
+}
+$('#journey').addEventListener('click', (event) => {
+  const button = event.target.closest('[data-revisit]');
+  if (button) revisitMap(button.dataset.revisit);
+  if (event.target.closest('#return-adventure')) returnToAdventure();
+});
 function advanceMap() {
   const next = state.pendingMapId;
   if (!next || !Object.hasOwn(MAPS, next) || capturePending) return;
   resetDicePresentation();
-  if (state.mapId === MAP_ORDER.at(-1) && next === MAP_ORDER[0]) state.tour++;
+  if (state.mapId === MAP_ORDER.at(-1) && next === MAP_ORDER[0]) {
+    state.tour++;
+    state.bossLosses = {};
+  }
   state.pendingMapId = null;
   state.mapId = next;
   state.pos = 0;
@@ -1104,6 +1201,8 @@ function done() {
     advanceMap();
     return;
   }
+  if (state.mapReturn && battle?.boss && battle.rewardResolved && (battle.victory || battle.safari))
+    state.pos = 0;
   resetDicePresentation();
   busy = false;
   render();
@@ -1151,7 +1250,7 @@ function showCaptureOutcome(mon, ok, duplicate) {
       )
       .join(
         '',
-      )}</div>${ok && duplicate ? `<p>もう なかまの ポケモンだ！<br>ボールに こうかんしたよ。</p>${rewardItemsHtml([{ id: 'normal', count: 2 }])}` : `<p>${ok ? `つかまえた なかまが <strong>${state.owned.length}びき</strong>に！<br>図鑑で わざや タイプを みてみよう。` : 'また 草むらで あえるよ。<br>つぎの であいを さがそう！'}</p>`}${canView ? '<button id="capture-view" class="primary">なかまを みる</button>' : ''}<button id="done" class="${canView ? 'capture-continue' : 'primary'}">${rainbowExitReady() ? '旅に戻る' : battle.safari && battle.boss ? '次のマップへ' : 'ぼうけんを つづける →'}</button></section>`;
+      )}</div>${ok && duplicate ? `<p>もう なかまの ポケモンだ！<br>ボールに こうかんしたよ。</p>${rewardItemsHtml([{ id: 'normal', count: 2 }])}` : `<p>${ok ? `つかまえた なかまが <strong>${state.owned.length}びき</strong>に！<br>図鑑で わざや タイプを みてみよう。` : 'また 草むらで あえるよ。<br>つぎの であいを さがそう！'}</p>`}${canView ? '<button id="capture-view" class="primary">なかまを みる</button>' : ''}<button id="done" class="${canView ? 'capture-continue' : 'primary'}">${rainbowExitReady() ? '旅に戻る' : battle.safari && battle.boss && !state.mapReturn ? '次のマップへ' : 'ぼうけんを つづける →'}</button></section>`;
   $('.capture-outcome').focus({ preventScroll: true });
   $('#result').scrollTop = 0;
   $('#done').onclick = done;
@@ -1198,25 +1297,42 @@ function endBattle(win) {
   if (!win) {
     state.balls++;
     render();
+    const retryBoss = battle.boss && !cloudBoss;
+    if (retryBoss)
+      state.bossLosses[bossLossKey()] = Math.min(2, (state.bossLosses[bossLossKey()] || 0) + 1);
+    save();
     result(
-      `<h2>${cloudBoss ? 'にじのくもの ぼうけん終了' : 'もう一度、挑戦しよう。'}</h2>${battle.lossReason ? `<p>${battle.lossReason}<br>仲間は みんな元気に もどるよ</p>` : ''}<p>参加報酬を うけとった！</p>${rewardItemsHtml([{ id: 'normal', count: 1 }])}<button class="primary" id="done">${cloudBoss ? '旅に戻る' : 'マップへ戻る'}</button>`,
+      `<section class="retry-result" tabindex="-1"><small>つぎの いっぽへ！</small><h2>${cloudBoss ? 'にじのくもの ぼうけん終了' : 'もういちど 挑戦しよう！'}</h2><div class="retry-partners">${state.party.map((id) => `<img src="${pokemonPortrait(id)}" alt="${mons[id - 1].label}">`).join('')}</div><p>${battle.lossReason || '今回は あと一歩だったね。'}<br>なかまは みんな 元気になったよ！</p>${retryBoss && bossAssistActive() ? '<div class="retry-experience"><strong>経験を えた！</strong><span>相手の動きが わかってきた！<br>つぎの挑戦から 相手のHP −10％</span></div>' : '<p>なかまや わざを 見直してみよう！</p>'}<small>おうえんの ボールを ゲット！</small>${rewardItemsHtml([{ id: 'normal', count: 1 }])}${cloudBoss ? '<button class="primary" id="done">旅に戻る</button>' : `<div class="retry-actions"><button id="retry-start" class="primary">最初から 探しなおす<small>草むらで なかまを さがそう</small></button>${retryBoss ? '<button id="retry-boss">ボス前から 再挑戦<small>いまの なかまで 挑もう</small></button>' : '<button id="done">いまの場所に 戻る</button>'}</div>`}</section>`,
+      false,
     );
-    $('#done').onclick = done;
+    sfx('fail');
+    $('.retry-result').focus({ preventScroll: true });
+    $('#result').scrollTop = 0;
+    const respawn = (pos) => {
+      state.pos = pos;
+      battle = null;
+      done();
+    };
+    if ($('#retry-start')) $('#retry-start').onclick = () => respawn(0);
+    if ($('#retry-boss')) $('#retry-boss').onclick = () => respawn(13);
+    if ($('#done')) $('#done').onclick = done;
     return;
   }
   const normalBoss = battle.boss && !isRainbow();
   const earnedBadge =
     normalBoss && !state.clearedMaps.includes(state.mapId) ? activeMap().badge : null;
   if (normalBoss) {
+    delete state.bossLosses[bossLossKey()];
     if (battle.trainer)
       state.trainerWins[state.mapId] = Math.min(999, (state.trainerWins[state.mapId] || 0) + 1);
     if (!state.clearedMaps.includes(state.mapId)) state.clearedMaps.push(state.mapId);
-    state.pendingMapId = activeMap().nextMap || MAP_ORDER[0];
+    state.pendingMapId = state.mapReturn ? null : activeMap().nextMap || MAP_ORDER[0];
   }
   const masterDrop = battle.boss && Math.random() < BALL_DROPS.bossMaster;
   if (masterDrop) state.master++;
   const ticket =
     normalBoss &&
+    !state.mapReturn &&
     (window.PokekoroDebug?.forceRainbowTicket?.() || Math.random() < RAINBOW_CONFIG.ticketRate)
       ? grantRainbowTicket()
       : null;
@@ -1225,7 +1341,7 @@ function endBattle(win) {
     state.balls += 2;
     render();
     result(
-      `<section class="trainer-victory" tabindex="-1" aria-label="トレーナー戦の勝利とごほうび"><div class="trainer-victory-heading"><span class="victory-rays" aria-hidden="true"></span><div class="victory-medal" aria-hidden="true"><svg viewBox="0 0 100 80"><path d="M28 68C6 53 9 27 25 14M72 68c22-15 19-41 3-54" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/><path d="m50 12 8 17 19 3-14 13 3 19-16-9-16 9 3-19-14-13 19-3z" fill="currentColor"/></svg></div><small>しょうぶ けっちゃく！</small><h2>${battle.boss ? (activeMap().leagueFinal ? battle.trainerAppearance.name + 'に勝利！' : activeMap().name + 'クリア！') : 'トレーナーに勝利！'}</h2><div class="trainer-victory-balls" role="img" aria-label="相手のポケモンをすべて倒した">${trainerRosterMarkup(battle.series, true)}</div><p class="victory-opponent">${battle.trainerAppearance.name}の ${battle.series.team.length}ひきに かった！</p></div><h3 class="victory-reward-title"><span>ごほうび ゲット！</span></h3>${rewardItemsHtml([{ id: 'super', count: battle.boss ? 3 : 1 }, { id: 'normal', count: 2 }, ...(masterDrop ? [{ id: 'master', count: 1 }] : []), ...(ticket ? [{ id: 'rainbow', count: 1 }] : [])])}${earnedBadge ? `<div class="reward-badge"><img src="${activeMap().badgeImage}" alt="${earnedBadge}"><span><small>バッジを てにいれた！</small><strong>${earnedBadge}</strong></span></div>` : ''}${ticket ? '<button id="reward-rainbow" class="rainbow-action">にじのくもへ 行く</button>' : ''}<button id="done" class="primary">${battle.boss ? '次のマップへ' : 'マップへ もどる'}<span aria-hidden="true"> →</span></button></section>`,
+      `<section class="trainer-victory" tabindex="-1" aria-label="トレーナー戦の勝利とごほうび"><div class="trainer-victory-heading"><span class="victory-rays" aria-hidden="true"></span><div class="victory-medal" aria-hidden="true"><svg viewBox="0 0 100 80"><path d="M28 68C6 53 9 27 25 14M72 68c22-15 19-41 3-54" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/><path d="m50 12 8 17 19 3-14 13 3 19-16-9-16 9 3-19-14-13 19-3z" fill="currentColor"/></svg></div><small>しょうぶ けっちゃく！</small><h2>${battle.boss ? (activeMap().leagueFinal ? battle.trainerAppearance.name + 'に勝利！' : activeMap().name + 'クリア！') : 'トレーナーに勝利！'}</h2><div class="trainer-victory-balls" role="img" aria-label="相手のポケモンをすべて倒した">${trainerRosterMarkup(battle.series, true)}</div><p class="victory-opponent">${battle.trainerAppearance.name}の ${battle.series.team.length}ひきに かった！</p></div><h3 class="victory-reward-title"><span>ごほうび ゲット！</span></h3>${rewardItemsHtml([{ id: 'super', count: battle.boss ? 3 : 1 }, { id: 'normal', count: 2 }, ...(masterDrop ? [{ id: 'master', count: 1 }] : []), ...(ticket ? [{ id: 'rainbow', count: 1 }] : [])])}${earnedBadge ? `<div class="reward-badge"><img src="${activeMap().badgeImage}" alt="${earnedBadge}"><span><small>バッジを てにいれた！</small><strong>${earnedBadge}</strong></span></div>` : ''}${ticket ? '<button id="reward-rainbow" class="rainbow-action">にじのくもへ 行く</button>' : ''}<button id="done" class="primary">${battle.boss && !state.mapReturn ? '次のマップへ' : 'マップへ もどる'}<span aria-hidden="true"> →</span></button></section>`,
     );
     $('.trainer-victory').focus({ preventScroll: true });
     $('#result').scrollTop = 0;
