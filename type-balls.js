@@ -84,6 +84,22 @@ function ballCatchChance(ball, base, mon) {
     Math.max(0, base) + (typed ? (match ? KURT_CONFIG.matchBonus : 0) : ball.bonus),
   );
 }
+// 通常の表示確率は変えず、投球時の判定だけ補助する。保存フラグは追加しない。
+const BEGINNER_CAPTURE = Object.freeze({ bonus: 0.25, cap: 0.95 });
+function beginnerCaptureChance(chance, stock) {
+  if (!Number.isFinite(chance) || !stock) return chance;
+  const badgeIndex = MAP_ORDER.indexOf('pewter-gym');
+  // 旧セーブにバッジ記録がなくても、先のマップや周回・勝利記録から解除を判断する。
+  const passedBadge =
+    stock.tour > 1 ||
+    MAP_ORDER.indexOf(stock.mapId) > badgeIndex ||
+    (stock.trainerWins?.['pewter-gym'] || 0) > 0 ||
+    (Array.isArray(stock.clearedMaps) &&
+      stock.clearedMaps.some((id) => MAP_ORDER.indexOf(id) >= badgeIndex));
+  return passedBadge
+    ? chance
+    : Math.max(chance, Math.min(BEGINNER_CAPTURE.cap, chance + BEGINNER_CAPTURE.bonus));
+}
 function ownedTypeBalls(stock) {
   return TYPE_BALLS.filter((ball) => captureBallStock(ball, stock) > 0);
 }

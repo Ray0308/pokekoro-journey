@@ -67,3 +67,39 @@ check(ballCatchChance(z, 0.8, charizard) === 0.99, 'cap');
 check(ballCatchChance(z, 0.4, POKEDEX[149]) === 0.4, 'psychic does not match flying');
 check(ballCatchChance(z, 0.4, { types: [] }) === 0.4, 'unknown metadata');
 check(ballCatchChance(z, 0.4, { types: [4, 4] }) === 0.8, 'bonus once');
+
+// 序盤補助は実効値だけ。最初のバッジ、旧セーブ、周回、上限の境界を検証。
+const earlyStock = { mapId: 'viridian', tour: 1, clearedMaps: [], trainerWins: {} };
+check(Math.abs(beginnerCaptureChance(0.4, earlyStock) - 0.65) < 1e-10, 'early plus25');
+check(beginnerCaptureChance(0.8, earlyStock) === 0.95, 'early cap95');
+check(beginnerCaptureChance(0.99, earlyStock) === 0.99, 'keep higher chance');
+check(beginnerCaptureChance(1, earlyStock) === 1, 'master unchanged');
+for (const mapId of ['viridian', 'pewter-city', 'pewter-gym', 'rainbow-cloud'])
+  check(beginnerCaptureChance(0.4, { ...earlyStock, mapId }) > 0.4, 'before badge maps');
+for (const save of [
+  { ...earlyStock, clearedMaps: ['pewter-gym'] },
+  { ...earlyStock, trainerWins: { 'pewter-gym': 1 } },
+  { mapId: 'mt-moon' },
+  { mapId: 'pewter-city', clearedMaps: ['cerulean-gym'] },
+  { ...earlyStock, tour: 2 },
+])
+  check(beginnerCaptureChance(0.4, save) === 0.4, 'badge/legacy/tour disabled');
+check(
+  beginnerCaptureChance(0.4, JSON.parse(JSON.stringify(earlyStock))) > 0.4,
+  'reload preserves aid',
+);
+check(earlyStock.clearedMaps.length === 0, 'no save mutation');
+for (const id of ['viridian', 'pewter-city']) {
+  const stops = MAPS[id].squares;
+  check(stops.length === 15 && stops.filter((s) => s === 'wild').length === 9, 'nine wild stops');
+  check(
+    stops[0] === 'start' && stops[14] === 'goal' && stops[6] === 'exchange',
+    'special stops retained',
+  );
+  check(
+    stops.filter((s) => s === 'trainer').length === 1 &&
+      stops.filter((s) => s === 'item').length === 2,
+    'items and one trainer retained',
+  );
+}
+check(!MAPS['pewter-gym'].squares, 'later maps unchanged');

@@ -76,10 +76,29 @@ const LEAGUE_ROUTE_POINTS = Object.freeze(
     [50, 24],
   ].map((point) => Object.freeze(point)),
 );
+// 序盤2マップは仲間を集めやすくする。入口・道具・交換所・最後の一般戦・ボスを維持。
+const EARLY_ROUTE_SQUARES = Object.freeze([
+  'start',
+  'wild',
+  'item',
+  'wild',
+  'wild',
+  'wild',
+  'exchange',
+  'wild',
+  'wild',
+  'wild',
+  'item',
+  'trainer',
+  'wild',
+  'wild',
+  'goal',
+]);
 const MAPS = Object.freeze({
   'viridian': Object.freeze({
     'name': 'トキワの森',
     'kind': 'forest',
+    'squares': EARLY_ROUTE_SQUARES,
     'background': 'assets/map/viridian-forest-v2.webp',
     'backgroundPlaceholder': false,
     'aspectRatio': 1,
@@ -163,6 +182,7 @@ const MAPS = Object.freeze({
   'pewter-city': Object.freeze({
     'name': 'ニビシティ',
     'kind': 'meadow',
+    'squares': EARLY_ROUTE_SQUARES,
     'background': 'assets/map/pewter-city.webp',
     'backgroundPlaceholder': false,
     'aspectRatio': 1,

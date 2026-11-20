@@ -1272,7 +1272,8 @@ async function catchMon(ballId, chance, thrown = false) {
     chance = ballCatchChance(selected, battle.captureBase, battle.m);
   capturePending = true;
   save();
-  let ok = Math.random() < chance;
+  const effectiveChance = battle.safari ? chance : beginnerCaptureChance(chance, state);
+  let ok = Math.random() < effectiveChance;
   busy = true;
   await playCaptureThrow(selected, battle.m);
   let duplicate = state.owned.includes(battle.m.id);
