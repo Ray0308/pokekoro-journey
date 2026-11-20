@@ -1,0 +1,238 @@
+{
+  "schemaVersion": 1,
+  "policy": "全世代を維持する本作独自の地域分け。原作の生息地・出現率の再現ではない。",
+  "speciesSource": {
+    "repository": "PokeAPI/pokeapi",
+    "commit": "f38eb24b70f8462976154f534e79bf2bdd7af847",
+    "path": "data/v2/csv/pokemon_species.csv",
+    "sha256": "e66e2eeb25fd3836b0ebab6bf87bbf01960aa3c0555e2bac495fa8393c5e0c45"
+  },
+  "categoryPriority": [
+    ["forest", ["むし", "くさ"]],
+    ["haunted", ["ゴースト", "あく"]],
+    ["swamp", ["どく"]],
+    ["water", ["みず"]],
+    ["ice", ["こおり"]],
+    ["fire", ["ほのお"]],
+    ["industry", ["でんき", "はがね"]],
+    ["psychic", ["エスパー"]],
+    ["rock", ["じめん", "いわ"]],
+    ["mountain", ["ドラゴン", "かくとう"]],
+    ["garden", ["フェアリー"]],
+    ["meadow", ["ノーマル", "ひこう"]]
+  ],
+  "stageWeights": [10, 4, 1],
+  "seedMultiplier": 3,
+  "maps": {
+    "viridian": {
+      "theme": "森",
+      "categories": ["forest", "meadow", "garden"],
+      "maxStage": 1,
+      "maxBST": 430,
+      "seeds": [10, 13, 16, 25]
+    },
+    "pewter-city": {
+      "theme": "山すその草地",
+      "categories": ["meadow", "rock", "garden"],
+      "maxStage": 1,
+      "maxBST": 440,
+      "seeds": [19, 21, 29, 32, 74]
+    },
+    "pewter-gym": {
+      "theme": "岩のジム",
+      "categories": ["rock"],
+      "maxStage": 1,
+      "maxBST": 460,
+      "seeds": [27, 50, 74, 95]
+    },
+    "mt-moon": {
+      "theme": "月の洞窟",
+      "categories": ["rock", "haunted"],
+      "maxStage": 1,
+      "maxBST": 480,
+      "seeds": [35, 39, 41, 46, 74]
+    },
+    "cerulean-city": {
+      "theme": "川辺の街",
+      "categories": ["water", "meadow", "garden"],
+      "maxStage": 1,
+      "maxBST": 490,
+      "seeds": [43, 54, 60, 63, 118]
+    },
+    "cerulean-gym": {
+      "theme": "水のジム",
+      "categories": ["water"],
+      "maxStage": 2,
+      "maxBST": 540,
+      "seeds": [54, 60, 72, 90, 116, 120]
+    },
+    "ss-anne": {
+      "theme": "港・船の周辺",
+      "categories": ["water", "meadow", "industry"],
+      "maxStage": 1,
+      "maxBST": 520,
+      "seeds": [66, 72, 81, 98, 129]
+    },
+    "vermilion-gym": {
+      "theme": "電気のジム",
+      "categories": ["industry"],
+      "maxStage": 2,
+      "maxBST": 560,
+      "seeds": [25, 81, 100, 125]
+    },
+    "diglett-cave": {
+      "theme": "地中の洞窟",
+      "categories": ["rock"],
+      "maxStage": 2,
+      "maxBST": 540,
+      "seeds": [27, 50, 51]
+    },
+    "rock-tunnel": {
+      "theme": "岩山の洞窟",
+      "categories": ["rock", "mountain"],
+      "maxStage": 2,
+      "maxBST": 560,
+      "seeds": [41, 66, 74, 95, 104]
+    },
+    "celadon-city": {
+      "theme": "庭園の街",
+      "categories": ["garden", "forest", "meadow"],
+      "maxStage": 2,
+      "maxBST": null,
+      "seeds": [37, 43, 52, 58, 133]
+    },
+    "celadon-gym": {
+      "theme": "草のジム",
+      "categories": ["forest", "garden"],
+      "maxStage": 2,
+      "maxBST": null,
+      "seeds": [43, 69, 102, 114]
+    },
+    "rocket-hideout": {
+      "theme": "地下のアジト",
+      "categories": ["industry", "swamp", "haunted"],
+      "maxStage": 2,
+      "maxBST": null,
+      "seeds": [19, 23, 41, 52, 88, 109]
+    },
+    "pokemon-tower": {
+      "theme": "霊の塔",
+      "categories": ["haunted", "psychic"],
+      "maxStage": 2,
+      "maxBST": null,
+      "seeds": [92, 93, 94, 104]
+    },
+    "safari-zone": {
+      "theme": "草地・池・岩場の保護区",
+      "categories": ["meadow", "forest", "garden", "water", "rock"],
+      "maxStage": 2,
+      "maxBST": null,
+      "seeds": [102, 111, 113, 115, 123, 127, 128, 147]
+    },
+    "fuchsia-gym": {
+      "theme": "毒のジム",
+      "categories": ["swamp", "forest"],
+      "maxStage": 2,
+      "maxBST": null,
+      "seeds": [23, 48, 88, 109]
+    },
+    "silph-co": {
+      "theme": "研究施設",
+      "categories": ["industry", "psychic"],
+      "maxStage": 2,
+      "maxBST": null,
+      "seeds": [81, 100, 137]
+    },
+    "saffron-gym": {
+      "theme": "エスパーのジム",
+      "categories": ["psychic"],
+      "maxStage": 2,
+      "maxBST": null,
+      "seeds": [63, 64, 96, 122]
+    },
+    "seafoam-islands": {
+      "theme": "凍える海の洞窟",
+      "categories": ["ice", "water"],
+      "maxStage": 2,
+      "maxBST": null,
+      "seeds": [79, 86, 90, 124, 131]
+    },
+    "pokemon-mansion": {
+      "theme": "廃研究所",
+      "categories": ["fire", "swamp", "industry"],
+      "maxStage": 2,
+      "maxBST": null,
+      "seeds": [37, 58, 77, 88, 109, 126, 132]
+    },
+    "cinnabar-gym": {
+      "theme": "炎のジム",
+      "categories": ["fire"],
+      "maxStage": 2,
+      "maxBST": null,
+      "seeds": [37, 58, 77, 126]
+    },
+    "viridian-gym": {
+      "theme": "地面のジム",
+      "categories": ["rock"],
+      "maxStage": 2,
+      "maxBST": null,
+      "seeds": [27, 50, 104, 111]
+    },
+    "route-23": {
+      "theme": "リーグへ続く山道",
+      "categories": ["mountain", "rock", "meadow"],
+      "maxStage": 2,
+      "maxBST": null,
+      "seeds": [21, 56, 66, 111, 123]
+    },
+    "victory-road": {
+      "theme": "最後の岩山洞窟",
+      "categories": ["rock", "mountain"],
+      "maxStage": 2,
+      "maxBST": null,
+      "seeds": [41, 66, 74, 95, 105]
+    },
+    "indigo-lorelei": {
+      "theme": "氷・水の会場周辺",
+      "categories": ["ice", "water"],
+      "maxStage": 2,
+      "maxBST": null,
+      "seeds": [86, 90, 124, 131]
+    },
+    "indigo-bruno": {
+      "theme": "格闘・岩の会場周辺",
+      "categories": ["mountain", "rock"],
+      "maxStage": 2,
+      "maxBST": null,
+      "seeds": [66, 95, 106, 107]
+    },
+    "indigo-agatha": {
+      "theme": "霊・毒の会場周辺",
+      "categories": ["haunted", "swamp"],
+      "maxStage": 2,
+      "maxBST": null,
+      "seeds": [23, 41, 92, 93]
+    },
+    "indigo-lance": {
+      "theme": "竜の会場周辺",
+      "categories": ["mountain", "water"],
+      "maxStage": 2,
+      "maxBST": null,
+      "seeds": [129, 130, 142, 147, 148]
+    },
+    "indigo-champion": {
+      "theme": "リーグ最終会場周辺",
+      "categories": ["mountain", "industry", "meadow"],
+      "maxStage": 2,
+      "maxBST": null,
+      "seeds": [18, 58, 65, 112, 130]
+    },
+    "cerulean-cave": {
+      "theme": "最深部の洞窟",
+      "categories": ["rock", "psychic", "haunted", "water"],
+      "maxStage": 2,
+      "maxBST": null,
+      "seeds": [42, 64, 82, 101, 112, 113, 132]
+    }
+  }
+}
