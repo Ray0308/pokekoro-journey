@@ -236,3 +236,61 @@
 #ball-exchange[open] {
   overflow-y: auto;
 }
+
+#exchange-status.exchange-complete {
+  padding: 12px;
+  border: 2px solid #dcba62;
+  border-radius: 12px;
+  background: linear-gradient(130deg, #fff9df, #ffe7a2);
+  color: #76521e;
+  animation: exchange-received-in 450ms ease-out both;
+}
+.exchange-received {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.exchange-received img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  filter: drop-shadow(0 3px 2px #98703640);
+}
+.exchange-received strong,
+.exchange-received small {
+  display: block;
+}
+.exchange-received strong {
+  font-size: 13px;
+  line-height: 1.5;
+}
+.exchange-received small {
+  margin-top: 3px;
+  font-size: 10px;
+  line-height: 1.5;
+}
+@keyframes exchange-received-in {
+  from {
+    opacity: 0.5;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (max-height: 450px) {
+  #exchange-status.exchange-complete {
+    padding: 6px;
+  }
+  .exchange-received img {
+    width: 32px;
+    height: 32px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #exchange-status.exchange-complete {
+    animation: none;
+  }
+}

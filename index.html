@@ -7,36 +7,36 @@
     content="#38206b" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta
     name="apple-mobile-web-app-title"
     content="ポケコロジャーニー" /><title>ポケコロジャーニー</title
-  ><link rel="icon" href="assets/icons/favicon.ico?v=0.9.2.75" sizes="16x16 32x32" /><link
+  ><link rel="icon" href="assets/icons/favicon.ico?v=0.9.2.76" sizes="16x16 32x32" /><link
     rel="icon"
     type="image/png"
     sizes="32x32"
-    href="assets/icons/icon-32.png?v=0.9.2.75" /><link
+    href="assets/icons/icon-32.png?v=0.9.2.76" /><link
     rel="apple-touch-icon"
     sizes="180x180"
-    href="assets/icons/icon-180.png?v=0.9.2.75" /><link
+    href="assets/icons/icon-180.png?v=0.9.2.76" /><link
     rel="manifest"
-    href="manifest.webmanifest?v=0.9.2.75" /><link
+    href="manifest.webmanifest?v=0.9.2.76" /><link
     rel="stylesheet"
-    href="style.css?v=0.9.2.75" /><link rel="stylesheet" href="title.css?v=0.9.2.75" /><link
+    href="style.css?v=0.9.2.76" /><link rel="stylesheet" href="title.css?v=0.9.2.76" /><link
     rel="stylesheet"
-    href="map.css?v=0.9.2.75" /><link rel="stylesheet" href="pokedex.css?v=0.9.2.75" /><link
+    href="map.css?v=0.9.2.76" /><link rel="stylesheet" href="pokedex.css?v=0.9.2.76" /><link
     rel="stylesheet"
-    href="game-menu.css?v=0.9.2.75" /><link
+    href="game-menu.css?v=0.9.2.76" /><link
     rel="stylesheet"
-    href="battle-feedback.css?v=0.9.2.75" /><link
+    href="battle-feedback.css?v=0.9.2.76" /><link
     rel="stylesheet"
-    href="ball-exchange.css?v=0.9.2.75" /><link
+    href="ball-exchange.css?v=0.9.2.76" /><link
     rel="stylesheet"
-    href="kurt-house.css?v=0.9.2.75" /><link
+    href="kurt-house.css?v=0.9.2.76" /><link
     rel="stylesheet"
-    href="battle-skin.css?v=0.9.2.75" /><link
+    href="battle-skin.css?v=0.9.2.76" /><link
     rel="stylesheet"
-    href="battle-turns.css?v=0.9.2.75" /><link
+    href="battle-turns.css?v=0.9.2.76" /><link
     rel="stylesheet"
-    href="battle-layout.css?v=0.9.2.75" /><link
+    href="battle-layout.css?v=0.9.2.76" /><link
     rel="stylesheet"
-    href="opening.css?v=0.9.2.75" /><link rel="stylesheet" href="practice.css?v=0.9.2.75" /><body
+    href="opening.css?v=0.9.2.76" /><link rel="stylesheet" href="practice.css?v=0.9.2.76" /><body
     class="at-title"
     ><section id="boot-screen" hidden aria-label="Ray Edu Labo"
       ><img
@@ -205,7 +205,7 @@
             ><aside
               ><div class="panel"
                 ><small class="control-label">YOUR TURN</small
-                ><p id="message" aria-live="polite">サイコロを振って、森を進もう。</p
+                ><p id="message" aria-live="polite">サイコロを振って、つぎのマスへ！</p
                 ><div class="roll-control"
                   ><button id="roll" class="primary"
                     ><span id="dice" class="dice-face" data-value="5" aria-label="サイコロ 5"
@@ -449,16 +449,35 @@
       ><h2 id="item-bag-title">どうぐ</h2><div id="item-bag-list"></div
       ><div id="item-bag-rainbow"></div
       ><button id="item-bag-back" class="primary">もどる</button></dialog
-    ><dialog id="guide"
-      ><h2>旅のしおり</h2
-      ><p
-        >① サイコロで双六を進みます。<br />② 30秒のパズルで攻撃パワーをためよう。<br />③
-        同じ属性を3個以上なぞって離すとパワーアップ。<br />④
-        2秒以内に次を消すとコンボ倍率アップ。<br />⑤ 時間が終わったら一斉攻撃！
-        倒すと捕獲チャンス。<br />⑥ 交換所では、ボール5個を上のボール1個に交換できるよ。</p
-      ><p
-        >弱点はダメージ2倍。編成していない属性でも小さなダメージを与えられます。ダブり捕獲は通常ボール2個に交換。トレーナー勝利でスーパーボールを獲得します。</p
-      ><button class="primary" onclick="this.closest('dialog').close()">冒険へ</button></dialog
+    ><dialog id="guide" aria-labelledby="guide-title"
+      ><h2 id="guide-title">旅のしおり</h2>
+      <h3>すすむ・たたかう</h3>
+      <p
+        >サイコロを おして はなすと、マスを すすむよ。<br />バトルは スタートを おして、10びょうの
+        パズル！<br />同じマークを 3こ以上、なぞって はなそう。<br />2びょう以内に つづけて 消すと
+        コンボ。時間が おわると こうげき！</p
+      >
+      <h3>わざ・ひんし</h3>
+      <p
+        >光った なかまを おすと、わざを つかえるよ。<br />相手を たおせないと、次の スタートで
+        はんげき。<br />ひんしの なかまは こうげきも わざも おやすみ。<br />みんなが ひんしに
+        なったら バトル終了。つぎの バトルでは 元気に もどるよ。<br />同じタイプの 元気な なかまが
+        いないマークは、消せても パワーと ゲージは ふえないよ。</p
+      >
+      <h3>つかまえる・へんせい</h3>
+      <p
+        >やせいの 相手を たおしたら、ボールを えらんで 上へ スワイプ！<br />PCでは 上へ
+        ドラッグ。キーボードは Enterか スペース。<br />つかまえた なかまは 図鑑で
+        しらべて、パーティーに 入れよう。<br />パーティーは 3タイプ以上・6びきまで。ダブり捕獲は
+        モンスターボール2こに こうかん。</p
+      >
+      <h3>どうぐ・サファリ</h3>
+      <p
+        >交換所では、モンスターボール5こを スーパー1こ、スーパー5こを ハイパー1こに こうかん。<br />サファリは
+        30びょうの なかよしチャレンジ。ふつうの バトルとは ちがうよ。<br />ぼうけんは 自動で
+        セーブされるよ。</p
+      >
+      <button class="primary" onclick="this.closest('dialog').close()">もどる</button></dialog
     ><dialog id="credits"
       ><h2>クレジット</h2
       ><dl class="credits-list"
@@ -512,47 +531,47 @@
         ><button id="delete-save-commit" class="save-delete-danger">削除して 最初から</button></div
       ></dialog
     ><span class="app-version" data-version></span
-    ><script src="version.js?v=0.9.2.75"></script
-    ><script src="map-config.js?v=0.9.2.75"></script
-    ><script src="pokemon-data.generated.js?v=0.9.2.75"></script
-    ><script src="pokemon-stats.generated.js?v=0.9.2.75"></script
-    ><script src="pokemon-data.js?v=0.9.2.75"></script
-    ><script src="rainbow-config.js?v=0.9.2.75"></script
-    ><script src="pokemon-battle-stats.js?v=0.9.2.75"></script
-    ><script src="party-rules.js?v=0.9.2.75"></script
-    ><script src="type-chart.generated.js?v=0.9.2.75"></script
-    ><script src="type-effectiveness.js?v=0.9.2.75"></script
-    ><script src="puzzle-visuals.js?v=0.9.2.75"></script
-    ><script src="safari.js?v=0.9.2.75"></script
-    ><script src="trainer-rosters.generated.js?v=0.9.2.75"></script
-    ><script src="trainer-rules.js?v=0.9.2.75"></script
-    ><script src="pokemon-skills.generated.js?v=0.9.2.75"></script
-    ><script src="pokemon-skill-rules.js?v=0.9.2.75"></script
-    ><script src="battle-turn-rules.js?v=0.9.2.75"></script
-    ><script src="trainer-battle.js?v=0.9.2.75"></script
-    ><script src="audio-settings.js?v=0.9.2.75"></script
-    ><script src="game-sfx.js?v=0.9.2.75"></script
-    ><script src="battle-feedback.js?v=0.9.2.75"></script
-    ><script src="type-balls.js?v=0.9.2.75"></script
-    ><script src="battle-scene.js?v=0.9.2.75"></script
-    ><script src="opening-config.js?v=0.9.2.75"></script
-    ><script src="opening-rules.js?v=0.9.2.75"></script
-    ><script src="capture-gesture.js?v=0.9.2.75"></script
-    ><script src="app.js?v=0.9.2.75"></script
-    ><script src="battle-turns.js?v=0.9.2.75"></script
-    ><script src="kurt-house.js?v=0.9.2.75"></script
-    ><script src="ball-exchange.js?v=0.9.2.75"></script
-    ><script src="pokedex-filters.js?v=0.9.2.75"></script
-    ><script src="pokedex.js?v=0.9.2.75"></script
-    ><script src="map-music-config.js?v=0.9.2.75"></script
-    ><script src="map-audio.js?v=0.9.2.75"></script
-    ><script src="title-config.js?v=0.9.2.75"></script
-    ><script src="title.js?v=0.9.2.75"></script>
-    <script src="practice-rules.js?v=0.9.2.75"></script>
-    <script src="opening.js?v=0.9.2.75"></script
-    ><script src="practice.js?v=0.9.2.75"></script>
-    <script src="practice-onboarding.js?v=0.9.2.75"></script>
-    <script src="game-menu.js?v=0.9.2.75"></script>
+    ><script src="version.js?v=0.9.2.76"></script
+    ><script src="map-config.js?v=0.9.2.76"></script
+    ><script src="pokemon-data.generated.js?v=0.9.2.76"></script
+    ><script src="pokemon-stats.generated.js?v=0.9.2.76"></script
+    ><script src="pokemon-data.js?v=0.9.2.76"></script
+    ><script src="rainbow-config.js?v=0.9.2.76"></script
+    ><script src="pokemon-battle-stats.js?v=0.9.2.76"></script
+    ><script src="party-rules.js?v=0.9.2.76"></script
+    ><script src="type-chart.generated.js?v=0.9.2.76"></script
+    ><script src="type-effectiveness.js?v=0.9.2.76"></script
+    ><script src="puzzle-visuals.js?v=0.9.2.76"></script
+    ><script src="safari.js?v=0.9.2.76"></script
+    ><script src="trainer-rosters.generated.js?v=0.9.2.76"></script
+    ><script src="trainer-rules.js?v=0.9.2.76"></script
+    ><script src="pokemon-skills.generated.js?v=0.9.2.76"></script
+    ><script src="pokemon-skill-rules.js?v=0.9.2.76"></script
+    ><script src="battle-turn-rules.js?v=0.9.2.76"></script
+    ><script src="trainer-battle.js?v=0.9.2.76"></script
+    ><script src="audio-settings.js?v=0.9.2.76"></script
+    ><script src="game-sfx.js?v=0.9.2.76"></script
+    ><script src="battle-feedback.js?v=0.9.2.76"></script
+    ><script src="type-balls.js?v=0.9.2.76"></script
+    ><script src="battle-scene.js?v=0.9.2.76"></script
+    ><script src="opening-config.js?v=0.9.2.76"></script
+    ><script src="opening-rules.js?v=0.9.2.76"></script
+    ><script src="capture-gesture.js?v=0.9.2.76"></script
+    ><script src="app.js?v=0.9.2.76"></script
+    ><script src="battle-turns.js?v=0.9.2.76"></script
+    ><script src="kurt-house.js?v=0.9.2.76"></script
+    ><script src="ball-exchange.js?v=0.9.2.76"></script
+    ><script src="pokedex-filters.js?v=0.9.2.76"></script
+    ><script src="pokedex.js?v=0.9.2.76"></script
+    ><script src="map-music-config.js?v=0.9.2.76"></script
+    ><script src="map-audio.js?v=0.9.2.76"></script
+    ><script src="title-config.js?v=0.9.2.76"></script
+    ><script src="title.js?v=0.9.2.76"></script>
+    <script src="practice-rules.js?v=0.9.2.76"></script>
+    <script src="opening.js?v=0.9.2.76"></script
+    ><script src="practice.js?v=0.9.2.76"></script>
+    <script src="practice-onboarding.js?v=0.9.2.76"></script>
+    <script src="game-menu.js?v=0.9.2.76"></script>
     <!-- デバッグ不要時は、次のscript行だけをコメントアウトしてください。 -->
-    <script src="debug.js?v=0.9.2.75"></script> </body
+    <script src="debug.js?v=0.9.2.76"></script> </body
 ></html>

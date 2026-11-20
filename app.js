@@ -647,9 +647,9 @@ async function rollDice() {
   } else if (s === 'item') {
     const drop = itemBallDrop();
     state[drop.key] += drop.count;
-    busy = false;
     $('#message').textContent = drop.name + 'を' + drop.count + '個見つけた！';
     render();
+    showItemFind(drop);
   } else openBattle(s === 'trainer' || s === 'goal', s === 'goal');
 }
 // 1回分のバトル状態を作り直す。HPや報酬を前の相手から持ち越さない。
@@ -1085,10 +1085,10 @@ function advanceMap() {
   void card.offsetWidth;
   card.classList.add('map-arriving');
 }
-function result(html) {
+function result(html, victoryFeedback = true) {
   $('#resultBody').innerHTML = html;
   $('#result').showModal();
-  if (battle && battle.hp === 0) {
+  if (victoryFeedback && battle && battle.hp === 0) {
     celebrate();
     tone(660, 0.1);
     setTimeout(() => tone(880, 0.15), 130);
@@ -1120,6 +1120,47 @@ function rewardItemsHtml(items) {
       return `<div class="reward-card" data-ball="${ball.id}">${['master', 'rainbow'].includes(ball.id) ? '<span class="reward-rare">レア！</span>' : ''}<img src="${ball.image}" alt=""><span class="reward-name">${ball.name}</span><strong class="reward-count" aria-label="${item.count}個">× ${item.count}</strong></div>`;
     })
     .join('')}</div>`;
+}
+// 入手は到着時に一度だけ確定。確認ボタンは所持品を増やさず、探索へ戻すだけ。
+function showItemFind(drop) {
+  const ball = BALLS.find((value) => value.key === drop.key);
+  result(
+    `<section class="item-find" tabindex="-1" aria-label="道具を発見"><small>みちで はっけん！</small><h2>どうぐを みつけた！</h2>${rewardItemsHtml([{ id: ball.id, count: drop.count }])}<p>${ball.name}が<br><strong>${state[drop.key]}こ</strong>に なったよ！</p><button id="item-find-done" class="primary">ぼうけんを つづける →</button></section>`,
+    false,
+  );
+  sfx('success');
+  $('.item-find').focus({ preventScroll: true });
+  $('#result').scrollTop = 0;
+  $('#item-find-done').onclick = () => {
+    busy = false;
+    render();
+    $('#result').close();
+    $('#roll').focus({ preventScroll: true });
+  };
+}
+function showCaptureOutcome(mon, ok, duplicate) {
+  const kind = ok ? (duplicate ? 'duplicate' : 'new') : 'miss';
+  const canView = ok && !duplicate && !state.pendingMapId && !rainbowExitReady();
+  $('#resultBody').innerHTML =
+    `<section class="capture-outcome" data-outcome="${kind}" style="--partner-color:${POKEMON_TYPE_COLORS[mon.type]}" tabindex="-1" aria-label="捕獲の結果"><small>${ok ? (duplicate ? 'なかまに また あえた！' : 'あたらしい なかま！') : 'あと すこしだった！'}</small><h2>${ok ? (duplicate ? 'つかまえた！' : 'なかまに なった！') : 'あっ！ にげられた…'}</h2><div class="partner-reveal"><span aria-hidden="true"></span><img src="${pokemonPortrait(mon.id)}" alt="${mon.label}"></div><strong class="partner-name">${mon.label}</strong><div class="partner-types">${pokemonTypes(
+      mon,
+    )
+      .map(
+        (t) =>
+          `<span style="--type-color:${POKEMON_TYPE_COLORS[t]}">${POKEMON_TYPE_NAMES[t]}</span>`,
+      )
+      .join(
+        '',
+      )}</div>${ok && duplicate ? `<p>もう なかまの ポケモンだ！<br>ボールに こうかんしたよ。</p>${rewardItemsHtml([{ id: 'normal', count: 2 }])}` : `<p>${ok ? `つかまえた なかまが <strong>${state.owned.length}びき</strong>に！<br>図鑑で わざや タイプを みてみよう。` : 'また 草むらで あえるよ。<br>つぎの であいを さがそう！'}</p>`}${canView ? '<button id="capture-view" class="primary">なかまを みる</button>' : ''}<button id="done" class="${canView ? 'capture-continue' : 'primary'}">${rainbowExitReady() ? '旅に戻る' : battle.safari && battle.boss ? '次のマップへ' : 'ぼうけんを つづける →'}</button></section>`;
+  $('.capture-outcome').focus({ preventScroll: true });
+  $('#result').scrollTop = 0;
+  $('#done').onclick = done;
+  if (canView)
+    $('#capture-view').onclick = () => {
+      done();
+      showTab('party');
+      window.PokekoroDex?.open(mon.id);
+    };
 }
 // HPが0になった瞬間に1度だけ勝利を通知し、結果文より先に勝利BGMを始める。
 function markBattleVictory() {
@@ -1282,9 +1323,7 @@ async function catchMon(ballId, chance, thrown = false) {
     else state.owned.push(battle.m.id);
   }
   render();
-  $('#resultBody').innerHTML =
-    `<h2>${ok ? 'やった！ 捕獲成功！' : 'あっ！ 逃げられた…'}</h2><img src="${img(battle.m.id)}" alt="${battle.m.label}"><p>${ok ? (duplicate ? 'すでに仲間のポケモンです。<br>モンスターボール2個に交換しました。' : `${battle.m.label}のカードを獲得！<br>図鑑からパーティに編成できます。`) : 'また草むらで探してみよう。'}</p><button class="primary" id="done">${rainbowExitReady() ? '旅に戻る' : battle.safari && battle.boss ? '次のマップへ' : '旅を続ける'}</button>`;
-  $('#done').onclick = done;
+  showCaptureOutcome(battle.m, ok, duplicate);
   if (ok) {
     celebrate();
     sfx('success');

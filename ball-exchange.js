@@ -101,7 +101,10 @@ function ballExchangeQuote(stock, id, quantity) {
     render();
     renderRows();
     rows.querySelectorAll('.exchange-submit').forEach((b) => (b.disabled = true));
-    status.textContent = `${quote.from.name}${quote.cost}個を ${quote.to.name}${quote.quantity}個に 交換した！`;
+    status.classList.remove('exchange-complete');
+    status.innerHTML = `<span class="exchange-received"><img src="${quote.to.image}" alt=""><span><strong>${quote.to.name} ×${quote.quantity} ゲット！</strong><small>${quote.from.name} ${quote.cost}こを こうかん<br>もちもの：${quote.toStock}こ</small></span></span>`;
+    void status.offsetWidth;
+    status.classList.add('exchange-complete');
     window.PokekoroSfx?.play('success');
   });
   document.querySelector('#exchange-close').onclick = () => dialog.close();
@@ -116,6 +119,7 @@ function ballExchangeQuote(stock, id, quantity) {
       if (isSafari() || isRainbow() || currentSquares()[state.pos] !== 'exchange') return;
       busy = false;
       render();
+      status.classList.remove('exchange-complete');
       status.textContent = 'あまったボールを 上のボールに 交換しよう！';
       renderRows();
       dialog.showModal();
