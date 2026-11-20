@@ -4,6 +4,8 @@
 
 ## 最初に読む資料
 
+最新の未対応・全マップ承認状況は [REMAINING_TASKS.md](docs/REMAINING_TASKS.md)。素材採用・公開と、完成配置へのユーザーOKを区別する。
+
 1. [確定仕様](docs/SPECIFICATION.md)
 2. [現在の実装状況・残作業](docs/DEVELOPMENT_STATUS.md)
 3. [設計判断と変更理由](docs/DECISIONS.md)
