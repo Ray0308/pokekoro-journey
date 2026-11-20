@@ -2187,7 +2187,8 @@ body[data-game-view='party'] .app-version {
     [data-map='rocket-hideout'],
     [data-map='pokemon-tower'],
     [data-map='silph-co'],
-    [data-map='saffron-gym']
+    [data-map='saffron-gym'],
+    [data-map='pokemon-mansion']
   )
   .tile {
   width: 7.5%;
@@ -2202,7 +2203,8 @@ body[data-game-view='party'] .app-version {
     [data-map='rocket-hideout'],
     [data-map='pokemon-tower'],
     [data-map='silph-co'],
-    [data-map='saffron-gym']
+    [data-map='saffron-gym'],
+    [data-map='pokemon-mansion']
   )
   .tile.node-goal {
   width: 9%;
@@ -2217,7 +2219,8 @@ body[data-game-view='party'] .app-version {
     [data-map='rocket-hideout'],
     [data-map='pokemon-tower'],
     [data-map='silph-co'],
-    [data-map='saffron-gym']
+    [data-map='saffron-gym'],
+    [data-map='pokemon-mansion']
   )
   .tile
   small {
@@ -2233,7 +2236,8 @@ body[data-game-view='party'] .app-version {
     [data-map='rocket-hideout'],
     [data-map='pokemon-tower'],
     [data-map='silph-co'],
-    [data-map='saffron-gym']
+    [data-map='saffron-gym'],
+    [data-map='pokemon-mansion']
   )
   .node-wild:not(.current)
   small,
@@ -2246,7 +2250,8 @@ body[data-game-view='party'] .app-version {
     [data-map='rocket-hideout'],
     [data-map='pokemon-tower'],
     [data-map='silph-co'],
-    [data-map='saffron-gym']
+    [data-map='saffron-gym'],
+    [data-map='pokemon-mansion']
   )
   .node-item:not(.current)
   small,
@@ -2259,7 +2264,8 @@ body[data-game-view='party'] .app-version {
     [data-map='rocket-hideout'],
     [data-map='pokemon-tower'],
     [data-map='silph-co'],
-    [data-map='saffron-gym']
+    [data-map='saffron-gym'],
+    [data-map='pokemon-mansion']
   )
   .node-trainer:not(.current)
   small {
@@ -2857,4 +2863,25 @@ body[data-game-view='party'] .app-version {
   #resultBody .partner-reveal > img {
     animation: none;
   }
+}
+
+/* 洋館の細い廊下に余白を残し、入口のコマは玄関の中央に置く。 */
+#map[data-map='pokemon-mansion'] .tile {
+  width: 5.5%;
+  height: 5.5%;
+}
+#map[data-map='pokemon-mansion'] .tile.node-goal {
+  width: 7%;
+  height: 7%;
+}
+#map[data-map='pokemon-mansion'] .tile.node-start img.center-icon {
+  width: 100%;
+  height: 120%;
+}
+#map[data-map='pokemon-mansion'] .node-start.current .player-pawn {
+  left: 50%;
+}
+#map[data-map='pokemon-mansion'] .node-start.current .player-marker {
+  left: 50%;
+  transform: translateX(-50%);
 }
