@@ -2186,7 +2186,8 @@ body[data-game-view='party'] .app-version {
     [data-map='celadon-city'],
     [data-map='rocket-hideout'],
     [data-map='pokemon-tower'],
-    [data-map='silph-co']
+    [data-map='silph-co'],
+    [data-map='saffron-gym']
   )
   .tile {
   width: 7.5%;
@@ -2200,7 +2201,8 @@ body[data-game-view='party'] .app-version {
     [data-map='celadon-city'],
     [data-map='rocket-hideout'],
     [data-map='pokemon-tower'],
-    [data-map='silph-co']
+    [data-map='silph-co'],
+    [data-map='saffron-gym']
   )
   .tile.node-goal {
   width: 9%;
@@ -2214,7 +2216,8 @@ body[data-game-view='party'] .app-version {
     [data-map='celadon-city'],
     [data-map='rocket-hideout'],
     [data-map='pokemon-tower'],
-    [data-map='silph-co']
+    [data-map='silph-co'],
+    [data-map='saffron-gym']
   )
   .tile
   small {
@@ -2229,7 +2232,8 @@ body[data-game-view='party'] .app-version {
     [data-map='celadon-city'],
     [data-map='rocket-hideout'],
     [data-map='pokemon-tower'],
-    [data-map='silph-co']
+    [data-map='silph-co'],
+    [data-map='saffron-gym']
   )
   .node-wild:not(.current)
   small,
@@ -2241,7 +2245,8 @@ body[data-game-view='party'] .app-version {
     [data-map='celadon-city'],
     [data-map='rocket-hideout'],
     [data-map='pokemon-tower'],
-    [data-map='silph-co']
+    [data-map='silph-co'],
+    [data-map='saffron-gym']
   )
   .node-item:not(.current)
   small,
@@ -2253,7 +2258,8 @@ body[data-game-view='party'] .app-version {
     [data-map='celadon-city'],
     [data-map='rocket-hideout'],
     [data-map='pokemon-tower'],
-    [data-map='silph-co']
+    [data-map='silph-co'],
+    [data-map='saffron-gym']
   )
   .node-trainer:not(.current)
   small {
@@ -2600,4 +2606,17 @@ body[data-game-view='party'] .app-version {
 #map[data-map='silph-co'] .tile.node-goal {
   width: 8%;
   height: 8%;
+}
+
+/* 折り返しと台座前の階段を塞がない寸法。ワープ床は背景のまま。 */
+#map[data-map='saffron-gym'] .tile {
+  width: 6.5%;
+  height: 6.5%;
+}
+#map[data-map='saffron-gym'] .tile.node-goal {
+  width: 8%;
+  height: 8%;
+}
+#map[data-map='saffron-gym'] .node-goal.current .player-marker {
+  bottom: calc(100% + 12px);
 }
