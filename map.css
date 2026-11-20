@@ -2191,7 +2191,8 @@ body[data-game-view='party'] .app-version {
     [data-map='pokemon-mansion'],
     [data-map='safari-zone'],
     [data-map='route-23'],
-    [data-map='viridian-gym']
+    [data-map='viridian-gym'],
+    [data-map='victory-road']
   )
   .tile {
   width: 7.5%;
@@ -2210,7 +2211,8 @@ body[data-game-view='party'] .app-version {
     [data-map='pokemon-mansion'],
     [data-map='safari-zone'],
     [data-map='route-23'],
-    [data-map='viridian-gym']
+    [data-map='viridian-gym'],
+    [data-map='victory-road']
   )
   .tile.node-goal {
   width: 9%;
@@ -2229,7 +2231,8 @@ body[data-game-view='party'] .app-version {
     [data-map='pokemon-mansion'],
     [data-map='safari-zone'],
     [data-map='route-23'],
-    [data-map='viridian-gym']
+    [data-map='viridian-gym'],
+    [data-map='victory-road']
   )
   .tile
   small {
@@ -2249,7 +2252,8 @@ body[data-game-view='party'] .app-version {
     [data-map='pokemon-mansion'],
     [data-map='safari-zone'],
     [data-map='route-23'],
-    [data-map='viridian-gym']
+    [data-map='viridian-gym'],
+    [data-map='victory-road']
   )
   .node-wild:not(.current)
   small,
@@ -2266,7 +2270,8 @@ body[data-game-view='party'] .app-version {
     [data-map='pokemon-mansion'],
     [data-map='safari-zone'],
     [data-map='route-23'],
-    [data-map='viridian-gym']
+    [data-map='viridian-gym'],
+    [data-map='victory-road']
   )
   .node-item:not(.current)
   small,
@@ -2283,7 +2288,8 @@ body[data-game-view='party'] .app-version {
     [data-map='pokemon-mansion'],
     [data-map='safari-zone'],
     [data-map='route-23'],
-    [data-map='viridian-gym']
+    [data-map='viridian-gym'],
+    [data-map='victory-road']
   )
   .node-trainer:not(.current)
   small {
@@ -2991,6 +2997,26 @@ body[data-game-view='party'] .app-version {
   left: 50%;
 }
 #map[data-map='pokemon-tower'] .node-start.current .player-marker {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+#map[data-map='victory-road'] .tile {
+  width: 6.5%;
+  height: 6.5%;
+}
+#map[data-map='victory-road'] .tile.node-goal {
+  width: 8%;
+  height: 8%;
+}
+#map[data-map='victory-road'] .tile.node-start img.center-icon {
+  width: 100%;
+  height: 120%;
+}
+#map[data-map='victory-road'] .node-start.current .player-pawn {
+  left: 50%;
+}
+#map[data-map='victory-road'] .node-start.current .player-marker {
   left: 50%;
   transform: translateX(-50%);
 }
