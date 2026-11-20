@@ -307,7 +307,7 @@ battle-scene.jsの表示・index.htmlのラッパー・battle-layout.cssを変�
 | docs/battle-turns.md       | 盤面変更の説明に36マスが残る。現在は30マス                                                                              |
 | docs/trainer-battles.md    | 初期の敵ごとの15/20/30秒設定と「御三家選択を追加しない」の説明がある。現在の戦闘は10秒、初回案内では選択あり            |
 | docs/type-effectiveness.md | 最適属性の常設案内の説明は旧表示。現行レイアウトでは常設説明を減らしている                                              |
-| map-config.js              | 一部のboss.placeholder等は旧フラグ。これだけで現行画像・編成の未実装と判定しない。背景パスと専用編成データを確認する    |
+| map-config.js              | 0.9.2.85で未使用のボス仮フラグを削除。実編成はtrainer-rosters、地域出現はmap-encounter-rulesを確認する    |
 | 戦闘の旧CSS                | 使用しなくなったcallout等のスタイルが残る。DOM/生成処理は廃止済み。整理は別工程                                         |
 | 実機の確認範囲             | ユーザーのSafariスクリーンショットとChromiumのモバイル寸法確認がある。全iPhone・全OS・全BGM出力を実機で確認済みではない |
 
