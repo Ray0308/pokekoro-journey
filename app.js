@@ -473,6 +473,26 @@ function routePath(last = routePoints.length - 1) {
     const nodes = mapRoutePoints();
     const points = [nodes[0]];
     for (let i = 0; i < last; i++) points.push(...(activeMap().routeVia[i] || []), nodes[i + 1]);
+    if (activeMap().routeCornerRadius) {
+      // 床の折れ線内で角を丸める。墓石側へ膨らむスプラインにはしない。
+      const clean = points.filter(
+        (p, i) => !i || p[0] !== points[i - 1][0] || p[1] !== points[i - 1][1],
+      );
+      let path = `M ${clean[0][0] * 9} ${clean[0][1] * 9}`;
+      for (let i = 1; i < clean.length - 1; i++) {
+        const a = clean[i - 1],
+          b = clean[i],
+          c = clean[i + 1];
+        const before = Math.hypot(b[0] - a[0], b[1] - a[1]),
+          after = Math.hypot(c[0] - b[0], c[1] - b[1]);
+        const radius = Math.min(activeMap().routeCornerRadius, before / 2, after / 2);
+        const enter = b.map((v, k) => v + ((a[k] - v) * radius) / before);
+        const exit = b.map((v, k) => v + ((c[k] - v) * radius) / after);
+        path += ` L ${enter[0] * 9} ${enter[1] * 9} Q ${b[0] * 9} ${b[1] * 9} ${exit[0] * 9} ${exit[1] * 9}`;
+      }
+      const end = clean.at(-1);
+      return path + ` L ${end[0] * 9} ${end[1] * 9}`;
+    }
     return points.map(([x, y], i) => `${i ? 'L' : 'M'} ${x * 9} ${y * 9}`).join(' ');
   }
   const points = mapRoutePoints().map(([x, y]) => [x * 9, y * 9]);

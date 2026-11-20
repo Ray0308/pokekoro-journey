@@ -2982,3 +2982,15 @@ body[data-game-view='party'] .app-version {
   left: 50%;
   transform: translateX(-50%);
 }
+/* タワーの左階段前でセンター表示と主人公を床の中央へ収める。 */
+#map[data-map='pokemon-tower'] .tile.node-start img.center-icon {
+  width: 100%;
+  height: 120%;
+}
+#map[data-map='pokemon-tower'] .node-start.current .player-pawn {
+  left: 50%;
+}
+#map[data-map='pokemon-tower'] .node-start.current .player-marker {
+  left: 50%;
+  transform: translateX(-50%);
+}
