@@ -66,6 +66,9 @@ async function showNextTrainerEncounter() {
   $('#encounter-label').textContent = hasNextTrainerPokemon()
     ? profile.name + 'の つぎの ポケモン！'
     : 'さいごの １匹！';
+  if (battle.boss && leagueStage())
+    $('#encounter-label').textContent =
+      leagueStage().label + '・' + $('#encounter-label').textContent;
   $('#encounter-name').textContent = profile.name;
   $('#encounter-go').disabled = true;
   $('#encounter-go').textContent = 'バトル スタート！';

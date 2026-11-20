@@ -3020,3 +3020,22 @@ body[data-game-view='party'] .app-version {
   left: 50%;
   transform: translateX(-50%);
 }
+
+#map .maphead h2 .league-stage-label {
+  display: block;
+  margin-bottom: 3px;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: #67799a;
+}
+#map.league-champion .maphead h2 .league-stage-label {
+  color: #986416;
+}
+#map.league-champion .mapcard {
+  box-shadow:
+    0 0 0 3px #e7bd55,
+    0 0 20px #f4ce6c66;
+}
+#map.league-champion .map-art {
+  filter: brightness(1.06) saturate(1.08);
+}

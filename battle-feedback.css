@@ -472,3 +472,24 @@
 .retry-result .retry-experience span {
   font-size: 13px;
 }
+
+#encounter[data-league='champion'] {
+  border-color: #e4bb50;
+  background: radial-gradient(ellipse at 50% 25%, #fff6d0, #fffdf4 65%);
+  box-shadow:
+    0 0 0 3px #e4bb5066,
+    0 0 35px #ffdb7877;
+}
+#encounter[data-league='champion'] #encounter-label {
+  color: #986416;
+  font-weight: 900;
+}
+#encounter[data-league='champion'] #encounter-trainer {
+  filter: drop-shadow(0 0 12px #e8bc48aa);
+}
+#battle[data-league='champion'] .enemy {
+  box-shadow: inset 0 0 22px #ffdc7b77;
+}
+#battle[data-league='champion'] #battle-location {
+  color: #986416;
+}

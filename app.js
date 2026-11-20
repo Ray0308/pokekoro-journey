@@ -336,6 +336,24 @@ function mapWildIcon() {
     ? `<span class="map-mystery-icon"><img src="${activeMap().wildIcon}" alt=""></span>`
     : `<img class="map-grass" src="${MAP_ASSETS.grass}" alt="">`;
 }
+// リーグは共通会場で、進行と演出を分ける。保存や敵の強さは変更しない。
+function leagueStage() {
+  const ids = [
+    'indigo-lorelei',
+    'indigo-bruno',
+    'indigo-agatha',
+    'indigo-lance',
+    'indigo-champion',
+  ];
+  const index = ids.indexOf(state.mapId);
+  return index < 0
+    ? null
+    : {
+        index,
+        champion: index === 4,
+        label: index === 4 ? 'チャンピオン戦' : `四天王 ${index + 1} / 4`,
+      };
+}
 // マップの色・背景・凡例を一括反映する。ルートと背景は同じ座標系を共有する。
 function applyMapTheme() {
   let exchangeLegend = $('#map .exchange-legend');
@@ -358,7 +376,11 @@ function applyMapTheme() {
   $('#map').classList.toggle('rainbow-map', isRainbow());
   for (const [key, color] of Object.entries(map.colors))
     $('#map').style.setProperty('--map-' + key, color);
-  $('#map .maphead h2').textContent = map.name;
+  const stage = leagueStage();
+  $('#map').classList.toggle('league-champion', !!stage?.champion);
+  $('#map .maphead h2').innerHTML = stage
+    ? `<small class="league-stage-label">${stage.label}</small>${map.name}`
+    : map.name;
   $('#route').setAttribute('aria-label', map.name + 'の双六マップ');
   $('#map .board-legend span:nth-child(2)').innerHTML =
     (trainerTileProfile(state, 4)?.icon || map.trainerIcon
@@ -819,6 +841,8 @@ function openBattle(trainer, boss, continuation = null, practice = false) {
         : trainer
           ? '⚔ ' + battle.trainerAppearance.name
           : '🌿 野生のポケモン';
+  if (boss && leagueStage())
+    $('#kind').textContent = leagueStage().label + '：' + battle.trainerAppearance.name;
   const matchup = bestTypeMatchup(m, battle.puzzleTypes);
   $('#weakness-tip').textContent =
     !matchup || matchup.factor === 1
@@ -1369,7 +1393,7 @@ function endBattle(win) {
     state.balls += 2;
     render();
     result(
-      `<section class="trainer-victory" tabindex="-1" aria-label="トレーナー戦の勝利とごほうび"><div class="trainer-victory-heading"><span class="victory-rays" aria-hidden="true"></span><div class="victory-medal" aria-hidden="true"><svg viewBox="0 0 100 80"><path d="M28 68C6 53 9 27 25 14M72 68c22-15 19-41 3-54" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/><path d="m50 12 8 17 19 3-14 13 3 19-16-9-16 9 3-19-14-13 19-3z" fill="currentColor"/></svg></div><small>しょうぶ けっちゃく！</small><h2>${battle.boss ? (activeMap().leagueFinal ? battle.trainerAppearance.name + 'に勝利！' : activeMap().name + 'クリア！') : 'トレーナーに勝利！'}</h2><div class="trainer-victory-balls" role="img" aria-label="相手のポケモンをすべて倒した">${trainerRosterMarkup(battle.series, true)}</div><p class="victory-opponent">${battle.trainerAppearance.name}の ${battle.series.team.length}ひきに かった！</p></div><h3 class="victory-reward-title"><span>ごほうび ゲット！</span></h3>${rewardItemsHtml([{ id: 'super', count: battle.boss ? 3 : 1 }, { id: 'normal', count: 2 }, ...(masterDrop ? [{ id: 'master', count: 1 }] : []), ...(ticket ? [{ id: 'rainbow', count: 1 }] : [])])}${earnedBadge ? `<div class="reward-badge"><img src="${activeMap().badgeImage}" alt="${earnedBadge}"><span><small>バッジを てにいれた！</small><strong>${earnedBadge}</strong></span></div>` : ''}${ticket ? '<button id="reward-rainbow" class="rainbow-action">にじのくもへ 行く</button>' : ''}<button id="done" class="primary">${battle.boss && !state.mapReturn ? '次のマップへ' : 'マップへ もどる'}<span aria-hidden="true"> →</span></button></section>`,
+      `<section class="trainer-victory" tabindex="-1" aria-label="トレーナー戦の勝利とごほうび"><div class="trainer-victory-heading"><span class="victory-rays" aria-hidden="true"></span><div class="victory-medal" aria-hidden="true"><svg viewBox="0 0 100 80"><path d="M28 68C6 53 9 27 25 14M72 68c22-15 19-41 3-54" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/><path d="m50 12 8 17 19 3-14 13 3 19-16-9-16 9 3-19-14-13 19-3z" fill="currentColor"/></svg></div><small>${battle.boss && leagueStage() ? leagueStage().label + ' クリア！' : 'しょうぶ けっちゃく！'}</small><h2>${battle.boss ? (activeMap().leagueFinal ? battle.trainerAppearance.name + 'に勝利！' : activeMap().name + 'クリア！') : 'トレーナーに勝利！'}</h2><div class="trainer-victory-balls" role="img" aria-label="相手のポケモンをすべて倒した">${trainerRosterMarkup(battle.series, true)}</div><p class="victory-opponent">${battle.trainerAppearance.name}の ${battle.series.team.length}ひきに かった！</p></div><h3 class="victory-reward-title"><span>ごほうび ゲット！</span></h3>${rewardItemsHtml([{ id: 'super', count: battle.boss ? 3 : 1 }, { id: 'normal', count: 2 }, ...(masterDrop ? [{ id: 'master', count: 1 }] : []), ...(ticket ? [{ id: 'rainbow', count: 1 }] : [])])}${earnedBadge ? `<div class="reward-badge"><img src="${activeMap().badgeImage}" alt="${earnedBadge}"><span><small>バッジを てにいれた！</small><strong>${earnedBadge}</strong></span></div>` : ''}${ticket ? '<button id="reward-rainbow" class="rainbow-action">にじのくもへ 行く</button>' : ''}<button id="done" class="primary">${battle.boss && !state.mapReturn ? '次のマップへ' : 'マップへ もどる'}<span aria-hidden="true"> →</span></button></section>`,
     );
     $('.trainer-victory').focus({ preventScroll: true });
     $('#result').scrollTop = 0;
@@ -1667,7 +1691,7 @@ async function showBossEncounter() {
   dialog.classList.add('boss-encounter');
   dialog.dataset.phase = 'boss-music';
   go.disabled = true;
-  $('#encounter-label').textContent = '強いトレーナーの けはい…！';
+  $('#encounter-label').textContent = leagueStage()?.label || '強いトレーナーの けはい…！';
   $('#encounter-name').textContent = '';
   $('#encounter-img').alt = '';
   dialog.showModal();
@@ -1680,7 +1704,9 @@ async function showBossEncounter() {
   await new Promise((resolve) => setTimeout(resolve, ENCOUNTER_TIMING.bossMusicLeadMs));
   if (epoch !== battleEpoch || !dialog.open) return;
   dialog.dataset.phase = 'boss-trainer';
-  $('#encounter-label').textContent = (boss.role || 'ボストレーナー') + 'が あらわれた！';
+  $('#encounter-label').textContent = leagueStage()
+    ? leagueStage().label + '：' + boss.name
+    : (boss.role || 'ボストレーナー') + 'が あらわれた！';
   $('#encounter-name').textContent = boss.name;
   const wait = (ms) => new Promise((resolve) => setTimeout(resolve, reduceMotion ? 120 : ms));
   await wait(activeMap().badge ? ENCOUNTER_TIMING.gymTrainerMs : ENCOUNTER_TIMING.trainerMs);
@@ -1702,7 +1728,8 @@ async function showBossEncounter() {
   ]);
   if (epoch !== battleEpoch || !dialog.open) return;
   dialog.dataset.phase = 'revealed';
-  $('#encounter-label').textContent = boss.name + 'の ポケモン！';
+  $('#encounter-label').textContent =
+    (leagueStage() ? leagueStage().label + '・' : '') + boss.name + 'の ポケモン！';
   $('#encounter-name').textContent = battle.m.label;
   $('#encounter-img').alt = battle.m.label;
   go.disabled = false;
@@ -1715,6 +1742,8 @@ async function showEncounter(immediate) {
     go = $('#encounter-go'),
     epoch = battleEpoch;
   dialog.classList.remove('boss-encounter', 'trainer-last-pokemon');
+  dialog.dataset.league = battle.boss && leagueStage()?.champion ? 'champion' : '';
+  $('#battle').dataset.league = dialog.dataset.league;
   setTrainerRoster($('#encounter-roster'), battle.series);
   $('#encounter-go').textContent = 'バトルへ';
   // 名前の未登録と画像の未登録は別。アートがあれば番号表示の相手にもシルエット演出を使う。

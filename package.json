@@ -1,6 +1,6 @@
 {
   "name": "pokekoro-journey",
-  "version": "0.9.2-83",
+  "version": "0.9.2-84",
   "private": true,
   "description": "ポケコロジャーニーの整形・検証用ツール",
   "scripts": {

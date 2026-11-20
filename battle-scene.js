@@ -51,7 +51,8 @@
     scene.style.setProperty('--battle-platform', map.colors.surfaceEnd);
     scene.style.setProperty('--battle-platform-edge', map.colors.rim);
     scene.dataset.environment = map.kind;
-    location.textContent = map.name;
+    location.textContent =
+      battle.boss && leagueStage() ? leagueStage().label + '・' + map.name : map.name;
     update(battle, owned);
   }
   window.PokekoroBattleScene = Object.freeze({ set, update });
