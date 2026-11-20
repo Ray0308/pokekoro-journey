@@ -36,8 +36,39 @@ try {
     const file = path.join(__dirname, '../assets/audio', `map-${key}-chip-v1.mp3`);
     assert.ok(fs.statSync(file).size > 100000, `Missing encoded track: ${key}`);
   }
+  const ctx = require('node:vm').createContext({});
+  for (const file of ['map-config.js', 'map-music-config.js'])
+    require('node:vm').runInContext(fs.readFileSync(path.join(__dirname, '..', file), 'utf8'), ctx);
+  const mapThemes = require('node:vm').runInContext(
+    'Object.entries(MAPS).map(([id])=>[id,mapMusicTheme(id)])',
+    ctx,
+  );
+  const tracks = require('node:vm').runInContext('MAP_MUSIC_TRACKS', ctx);
+  for (const [id, key] of mapThemes) {
+    assert.ok(tracks[key], 'Missing theme for ' + id);
+    assert.notEqual(key, 'field', 'Map must use a deliberate regional theme: ' + id);
+    assert.ok(fs.existsSync(path.join(__dirname, '..', tracks[key])));
+  }
+  assert.equal(
+    new Set(
+      mapThemes
+        .filter(([id]) => ['pewter-city', 'cerulean-city', 'celadon-city'].includes(id))
+        .map(([, key]) => key),
+    ).size,
+    3,
+  );
+  const { PLACE_THEMES } = require('../scripts/map-place-themes.cjs');
+  for (const [key, theme] of Object.entries(PLACE_THEMES)) {
+    assert.equal(theme.melodies.length, 8);
+    assert.equal(new Set(theme.melodies).size, 8, 'Distinct phrase responses: ' + key);
+    const out = path.join(temporary, key + '.wav');
+    render(theme, out);
+    const pcm = fs.readFileSync(out);
+    assert.equal(pcm.readInt16LE(44), 0);
+    assert.equal(pcm.readInt16LE(pcm.length - 2), 0);
+  }
   console.log(
-    'PASS: deterministic retro music, immediate onset, safe peak, loop edges and six tracks',
+    'PASS: deterministic retro music, immediate onset, safe peak, loop edges and all regional tracks',
   );
 } finally {
   fs.rmSync(temporary, { recursive: true, force: true });

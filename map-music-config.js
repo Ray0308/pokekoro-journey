@@ -2,6 +2,16 @@
 // 音源と場面の対応。曲の切り替え処理そのものはmap-audio.jsに置く。
 const MAP_MUSIC_TRACKS = Object.freeze({
   field: MAP_AUDIO.src,
+  pewter: 'assets/audio/map-pewter-chip-v1.mp3',
+  cerulean: 'assets/audio/map-cerulean-chip-v1.mp3',
+  celadon: 'assets/audio/map-celadon-chip-v1.mp3',
+  forest: 'assets/audio/map-forest-chip-v1.mp3',
+  ship: 'assets/audio/map-ship-chip-v1.mp3',
+  tower: 'assets/audio/map-tower-chip-v1.mp3',
+  safari: 'assets/audio/map-safari-chip-v1.mp3',
+  silph: 'assets/audio/map-silph-chip-v1.mp3',
+  mansion: 'assets/audio/map-mansion-chip-v1.mp3',
+  route23: 'assets/audio/map-route23-chip-v1.mp3',
   wild: 'assets/audio/grass-encounter.mp3',
   trainer: 'assets/audio/trainer-encounter.mp3',
   trainerBattle: 'assets/audio/trainer-battle.mp3',
@@ -14,9 +24,22 @@ const MAP_MUSIC_TRACKS = Object.freeze({
   water: 'assets/audio/map-water-chip-v1.mp3',
   pokedex: 'assets/audio/map-pokedex-chip-v1.mp3',
 });
+const MAP_PLACE_MUSIC = Object.freeze({
+  viridian: 'forest',
+  'pewter-city': 'pewter',
+  'cerulean-city': 'cerulean',
+  'celadon-city': 'celadon',
+  'ss-anne': 'ship',
+  'pokemon-tower': 'tower',
+  'safari-zone': 'safari',
+  'silph-co': 'silph',
+  'pokemon-mansion': 'mansion',
+  'route-23': 'route23',
+});
 function mapMusicTheme(mapId) {
   const map = MAPS[mapId];
   if (!map) return 'field';
+  if (MAP_PLACE_MUSIC[mapId]) return MAP_PLACE_MUSIC[mapId];
   if (mapId.startsWith('indigo-') || mapId === 'victory-road') return 'league';
   if (map.badge) return 'gym';
   if (
@@ -32,6 +55,16 @@ function mapMusicTheme(mapId) {
 // 実音源のRMS測定に基づき、通常BGMの平均音量を概ね揃える。図鑑は読み上げ用に控えめ。
 const MAP_MUSIC_LEVELS = Object.freeze({
   field: 0.4,
+  pewter: 0.289,
+  cerulean: 0.409,
+  celadon: 0.265,
+  forest: 0.326,
+  ship: 0.283,
+  tower: 0.313,
+  safari: 0.464,
+  silph: 0.432,
+  mansion: 0.332,
+  route23: 0.224,
   wild: 0.26,
   trainer: 0.405,
   trainerBattle: 0.225,

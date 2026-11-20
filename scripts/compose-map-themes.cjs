@@ -1,11 +1,12 @@
 // 初期携帯ゲーム機の4声構成・音色・短いフレーズを意識したオリジナル曲。
-// node scripts/compose-map-themes.cjs [pokedex|gym|cave|hideout|league|water]
+// node scripts/compose-map-themes.cjs [places|曲キー]（省略すると全曲）
 // ソース文字列の書換えやVM実行に依存せず、設定を音源へ直接渡す。
 const fs = require('node:fs');
 const path = require('node:path');
 const os = require('node:os');
 const { execFileSync } = require('node:child_process');
 const { render } = require('../tools/retro-synth.cjs');
+const { PLACE_THEMES } = require('./map-place-themes.cjs');
 const THEMES = {
   pokedex: {
     bpm: 112,
@@ -108,12 +109,13 @@ const THEMES = {
 };
 function main() {
   const requested = process.argv[2];
-  if (requested && !THEMES[requested]) throw new Error('Unknown music theme');
+  if (requested && requested !== 'places' && !THEMES[requested])
+    throw new Error('Unknown music theme');
   const temporary = fs.mkdtempSync(path.join(os.tmpdir(), 'pokekoro-chip-'));
   const output = path.join(__dirname, '../assets/audio');
   try {
     for (const [key, theme] of Object.entries(THEMES)) {
-      if (requested && requested !== key) continue;
+      if (requested === 'places' ? !PLACE_THEMES[key] : requested && requested !== key) continue;
       const wav = path.join(temporary, key + '.wav');
       const result = render(theme, wav);
       const file = path.join(output, 'map-' + key + '-chip-v1.mp3');
@@ -139,5 +141,6 @@ function main() {
     fs.rmSync(temporary, { recursive: true, force: true });
   }
 }
+Object.assign(THEMES, PLACE_THEMES);
 module.exports = { THEMES };
 if (require.main === module) main();

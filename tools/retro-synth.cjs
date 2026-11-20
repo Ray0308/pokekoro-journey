@@ -18,7 +18,7 @@ function render(theme, output) {
   const samples = new Float64Array(Math.round(bars * beats * beat * SR));
   let noiseSeed = 0x6d2b;
   function tone(start, seconds, note, amplitude, voice, duty = 0.25) {
-    if (note === '-') return;
+    if (note === '-' || note === '~') return;
     const hz = frequency(note),
       offset = Math.round(start * SR),
       length = Math.floor(seconds * SR);
@@ -56,17 +56,30 @@ function render(theme, output) {
     if (motif.length !== beats * 2) throw new Error('Expected two melody steps per beat');
     for (let step = 0; step < beats * 2; step++) {
       const start = (bar * beats + step / 2) * beat;
-      const cadence = bar % 8 === 7 && step >= beats * 2 - 2;
+      const cadence = theme.cadence !== false && bar % 8 === 7 && step >= beats * 2 - 2;
       const lead = cadence ? (step === beats * 2 - 2 ? theme.home : '-') : motif[step];
-      tone(start, beat * (cadence ? 0.72 : 0.41), lead, 0.3, 'lead', theme.duty ?? 0.25);
+      let held = 1;
+      while (motif[step + held] === '~') held++;
+      tone(
+        start,
+        beat * (cadence ? 0.72 : held / 2 - (1 - (theme.leadGate ?? 0.82)) / 2),
+        lead,
+        0.3,
+        'lead',
+        theme.duty ?? 0.25,
+      );
       const arp = chord[(step + Math.floor(bar / 4)) % chord.length];
       if (!cadence && (!theme.sparse || step % 2 === 1))
-        tone(start, beat * 0.25, arp, 0.12, 'harmony', 0.125);
+        tone(start, beat * 0.25, arp, theme.harmonyLevel ?? 0.12, 'harmony', 0.125);
       if (step % 2 === 0) {
         const bass = chord[step % 4 === 0 ? 0 : 2].replace(/\d$/, '2');
-        tone(start, beat * 0.78, bass, 0.21, 'bass');
+        tone(start, beat * (theme.bassGate ?? 0.78), bass, 0.21, 'bass');
         if (!theme.sparse || (bar % 2 === 0 && step === 0))
-          noise(start, step % 4 === 2, theme.sparse ? 0.025 : step % 4 === 2 ? 0.055 : 0.035);
+          noise(
+            start,
+            step % 4 === 2,
+            (theme.sparse ? 0.025 : step % 4 === 2 ? 0.055 : 0.035) * (theme.percussion ?? 1),
+          );
       }
     }
   }

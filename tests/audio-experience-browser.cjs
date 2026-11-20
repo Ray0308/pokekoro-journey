@@ -58,17 +58,17 @@ const server = spawn('python', ['-m', 'http.server', '8847', '--bind', '127.0.0.
         key,
         { timeout: 30000 },
       );
-    await theme('field');
+    await theme('forest');
     assert(
       await p.evaluate(() => {
         const x = PokekoroMapAudio.inspect();
-        return x.backend === 'decoded' && x.loop.start === 0.08 && x.loop.end < 56;
+        return x.backend === 'decoded' && x.loop.start === 0 && x.loop.end > 30 && x.loop.end < 40;
       }),
     );
     const pos = await p.evaluate(() => PokekoroMapAudio.inspect().position);
     await p.evaluate(() => $('#guide').showModal());
     await p.waitForTimeout(150);
-    assert.equal(await p.evaluate(() => PokekoroMapAudio.inspect().theme), 'field');
+    assert.equal(await p.evaluate(() => PokekoroMapAudio.inspect().theme), 'forest');
     assert(await p.evaluate((x) => PokekoroMapAudio.inspect().position > x, pos));
     await p.evaluate(() => $('#guide').close());
     await p.evaluate(() => {
@@ -85,14 +85,14 @@ const server = spawn('python', ['-m', 'http.server', '8847', '--bind', '127.0.0.
     });
     await theme('victory');
     await p.evaluate(() => done());
-    await theme('field');
+    await theme('forest');
     await p.evaluate(() => showItemFind({ key: 'balls', count: 3 }));
     await p.waitForTimeout(150);
-    assert.equal(await p.evaluate(() => PokekoroMapAudio.inspect().theme), 'field');
+    assert.equal(await p.evaluate(() => PokekoroMapAudio.inspect().theme), 'forest');
     assert.equal(await p.evaluate(() => PokekoroMapAudio.inspect().playing), true);
     await p.locator('#item-find-done').click();
     console.log(
-      'PASS field loop bounds, guide continuity, wild/victory, item reward avoids stale win music',
+      'PASS forest loop bounds, guide continuity, wild/victory, item reward avoids stale win music',
     );
     await p.evaluate(() => {
       state.mapId = 'pewter-gym';
@@ -133,15 +133,15 @@ const server = spawn('python', ['-m', 'http.server', '8847', '--bind', '127.0.0.
       render();
       openBattle(false, false);
     });
-    await theme('water');
+    await theme('safari');
     await p.evaluate(() => {
       $('#encounter').close();
       endBattle(true);
     });
     await p.waitForTimeout(150);
-    assert.equal(await p.evaluate(() => PokekoroMapAudio.inspect().theme), 'water');
+    assert.equal(await p.evaluate(() => PokekoroMapAudio.inspect().theme), 'safari');
     await p.evaluate(() => done());
-    await theme('field');
+    await theme('safari');
     await p.evaluate(() => {
       document.dispatchEvent(new CustomEvent('title:soundchange', { detail: { enabled: false } }));
     });
@@ -152,9 +152,10 @@ const server = spawn('python', ['-m', 'http.server', '8847', '--bind', '127.0.0.
         new CustomEvent('title:soundchange', { detail: { enabled: true, userGesture: true } }),
       ),
     );
-    await theme('field');
+    await theme('safari');
     console.log('PASS Safari calm BGM and capture continuity, mute/resume');
     await p.evaluate(() => {
+      window.testDecoder = window.OfflineAudioContext;
       window.OfflineAudioContext = undefined;
       window.webkitOfflineAudioContext = undefined;
       state.mapId = 'rocket-hideout';
@@ -176,13 +177,14 @@ const server = spawn('python', ['-m', 'http.server', '8847', '--bind', '127.0.0.
       0,
     );
     await p.evaluate(() => {
+      window.OfflineAudioContext = window.testDecoder;
       state.mapId = 'viridian';
       render();
     });
     await p.waitForFunction(
       () =>
         PokekoroMapAudio.inspect().backend === 'decoded' &&
-        PokekoroMapAudio.inspect().theme === 'field',
+        PokekoroMapAudio.inspect().theme === 'forest',
     );
     assert.equal(await p.evaluate(() => $('#map-bgm').paused), true);
     await p.waitForTimeout(100);
@@ -231,7 +233,7 @@ const server = spawn('python', ['-m', 'http.server', '8847', '--bind', '127.0.0.
       delete document.hidden;
       document.dispatchEvent(new Event('visibilitychange'));
     });
-    await theme('field');
+    await theme('forest');
     console.log(
       'PASS SE voice limit/zero volume/blur stop, hidden handlers stop music and SE, visible resume',
     );
@@ -240,6 +242,7 @@ const server = spawn('python', ['-m', 'http.server', '8847', '--bind', '127.0.0.
       reducedMotion: 'reduce',
       ignoreHTTPSErrors: true,
     });
+    titlePage.on('pageerror', (e) => errors.push(e.message));
     await titlePage.goto(process.env.PUBLIC_URL || 'http://127.0.0.1:8847');
     await titlePage.waitForFunction(() => $('#boot-screen').hidden);
     await titlePage.evaluate(() => {
@@ -264,6 +267,39 @@ const server = spawn('python', ['-m', 'http.server', '8847', '--bind', '127.0.0.
     assert.equal(await titlePage.evaluate(() => $('#title-bgm').paused), true);
     await titlePage.waitForFunction(() => PokekoroMapAudio.inspect().playing);
     console.log('PASS title loop skips silent tail and actual Start transfers music to map');
+    await titlePage.evaluate(() => {
+      for (const d of document.querySelectorAll('dialog[open]')) d.close();
+    });
+    const mapIds = await titlePage.evaluate(() => Object.keys(MAPS));
+    for (const id of mapIds) {
+      const expected = await titlePage.evaluate((id) => {
+        state.mapId = id;
+        if (id === 'rainbow-cloud') state.rainbowVisit = { returnMapId: 'viridian', returnTour: 1 };
+        state.pos = 0;
+        state.pendingMapId = null;
+        render();
+        PokekoroMapAudio.sync();
+        return mapMusicTheme(id);
+      }, id);
+      await titlePage.waitForFunction(
+        (key) => {
+          const x = PokekoroMapAudio.inspect();
+          return x.theme === key && x.playing && x.backend === 'decoded';
+        },
+        expected,
+        { timeout: 30000 },
+      );
+    }
+    await titlePage.evaluate(() => {
+      state.mapId = 'celadon-city';
+      render();
+    });
+    await titlePage.waitForFunction(() => PokekoroMapAudio.inspect().theme === 'celadon');
+    await titlePage.evaluate(() => $('#pokedex-device').showModal());
+    await titlePage.waitForFunction(() => PokekoroMapAudio.inspect().theme === 'pokedex');
+    await titlePage.evaluate(() => $('#pokedex-device').close());
+    await titlePage.waitForFunction(() => PokekoroMapAudio.inspect().theme === 'celadon');
+    console.log('PASS all 31 maps decoded, regional mapping and city/Dex return');
     await titlePage.close();
     assert.deepEqual(errors, []);
     console.log('PASS slow music preparation bounded, no JS errors');

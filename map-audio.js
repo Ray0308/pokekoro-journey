@@ -49,7 +49,7 @@
       (document.querySelector('#result').open &&
         document.querySelector('#result').dataset.audio === 'safari')
     )
-      return 'water';
+      return 'safari';
     return victory()
       ? battle.trainer
         ? 'trainerVictory'
@@ -188,7 +188,7 @@
     if (battle?.trainer && encounter()) {
       warm('trainerBattle');
       warm('trainerVictory');
-    } else if (encounter() && battle?.safari) warm('water');
+    } else if (encounter() && battle?.safari) warm('safari');
     else if (encounter()) warm('victory');
     else if (!encounter()) {
       warm('pokedex');
@@ -358,7 +358,7 @@
       warm('trainerBattle');
       warm('trainerVictory');
     } else {
-      warm(battle?.safari ? 'water' : 'wild');
+      warm(battle?.safari ? 'safari' : 'wild');
       if (!battle?.safari) warm('victory');
     }
   });
