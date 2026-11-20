@@ -2188,7 +2188,8 @@ body[data-game-view='party'] .app-version {
     [data-map='pokemon-tower'],
     [data-map='silph-co'],
     [data-map='saffron-gym'],
-    [data-map='pokemon-mansion']
+    [data-map='pokemon-mansion'],
+    [data-map='safari-zone']
   )
   .tile {
   width: 7.5%;
@@ -2204,7 +2205,8 @@ body[data-game-view='party'] .app-version {
     [data-map='pokemon-tower'],
     [data-map='silph-co'],
     [data-map='saffron-gym'],
-    [data-map='pokemon-mansion']
+    [data-map='pokemon-mansion'],
+    [data-map='safari-zone']
   )
   .tile.node-goal {
   width: 9%;
@@ -2220,7 +2222,8 @@ body[data-game-view='party'] .app-version {
     [data-map='pokemon-tower'],
     [data-map='silph-co'],
     [data-map='saffron-gym'],
-    [data-map='pokemon-mansion']
+    [data-map='pokemon-mansion'],
+    [data-map='safari-zone']
   )
   .tile
   small {
@@ -2237,7 +2240,8 @@ body[data-game-view='party'] .app-version {
     [data-map='pokemon-tower'],
     [data-map='silph-co'],
     [data-map='saffron-gym'],
-    [data-map='pokemon-mansion']
+    [data-map='pokemon-mansion'],
+    [data-map='safari-zone']
   )
   .node-wild:not(.current)
   small,
@@ -2251,7 +2255,8 @@ body[data-game-view='party'] .app-version {
     [data-map='pokemon-tower'],
     [data-map='silph-co'],
     [data-map='saffron-gym'],
-    [data-map='pokemon-mansion']
+    [data-map='pokemon-mansion'],
+    [data-map='safari-zone']
   )
   .node-item:not(.current)
   small,
@@ -2265,7 +2270,8 @@ body[data-game-view='party'] .app-version {
     [data-map='pokemon-tower'],
     [data-map='silph-co'],
     [data-map='saffron-gym'],
-    [data-map='pokemon-mansion']
+    [data-map='pokemon-mansion'],
+    [data-map='safari-zone']
   )
   .node-trainer:not(.current)
   small {
@@ -2896,4 +2902,44 @@ body[data-game-view='party'] .app-version {
   color: #245868;
   border: 1px solid #75acb6;
   box-shadow: none;
+}
+
+#map[data-map='safari-zone'] .tile {
+  width: 6%;
+  height: 6%;
+}
+#map[data-map='safari-zone'] .tile.node-goal {
+  width: 7.5%;
+  height: 7.5%;
+}
+#map[data-map='safari-zone'] .tile.node-start img.center-icon {
+  width: 100%;
+  height: 120%;
+}
+#map[data-map='safari-zone'] .node-start.current .player-pawn {
+  left: 50%;
+}
+#map[data-map='safari-zone'] .node-start.current .player-marker {
+  left: 50%;
+  transform: translateX(-50%);
+}
+/* サファリの細い一本道と門・橋に余白を残す。 */
+#map[data-map='safari-zone'] .tile {
+  width: 6.5%;
+  height: 6.5%;
+}
+#map[data-map='safari-zone'] .tile.node-goal {
+  width: 8%;
+  height: 8%;
+}
+#map[data-map='safari-zone'] .tile.node-start img.center-icon {
+  width: 100%;
+  height: 120%;
+}
+#map[data-map='safari-zone'] .node-start.current .player-pawn {
+  left: 50%;
+}
+#map[data-map='safari-zone'] .node-start.current .player-marker {
+  left: 50%;
+  transform: translateX(-50%);
 }
