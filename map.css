@@ -2185,7 +2185,8 @@ body[data-game-view='party'] .app-version {
     [data-map='ss-anne'],
     [data-map='celadon-city'],
     [data-map='rocket-hideout'],
-    [data-map='pokemon-tower']
+    [data-map='pokemon-tower'],
+    [data-map='silph-co']
   )
   .tile {
   width: 7.5%;
@@ -2198,7 +2199,8 @@ body[data-game-view='party'] .app-version {
     [data-map='ss-anne'],
     [data-map='celadon-city'],
     [data-map='rocket-hideout'],
-    [data-map='pokemon-tower']
+    [data-map='pokemon-tower'],
+    [data-map='silph-co']
   )
   .tile.node-goal {
   width: 9%;
@@ -2211,7 +2213,8 @@ body[data-game-view='party'] .app-version {
     [data-map='ss-anne'],
     [data-map='celadon-city'],
     [data-map='rocket-hideout'],
-    [data-map='pokemon-tower']
+    [data-map='pokemon-tower'],
+    [data-map='silph-co']
   )
   .tile
   small {
@@ -2225,7 +2228,8 @@ body[data-game-view='party'] .app-version {
     [data-map='ss-anne'],
     [data-map='celadon-city'],
     [data-map='rocket-hideout'],
-    [data-map='pokemon-tower']
+    [data-map='pokemon-tower'],
+    [data-map='silph-co']
   )
   .node-wild:not(.current)
   small,
@@ -2236,7 +2240,8 @@ body[data-game-view='party'] .app-version {
     [data-map='ss-anne'],
     [data-map='celadon-city'],
     [data-map='rocket-hideout'],
-    [data-map='pokemon-tower']
+    [data-map='pokemon-tower'],
+    [data-map='silph-co']
   )
   .node-item:not(.current)
   small,
@@ -2247,7 +2252,8 @@ body[data-game-view='party'] .app-version {
     [data-map='ss-anne'],
     [data-map='celadon-city'],
     [data-map='rocket-hideout'],
-    [data-map='pokemon-tower']
+    [data-map='pokemon-tower'],
+    [data-map='silph-co']
   )
   .node-trainer:not(.current)
   small {
@@ -2582,6 +2588,16 @@ body[data-game-view='party'] .app-version {
   height: 6%;
 }
 #map[data-map='pokemon-tower'] .tile.node-goal {
+  width: 8%;
+  height: 8%;
+}
+
+/* 折り返しの並行通路と社長室の入口に合わせる。 */
+#map[data-map='silph-co'] .tile {
+  width: 6.5%;
+  height: 6.5%;
+}
+#map[data-map='silph-co'] .tile.node-goal {
   width: 8%;
   height: 8%;
 }
