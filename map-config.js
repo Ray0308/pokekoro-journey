@@ -1741,7 +1741,7 @@ const MAPS = Object.freeze({
     'routeBridges': [
       [50, 86, 50, 82],
       [48, 82, 37, 82],
-      [37, 82, 37, 71],
+      [37, 82, 37, 67.5],
     ],
     'trainerIcon': 'assets/map/viridian-trainer.webp',
     'boss': {
