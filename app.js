@@ -677,6 +677,10 @@ function showTab(name) {
     .forEach((button) => button.classList.toggle('active', button.dataset.tab === name));
   for (const id of ['map', 'party', 'journey']) $('#' + id).hidden = id !== name;
   document.body.dataset.gameView = name;
+  const mapButton = document.querySelector('.game-navigation [data-tab=map]');
+  mapButton.dataset.returnToMap = String(name !== 'map');
+  mapButton.querySelector('span').textContent = name === 'map' ? '冒険マップ' : 'マップにもどる';
+  mapButton.setAttribute('aria-label', name === 'map' ? '冒険マップ' : '冒険マップにもどる');
 }
 document.querySelectorAll('[data-tab]').forEach(
   (button) =>

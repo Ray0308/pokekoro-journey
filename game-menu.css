@@ -527,3 +527,86 @@ body.at-title #title-options #back-title {
     line-height: 15px;
   }
 }
+
+/* 閉じる操作と、別画面から冒険へ戻る操作を文字で区別する。 */
+#game-menu[open] {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+.game-menu-heading {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #c8ccbf;
+}
+.game-menu-heading strong {
+  font-size: 13px;
+  color: #40584e;
+}
+#game-menu-close {
+  min-height: 38px;
+  padding: 4px 6px;
+  border: 1px solid #c4c9bc;
+  border-radius: 5px;
+  background: #f4f5eb;
+  color: #3e554d;
+  font-size: 12px;
+  box-shadow: none;
+}
+#game-menu [role='menu'] {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+#game-menu .menu-map-return {
+  position: sticky;
+  bottom: 0;
+  margin-top: 5px;
+  padding: 10px 7px;
+  min-height: 46px;
+  border-top: 1px solid #b4c6b9;
+  background: #e4efdf;
+  color: #244f43;
+  font:
+    800 14px/1.4 'Noto Sans JP',
+    sans-serif;
+  letter-spacing: 0;
+  z-index: 1;
+}
+#game-menu .menu-map-return::before {
+  content: none;
+}
+#game-shell nav.game-navigation > [data-return-to-map='true'] {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #fffdf0;
+  color: #315968;
+  border: 1px solid #9fb7bd;
+  border-radius: 8px;
+  font-weight: 800;
+}
+#game-shell nav [data-return-to-map='true'] svg {
+  display: none;
+}
+#game-shell nav [data-return-to-map='true']::before {
+  content: '←';
+  font-size: 19px;
+  line-height: 1;
+}
+@media (max-height: 450px) {
+  #game-menu .game-menu-heading {
+    padding-bottom: 3px;
+  }
+  #game-menu-close {
+    min-height: 32px;
+  }
+  #game-menu .menu-map-return {
+    min-height: 40px;
+    padding: 7px;
+  }
+}

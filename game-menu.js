@@ -7,6 +7,7 @@
   function position() {
     const rect = toggle.getBoundingClientRect();
     menu.style.top = Math.max(8, rect.bottom + 6) + 'px';
+    menu.style.right = Math.max(12, innerWidth - rect.right) + 'px';
     menu.style.maxHeight =
       Math.max(120, (window.visualViewport?.height || innerHeight) - rect.bottom - 18) + 'px';
   }
@@ -14,6 +15,7 @@
     if (feedback) window.PokekoroSfx?.play('menuClose');
     menu.close();
     toggle.setAttribute('aria-expanded', 'false');
+    if (!document.hidden) toggle.focus({ preventScroll: true });
   }
   toggle.onclick = () => {
     if (menu.open) {
@@ -25,7 +27,9 @@
     menu.showModal();
     window.PokekoroSfx?.play('menuOpen');
     toggle.setAttribute('aria-expanded', 'true');
+    menu.querySelector('[role=menuitem]').focus({ preventScroll: true });
   };
+  document.querySelector('#game-menu-close').onclick = () => close();
   menu.addEventListener('close', () => toggle.setAttribute('aria-expanded', 'false'));
   menu.addEventListener('cancel', (event) => {
     event.preventDefault();
@@ -46,8 +50,9 @@
     const items = [...menu.querySelectorAll('[role="menuitem"]')],
       index = items.indexOf(document.activeElement);
     let next;
-    if (event.key === 'ArrowDown') next = (index + 1) % items.length;
-    else if (event.key === 'ArrowUp') next = (index + items.length - 1) % items.length;
+    if (event.key === 'ArrowDown') next = index < 0 ? 0 : (index + 1) % items.length;
+    else if (event.key === 'ArrowUp')
+      next = index < 0 ? items.length - 1 : (index + items.length - 1) % items.length;
     else if (event.key === 'Home') next = 0;
     else if (event.key === 'End') next = items.length - 1;
     else return;
@@ -86,7 +91,10 @@
       (button.onclick = () => {
         const action = button.dataset.menuAction;
         close(false);
-        if (action === 'dex') window.PokekoroDex?.open();
+        if (action === 'map') {
+          showTab('map');
+          document.querySelector('[data-tab=map]').focus({ preventScroll: true });
+        } else if (action === 'dex') window.PokekoroDex?.open();
         else if (action === 'party') {
           showTab('party');
           renderDex();
