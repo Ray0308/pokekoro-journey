@@ -201,3 +201,26 @@ assert.deepEqual(trainerBossNames('pokemon-tower'), [
 assert.deepEqual(trainerBossNames('pewter-gym'), ['タケシ']);
 assert.deepEqual(trainerBossNames('ss-anne'), [TRAINER_ROSTERS.rival.name]);
 assert.deepEqual(trainerBossNames('cerulean-cave'), []);
+
+// 同じ種族なら一般先発も野生より丈夫。レベル/エース/ボスの差を逆転させない。
+for (const level of [1, 14, 50, 100]) {
+  const lead = trainerEnemyStats(level, false, false).hp;
+  const ace = trainerEnemyStats(level, true, false).hp;
+  const bossLead = trainerEnemyStats(level, false, true).hp;
+  const bossAce = trainerEnemyStats(level, true, true).hp;
+  assert.ok(ace > lead && bossLead > lead && bossAce > ace && bossAce > bossLead);
+  for (const mon of POKEDEX) {
+    const wild = PokemonBattleStats.enemyHP(mon, 365);
+    assert.ok(
+      PokemonBattleStats.enemyHP(mon, lead) >= wild * 1.4,
+      `Trainer weaker than wild: ${mon.id}/${level}`,
+    );
+    assert.ok(
+      PokemonBattleStats.enemyHP(mon, bossAce) >= wild * 3,
+      `Boss ace too close to wild: ${mon.id}/${level}`,
+    );
+  }
+}
+for (let level = 2; level <= 100; level++) {
+  assert.ok(trainerEnemyStats(level, true, true).hp > trainerEnemyStats(level - 1, true, true).hp);
+}
