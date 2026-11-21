@@ -1196,13 +1196,13 @@ function syncPuzzleRefresh() {
     battle?.phase !== 'charging' ||
     performance.now() - lastPuzzleRefreshAt < 600;
 }
-$('#puzzle-refresh').onclick = () => {
+function refreshBattlePuzzle(automatic = false) {
   if (
     battle?.tutorial ||
     !running ||
     preparing ||
     battle?.phase !== 'charging' ||
-    performance.now() - lastPuzzleRefreshAt < 600
+    (!automatic && performance.now() - lastPuzzleRefreshAt < 600)
   )
     return;
   if (performance.now() - startAt >= battleDuration() * 1000) {
@@ -1233,7 +1233,8 @@ $('#puzzle-refresh').onclick = () => {
   draw();
   syncPuzzleRefresh();
   sfx('menuOpen');
-};
+}
+$('#puzzle-refresh').onclick = () => refreshBattlePuzzle();
 function tick(now) {
   syncPuzzleRefresh();
   if (!running) return;
@@ -1262,7 +1263,7 @@ function tick(now) {
     );
     const assist = puzzleAssist.update(grid, preferred, now, drag);
     if (assist === 'refresh') {
-      $('#puzzle-refresh').onclick();
+      refreshBattlePuzzle(true);
       $('#puzzle-tip').textContent = 'つながる マークを ならべなおしたよ！';
     } else if (assist === 'hint') draw();
   }

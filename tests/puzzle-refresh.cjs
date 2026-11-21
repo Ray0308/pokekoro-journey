@@ -60,9 +60,10 @@ assert.equal(assist.update(diagonal,[],4000,true),'none','held pointer is never 
 assist.touch(4100);assert.equal(assist.update(diagonal,[],5500),'none');
 assert.equal(assist.update(diagonal,[],5600),'hint');
 assist.touch(6000);
-assert.equal(assist.update(Array.from({length:30},(_,i)=>i),[],7500),'refresh');
+assert.equal(assist.update(Array.from({length:30},(_,i)=>i),[],6000),'refresh','deadlock refresh is immediate');
+assert.equal(assist.update(Array.from({length:30},(_,i)=>i),[],6001,true),'none','never replace under a held pointer');
 assert.equal(assist.path.length,0);
-assert.equal(assist.update(diagonal,[],7501),'none','fresh idle interval after refresh');
+assert.equal(assist.update(diagonal,[],6001),'none','fresh idle interval after refresh');
 assert.deepEqual(puzzleHintPath(null),[]);
 `,
   context,

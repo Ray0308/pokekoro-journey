@@ -109,7 +109,9 @@ const server = spawn('python', ['-m', 'http.server', '8875', '--bind', '127.0.0.
             (_, i) => battle.puzzleTypes[(Math.floor(i / 6) % 2) * 2 + (i % 2)],
           );
           window.deadBoard = [...grid];
-          puzzleAssist.touch(performance.now() - 1500);
+          window.deadBoardAt = performance.now();
+          puzzleAssist.touch(performance.now());
+          lastPuzzleRefreshAt = performance.now();
           draw();
         });
         await p.waitForFunction(() => grid.some((v, i) => v !== window.deadBoard[i]));
@@ -125,6 +127,10 @@ const server = spawn('python', ['-m', 'http.server', '8875', '--bind', '127.0.0.
           ),
           frozen,
           'auto refresh preserves battle values and clock origin',
+        );
+        assert(
+          await p.evaluate(() => lastPuzzleRefreshAt - window.deadBoardAt < 500),
+          'deadlock bypasses both idle delay and manual cooldown',
         );
         assert(await p.evaluate(() => puzzleHintPath(grid).length === 3));
         assert.equal(await p.evaluate(() => puzzleAssist.path.length), 0);

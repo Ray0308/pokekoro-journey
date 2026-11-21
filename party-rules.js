@@ -200,12 +200,16 @@ function createPuzzleAssist() {
       hinted = [];
     },
     update(board, preferred, now, held = false) {
-      if (held || now - lastAction < 1500) return 'none';
-      if (hinted.length) return 'hint';
-      hinted = puzzleHintPath(board, preferred);
-      if (hinted.length) return 'hint';
-      lastAction = now;
-      return 'refresh';
+      if (held) return 'none';
+      const candidate = puzzleHintPath(board, preferred);
+      if (!candidate.length) {
+        hinted = [];
+        lastAction = now;
+        return 'refresh';
+      }
+      if (now - lastAction < 1500) return 'none';
+      hinted = candidate;
+      return 'hint';
     },
   };
 }
