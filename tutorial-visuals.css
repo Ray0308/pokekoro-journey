@@ -452,3 +452,185 @@
 .skill-hero span {
   line-height: 1.4;
 }
+
+/* ポケモンと相手を主役にした技の見取り図。説明より先に絵で伝える。 */
+#turn-actions .turn-skill-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+#turn-actions .skill-hero,
+#mock-skill .skill-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 10px;
+  border-radius: 18px;
+  background:
+    radial-gradient(ellipse at 30% 35%, #fff 0 28%, #ffffff55 60%),
+    linear-gradient(145deg, #f7f3ff, #e8f2fb);
+}
+#turn-actions .skill-hero {
+  flex: 1 0 auto;
+  min-height: 205px;
+}
+.skill-hero .skill-picture {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 100%;
+  flex: 1;
+}
+.skill-hero figure {
+  margin: 0;
+  min-width: 0;
+}
+.skill-actor {
+  flex: 1.5;
+}
+.skill-recipient {
+  flex: 1;
+}
+.skill-hero .skill-actor img {
+  display: block;
+  width: 100%;
+  height: clamp(110px, 21vh, 188px);
+  object-fit: contain;
+  filter: drop-shadow(0 7px 3px #253b482b);
+}
+.skill-hero .skill-recipient img {
+  display: block;
+  width: 100%;
+  height: 80px;
+  object-fit: contain;
+}
+.skill-hero figcaption {
+  font-size: 15px;
+  font-weight: 800;
+  color: #213b43;
+}
+.skill-hero .skill-direction {
+  flex: 0 0 55px;
+  color: var(--skill-color);
+}
+.skill-hero .skill-direction span {
+  font-size: 11px;
+}
+.skill-direction b {
+  display: block;
+  font-size: 40px;
+  line-height: 1;
+}
+.skill-hero .skill-summary {
+  width: 100%;
+  flex: 0 0 auto;
+}
+.skill-hero .skill-status {
+  display: inline-block;
+  border-radius: 20px;
+  padding: 5px 13px;
+  font-size: 15px;
+  color: #fff;
+  background: var(--skill-color);
+  text-shadow: 0 1px 2px #0008;
+}
+.skill-hero[data-status='used'] .skill-status,
+.skill-hero[data-status='fainted'] .skill-status,
+.skill-hero[data-status='charging'] .skill-status {
+  background: #566b78;
+}
+.skill-hero .skill-gauge {
+  max-width: 260px;
+  margin: 5px auto;
+}
+.skill-hero .skill-purpose {
+  flex: 1;
+}
+.skill-purpose b {
+  display: block;
+  font-size: 44px;
+  color: var(--skill-color);
+}
+.skill-hero .skill-purpose span {
+  font-size: 14px;
+}
+#turn-skill-name {
+  font-size: 23px;
+  margin: 2px 0;
+}
+#turn-skill-help {
+  margin: 1px 0;
+  font-size: 13px;
+}
+#turn-skill-options .turn-skill-description {
+  margin: 2px 0;
+  padding: 6px 9px;
+  font-size: 12px;
+}
+#turn-actions #turn-use-skill:disabled {
+  opacity: 1;
+  background: #e6e9e9;
+  color: #52646c;
+  border-color: #a2adb0;
+  box-shadow: 0 2px 0 #87979b;
+}
+#mock-skill .skill-hero .skill-actor img {
+  height: 100px;
+}
+#mock-skill .skill-hero .skill-recipient img {
+  height: 64px;
+}
+#mock-skill .skill-hero .skill-status {
+  font-size: 12px;
+  padding: 3px 9px;
+}
+@media (max-height: 650px) {
+  #turn-actions .skill-hero {
+    min-height: 165px;
+    padding: 6px;
+  }
+  .skill-hero .skill-actor img {
+    height: 110px;
+  }
+  .skill-hero .skill-recipient img {
+    height: 65px;
+  }
+  .skill-hero .skill-summary > span {
+    display: none;
+  }
+  #turn-skill-name {
+    font-size: 20px;
+  }
+}
+/* 小さい画面でも技名を先に見せ、操作ボタンと重ねない。 */
+#turn-skill-name {
+  order: -1;
+  flex: 0 0 auto;
+}
+@media (max-height: 650px) {
+  #turn-actions .skill-hero {
+    gap: 3px;
+  }
+  #turn-actions .skill-actor img {
+    height: 100px;
+  }
+  #turn-actions .skill-status {
+    font-size: 13px;
+    padding: 3px 8px;
+  }
+  #turn-actions .skill-gauge {
+    margin: 3px auto;
+  }
+  #turn-actions .skill-hero small {
+    font-size: 11px;
+  }
+  #turn-actions .skill-hero figcaption {
+    font-size: 14px;
+  }
+}
+@media (max-width: 350px) {
+  #turn-actions .skill-hero small {
+    display: none;
+  }
+}

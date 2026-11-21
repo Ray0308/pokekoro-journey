@@ -25,7 +25,7 @@
     effectAnimations.clear();
     document
       .querySelectorAll(
-        '.enemy-counter-effect,.enemy-skill-effect,.battle-hit-ring,.battle-type-particle,.battle-effect-label',
+        '.skill-performer,.enemy-counter-effect,.enemy-skill-effect,.battle-hit-ring,.battle-type-particle,.battle-effect-label',
       )
       .forEach((node) => node.remove());
     for (const t of timers) clearTimeout(t);
@@ -418,6 +418,7 @@
     changed = [],
     name = '',
     actor = '',
+    actorId = null,
     damage = 0,
     amount = 0,
     multiplier = 1,
@@ -496,110 +497,145 @@
         300,
       );
     };
-    await pulse(source, 'skill-cast');
-    // 撤退・交代のresetでキャンセルされた古い演出は続けない。
-    if (!valid()) return;
-    if (category === 'attack' && enemy) {
-      await fly(enemy);
-      if (valid()) {
-        onImpact();
-        if (damage > 0) window.PokekoroPokemonMotion?.hit(enemy);
-        await Promise.all([
-          typedImpact(enemy, type, host),
-          label(enemy, damage > 0 ? '-' + damage.toLocaleString() : 'こうかなし', color, host),
-        ]);
-      }
-    } else if (category === 'guard') {
-      await Promise.all([
-        label(host.querySelector('#battle-party') || source, 'ガード待機', color, host),
-        ...(targets.length ? targets : [source]).map((target) => pulse(target, 'skill-shield')),
-      ]);
-    } else if (category === 'boost') {
-      await Promise.all([
-        label(host.querySelector('#battle-party') || source, `次の攻撃×${multiplier}`, color, host),
-        ...(targets.length ? targets : [source]).map((target) =>
-          play(
-            make(target, 'skill-rise'),
-            [
-              { translate: '0 10px', opacity: 0 },
-              { translate: '0 -2px', opacity: 1, offset: 0.4 },
-              { translate: '0 -18px', opacity: 0 },
+    let performer;
+    const portrait = host.querySelector('.skill-hero .skill-actor img');
+    if (portrait && portrait.getBoundingClientRect().height && !portrait.closest('[hidden]')) {
+      source = portrait;
+    } else if (actorId) {
+      performer = document.createElement('div');
+      performer.className = 'skill-performer';
+      performer.style.setProperty('--skill-color', color);
+      performer.innerHTML = `<img src="${pokemonPortrait(actorId)}" alt="${actor}"><strong>${actor}の ${name}！</strong>`;
+      performer.style.top = Math.max(80, host.clientHeight * 0.55) + host.scrollTop + 'px';
+      host.append(performer);
+      source = performer.querySelector('img');
+    }
+    try {
+      await effectAnimate(
+        source,
+        motion.matches
+          ? [{ opacity: 0.7 }, { opacity: 1 }]
+          : [
+              { transform: 'translate(0, 0)' },
+              { transform: 'translate(-10px, 5px)', offset: 0.4 },
+              { transform: 'translate(12px, -10px)', offset: 0.75 },
+              { transform: 'translate(0, 0)' },
             ],
-            380,
-          ),
-        ),
-      ]);
-    } else if (category === 'support') {
-      await Promise.all(
-        targets.map(async (target, index) => {
-          await fly(target);
-          if (valid())
-            await Promise.all([
-              pulse(target),
-              index === 0
-                ? label(
-                    targets.length > 1 ? host.querySelector('#battle-party') || target : target,
-                    `ゲージ＋${amount}`,
-                    color,
-                    host,
-                  )
-                : Promise.resolve(),
-            ]);
-        }),
+        motion.matches ? 90 : 320,
       );
-    } else if (category === 'revive') {
-      await Promise.all(
-        targets.map(async (target) => {
-          const glow = Promise.all([
-            pulse(target, 'skill-revive'),
-            label(target, 'ふっかつ！', color, host),
+      if (!valid()) return;
+      await pulse(source, 'skill-cast');
+      // 撤退・交代のresetでキャンセルされた古い演出は続けない。
+      if (!valid()) return;
+      if (category === 'attack' && enemy) {
+        await fly(enemy);
+        if (valid()) {
+          onImpact();
+          if (damage > 0) window.PokekoroPokemonMotion?.hit(enemy);
+          await Promise.all([
+            typedImpact(enemy, type, host),
+            label(enemy, damage > 0 ? '-' + damage.toLocaleString() : 'こうかなし', color, host),
           ]);
-          await effectAnimate(
-            target,
-            motion.matches
-              ? [{ opacity: 0.4 }, { opacity: 1 }]
-              : [
-                  { opacity: 0.3, translate: '0 7px' },
-                  { opacity: 1, translate: '0 0' },
-                ],
-            motion.matches ? 90 : 380,
-          );
-          await glow;
-        }),
-      );
-    } else if (category === 'board' && board) {
-      const r = board.getBoundingClientRect(),
-        h = host.getBoundingClientRect();
-      await Promise.all(
-        changed.map((index) => {
-          const node = make(board, 'skill-cell');
-          node.style.width = r.width / 6 - 4 + 'px';
-          node.style.height = r.height / 5 - 4 + 'px';
-          node.style.left =
-            r.left -
-            h.left +
-            host.scrollLeft -
-            host.clientLeft +
-            (((index % 6) + 0.5) * r.width) / 6 +
-            'px';
-          node.style.top =
-            r.top -
-            h.top +
-            host.scrollTop -
-            host.clientTop +
-            ((Math.floor(index / 6) + 0.5) * r.height) / 5 +
-            'px';
-          return play(
-            node,
-            [
-              { scale: '0.75', opacity: 0 },
-              { scale: '1', opacity: 1, offset: 0.4 },
-              { scale: '1.05', opacity: 0 },
-            ],
-            400,
-          );
-        }),
-      );
+        }
+      } else if (category === 'guard') {
+        await Promise.all([
+          label(host.querySelector('#battle-party') || source, 'ガード待機', color, host),
+          ...(targets.length ? targets : [source]).map((target) => pulse(target, 'skill-shield')),
+        ]);
+      } else if (category === 'boost') {
+        await Promise.all([
+          label(
+            host.querySelector('#battle-party') || source,
+            `次の攻撃×${multiplier}`,
+            color,
+            host,
+          ),
+          ...(targets.length ? targets : [source]).map((target) =>
+            play(
+              make(target, 'skill-rise'),
+              [
+                { translate: '0 10px', opacity: 0 },
+                { translate: '0 -2px', opacity: 1, offset: 0.4 },
+                { translate: '0 -18px', opacity: 0 },
+              ],
+              380,
+            ),
+          ),
+        ]);
+      } else if (category === 'support') {
+        await Promise.all(
+          targets.map(async (target, index) => {
+            await fly(target);
+            if (valid())
+              await Promise.all([
+                pulse(target),
+                index === 0
+                  ? label(
+                      targets.length > 1 ? host.querySelector('#battle-party') || target : target,
+                      `ゲージ＋${amount}`,
+                      color,
+                      host,
+                    )
+                  : Promise.resolve(),
+              ]);
+          }),
+        );
+      } else if (category === 'revive') {
+        await Promise.all(
+          targets.map(async (target) => {
+            const glow = Promise.all([
+              pulse(target, 'skill-revive'),
+              label(target, 'ふっかつ！', color, host),
+            ]);
+            await effectAnimate(
+              target,
+              motion.matches
+                ? [{ opacity: 0.4 }, { opacity: 1 }]
+                : [
+                    { opacity: 0.3, translate: '0 7px' },
+                    { opacity: 1, translate: '0 0' },
+                  ],
+              motion.matches ? 90 : 380,
+            );
+            await glow;
+          }),
+        );
+      } else if (category === 'board' && board) {
+        const r = board.getBoundingClientRect(),
+          h = host.getBoundingClientRect();
+        await Promise.all(
+          changed.map((index) => {
+            const node = make(board, 'skill-cell');
+            node.style.width = r.width / 6 - 4 + 'px';
+            node.style.height = r.height / 5 - 4 + 'px';
+            node.style.left =
+              r.left -
+              h.left +
+              host.scrollLeft -
+              host.clientLeft +
+              (((index % 6) + 0.5) * r.width) / 6 +
+              'px';
+            node.style.top =
+              r.top -
+              h.top +
+              host.scrollTop -
+              host.clientTop +
+              ((Math.floor(index / 6) + 0.5) * r.height) / 5 +
+              'px';
+            return play(
+              node,
+              [
+                { scale: '0.75', opacity: 0 },
+                { scale: '1', opacity: 1, offset: 0.4 },
+                { scale: '1.05', opacity: 0 },
+              ],
+              400,
+            );
+          }),
+        );
+      }
+    } finally {
+      performer?.remove();
     }
   }
   document.addEventListener('title:start', reset);

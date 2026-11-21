@@ -149,9 +149,14 @@
     const damage =
       skill.category === 'attack' ? rules.attackDamage(mon.id, battle.m, combat, battle.hp) : 0;
     panel.querySelector('.skill-hero')?.remove();
-    panel
-      .querySelector('.turn-skill-body')
-      .prepend(window.PokekoroTutorialVisuals.skillHero(mon, skill, member.gauge));
+    panel.querySelector('.turn-skill-body').prepend(
+      window.PokekoroTutorialVisuals.skillHero(mon, skill, member.gauge, {
+        enemy: battle.m,
+        usable: preview.ok,
+        used: member.usedTurn === combat.turn,
+        fainted: member.fainted,
+      }),
+    );
     panel.style.setProperty('--skill-color', POKEMON_TYPE_COLORS[mon.type]);
     $('#turn-skill-name').textContent = skill.name;
     $('#turn-skill-help').textContent = preview.ok
@@ -170,9 +175,11 @@
     use.replaceChildren();
     const label = document.createElement('strong'),
       hint = document.createElement('small');
-    label.textContent = skill.name + 'を使う';
-    hint.textContent =
-      targeted && targetId
+    label.textContent =
+      member.usedTurn === combat.turn ? 'このターンは つかったよ' : skill.name + 'を つかう！';
+    hint.textContent = !preview.ok
+      ? ''
+      : targeted && targetId
         ? '→ ' + POKEDEX[targetId - 1].label
         : skill.category === 'attack'
           ? damage + 'ダメージ'
@@ -413,6 +420,7 @@
       category: outcome.skill.category,
       name: outcome.skill.name,
       actor: POKEDEX[selected - 1].label,
+      actorId: selected,
       damage: outcome.damage || 0,
       amount: outcome.skill.amount || 0,
       multiplier: outcome.skill.multiplier || 1,

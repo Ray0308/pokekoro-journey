@@ -710,3 +710,33 @@
     text-overflow: ellipsis;
   }
 }
+
+.skill-performer {
+  position: absolute;
+  z-index: 70;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  text-align: center;
+  width: min(280px, 80%);
+  padding: 8px;
+  border-radius: 20px;
+  background: radial-gradient(ellipse, #fff 25%, #ffffffe8 65%, #ffffff00 75%);
+}
+.skill-performer img {
+  display: block;
+  width: 130px;
+  height: 130px;
+  margin: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 5px 3px #23334844);
+}
+.skill-performer strong {
+  display: block;
+  padding: 5px;
+  border: 2px solid var(--skill-color);
+  border-radius: 15px;
+  background: #fff;
+  color: #213b43;
+  font-size: 15px;
+}

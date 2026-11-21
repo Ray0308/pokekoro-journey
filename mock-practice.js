@@ -335,6 +335,7 @@
         POKEDEX[id - 1],
         skill,
         model.combat.members.find((m) => m.id === id).gauge,
+        { enemy: POKEDEX[24] },
       ),
     );
     $m('#mock-use').scrollIntoView({ block: 'nearest' });
@@ -364,6 +365,7 @@
       type: PokemonSkillRules.attackType(result.skill, mon),
       name: result.skill.name,
       actor: mon.label,
+      actorId: id,
       damage: result.damage || 0,
       multiplier: result.skill.multiplier || 1,
       source: $m(`[data-mock-member="${id}"]`),
