@@ -23,13 +23,15 @@
   function show() {
     if (!pending()) return;
     busy = true;
+    if (OpeningRules.upgradeMock(state)) save();
     const current = stage();
     if (['partyLesson', 'diceLesson'].includes(current)) {
       dialog.close();
       window.PokekoroPracticeOnboarding.show();
       return;
     }
-    const [speaker, words] = OPENING_STORY[current];
+    const [speaker, words] =
+      (state.opening.version >= 5 && OPENING_MOCK_STORY[current]) || OPENING_STORY[current];
     const companion = ['oakGonbe', 'oakFriend', 'companionInvite'].includes(current);
     const dex = ['dex', 'register'].includes(current);
     dialog.dataset.stage = current;
@@ -41,9 +43,15 @@
     const chosen = preview || state.opening.starterId;
     let scene = `<img class="opening-oak" src="assets/opening/oak.webp" alt="オーキド博士">`;
     if (companion) scene += portrait(446, 'opening-partner');
-    if (['chosen', 'borrow', 'practice', 'caught'].includes(current))
+    if (['chosen', 'borrow', 'practice', 'caught', 'mockGift'].includes(current))
       scene += portrait(
-        current === 'borrow' || current === 'practice' ? 32 : current === 'caught' ? 25 : chosen,
+        current === 'borrow' || current === 'practice'
+          ? state.opening.version >= 5
+            ? 25
+            : 32
+          : current === 'caught' || current === 'mockGift'
+            ? 25
+            : chosen,
         'opening-partner',
       );
     if (dex)
@@ -151,7 +159,9 @@
         current === 'practice'
           ? 'れんしゅう スタート！'
           : current === 'throw'
-            ? 'れんしゅうボールを なげる（100%）'
+            ? state.opening.version >= 5
+              ? 'ボールを なげてみる'
+              : 'れんしゅうボールを なげる（100%）'
             : current === 'depart'
               ? 'ぼうけん スタート！'
               : current === 'dex'
@@ -185,6 +195,10 @@
   function practice() {
     if (stage() !== 'practice') return;
     dialog.close();
+    if (state.opening.version >= 5) {
+      window.PokekoroMockPractice.open();
+      return;
+    }
     if (state.opening.version >= 3) {
       window.PokekoroPractice.open();
       return;
@@ -279,19 +293,22 @@
 
   function finish() {
     if (!OpeningRules.complete(state)) return;
-    if (state.opening.version >= 3) state.opening.stage = 'partyLesson';
+    if (state.opening.version >= 3)
+      state.opening.stage = state.opening.version >= 5 ? 'diceLesson' : 'partyLesson';
     save();
     dialog.close();
     busy = false;
     render();
-    if (state.opening.stage === 'partyLesson') window.PokekoroPracticeOnboarding.show();
+    if (['partyLesson', 'diceLesson'].includes(state.opening.stage))
+      window.PokekoroPracticeOnboarding.show();
     else $('#roll').focus({ preventScroll: true });
     document.dispatchEvent(new CustomEvent('opening:scene'));
   }
   window.PokekoroOpening = Object.freeze({
     pending,
     practiceComplete() {
-      if (stage() === 'practice' && state.opening.version >= 3) move('throw');
+      if (stage() === 'practice' && state.opening.version >= 3)
+        move(state.opening.version >= 5 ? 'mockGift' : 'throw');
     },
     canPractice: () => pending() && stage() === 'practice',
     resolvePractice,

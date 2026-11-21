@@ -244,3 +244,265 @@
     min-height: 1.8em;
   }
 }
+
+/* 研究所の模擬戦：相棒2匹と同じ相手のまま、本編と同じ30マスを操作する。 */
+#mock-practice {
+  width: min(96vw, 520px);
+  max-height: 96dvh;
+  box-sizing: border-box;
+  overflow: auto;
+  padding: 9px;
+  border: 3px solid #c5b483;
+  border-radius: 14px;
+  background: #f3f5e8;
+  color: #304c43;
+}
+#mock-practice::backdrop {
+  background: #193b45c9;
+}
+#mock-practice header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  min-height: 26px;
+}
+#mock-clock {
+  font-size: 20px;
+  font-variant-numeric: tabular-nums;
+}
+.mock-opponent {
+  height: clamp(70px, 17dvh, 120px);
+  position: relative;
+  border-radius: 9px;
+  background: #deead8 url('assets/opening/laboratory.webp') center 55% / cover;
+  display: flex;
+  justify-content: center;
+}
+.mock-opponent img {
+  height: 100%;
+  width: 50%;
+  object-fit: contain;
+  filter: drop-shadow(0 3px 3px #273d4155);
+}
+.mock-opponent span {
+  position: absolute;
+  bottom: 3px;
+  right: 5px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  background: #fffdf0e8;
+}
+#mock-roster {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+  margin-top: 6px;
+}
+#mock-roster button {
+  min-width: 0;
+  min-height: 58px;
+  position: relative;
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  grid-template-rows: 1fr 1fr;
+  align-items: center;
+  gap: 0 4px;
+  padding: 3px 5px 9px;
+  color: inherit;
+  border: 2px solid #a7b59e;
+  border-radius: 7px;
+  background: #fffdf0;
+  box-shadow: none;
+  text-align: left;
+}
+#mock-roster button:disabled {
+  opacity: 1;
+}
+#mock-roster img {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+  grid-row: 1/3;
+}
+#mock-roster strong {
+  font-size: 11px;
+}
+#mock-roster span {
+  font-size: 10px;
+}
+#mock-roster i {
+  position: absolute;
+  bottom: 3px;
+  left: 5px;
+  right: 5px;
+  height: 4px;
+  background: #e0e5d7;
+  border-radius: 3px;
+  overflow: hidden;
+}
+#mock-roster i b {
+  display: block;
+  height: 100%;
+  background: var(--ready-type);
+}
+#mock-roster .skill-ready {
+  border-color: var(--ready-type);
+  box-shadow: 0 0 7px var(--ready-type);
+}
+#mock-hint {
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 6px 0 3px;
+  min-height: 3em;
+}
+#mock-power {
+  padding: 3px 7px;
+  background: #e9e5cd;
+  border-radius: 4px;
+  font-weight: 800;
+  font-size: 13px;
+}
+#mock-result {
+  font-size: 11px;
+  line-height: 1.5;
+  min-height: 3em;
+  margin: 3px 0;
+}
+.mock-board {
+  position: relative;
+}
+#mock-practice canvas {
+  width: 100%;
+  height: auto;
+  display: block;
+  touch-action: none;
+  border-radius: 7px;
+}
+#mock-practice canvas.is-ready {
+  filter: blur(3px);
+}
+#mock-start {
+  position: absolute;
+  left: 20%;
+  width: 60%;
+  bottom: 14px;
+  min-height: 43px;
+}
+#mock-countdown {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 35%;
+  text-align: center;
+  font-size: 48px;
+  color: #fffdf0;
+  text-shadow: 0 2px 5px #273d41;
+  pointer-events: none;
+}
+#mock-skill {
+  position: absolute;
+  inset: 0;
+  padding: 15px;
+  border: 2px solid #a5b49d;
+  border-radius: 7px;
+  background: #fffdf0;
+  overflow: auto;
+}
+#mock-skill h3 {
+  font-size: 15px;
+}
+#mock-skill p {
+  font-size: 13px;
+  line-height: 1.7;
+}
+#mock-skill button {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  margin-top: 8px;
+}
+#mock-finish {
+  width: 100%;
+  min-height: 46px;
+  margin-top: 7px;
+}
+@media (max-width: 599px) and (max-height: 620px) {
+  #mock-practice {
+    padding: 6px;
+  }
+  .mock-opponent {
+    height: 60px;
+  }
+  #mock-roster button {
+    min-height: 46px;
+  }
+  #mock-roster img {
+    height: 32px;
+  }
+  #mock-hint {
+    margin: 3px 0;
+    font-size: 11px;
+  }
+  #mock-result {
+    min-height: 3em;
+  }
+}
+@media (min-width: 600px) and (max-height: 450px) {
+  #mock-practice[open] {
+    display: grid;
+    width: min(96vw, 820px);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 340px);
+    grid-template-rows: 27px 72px 57px 54px 26px minmax(34px, 1fr);
+    gap: 3px 12px;
+  }
+  #mock-practice header {
+    grid-column: 1/-1;
+  }
+  .mock-opponent {
+    grid-column: 1;
+    grid-row: 2;
+    height: 72px;
+  }
+  #mock-roster {
+    grid-column: 1;
+    grid-row: 3;
+    margin: 0;
+  }
+  #mock-hint {
+    grid-column: 1;
+    grid-row: 4;
+  }
+  #mock-power {
+    grid-column: 1;
+    grid-row: 5;
+  }
+  #mock-result {
+    grid-column: 1;
+    grid-row: 6;
+  }
+  .mock-board {
+    grid-column: 2;
+    grid-row: 2/7;
+    align-self: center;
+  }
+  #mock-finish {
+    grid-column: 1;
+  }
+}
+
+#mock-practice header {
+  background: #e3eadb;
+  color: #304c43;
+  padding: 3px 6px;
+  border-radius: 5px;
+}
+#mock-finish {
+  position: absolute;
+  left: 15%;
+  width: 70%;
+  bottom: 14px;
+  margin: 0;
+}

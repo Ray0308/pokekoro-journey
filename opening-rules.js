@@ -26,6 +26,7 @@ const OpeningRules = (() => {
     'chosen',
     'borrow',
     'practice',
+    'mockGift',
     'throw',
     'caught',
     'return',
@@ -45,7 +46,7 @@ const OpeningRules = (() => {
       lap: 1,
       balls: 0,
       super: 0,
-      opening: { version: 4, stage: 'oakGreeting', starterId: null },
+      opening: { version: 5, stage: 'oakGreeting', starterId: null },
     };
   }
   // 表示上の文字単位で最大8文字。結合文字やサロゲートペアを途中で切らない。
@@ -88,10 +89,23 @@ const OpeningRules = (() => {
     if (o.stage === 'world') return 'choose';
     return stages[stages.indexOf(o.stage) + 1];
   }
+  function upgradeMock(state) {
+    const o = state.opening;
+    if (
+      o.version !== 4 ||
+      !['chosen', 'borrow', 'practice'].includes(o.stage) ||
+      !starters.includes(o.starterId)
+    )
+      return false;
+    o.version = 5;
+    delete o.practiceStep;
+    return true;
+  }
   function normalize(state, existing) {
     if (!state.opening || typeof state.opening !== 'object' || Array.isArray(state.opening))
       state.opening = { version: 1, stage: existing ? 'complete' : 'meet', starterId: null };
     const o = state.opening;
+    upgradeMock(state);
     if (!stages.includes(o.stage)) o.stage = existing ? 'complete' : 'meet';
     if (!starters.includes(o.starterId)) {
       o.starterId = null;
@@ -113,7 +127,7 @@ const OpeningRules = (() => {
     const o = state.opening;
     if (o.stage === 'complete' || o.pokedexReceived || !starters.includes(o.starterId))
       return false;
-    state.party = [446, o.starterId, 25];
+    state.party = o.version >= 5 ? [o.starterId, 446, 25] : [446, o.starterId, 25];
     state.owned = [...new Set([...state.owned, ...state.party])];
     state.seen = [...new Set([...(state.seen || []), ...state.party])];
     state.balls += 8;
@@ -133,10 +147,11 @@ const OpeningRules = (() => {
     nameError,
     confirmName,
     nextStage,
+    upgradeMock,
     nameChoices: Object.freeze(['じぶんできめる', 'グリーン', 'レッド', 'レン']),
     // 本編の空パーティーは不正。新しい研究所導入の、同行決定前だけ許可する。
     awaitingCompanion: (value) =>
-      value?.opening?.version === 4 &&
+      [4, 5].includes(value?.opening?.version) &&
       [
         'oakGreeting',
         'oakIntro',

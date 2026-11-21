@@ -39,6 +39,7 @@
     );
   }
   function theme() {
+    if (document.querySelector('#mock-practice')?.open) return 'gym';
     if (
       document.querySelector('#pokedex-device').open ||
       document.querySelector('#opening[open][data-scene="dex"]')
@@ -73,7 +74,7 @@
             ? ':not(#encounter):not(#battle)'
             : '';
     return !document.querySelector(
-      'dialog[open]:not(#opening):not(#pokedex-device):not(#game-menu):not(#item-bag):not(#title-options):not(#ball-exchange):not(#kurt-house):not(#type-ball-picker):not(#debug-tools):not(#debug-roll-picker):not(#result):not(#guide):not(#skill-start-confirm)' +
+      'dialog[open]:not(#opening):not(#pokedex-device):not(#game-menu):not(#item-bag):not(#title-options):not(#ball-exchange):not(#kurt-house):not(#type-ball-picker):not(#debug-tools):not(#debug-roll-picker):not(#result):not(#guide):not(#skill-start-confirm):not(#mock-practice)' +
         exceptions,
     );
   }

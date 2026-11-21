@@ -6,8 +6,8 @@ for (const id of rules.starters) {
   state.opening.starterId = id;
   state.opening.stage = 'depart';
   assert.equal(rules.complete(state), true);
-  assert.deepEqual(state.party, [446, id, 25]);
-  assert.deepEqual(state.owned, [446, id, 25]);
+  assert.deepEqual(state.party, [id, 446, 25]);
+  assert.deepEqual(state.owned, [id, 446, 25]);
   assert.equal(state.owned.includes(32), false);
   assert.equal(state.seen.includes(32), false);
   assert.equal(state.balls, 8);
@@ -41,7 +41,7 @@ console.log(
 
 // 新規だけ名前経路へ進め、旧版の途中セーブは従来経路を維持する。
 const named = rules.fresh();
-assert.equal(named.opening.version, 4);
+assert.equal(named.opening.version, 5);
 named.opening.stage = 'friend';
 assert.equal(rules.nextStage(named), 'oakGreeting');
 for (const stage of ['meet', 'friend', 'lab', 'world', 'choose', 'practice', 'complete']) {
@@ -129,3 +129,19 @@ console.log(
 
 assert.equal(keyboard.toHiragana('ー'), 'ー');
 assert.equal(keyboard.toHiragana('ァ'), 'ぁ');
+
+const oldPractice = {
+  ...rules.fresh(),
+  owned: [446],
+  party: [446],
+  opening: { version: 4, stage: 'practice', starterId: 4, practiceStep: 'gray' },
+  balls: 0,
+  super: 0,
+};
+rules.normalize(oldPractice, true);
+assert.equal(oldPractice.opening.version, 5);
+assert.equal(oldPractice.opening.practiceStep, undefined);
+assert.deepEqual(oldPractice.owned, [446]);
+const v4 = { ...rules.fresh(), opening: { version: 4, stage: 'depart', starterId: 4 } };
+rules.complete(v4);
+assert.deepEqual(v4.party, [446, 4, 25]);

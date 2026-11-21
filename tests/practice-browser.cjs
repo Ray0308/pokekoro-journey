@@ -15,7 +15,7 @@ const server = spawn('python', ['-m', 'http.server', '8810', '--bind', '127.0.0.
       args: ['--no-sandbox'],
       headless: true,
     });
-    async function setup(viewport, step, version = 4) {
+    async function setup(viewport, step, version = 3) {
       const context = await browser.newContext({
         viewport,
         reducedMotion: 'reduce',

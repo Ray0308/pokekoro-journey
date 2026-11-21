@@ -282,23 +282,32 @@
       300,
     );
   }
-  async function groupAttack(sources = [], type = 5, damage = 0) {
+  async function groupAttack(sources = [], type = 5, damage = 0, host = dialog) {
     const token = generation,
-      enemy = dialog.querySelector('#enemyimg');
-    if (!dialog.open || !enemy) return;
+      enemy = host.querySelector('#enemyimg') || host.querySelector('.mock-opponent img');
+    if (!host.open || !enemy) return;
     const color = POKEMON_TYPE_COLORS[type] || '#efd188';
-    announce(damage > 0 ? 'みんなで アタック！' : '攻撃パワーが たまっていない！', color);
+    if (host === dialog)
+      announce(damage > 0 ? 'みんなで アタック！' : '攻撃パワーが たまっていない！', color);
     if (damage <= 0) return;
     await Promise.all(
       sources.map(({ node }) =>
         effectAnimate(node, [{ scale: '1' }, { scale: '1.09', offset: 0.5 }, { scale: '1' }], 160),
       ),
     );
-    if (token !== generation || !dialog.open) return;
+    if (token !== generation || !host.open) return;
     await Promise.all(
-      (sources.length ? sources : [{ node: document.querySelector('.attack-charge'), type }]).map(
-        ({ node, type: t }) => typedFlight(node, enemy, t ?? type),
-      ),
+      (sources.length
+        ? sources
+        : [
+            {
+              node:
+                host.querySelector('[data-mock-member]') ||
+                document.querySelector('.attack-charge'),
+              type,
+            },
+          ]
+      ).map(({ node, type: t }) => typedFlight(node, enemy, t ?? type, host)),
     );
   }
   function counterWindup(host = dialog, enemy = host.querySelector('#enemyimg')) {
@@ -609,13 +618,14 @@
     counterHit,
     skill: skillEffect,
     groupAttack,
-    damage: (value, type = 5) => {
-      if (dialog.open) {
-        void typedImpact(dialog.querySelector('#enemyimg'), type);
+    damage: (value, type = 5, host = dialog, enemy = host.querySelector('#enemyimg')) => {
+      if (host.open && enemy) {
+        void typedImpact(enemy, type, host);
         void label(
-          dialog.querySelector('#enemyimg'),
+          enemy,
           value > 0 ? '-' + value.toLocaleString() : 'パワーなし',
           POKEMON_TYPE_COLORS[type],
+          host,
         );
       }
     },
