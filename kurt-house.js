@@ -113,7 +113,7 @@ function typeBallPickerButton(stock) {
     document.querySelector('#type-ball-choices').innerHTML = list
       .map(
         (ball) =>
-          `<button class="type-ball-choice" data-capture-type="${ball.typeIndex}" data-match="${typeBallMatches(ball, battle.m)}"><img src="${ball.image}" alt=""><span><strong>${ball.name}</strong><small>${typeBallMatches(ball, battle.m) ? 'タイプ一致！' : '通常の効果'} ・ 成功 ${Math.round(ballCatchChance(ball, battle.captureBase, battle.m) * 100)}%</small><small>残り ${captureBallStock(ball, state)}個</small></span></button>`,
+          `<button class="type-ball-choice" data-capture-type="${ball.typeIndex}" data-match="${typeBallMatches(ball, battle.m)}"><img src="${ball.image}" alt=""><span><strong>${ball.name}</strong><small>${typeBallMatches(ball, battle.m) ? 'タイプ一致！' : '通常の効果'} ・ 成功 ${Math.round(ballCatchChance(ball, battle.captureBase, battle.m, state) * 100)}%</small><small>残り ${captureBallStock(ball, state)}個</small></span></button>`,
       )
       .join('');
     picker.showModal();
@@ -123,7 +123,7 @@ function typeBallPickerButton(stock) {
     if (!b || capturePending) return;
     const ball = TYPE_BALLS[Number(b.dataset.captureType)];
     if (!ball || captureBallStock(ball, state) < 1 || !battle) return;
-    const chance = ballCatchChance(ball, battle.captureBase, battle.m);
+    const chance = ballCatchChance(ball, battle.captureBase, battle.m, state);
     picker.close();
     catchMon(ball.id, chance);
   });

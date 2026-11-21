@@ -22,7 +22,7 @@
     dialog.dataset.stage = stage;
     let body, label;
     if (history) {
-      body = `<small>HALL OF FAME</small><h2 id="hall-heading">殿堂入りの きろく</h2><p>これまで ${hall().count}回！</p>${[
+      body = `<small>HALL OF FAME</small><h2 id="hall-heading">殿堂入りの きろく</h2><p>これまで ${hall().count}回！<br>捕獲率 ＋${Math.round(HallOfFameRules.captureBonus(state) * 100)}ポイント（最大＋10）</p>${[
         ...hall().records,
       ]
         .reverse()
@@ -33,11 +33,11 @@
         .join('')}<small>最近50回までの なかまを きろくするよ。</small>`;
       label = 'とじる';
     } else if (stage === 'ceremony') {
-      body = `<div class="hall-crown" aria-hidden="true">★</div><small>ぼうけん クリア！</small><h2 id="hall-heading">殿堂入り おめでとう！</h2><p class="hall-trainer">${escape(entry.name)}</p><strong class="hall-number">第${entry.id}回 殿堂入り</strong><p>いっしょに たたかった なかまたち</p>${teamMarkup(entry)}<p class="hall-finish">きみたちは さいこうの チームだ！</p>`;
+      body = `<div class="hall-crown" aria-hidden="true">★</div><small>ぼうけん クリア！</small><h2 id="hall-heading">殿堂入り おめでとう！</h2><p class="hall-trainer">${escape(entry.name)}</p><strong class="hall-number">第${entry.id}回 殿堂入り</strong><p>いっしょに たたかった なかまたち</p>${teamMarkup(entry)}<p class="hall-finish">きみたちは さいこうの チームだ！</p><p>殿堂入りボーナス！<br>捕獲率 ＋${Math.round(HallOfFameRules.captureBonus(state) * 100)}ポイント<br><small>最大＋10・ボールの上限まで</small></p>`;
       label = 'オーキド博士の もとへ';
     } else {
       const celebrate = stage === 'oak-celebrate';
-      body = `<small>オーキドはかせ</small><h2 id="hall-heading">${celebrate ? 'おめでとう！' : 'つぎの ぼうけんへ！'}</h2><div class="hall-oak-scene"><img class="hall-oak" src="assets/opening/oak.webp" alt="オーキド博士"><div class="hall-speech">${celebrate ? `${escape(entry.name)}！<br>チャンピオンに かったんじゃな！<br><br>なかまたちと ここまで よく がんばった。<br>きみも いちにんまえの<br>トレーナーじゃ！` : 'これからは きみに<br>ポケモンの ちょうさを たのみたい。<br><br>めずらしい ポケモンを さがす<br>あたらしい ぼうけんじゃ！<br><br>くわしい いらいは、じゅんびが<br>ととのったら つたえるぞ。'}</div></div>`;
+      body = `<small>オーキドはかせ</small><h2 id="hall-heading">${celebrate ? 'おめでとう！' : 'つぎの ぼうけんへ！'}</h2><div class="hall-oak-scene"><img class="hall-oak" src="assets/opening/oak.webp" alt="オーキド博士"><div class="hall-speech">${celebrate ? `${escape(entry.name)}！<br>チャンピオンに かったんじゃな！<br><br>なかまたちと ここまで よく がんばった。<br>きみも いちにんまえの<br>トレーナーじゃ！` : 'これからは きみに<br>ポケモンの ちょうさを たのみたい。<br><br>めずらしい ポケモンを さがす<br>あたらしい ぼうけんじゃ！<br><br>各地の 📜いらいマスに<br>とまって みるんじゃ！<br><br>四天王たちも つぎの しょうぶへ<br>きたえなおして おるぞ。'}</div></div>`;
       label = celebrate ? 'はなしを きく' : 'あたらしい 冒険へ！';
     }
     dialog.innerHTML = `<div class="hall-body">${body}</div><footer><button id="hall-next" class="primary">${label}</button></footer>`;

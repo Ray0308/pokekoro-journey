@@ -997,7 +997,11 @@ function openBattle(trainer, boss, continuation = null, practice = false, resear
           ? '⚔ ' + battle.trainerAppearance.name
           : '🌿 野生のポケモン';
   if (boss && leagueStage())
-    $('#kind').textContent = leagueStage().label + '：' + battle.trainerAppearance.name;
+    $('#kind').textContent =
+      leagueStage().label +
+      '：' +
+      battle.trainerAppearance.name +
+      (series.hallBonus?.clears ? '（強化再戦）' : '');
   const matchup = bestTypeMatchup(m, battle.puzzleTypes);
   $('#weakness-tip').textContent =
     !matchup || matchup.factor === 1
@@ -1650,10 +1654,10 @@ function endBattle(win) {
   );
   battle.captureBase = base;
   result(
-    `<small>${cloudBoss ? 'にじのくものボス クリア！' : battle.boss ? '最深部クリア！' : 'CATCH CHANCE'}</small><h2>${battle.m.label}を捕まえよう！</h2><img src="${img(battle.m.id)}" alt="${battle.m.label}"><p>ボールをえらんで、上へスワイプ！<br>ためたパワー・最大コンボで確率アップ！</p>${masterDrop ? '<div class="capture-bonus"><img src="assets/master-ball.webp" alt="">マスターボール ×1 獲得！</div>' : ''}${ticket ? `<div class="capture-bonus"><img src="${RAINBOW_CONFIG.ticketImage}" alt="">虹のチケット ×1 獲得！</div>` : ''}<div class="ball-options">${BALLS.map((b) => `<button id="${b.id}" class="primary ball-choice" ${state[b.key] ? '' : 'disabled'}><img src="${b.image}" alt=""><span>${b.name}<small>成功 ${Math.round(Math.min(b.cap, base + b.bonus) * 100)}%・残り ${state[b.key]}個</small></span></button>`).join('')}</div>${typeBallPickerButton(state)}<button id="skip">${cloudBoss ? '捕まえず 旅に戻る' : revisitClearReady() ? '見送って 行き先をえらぶ' : '見送る'}</button>`,
+    `<small>${cloudBoss ? 'にじのくものボス クリア！' : battle.boss ? '最深部クリア！' : 'CATCH CHANCE'}</small><h2>${battle.m.label}を捕まえよう！</h2><img src="${img(battle.m.id)}" alt="${battle.m.label}"><p>ボールをえらんで、上へスワイプ！<br>ためたパワー・最大コンボで確率アップ！</p>${masterDrop ? '<div class="capture-bonus"><img src="assets/master-ball.webp" alt="">マスターボール ×1 獲得！</div>' : ''}${ticket ? `<div class="capture-bonus"><img src="${RAINBOW_CONFIG.ticketImage}" alt="">虹のチケット ×1 獲得！</div>` : ''}<div class="ball-options">${BALLS.map((b) => `<button id="${b.id}" class="primary ball-choice" ${state[b.key] ? '' : 'disabled'}><img src="${b.image}" alt=""><span>${b.name}<small>成功 ${Math.round(ballCatchChance(b, base, battle.m, state) * 100)}%・残り ${state[b.key]}個</small></span></button>`).join('')}</div>${typeBallPickerButton(state)}<button id="skip">${cloudBoss ? '捕まえず 旅に戻る' : revisitClearReady() ? '見送って 行き先をえらぶ' : '見送る'}</button>`,
   );
   BALLS.forEach((b) => {
-    $('#' + b.id).onclick = () => catchMon(b.id, ballCatchChance(b, base, battle.m));
+    $('#' + b.id).onclick = () => catchMon(b.id, ballCatchChance(b, base, battle.m, state));
   });
   window.PokekoroKurt?.bindCapture();
   $('#skip').onclick = () => {
@@ -1721,7 +1725,7 @@ async function catchMon(ballId, chance, thrown = false) {
   if (Number.isInteger(selected.typeIndex)) state.typeBalls[selected.typeIndex]--;
   else state[selected.key]--;
   if (Number.isFinite(battle.captureBase))
-    chance = ballCatchChance(selected, battle.captureBase, battle.m);
+    chance = ballCatchChance(selected, battle.captureBase, battle.m, state);
   capturePending = true;
   save();
   const effectiveChance = battle.safari ? chance : beginnerCaptureChance(chance, state);

@@ -144,6 +144,10 @@ function createTrainerEncounter(save, map, boss, rng = Math.random) {
   if (!config || map.boss.wild) throw Error('No trainer encounter on this map');
   const wins = save.trainerWins[save.mapId] || 0;
   const boost = boss && wins ? TRAINER_ROSTERS.battle.rematchLevelBonus * Math.min(wins, 5) : 0;
+  const hallBonus =
+    typeof HallOfFameRules === 'undefined'
+      ? { clears: 0, level: 0, hp: 1 }
+      : HallOfFameRules.leagueBonus(save, save.mapId, boss);
   let ids, levels, profile, classId;
   const rivalPhase = ['mid', 'late'].find(
     (phase) => TRAINER_ROSTERS.rival[phase].mapId === save.mapId,
@@ -232,7 +236,11 @@ function createTrainerEncounter(save, map, boss, rng = Math.random) {
     classId,
     profile,
     index: 0,
-    rematch: boss && wins > 0,
-    team: ids.map((id, i) => ({ id, ...trainerEnemyStats(levels[i], i === ids.length - 1, boss) })),
+    rematch: boss && (wins > 0 || hallBonus.clears > 0),
+    hallBonus,
+    team: ids.map((id, i) => {
+      const stats = trainerEnemyStats(levels[i] + hallBonus.level, i === ids.length - 1, boss);
+      return { id, ...stats, hp: Math.round(stats.hp * hallBonus.hp) };
+    }),
   };
 }

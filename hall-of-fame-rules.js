@@ -57,5 +57,21 @@ const HallOfFameRules = (() => {
     battle.hallRecordId = entry.id;
     return entry;
   }
-  return Object.freeze({ normalize, add, stages });
+  const count = (save) =>
+    Number.isSafeInteger(save?.hallOfFame?.count) && save.hallOfFame.count > 0
+      ? save.hallOfFame.count
+      : 0;
+  const captureBonus = (save) => Math.min(10, count(save)) / 100;
+  function leagueBonus(save, mapId, boss) {
+    const league = [
+      'indigo-lorelei',
+      'indigo-bruno',
+      'indigo-agatha',
+      'indigo-lance',
+      'indigo-champion',
+    ];
+    const clears = boss && league.includes(mapId) ? Math.min(10, count(save)) : 0;
+    return { clears, level: clears * 2, hp: 1 + clears * 0.08 };
+  }
+  return Object.freeze({ normalize, add, stages, captureBonus, leagueBonus });
 })();

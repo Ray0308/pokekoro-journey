@@ -76,12 +76,14 @@ function captureBallStock(ball, stock) {
 function typeBallMatches(ball, mon) {
   return Number.isInteger(ball.typeIndex) && pokemonTypes(mon).includes(ball.typeIndex);
 }
-function ballCatchChance(ball, base, mon) {
+function ballCatchChance(ball, base, mon, stock = null) {
   const match = typeBallMatches(ball, mon),
     typed = Number.isInteger(ball.typeIndex);
   return Math.min(
     typed ? (match ? KURT_CONFIG.matchCap : 0.8) : ball.cap,
-    Math.max(0, base) + (typed ? (match ? KURT_CONFIG.matchBonus : 0) : ball.bonus),
+    Math.max(0, base) +
+      (typed ? (match ? KURT_CONFIG.matchBonus : 0) : ball.bonus) +
+      (stock ? HallOfFameRules.captureBonus(stock) : 0),
   );
 }
 // 通常の表示確率は変えず、投球時の判定だけ補助する。保存フラグは追加しない。
