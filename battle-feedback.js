@@ -39,6 +39,7 @@
       dialog.style.removeProperty(key);
     const image = document.querySelector('#enemyimg');
     image.getAnimations().forEach((a) => a.cancel());
+    window.PokekoroPokemonMotion?.reset();
   }
   function burst(target, count, color, celebrate = false) {
     if (motion.matches) return;
@@ -390,6 +391,7 @@
       );
       effect.remove();
       if (token === generation && host.open && target.isConnected) {
+        if (!blocked) window.PokekoroPokemonMotion?.hit(target);
         await Promise.all([
           typedImpact(target, type, host, blocked),
           label(
@@ -501,6 +503,7 @@
       await fly(enemy);
       if (valid()) {
         onImpact();
+        if (damage > 0) window.PokekoroPokemonMotion?.hit(enemy);
         await Promise.all([
           typedImpact(enemy, type, host),
           label(enemy, damage > 0 ? '-' + damage.toLocaleString() : 'こうかなし', color, host),
@@ -620,6 +623,7 @@
     groupAttack,
     damage: (value, type = 5, host = dialog, enemy = host.querySelector('#enemyimg')) => {
       if (host.open && enemy) {
+        if (value > 0) window.PokekoroPokemonMotion?.hit(enemy);
         void typedImpact(enemy, type, host);
         void label(
           enemy,
