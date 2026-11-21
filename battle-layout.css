@@ -505,3 +505,30 @@
 #battle:not([open]) {
   display: none;
 }
+
+#battle-pause {
+  width: min(88vw, 360px);
+  box-sizing: border-box;
+  padding: 24px;
+  text-align: center;
+  border: 3px solid #d4b25b;
+  border-radius: 18px;
+  background: #fffdf1;
+  color: #344d49;
+}
+#battle-pause::backdrop {
+  background: #152d42bb;
+}
+#battle-pause h2 {
+  font-size: 24px;
+  margin: 0 0 14px;
+}
+#battle-pause p {
+  font-size: 15px;
+  line-height: 1.8;
+  margin: 0 0 18px;
+}
+#battle-pause button {
+  min-height: 48px;
+  width: 100%;
+}

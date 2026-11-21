@@ -1069,7 +1069,7 @@ $('#start').onclick = async () => {
     if (epoch !== battleEpoch) return;
     $('#ready-overlay').innerHTML = `<strong class="countdown-number">${n}</strong>`;
     tone(n === 'GO!' ? 880 : 440, 0.12);
-    await new Promise((resolve) => setTimeout(resolve, n === 'GO!' ? 250 : 550));
+    await window.PokekoroBattlePause.delay(n === 'GO!' ? 250 : 550);
   }
   if (epoch !== battleEpoch) return;
   $('#ready-overlay').hidden = true;
@@ -1544,11 +1544,28 @@ $('#leave').onclick = () => {
 };
 $('#battle').addEventListener('cancel', (e) => e.preventDefault());
 $('#result').addEventListener('cancel', (e) => e.preventDefault());
-document.addEventListener('visibilitychange', () => {
-  if (document.hidden && (running || preparing)) {
-    elapsed = (performance.now() - startAt) / 1000;
-    endBattle(false);
-  }
+window.PokekoroBattlePause.register({
+  active: () => $('#battle').open && (running || preparing),
+  pause() {
+    const snapshot = { epoch: battleEpoch, running };
+    running = false;
+    cancelAnimationFrame(raf);
+    const pointer = activePuzzlePointer;
+    resetPuzzlePointer();
+    if (pointer !== null && canvas.hasPointerCapture(pointer))
+      canvas.releasePointerCapture(pointer);
+    syncPuzzleRefresh();
+    return snapshot;
+  },
+  resume(snapshot, duration) {
+    if (snapshot.epoch !== battleEpoch || !$('#battle').open) return;
+    if (snapshot.running) {
+      startAt += duration;
+      if (lastClear) lastClear += duration;
+      running = true;
+      raf = requestAnimationFrame(tick);
+    }
+  },
 });
 render();
 

@@ -210,6 +210,29 @@
     locked = false;
     render();
   }
+  window.PokekoroBattlePause.register({
+    active: () => active() && (running || !$m('#mock-countdown').hidden),
+    pause() {
+      const snapshot = { generation, running };
+      running = false;
+      cancelAnimationFrame(raf);
+      const held = pointer;
+      pointer = null;
+      path = [];
+      if (held !== null && canvas.hasPointerCapture(held)) canvas.releasePointerCapture(held);
+      draw();
+      return snapshot;
+    },
+    resume(snapshot, duration) {
+      if (!active() || snapshot.generation !== generation) return;
+      if (snapshot.running) {
+        until += duration;
+        if (lastClear) lastClear += duration;
+        running = true;
+        raf = requestAnimationFrame(tick);
+      }
+    },
+  });
   function tick(now) {
     if (!running || !active()) return;
     $m('#mock-clock').textContent = (Math.max(0, until - now) / 1000).toFixed(1);
@@ -231,7 +254,7 @@
     for (const text of model.rounds === 0 ? ['3', '2', '1', 'GO!'] : ['GO!']) {
       badge.textContent = text;
       sound('tap');
-      await wait(text === 'GO!' ? 180 : 400);
+      await window.PokekoroBattlePause.delay(text === 'GO!' ? 180 : 400);
       if (token !== generation || !active()) return;
     }
     badge.hidden = true;
@@ -314,20 +337,6 @@
     window.PokekoroOpening.practiceComplete();
   };
   dialog.addEventListener('cancel', (e) => e.preventDefault());
-  document.addEventListener('visibilitychange', () => {
-    if (!active() || !document.hidden) return;
-    generation++;
-    cancelAnimationFrame(raf);
-    running = locked = false;
-    path = [];
-    pointer = null;
-    $m('#mock-countdown').hidden = true;
-    $m('#mock-skill').hidden = true;
-    window.PokekoroBattleFX?.reset();
-    model = rules.create(state.opening.starterId, state.opening.mockBattle);
-    render();
-    $m('#mock-result').textContent = 'じゅんびが できたら つづけよう。';
-  });
   window.PokekoroMockPractice = Object.freeze({
     open() {
       if (

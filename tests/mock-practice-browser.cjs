@@ -121,7 +121,8 @@ const server = spawn('python', ['-m', 'http.server', '8857', '--bind', '127.0.0.
         });
         const interrupted = await p.evaluate(() => PokekoroMockPractice.inspect());
         assert.deepEqual(interrupted.gauges, before.gauges);
-        assert.equal(interrupted.phase, 'ready');
+        assert.equal(interrupted.phase, 'round');
+        assert(await p.locator('#battle-pause[open]').isVisible());
         await p.evaluate(() => {
           delete document.hidden;
           document.dispatchEvent(new Event('visibilitychange'));
