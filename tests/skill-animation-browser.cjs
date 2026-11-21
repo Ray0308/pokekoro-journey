@@ -29,12 +29,14 @@ const s = spawn('python', ['-m', 'http.server', '8818', '--bind', '127.0.0.1'], 
         ({ id, category }) => {
           state.opening.stage = 'complete';
           state.party = [id, ...[4, 7, 25, 446, 32].filter((n) => n !== id)];
+          state.owned = [...state.party];
           document.dispatchEvent(new CustomEvent('title:start'));
           openBattle(false, false);
           $('#encounter').close();
           $('#battle').showModal();
           battle.hp = 10000;
-          battle.maxHP = 10000;
+          battle.total = 10000;
+          fitBattle();
           const m = battle.combat.members.find((m) => m.id === id);
           m.gauge = PokemonSkillRules.cost(id);
           if (category === 'revive') battle.combat.members.find((m) => m.id !== id).fainted = true;
@@ -42,11 +44,24 @@ const s = spawn('python', ['-m', 'http.server', '8818', '--bind', '127.0.0.1'], 
         },
         { id, category },
       );
-      await p.click(`[data-battle-member="${id}"]`);
-      await p.click('#turn-use-skill');
-      await p.waitForSelector('.enemy-skill-effect');
+      await p.locator(`[data-battle-member="${id}"]`).tap();
+      await p.evaluate(() => {
+        window.seenSkillEffects = [];
+        const observer = new MutationObserver((records) => {
+          for (const record of records)
+            for (const n of record.addedNodes)
+              if (n.nodeType === 1 && n.matches('.enemy-skill-effect'))
+                window.seenSkillEffects.push(n.className);
+        });
+        observer.observe($('#battle'), { childList: true });
+      });
+      await p.locator('#turn-use-skill').tap();
+      await p.waitForFunction(() => window.seenSkillEffects.length > 0);
+
       if (category === 'board') {
-        await p.waitForSelector('.skill-cell');
+        await p.waitForFunction(() =>
+          window.seenSkillEffects.some((name) => name.includes('skill-cell')),
+        );
         if (
           (await p.locator('#board').evaluate((n) => getComputedStyle(n).visibility)) !== 'visible'
         )

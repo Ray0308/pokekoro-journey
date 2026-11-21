@@ -62,6 +62,8 @@ const server = spawn('python', ['-m', 'http.server', '8878', '--bind', '127.0.0.
           );
         }),
       );
+      assert(await p.locator('#battle .enemy').isHidden(), 'only the card opponent is visible');
+      assert.match(await p.locator('.skill-target-hp').innerText(), /2000/);
       await p.screenshot({ path: `/workspace/skill-nidoran-${viewport.width}.png` });
       await p.locator('#turn-use-skill').tap();
       await p.waitForFunction(() => battle.phase === 'skill-animation');
@@ -69,7 +71,27 @@ const server = spawn('python', ['-m', 'http.server', '8878', '--bind', '127.0.0.
         await p.locator('.skill-actor img').evaluate((n) => n.getAnimations().length > 0),
         'the acting Pokemon moves',
       );
+      await p.waitForSelector('.enemy-counter-effect.is-attack');
+      assert(
+        await p.locator('.enemy-counter-effect.is-attack').evaluate((n) => {
+          const host = $('#battle'),
+            h = host.getBoundingClientRect(),
+            r = $('.skill-recipient img').getBoundingClientRect();
+          const x = r.left + r.width / 2 - h.left + host.scrollLeft - host.clientLeft;
+          const y = r.top + r.height / 2 - h.top + host.scrollTop - host.clientTop;
+          return (
+            Math.abs(parseFloat(n.style.left) - x) < 2 && Math.abs(parseFloat(n.style.top) - y) < 2
+          );
+        }),
+        'projectile ends at the card opponent',
+      );
+      assert.equal(await p.evaluate(() => battle.hp), before.hp, 'HP waits for impact');
+      await p.waitForFunction(
+        (expected) => $('.skill-target-hp span')?.textContent.includes(String(expected)),
+        before.hp - before.damage,
+      );
       await p.waitForFunction(() => battle.phase === 'ready');
+      assert(await p.locator('#battle .enemy').isVisible(), 'normal enemy view returns');
       assert.equal(
         await p.evaluate(() => battle.hp),
         before.hp - before.damage,

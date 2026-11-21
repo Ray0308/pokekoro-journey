@@ -117,7 +117,8 @@
   }
   function impact(tier) {
     burst(
-      document.querySelector('.enemy'),
+      dialog.querySelector('#turn-actions:not([hidden]) .skill-recipient img') ||
+        document.querySelector('.enemy'),
       [8, 12, 18, 24][tier],
       getComputedStyle(dialog).getPropertyValue('--attack-color'),
     );

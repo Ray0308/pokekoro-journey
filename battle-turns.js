@@ -139,6 +139,7 @@
     if (!mon) return;
     const skill = rules.skillFor(mon.id),
       candidates = PokemonSkillRules.targets(combat, mon.id);
+    $('#battle').dataset.skillAttack = String(skill.category === 'attack');
     const targeted =
       skill.category === 'revive' ||
       (skill.category === 'support' && skill.target === 'ally') ||
@@ -158,6 +159,14 @@
       }),
     );
     panel.style.setProperty('--skill-color', POKEMON_TYPE_COLORS[mon.type]);
+    const recipient = panel.querySelector('.skill-recipient');
+    if (recipient) {
+      recipient.insertAdjacentHTML(
+        'beforeend',
+        '<div class="skill-target-hp"><span></span><i><b></b></i></div>',
+      );
+      updateHP();
+    }
     $('#turn-skill-name').textContent = skill.name;
     $('#turn-skill-help').textContent = preview.ok
       ? targeted
@@ -421,6 +430,10 @@
       name: outcome.skill.name,
       actor: POKEDEX[selected - 1].label,
       actorId: selected,
+      enemy:
+        outcome.skill.category === 'attack'
+          ? panel.querySelector('.skill-recipient img') || $('#enemyimg')
+          : $('#enemyimg'),
       damage: outcome.damage || 0,
       amount: outcome.skill.amount || 0,
       multiplier: outcome.skill.multiplier || 1,

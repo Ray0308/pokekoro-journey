@@ -634,3 +634,40 @@
     display: none;
   }
 }
+/* 攻撃技では敵をカード内の1匹へ統一。弾・命中・HPもこの相手へ。 */
+#battle.in-skill-break[data-skill-attack='true'] .enemy,
+#battle.in-skill-break[data-skill-attack='true'].turn-battle .enemy {
+  display: none;
+}
+.skill-recipient .skill-target-hp {
+  margin-top: 8px;
+  color: #284c43;
+}
+.skill-recipient .skill-target-hp > span {
+  display: block;
+  font-size: 11px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.skill-target-hp > i {
+  display: block;
+  height: 9px;
+  border: 1px solid #83a18f;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #e1e7e2;
+}
+.skill-target-hp b {
+  display: block;
+  height: 100%;
+  background: #45b779;
+  transition: width 0.25s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .skill-target-hp b {
+    transition: none;
+  }
+}
+#mock-practice:has(#mock-skill:not([hidden]) .skill-recipient) .mock-opponent {
+  visibility: hidden;
+}

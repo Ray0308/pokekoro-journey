@@ -996,6 +996,11 @@ function openBattle(trainer, boss, continuation = null, practice = false) {
   tone(520, 0.15);
 }
 function updateHP() {
+  const skillHP = $('#turn-actions .skill-target-hp');
+  if (skillHP) {
+    skillHP.querySelector('span').textContent = `HP ${Math.ceil(battle.hp)} / ${battle.total}`;
+    skillHP.querySelector('b').style.width = `${(100 * battle.hp) / battle.total}%`;
+  }
   $('#hpbar').style.width = `${(100 * battle.hp) / battle.total}%`;
   $('#hptext').textContent =
     `HP ${Math.ceil(battle.hp)} / ${battle.total} · ${battle.m.type === null ? 'タイプ：—' : types[battle.m.type] + 'タイプ'}`;
