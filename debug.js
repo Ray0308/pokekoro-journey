@@ -13,7 +13,7 @@
   const clone = (value) => JSON.parse(JSON.stringify(value));
   const style = document.createElement('style');
   style.textContent = `
- #title-debug{position:absolute;left:max(9px,env(safe-area-inset-left));bottom:max(7px,env(safe-area-inset-bottom));z-index:20;padding:5px 8px;min-height:28px;border:1px solid #ffffff70;border-radius:6px;background:#173b4788;color:#fff;font-size:9px;box-shadow:none}
+ #title-debug{position:absolute;left:max(9px,env(safe-area-inset-left));bottom:max(7px,env(safe-area-inset-bottom));z-index:20;width:64px;height:44px;min-height:44px;padding:0;border:0;background:transparent;box-shadow:none;opacity:0;outline:none;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
  #debug-panel{width:min(92vw,440px);max-height:90dvh;padding:20px;border:2px solid #8b72ad;border-radius:14px;background:#f7f4fb;color:#423653;overflow:auto}
  #debug-panel::backdrop{background:#20243bbf}#debug-panel h2{margin:0 0 8px;font-size:20px;color:#60477b}#debug-panel p{font-size:11px;line-height:1.7;color:#766485;margin:6px 0 14px}
  #debug-panel label{display:block;font-size:12px;margin:12px 0;color:#55436d}#debug-panel select{display:block;width:100%;padding:10px;margin-top:5px;border:1px solid #c1aecf;border-radius:7px;font-size:14px;background:white;color:#493c59}
@@ -23,12 +23,14 @@
  #debug-roll-picker{width:min(92vw,360px);max-height:85dvh;overflow:auto;padding:20px;border:2px solid #9875b4;border-radius:16px;background:#faf5ff;color:#5b416f}#debug-roll-picker h2{font-size:20px;text-align:center;margin:0 0 12px}#debug-roll-picker p{font-size:12px;text-align:center;margin:0 0 14px}.debug-roll-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.debug-roll-grid button{min-height:70px;padding:8px;border:2px solid #c8b5da;background:#fff;color:#614079;border-radius:12px;font-size:28px;box-shadow:0 3px #c8b5da}.debug-roll-grid small{display:block;font-size:11px}#debug-roll-random,#debug-roll-cancel{width:100%;min-height:42px;margin-top:12px;font-size:14px}#debug-roll-random{background:#ffe09d;color:#795324}#debug-roll-picker::backdrop{background:#263141a8}
  .debug-status{display:none;position:fixed;z-index:15;right:9px;bottom:max(21px,calc(env(safe-area-inset-bottom) + 17px));padding:3px 6px;border-radius:4px;background:#6c388ccc;color:white;font-size:8px;pointer-events:none}body.debug-mode-active:not(.at-title) #debug-tools-button{display:none}body.debug-mode-active #game-shell nav #debug-tools-button{display:block;padding:5px 8px;min-height:32px;flex:0 0 auto;font-size:10px;background:#e7d9f5;border:1px solid #9c79b8;color:#684782;border-radius:7px}#debug-tools{width:min(92vw,370px);max-height:85dvh;overflow:auto;padding:20px;border:2px solid #9875b4;border-radius:14px;background:#faf5ff;color:#5b416f}#debug-tools h2{font-size:20px;margin:0 0 10px}#debug-tools label{display:block;font-size:14px;margin:15px 0}#debug-tools select{width:100%;padding:10px;margin-top:6px;font-size:16px}#debug-tools input{width:18px;height:18px;vertical-align:middle}#debug-tools p{font-size:11px;line-height:1.6}#debug-tools-close{width:100%;min-height:40px}#debug-instant-win{display:none}body.debug-mode-active #battle .battlehead{gap:4px}body.debug-mode-active #battle .battlehead>span{min-width:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}body.debug-mode-active #battle #debug-instant-win{display:block;flex-shrink:0;padding:5px 8px;min-height:30px;background:#d34d61;color:white;font-size:11px;box-shadow:none;border-radius:7px}
  #debug-roll-picker{width:min(92vw,360px);max-height:85dvh;overflow:auto;padding:20px;border:2px solid #9875b4;border-radius:16px;background:#faf5ff;color:#5b416f}#debug-roll-picker h2{font-size:20px;text-align:center;margin:0 0 12px}#debug-roll-picker p{font-size:12px;text-align:center;margin:0 0 14px}.debug-roll-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.debug-roll-grid button{min-height:70px;padding:8px;border:2px solid #c8b5da;background:#fff;color:#614079;border-radius:12px;font-size:28px;box-shadow:0 3px #c8b5da}.debug-roll-grid small{display:block;font-size:11px}#debug-roll-random,#debug-roll-cancel{width:100%;min-height:42px;margin-top:12px;font-size:14px}#debug-roll-random{background:#ffe09d;color:#795324}#debug-roll-picker::backdrop{background:#263141a8}
- .debug-status{display:block}
+ body.debug-mode-active:not(.at-title) .debug-status{display:block}
  `;
   document.head.append(style);
   const launch = document.createElement('button');
   launch.id = 'title-debug';
-  launch.textContent = 'デバッグ';
+  launch.textContent = '';
+  launch.tabIndex = -1;
+  launch.setAttribute('aria-hidden', 'true');
   launch.type = 'button';
   document.querySelector('#title-screen').append(launch);
   const panel = document.createElement('dialog');
@@ -223,7 +225,50 @@
     battle.phase = 'finished';
     endBattle(true);
   };
-  launch.onclick = () => panel.showModal();
+  let secretTaps = 0,
+    secretStarted = 0;
+  const resetSecret = () => {
+    secretTaps = 0;
+    secretStarted = 0;
+  };
+  const title = document.querySelector('#title-screen');
+  launch.onclick = () => {
+    if (
+      title.hidden ||
+      !document.querySelector('#boot-screen').hidden ||
+      title.classList.contains('is-starting') ||
+      title.classList.contains('is-departing') ||
+      document.querySelector('dialog[open]')
+    ) {
+      resetSecret();
+      return;
+    }
+    const now = performance.now();
+    if (!secretTaps || now - secretStarted > 3000) {
+      secretTaps = 0;
+      secretStarted = now;
+    }
+    secretTaps++;
+    if (secretTaps === 5) {
+      resetSecret();
+      panel.showModal();
+    }
+  };
+  document.addEventListener(
+    'pointerdown',
+    (event) => {
+      if (!launch.contains(event.target)) resetSecret();
+    },
+    true,
+  );
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) resetSecret();
+  });
+  document.addEventListener('title:start', resetSecret);
+  new MutationObserver(resetSecret).observe(title, {
+    attributes: true,
+    attributeFilter: ['hidden'],
+  });
   panel.querySelector('#debug-close').onclick = () => panel.close();
   panel.querySelector('#debug-start').onclick = () => {
     const mapId = map.value;

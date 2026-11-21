@@ -135,7 +135,7 @@ const server = spawn('python', ['-m', 'http.server', '8831', '--bind', '127.0.0.
       state.opening.stage = 'complete';
       state.party = [1, 4, 7];
       state.owned = [1, 4, 7];
-      $('#title-debug').click();
+      for (let i = 0; i < 5; i++) $('#title-debug').click();
     });
     await p.locator('#debug-start').click();
     assert(await p.evaluate(() => PokekoroDebug.isActive()));
