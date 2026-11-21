@@ -100,6 +100,10 @@ const server = spawn('python', ['-m', 'http.server', '8872', '--bind', '127.0.0.
       assert.equal(restored.stock, r.after);
       await p.evaluate(() => {
         document.dispatchEvent(new CustomEvent('title:start'));
+        while (window.PokekoroHall?.pending()) {
+          PokekoroHall.open();
+          $('#hall-next').click();
+        }
         advanceMap();
       });
       assert.equal(await p.evaluate(() => state.mapId), r.next);
@@ -141,7 +145,10 @@ const server = spawn('python', ['-m', 'http.server', '8872', '--bind', '127.0.0.
         null,
         'no advancing on revisit ' + id,
       );
-      await p.evaluate(() => done());
+      await p.evaluate(() => {
+        done();
+        while (window.PokekoroHall?.pending()) $('#hall-next').click();
+      });
       assert.equal(await p.evaluate(() => state.pos), 14, 'revisit waits at completed map ' + id);
       assert(await p.locator('#revisit-next').isVisible());
       await p.reload();

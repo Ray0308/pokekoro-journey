@@ -307,6 +307,7 @@
         );
       }
     }
+    next.hallOfFame = HallOfFameRules.normalize(saved?.hallOfFame);
     normalizeTypeBalls(next);
     normalizeTrainerState(next);
     forceTickets = force.checked;

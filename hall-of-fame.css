@@ -1,0 +1,246 @@
+#hall-of-fame {
+  width: min(760px, calc(100vw - 24px));
+  max-height: calc(var(--app-height, 100dvh) - 24px);
+  box-sizing: border-box;
+  padding: 0;
+  border: 3px solid #dec066;
+  border-radius: 20px;
+  color: #fff8d6;
+  background: radial-gradient(ellipse at 50% 10%, #385c95, #171f43 70%);
+  box-shadow: 0 10px 45px #111b3d88;
+  overflow: hidden;
+}
+#hall-of-fame[open] {
+  display: flex;
+  flex-direction: column;
+}
+#hall-of-fame::backdrop {
+  background: #10172ee8;
+}
+.hall-body {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 18px 14px 12px;
+  text-align: center;
+  min-height: 0;
+}
+#hall-heading {
+  outline: none;
+  margin: 8px 0;
+  font-size: clamp(21px, 5vw, 30px);
+  color: #fff1a3;
+}
+.hall-body > small {
+  font-size: 11px;
+  letter-spacing: 2px;
+}
+.hall-crown {
+  color: #ffdb68;
+  font-size: 44px;
+  text-shadow: 0 0 25px #ffd66e;
+  animation: hall-star 1s ease-out;
+}
+.hall-body p {
+  margin: 10px 0;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.hall-body .hall-trainer {
+  font-size: 24px;
+  font-weight: 800;
+}
+.hall-number {
+  display: inline-block;
+  padding: 5px 16px;
+  border: 1px solid #e7c15a;
+  border-radius: 24px;
+  color: #ffe99e;
+  background: #ffffff14;
+  font-size: 15px;
+}
+.hall-team {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 12px 0;
+}
+.hall-team figure {
+  min-width: 0;
+  margin: 0;
+  padding: 6px 2px;
+  border: 1px solid #cbdcfb66;
+  border-radius: 12px;
+  background: linear-gradient(#ffffff18, #f9db7524);
+  animation: hall-partner 0.5s both;
+  animation-delay: var(--hall-delay);
+}
+.hall-team img {
+  width: 100%;
+  height: 75px;
+  object-fit: contain;
+  filter: drop-shadow(0 3px 4px #0e142b);
+}
+.hall-team figcaption {
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff8e2;
+  overflow-wrap: anywhere;
+}
+#hall-of-fame footer {
+  flex-shrink: 0;
+  padding: 10px 12px 12px;
+  background: #111a38aa;
+}
+#hall-of-fame footer button {
+  width: 100%;
+  min-height: 48px;
+  font-size: 16px;
+}
+.hall-oak-scene {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 18px;
+}
+.hall-oak {
+  width: 28%;
+  max-width: 140px;
+  height: 220px;
+  object-fit: contain;
+}
+.hall-speech {
+  text-align: left;
+  flex: 1;
+  max-width: 380px;
+  border: 2px solid #e3cb7f;
+  border-radius: 12px;
+  padding: 14px 10px;
+  background: #fffbea;
+  color: #284448;
+  font-size: 15px;
+  line-height: 1.75;
+}
+.hall-history-entry {
+  border-top: 1px solid #ffffff44;
+  padding-top: 10px;
+}
+.hall-history-entry h3 {
+  color: #ffe8a0;
+  font-size: 16px;
+}
+@keyframes hall-star {
+  from {
+    opacity: 0;
+    transform: scale(0.6) rotate(-20deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes hall-partner {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (max-height: 650px) {
+  .hall-body {
+    padding: 12px 10px 8px;
+  }
+  .hall-crown {
+    font-size: 26px;
+  }
+  .hall-team img {
+    height: 56px;
+  }
+  .hall-team {
+    gap: 5px;
+    margin: 8px 0;
+  }
+  .hall-body p {
+    margin: 6px 0;
+    font-size: 13px;
+  }
+  .hall-body .hall-trainer {
+    font-size: 21px;
+  }
+  .hall-speech {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .hall-oak {
+    height: 180px;
+  }
+}
+@media (min-width: 600px) and (max-height: 450px) {
+  .hall-team {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+  .hall-team img {
+    height: 55px;
+  }
+  .hall-body {
+    padding: 8px 14px;
+  }
+  .hall-crown {
+    display: none;
+  }
+  #hall-heading {
+    font-size: 23px;
+    margin: 4px 0;
+  }
+  .hall-body .hall-trainer {
+    margin: 3px;
+    font-size: 19px;
+  }
+  .hall-oak-scene {
+    margin-top: 6px;
+  }
+  .hall-oak {
+    height: 170px;
+  }
+  .hall-speech {
+    line-height: 1.4;
+    font-size: 13px;
+    padding: 8px 12px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hall-crown,
+  .hall-team figure {
+    animation: none;
+  }
+}
+.hall-body > small {
+  color: #f8e8ac;
+}
+@media (max-width: 350px) {
+  .hall-oak-scene {
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .hall-oak {
+    width: 90px;
+    height: 90px;
+  }
+  .hall-speech {
+    width: 100%;
+    max-width: none;
+    box-sizing: border-box;
+  }
+}
+.hall-oak-scene {
+  animation: hall-partner 0.35s both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hall-oak-scene {
+    animation: none;
+  }
+}

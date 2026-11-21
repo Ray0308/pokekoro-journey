@@ -1301,6 +1301,7 @@ function renderJourney() {
       done = cleared.has(id);
     return `<li class="${current ? 'journey-current' : ''} ${done ? 'journey-cleared' : ''}" ${current ? 'aria-current="step"' : ''}><span class="journey-step">${String(i + 1).padStart(2, '0')}</span><div><strong>${map.name}</strong><small>${map.boss.role}：${id === 'cerulean-cave' && state.owned.includes(150) ? (state.mapId === id ? mons[activeBossId() - 1].label : '伝説のポケモン') : trainerBossNames(id).join('／') || map.boss.name}</small>${done && !current ? `<button data-revisit="${id}">このマップへ 行く</button>` : ''}</div><span class="journey-status">${current ? 'いまここ' : done ? '✓ クリア' : 'これから'}</span></li>`;
   }).join('');
+  $('#journey-summary').innerHTML += window.PokekoroHall?.historyButton() || '';
   if (state.mapReturn)
     $('#journey-summary').innerHTML +=
       `<br><button id="return-adventure">${MAPS[state.mapReturn.mapId].name}の 冒険に戻る</button>`;
@@ -1362,6 +1363,10 @@ $('#journey').addEventListener('click', (event) => {
   if (event.target.closest('#return-adventure')) returnToAdventure();
 });
 function advanceMap() {
+  if (window.PokekoroHall?.pending()) {
+    window.PokekoroHall.open();
+    return;
+  }
   const next = state.pendingMapId;
   if (!next || !Object.hasOwn(MAPS, next) || capturePending) return;
   resetDicePresentation();
@@ -1426,6 +1431,10 @@ function showRevisitCompletion() {
 }
 function done() {
   if (capturePending) return;
+  if (window.PokekoroHall?.pending()) {
+    window.PokekoroHall.open();
+    return;
+  }
   if (rainbowExitReady()) {
     leaveRainbow();
     return;
@@ -1568,6 +1577,8 @@ function endBattle(win) {
     state.pendingMapId = state.mapReturn ? null : activeMap().nextMap || MAP_ORDER[0];
     if (state.mapReturn) state.revisitClearMapId = state.mapId;
   }
+  if (normalBoss && battle.trainer && activeMap().leagueFinal)
+    window.PokekoroHall?.recordChampion(battle);
   const masterDrop = battle.boss && Math.random() < BALL_DROPS.bossMaster;
   if (masterDrop) state.master++;
   const ticket =
@@ -1581,14 +1592,15 @@ function endBattle(win) {
     state.balls += 2;
     render();
     result(
-      `<section class="trainer-victory" tabindex="-1" aria-label="トレーナー戦の勝利とごほうび"><div class="trainer-victory-heading"><span class="victory-rays" aria-hidden="true"></span><div class="victory-medal" aria-hidden="true"><svg viewBox="0 0 100 80"><path d="M28 68C6 53 9 27 25 14M72 68c22-15 19-41 3-54" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/><path d="m50 12 8 17 19 3-14 13 3 19-16-9-16 9 3-19-14-13 19-3z" fill="currentColor"/></svg></div><small>${battle.boss && leagueStage() ? leagueStage().label + ' クリア！' : 'しょうぶ けっちゃく！'}</small><h2>${battle.boss ? (activeMap().leagueFinal ? battle.trainerAppearance.name + 'に勝利！' : activeMap().name + 'クリア！') : 'トレーナーに勝利！'}</h2><div class="trainer-victory-balls" role="img" aria-label="相手のポケモンをすべて倒した">${trainerRosterMarkup(battle.series, true)}</div><p class="victory-opponent">${battle.trainerAppearance.name}の ${battle.series.team.length}ひきに かった！</p></div><h3 class="victory-reward-title"><span>ごほうび ゲット！</span></h3>${rewardItemsHtml([{ id: 'super', count: battle.boss ? 3 : 1 }, { id: 'normal', count: 2 }, ...(masterDrop ? [{ id: 'master', count: 1 }] : []), ...(ticket ? [{ id: 'rainbow', count: 1 }] : [])])}${earnedBadge ? `<div class="reward-badge"><img src="${activeMap().badgeImage}" alt="${earnedBadge}"><span><small>バッジを てにいれた！</small><strong>${earnedBadge}</strong></span></div>` : ''}${ticket ? '<button id="reward-rainbow" class="rainbow-action">にじのくもへ 行く</button>' : ''}<button id="done" class="primary">${revisitClearReady() ? '行き先を えらぶ' : battle.boss && !state.mapReturn ? '次のマップへ' : 'マップへ もどる'}<span aria-hidden="true"> →</span></button></section>`,
+      `<section class="trainer-victory" tabindex="-1" aria-label="トレーナー戦の勝利とごほうび"><div class="trainer-victory-heading"><span class="victory-rays" aria-hidden="true"></span><div class="victory-medal" aria-hidden="true"><svg viewBox="0 0 100 80"><path d="M28 68C6 53 9 27 25 14M72 68c22-15 19-41 3-54" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/><path d="m50 12 8 17 19 3-14 13 3 19-16-9-16 9 3-19-14-13 19-3z" fill="currentColor"/></svg></div><small>${battle.boss && leagueStage() ? leagueStage().label + ' クリア！' : 'しょうぶ けっちゃく！'}</small><h2>${battle.boss ? (activeMap().leagueFinal ? battle.trainerAppearance.name + 'に勝利！' : activeMap().name + 'クリア！') : 'トレーナーに勝利！'}</h2><div class="trainer-victory-balls" role="img" aria-label="相手のポケモンをすべて倒した">${trainerRosterMarkup(battle.series, true)}</div><p class="victory-opponent">${battle.trainerAppearance.name}の ${battle.series.team.length}ひきに かった！</p></div><h3 class="victory-reward-title"><span>ごほうび ゲット！</span></h3>${rewardItemsHtml([{ id: 'super', count: battle.boss ? 3 : 1 }, { id: 'normal', count: 2 }, ...(masterDrop ? [{ id: 'master', count: 1 }] : []), ...(ticket ? [{ id: 'rainbow', count: 1 }] : [])])}${earnedBadge ? `<div class="reward-badge"><img src="${activeMap().badgeImage}" alt="${earnedBadge}"><span><small>バッジを てにいれた！</small><strong>${earnedBadge}</strong></span></div>` : ''}${ticket && !window.PokekoroHall?.pending() ? '<button id="reward-rainbow" class="rainbow-action">にじのくもへ 行く</button>' : ''}<button id="done" class="primary">${window.PokekoroHall?.pending() ? '殿堂入りへ！' : revisitClearReady() ? '行き先を えらぶ' : battle.boss && !state.mapReturn ? '次のマップへ' : 'マップへ もどる'}<span aria-hidden="true"> →</span></button></section>`,
     );
     $('.trainer-victory').focus({ preventScroll: true });
     $('#result').scrollTop = 0;
     if (earnedBadge) sfx('badge');
     else sfx('success');
     $('#done').onclick = done;
-    if (ticket) $('#reward-rainbow').onclick = () => enterRainbow(ticket.id);
+    if (ticket && $('#reward-rainbow'))
+      $('#reward-rainbow').onclick = () => enterRainbow(ticket.id);
     return;
   }
   render();
@@ -1745,7 +1757,7 @@ document.addEventListener('title:start', () => {
   document.body.classList.remove('at-title');
   window.scrollTo(0, 0);
   $('#roll').focus({ preventScroll: true });
-  if (revisitClearReady()) showRevisitCompletion();
+  if (!window.PokekoroHall?.pending() && revisitClearReady()) showRevisitCompletion();
 });
 
 $('#back-title').onclick = () => {
