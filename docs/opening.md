@@ -29,3 +29,5 @@
 npm testのopening.cjsで旧セーブ、御三家3種、報酬と同行の冪等性、ルート、文字上限・結合文字・濁点等を確認。opening-name-browser.cjsで390×664/320×568/844×390のタッチ入力、4択、やり直し、保存再開、明示同行を確認。player-journey-browser.cjsで実タイトルから御三家まで、practice-onboarding-browser.cjsで練習から本編まで接続する。実機Safari/Androidと物語の完成承認は別。
 
 画像は既存の提供された博士・研究所、ローカルのポケモン画像。追加素材なし。改修前の履歴は[TUTORIAL_AUDIT.md](TUTORIAL_AUDIT.md)とCHANGELOGを参照。
+
+0.9.2.92: 初サイコロの案内は#map>.layout内の短い欄。説明は任意に開け、開かずに最初の一投を進めてもよい。旧diceLesson保存を維持。巨大案内で操作不能だった端末は更新後の再読み込みで同じ保存から再開できる。

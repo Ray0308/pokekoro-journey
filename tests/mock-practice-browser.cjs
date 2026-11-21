@@ -160,7 +160,7 @@ const server = spawn('python', ['-m', 'http.server', '8857', '--bind', '127.0.0.
       assert.deepEqual(await p.evaluate(() => state.party), [starter, 446, 25]);
       assert.equal(await p.evaluate(() => state.balls), 8);
       assert.equal(await p.evaluate(() => state.super), 2);
-      assert.equal(await p.locator('#practice-coach').innerText(), 'サイコロを おして はなそう！');
+      assert.match(await p.locator('#practice-coach').innerText(), /出た目/);
       assert.deepEqual(errors, []);
       console.log(
         'PASS mock own partners, gauge continuity, actual 10s, skill, reload, gift/capture/dice',
