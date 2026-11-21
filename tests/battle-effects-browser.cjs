@@ -14,7 +14,12 @@ const server = spawn('python', ['-m', 'http.server', '8850', '--bind', '127.0.0.
       { width: 320, height: 568 },
       { width: 844, height: 390 },
     ]) {
-      const p = await b.newPage({ viewport, hasTouch: true, reducedMotion: 'no-preference' });
+      const p = await b.newPage({
+        viewport,
+        hasTouch: true,
+        reducedMotion: 'no-preference',
+        ignoreHTTPSErrors: true,
+      });
       const errors = [];
       p.on('pageerror', (e) => errors.push(e.message));
       await p.goto(process.env.PUBLIC_URL || 'http://127.0.0.1:8850');
