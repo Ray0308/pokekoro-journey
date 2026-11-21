@@ -93,3 +93,29 @@ function drawTypeGem(context, x, y, color, icon, selected, type) {
   }
   context.restore();
 }
+
+// ヒントは枠と順番だけ。マークを覆わず、選択や消去としては扱わない。
+function drawPuzzleHint(context, hint, now, still = false) {
+  if (!hint.length) return;
+  context.save();
+  context.globalAlpha = still ? 1 : 0.75 + Math.sin(now / 220) * 0.2;
+  context.strokeStyle = '#fff5a2';
+  context.shadowColor = '#ffe35a';
+  context.shadowBlur = 14;
+  context.lineWidth = 4;
+  hint.forEach((i, n) => {
+    const x = (i % 6) * 70,
+      y = Math.floor(i / 6) * 70;
+    context.strokeRect(x + 5, y + 5, 60, 60);
+    context.fillStyle = '#fff9cf';
+    context.fillRect(x + 3, y + 1, 17, 18);
+    context.shadowBlur = 0;
+    context.fillStyle = '#53451d';
+    context.font = 'bold 14px sans-serif';
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.fillText(String(n + 1), x + 11, y + 10);
+    context.shadowBlur = 14;
+  });
+  context.restore();
+}

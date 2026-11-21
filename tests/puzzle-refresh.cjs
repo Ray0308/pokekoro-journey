@@ -40,3 +40,33 @@ assert.equal(refreshedPuzzle(Array(36).fill(1),[1]),null);
 console.log(
   'PASS: refresh guarantees playable 30-cell boards, preferred types, immutable input and bounded RNG',
 );
+vm.runInContext(
+  `
+const assist=createPuzzleAssist();
+const diagonal=Array.from({length:30},(_,i)=>i+100);diagonal[0]=diagonal[7]=diagonal[14]=2;
+assert.deepEqual(puzzleHintPath(diagonal),[0,7,14]);
+const wrap=Array.from({length:30},(_,i)=>i+200);wrap[5]=wrap[6]=wrap[7]=100;
+assert.equal(puzzleHintPath(wrap).length,0,'no row wrapping');
+const choices=Array.from({length:30},(_,i)=>i+100);choices[0]=choices[1]=choices[2]=2;choices[12]=choices[13]=choices[14]=9;
+assert.deepEqual(puzzleHintPath(choices,[9]),[12,13,14]);
+assert.deepEqual(puzzleHintPath(choices,[17]),[0,1,2],'legal fallback is not deadlock');
+assist.touch(100);
+assert.equal(assist.update(diagonal,[],1599),'none');
+assert.equal(assist.path.length,0);
+assert.equal(assist.update(diagonal,[],1600),'hint');
+assert.deepEqual(assist.path,[0,7,14]);
+assist.touch(2000);assert.equal(assist.path.length,0);
+assert.equal(assist.update(diagonal,[],4000,true),'none','held pointer is never interrupted');
+assist.touch(4100);assert.equal(assist.update(diagonal,[],5500),'none');
+assert.equal(assist.update(diagonal,[],5600),'hint');
+assist.touch(6000);
+assert.equal(assist.update(Array.from({length:30},(_,i)=>i),[],7500),'refresh');
+assert.equal(assist.path.length,0);
+assert.equal(assist.update(diagonal,[],7501),'none','fresh idle interval after refresh');
+assert.deepEqual(puzzleHintPath(null),[]);
+`,
+  context,
+);
+console.log(
+  'PASS 1.5s hint boundary, diagonal/legal paths, useful preference, touch/hold reset and deadlock',
+);

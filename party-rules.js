@@ -167,3 +167,45 @@ function refreshedPuzzle(board, pool, preferred = [], rng = Math.random) {
   }
   return result;
 }
+
+// 8方向の隣接で、重複せず同じ属性を3個つなげる経路を探す。
+function puzzleHintPath(board, preferred = []) {
+  if (!Array.isArray(board) || board.length !== PUZZLE_LAYOUT.count) return [];
+  function search(types) {
+    for (let a = 0; a < board.length; a++) {
+      if (types && !types.includes(board[a])) continue;
+      for (let b = 0; b < board.length; b++) {
+        if (a === b || board[a] !== board[b] || !near(a, b)) continue;
+        for (let c = 0; c < board.length; c++)
+          if (c !== a && c !== b && board[c] === board[a] && near(b, c)) return [a, b, c];
+      }
+    }
+    return [];
+  }
+  function near(a, b) {
+    return Math.abs((a % 6) - (b % 6)) <= 1 && Math.abs(Math.floor(a / 6) - Math.floor(b / 6)) <= 1;
+  }
+  const useful = preferred.length ? search(preferred) : [];
+  return useful.length ? useful : search(null);
+}
+function createPuzzleAssist() {
+  let lastAction = 0,
+    hinted = [];
+  return {
+    get path() {
+      return hinted;
+    },
+    touch(now) {
+      lastAction = now;
+      hinted = [];
+    },
+    update(board, preferred, now, held = false) {
+      if (held || now - lastAction < 1500) return 'none';
+      if (hinted.length) return 'hint';
+      hinted = puzzleHintPath(board, preferred);
+      if (hinted.length) return 'hint';
+      lastAction = now;
+      return 'refresh';
+    },
+  };
+}

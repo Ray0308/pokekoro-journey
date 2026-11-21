@@ -11,6 +11,7 @@
     canvas = $m('canvas'),
     ctx = canvas.getContext('2d'),
     rules = MockPracticeRules;
+  const assist = createPuzzleAssist();
   let model = null,
     path = [],
     pointer = null,
@@ -63,6 +64,7 @@
         ctx.strokeRect(x - 32, y - 32, 64, 64);
       }
     });
+    if (running) drawPuzzleHint(ctx, assist.path, performance.now(), reduceMotion);
   }
   function render() {
     if (!model) return;
@@ -127,6 +129,7 @@
   function cancelPointer() {
     pointer = null;
     path = [];
+    assist.touch(performance.now());
     draw();
   }
   function index(event) {
@@ -142,6 +145,7 @@
     !locked &&
     (model.phase === 'trace' || (model.phase === 'round' && running && performance.now() < until));
   canvas.onpointerdown = (e) => {
+    assist.touch(performance.now());
     e.preventDefault();
     if (!canTrace() || pointer !== null) return;
     const i = index(e);
@@ -157,6 +161,7 @@
     const i = index(e),
       last = path.at(-1);
     if (i < 0 || i === last) return;
+    assist.touch(performance.now());
     if (path.length > 1 && i === path.at(-2)) path.pop();
     else if (
       !path.includes(i) &&
@@ -169,6 +174,7 @@
   };
   canvas.onpointerup = async (e) => {
     if (pointer !== e.pointerId) return;
+    assist.touch(performance.now());
     e.preventDefault();
     pointer = null;
     const used = [...path];
@@ -253,6 +259,7 @@
       if (!active() || snapshot.generation !== generation) return;
       if (snapshot.running) {
         until += duration;
+        assist.touch(performance.now());
         if (lastClear) lastClear += duration;
         running = true;
         raf = requestAnimationFrame(tick);
@@ -265,6 +272,16 @@
     if (now >= until) {
       void release();
       return;
+    }
+    if (!locked) {
+      const action = assist.update(model.board, model.pool, now, pointer !== null);
+      if (action === 'refresh') {
+        model.board = refreshedPuzzle(model.board, model.pool);
+        combo = 0;
+        lastClear = 0;
+        $m('#mock-result').textContent = 'つながる マークを ならべなおしたよ！';
+        draw();
+      } else if (action === 'hint') draw();
     }
     raf = requestAnimationFrame(tick);
   }
@@ -291,6 +308,7 @@
     running = true;
     locked = false;
     until = performance.now() + 10000;
+    assist.touch(performance.now());
     render();
     raf = requestAnimationFrame(tick);
   };

@@ -416,6 +416,7 @@ let busy = false,
   startAt = 0,
   running = false,
   elapsed = 0;
+const puzzleAssist = createPuzzleAssist();
 const squares = [
   'start',
   'wild',
@@ -765,6 +766,7 @@ function openBattle(trainer, boss, continuation = null, practice = false) {
   }
   busy = true;
   lastPuzzleRefreshAt = -Infinity;
+  puzzleAssist.touch(performance.now());
   $('#puzzle-refresh').disabled = true;
   $('#puzzle-refresh').hidden = tutorial;
   window.PokekoroSfx?.stopAll();
@@ -948,6 +950,7 @@ function draw() {
       ctx.textBaseline = 'alphabetic';
     }
   }
+  if (running) drawPuzzleHint(ctx, puzzleAssist.path, performance.now(), reduceMotion);
 }
 // 表示サイズが変わっても、ポインター位置を常に同じ6×6マスへ変換する。
 function cell(e) {
@@ -958,6 +961,7 @@ function cell(e) {
   return Math.floor(y / 70) * 6 + Math.floor(x / 70);
 }
 canvas.onpointerdown = (e) => {
+  puzzleAssist.touch(performance.now());
   if (e.cancelable) e.preventDefault();
   clearPuzzleSelection();
   if (!running || activePuzzlePointer !== null) return;
@@ -979,6 +983,7 @@ canvas.onpointermove = (e) => {
   let i = cell(e),
     last = path.at(-1);
   if (i < 0 || i === last) return;
+  puzzleAssist.touch(performance.now());
   if (path.length > 1 && i === path.at(-2)) {
     path.pop();
     draw();
@@ -1000,6 +1005,7 @@ canvas.onpointermove = (e) => {
 };
 canvas.onpointerup = (e) => {
   if (e.pointerId !== activePuzzlePointer) return;
+  puzzleAssist.touch(performance.now());
   if (e.cancelable) e.preventDefault();
   activePuzzlePointer = null;
   if (!drag) return;
@@ -1079,6 +1085,7 @@ $('#start').onclick = async () => {
   battle.phase = 'charging';
   window.PokekoroTurns?.render();
   startAt = performance.now();
+  puzzleAssist.touch(startAt);
   raf = requestAnimationFrame(tick);
 };
 // タイマーや獲得済みパワーは変えず、なぞり中の選択と連続コンボだけを解除する。
@@ -1124,6 +1131,7 @@ $('#puzzle-refresh').onclick = () => {
   $('#battle-fx').replaceChildren();
   clearPuzzleSelection();
   lastPuzzleRefreshAt = performance.now();
+  puzzleAssist.touch(performance.now());
   draw();
   syncPuzzleRefresh();
   sfx('menuOpen');
@@ -1146,6 +1154,19 @@ function tick(now) {
   if (elapsed >= battleDuration()) {
     resolveAttack();
     return;
+  }
+  if (!battle.tutorial) {
+    const alive = window.PokekoroTurns?.aliveParty() || state.party;
+    const preferred = battle.puzzleTypes.filter(
+      (type) =>
+        partyTypePower(alive, type, battle.safari ? null : battle.m) > 0 &&
+        (battle.safari || battleTypeMultiplier(type, battle) > 0),
+    );
+    const assist = puzzleAssist.update(grid, preferred, now, drag);
+    if (assist === 'refresh') {
+      $('#puzzle-refresh').onclick();
+      $('#puzzle-tip').textContent = 'つながる マークを ならべなおしたよ！';
+    } else if (assist === 'hint') draw();
   }
   raf = requestAnimationFrame(tick);
 }
@@ -1567,6 +1588,7 @@ window.PokekoroBattlePause.register({
     if (snapshot.epoch !== battleEpoch || !$('#battle').open) return;
     if (snapshot.running) {
       startAt += duration;
+      puzzleAssist.touch(performance.now());
       if (lastClear) lastClear += duration;
       running = true;
       raf = requestAnimationFrame(tick);
@@ -1946,6 +1968,8 @@ function updateCharge(value = battle.damage) {
 // サファリは従来のなかよし処理、戦闘は10秒ターンのコントローラーへ渡す。
 async function resolveAttack() {
   if (!battle || battle.phase === 'resolving' || battle.phase === 'finished') return;
+  puzzleAssist.touch(performance.now());
+  draw();
   $('#puzzle-refresh').disabled = true;
   if (battle.tutorial) return window.PokekoroOpening.resolvePractice();
   if (battle.safari) await resolveSafari();
@@ -2138,6 +2162,7 @@ function clearPuzzleSelection() {
   if (selection && selection.rangeCount) selection.removeAllRanges();
 }
 function resetPuzzlePointer() {
+  puzzleAssist.touch(performance.now());
   activePuzzlePointer = null;
   drag = false;
   path = [];
