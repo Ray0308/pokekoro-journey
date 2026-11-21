@@ -3039,3 +3039,53 @@ body[data-game-view='party'] .app-version {
 #map.league-champion .map-art {
   filter: brightness(1.06) saturate(1.08);
 }
+
+/* 投球中の案内文が変わっても、背景枠を文字幅で伸縮させない。 */
+#capture-gesture {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  text-align: center;
+}
+#capture-gesture .swipe-help {
+  min-height: 3em;
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+#result:has(#capture-gesture) {
+  overflow-y: auto;
+}
+@media (min-width: 600px) and (max-height: 450px) {
+  #result:has(#capture-gesture) {
+    width: min(94vw, 680px);
+    padding: 12px;
+  }
+  #capture-gesture {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: 12px;
+    align-items: center;
+  }
+  #capture-gesture > h2 {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  #capture-gesture .swipe-help {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  #capture-gesture .swipe-ball-name {
+    grid-column: 1;
+    grid-row: 3;
+  }
+  #capture-gesture .swipe-back {
+    grid-column: 1;
+    grid-row: 4;
+  }
+  #capture-gesture .swipe-field {
+    grid-column: 2;
+    grid-row: 1/5;
+    height: min(68dvh, 260px);
+  }
+}
