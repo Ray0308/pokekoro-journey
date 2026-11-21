@@ -76,6 +76,7 @@ function endSafari(completed) {
   if (battle.boss && completed) {
     if (!state.clearedMaps.includes(state.mapId)) state.clearedMaps.push(state.mapId);
     state.pendingMapId = state.mapReturn ? null : activeMap().nextMap;
+    if (state.mapReturn) state.revisitClearMapId = state.mapId;
   }
   const master = completed && battle.boss && Math.random() < BALL_DROPS.bossMaster;
   if (master) state.master++;
@@ -97,7 +98,7 @@ function endSafari(completed) {
   const base = safariCatchBase(battle.damage, battle.total, maxCombo);
   battle.captureBase = base;
   result(
-    `<small>${battle.boss ? 'サファリの 最後の出会い' : 'なかよしチャレンジ おしまい！'}</small><h2>${battle.m.label}を捕まえよう！</h2><img src="${img(battle.m.id)}" alt="${battle.m.label}"><p>なかよしゲージ ${battle.damage.toLocaleString()}！<br>ゲージとコンボで 捕獲率アップ！</p>${master || ticket ? rewardItemsHtml([...(master ? [{ id: 'master', count: 1 }] : []), ...(ticket ? [{ id: 'rainbow', count: 1 }] : [])]) : ''}<div class="ball-options">${BALLS.map((b) => `<button id="${b.id}" class="primary ball-choice" ${state[b.key] ? '' : 'disabled'}><img src="${b.image}" alt=""><span>${b.name}<small>成功 ${Math.round(Math.min(b.cap, base + b.bonus) * 100)}%・残り ${state[b.key]}個</small></span></button>`).join('')}</div>${typeBallPickerButton(state)}<button id="skip">${battle.boss && !state.mapReturn ? '見送って 次のマップへ' : '見送る'}</button>`,
+    `<small>${battle.boss ? 'サファリの 最後の出会い' : 'なかよしチャレンジ おしまい！'}</small><h2>${battle.m.label}を捕まえよう！</h2><img src="${img(battle.m.id)}" alt="${battle.m.label}"><p>なかよしゲージ ${battle.damage.toLocaleString()}！<br>ゲージとコンボで 捕獲率アップ！</p>${master || ticket ? rewardItemsHtml([...(master ? [{ id: 'master', count: 1 }] : []), ...(ticket ? [{ id: 'rainbow', count: 1 }] : [])]) : ''}<div class="ball-options">${BALLS.map((b) => `<button id="${b.id}" class="primary ball-choice" ${state[b.key] ? '' : 'disabled'}><img src="${b.image}" alt=""><span>${b.name}<small>成功 ${Math.round(Math.min(b.cap, base + b.bonus) * 100)}%・残り ${state[b.key]}個</small></span></button>`).join('')}</div>${typeBallPickerButton(state)}<button id="skip">${revisitClearReady() ? '見送って 行き先をえらぶ' : battle.boss && !state.mapReturn ? '見送って 次のマップへ' : '見送る'}</button>`,
   );
   BALLS.forEach((b) => {
     $('#' + b.id).onclick = () => catchMon(b.id, ballCatchChance(b, base, battle.m));

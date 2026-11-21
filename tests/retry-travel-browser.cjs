@@ -43,6 +43,7 @@ const server = spawn('python', ['-m', 'http.server', '8838', '--bind', '127.0.0.
       });
       const open = async () =>
         page.evaluate(() => {
+          state.pos = 14;
           openBattle(true, true);
           $('#encounter').close();
           $('#battle').showModal();
@@ -136,11 +137,8 @@ const server = spawn('python', ['-m', 'http.server', '8838', '--bind', '127.0.0.
         done();
       });
       assert.equal(await page.evaluate(() => state.pendingMapId), null);
-      assert.equal(await page.evaluate(() => state.pos), 0);
-      await page.evaluate(() => {
-        showTab('journey');
-      });
-      await page.locator('#return-adventure').tap();
+      assert.equal(await page.evaluate(() => state.pos), 14);
+      await page.locator('#revisit-origin').tap();
       assert.equal(await page.evaluate(() => state.pendingMapId), 'cerulean-gym');
       await page.evaluate(() => {
         state.pendingMapId = null;

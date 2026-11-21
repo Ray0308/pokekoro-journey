@@ -142,14 +142,15 @@ const server = spawn('python', ['-m', 'http.server', '8872', '--bind', '127.0.0.
         'no advancing on revisit ' + id,
       );
       await p.evaluate(() => done());
-      assert.equal(await p.evaluate(() => state.pos), 0, 'revisit returns to start ' + id);
+      assert.equal(await p.evaluate(() => state.pos), 14, 'revisit waits at completed map ' + id);
+      assert(await p.locator('#revisit-next').isVisible());
       await p.reload();
       await p.waitForFunction(() => $('#boot-screen').hidden);
       assert.equal(await p.evaluate(() => JSON.stringify(state.mapReturn)), origin);
       await p.evaluate(() => {
         document.dispatchEvent(new CustomEvent('title:start'));
-        returnToAdventure();
       });
+      await p.locator('#revisit-origin').tap();
       assert.equal(await p.evaluate(() => state.pos), 6);
       if ((reviewIndex + 1) % 10 === 0)
         console.log('PASS revisit win/reload/return', reviewIndex + 1);
