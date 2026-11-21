@@ -248,7 +248,8 @@ function currentSquares() {
   const stops = activeMap().boss?.wild
     ? configured.map((s) => (s === 'trainer' ? 'wild' : s))
     : configured;
-  return isKurtHouse(state) ? stops.map((s) => (s === 'exchange' ? 'kurt' : s)) : stops;
+  const result = isKurtHouse(state) ? stops.map((s) => (s === 'exchange' ? 'kurt' : s)) : stops;
+  return window.PokekoroResearch?.squares(result) || result;
 }
 function rainbowExitReady() {
   return isRainbow() && state.rainbowVisit?.exitPending;
@@ -292,6 +293,7 @@ function grantRainbowTicket() {
 }
 // 捕獲中・別バトル中の移動を防ぎ、チケット消費と訪問データの作成を一緒に行う。
 function enterRainbow(ticketId) {
+  if (window.PokekoroResearch?.locked()) return;
   if (isRainbow() || state.mapReturn || capturePending || $('#battle').open || $('#encounter').open)
     return;
   if (busy && !($('#result').open && battle?.trainer && battle?.rewardResolved)) return;
@@ -500,6 +502,7 @@ function mapRoutePoints() {
     : points;
 }
 function tileLabel(kind) {
+  if (kind === 'mission') return 'いらい';
   if (isSafari() && kind === 'goal') return '特別な出会い';
   return kind === 'wild' ? activeMap().wildLabel || label.wild : label[kind];
 }
@@ -613,25 +616,27 @@ function drawRoute() {
       .map((s, i) => {
         const p = mapRoutePoints()[i],
           portrait =
-            s === 'goal' && isSafari()
-              ? `<img class="map-grass" src="${MAP_ASSETS.grass}" alt="特別な出会い">`
-              : s === 'goal' && activeMap().boss?.wild
-                ? `<span class="boss-portrait"><img src="${pokemonPortrait(activeBossId())}" alt=""></span>`
-                : s === 'start'
-                  ? `<img class="center-icon" src="${MAP_ASSETS.center}" alt="">`
-                  : s === 'goal' && activeMap().boss?.icon
-                    ? `<span class="boss-portrait"><img src="${activeMap().boss.icon}" alt=""></span>`
-                    : s === 'trainer' && trainerTileProfile(state, i)?.icon
-                      ? `<img class="trainer-portrait" src="${trainerTileProfile(state, i).icon}" alt="${trainerTileProfile(state, i).name}">`
-                      : s === 'kurt'
-                        ? `<img class="exchange-field-icon kurt-field-icon" src="${KURT_CONFIG.house}" alt="">`
-                        : s === 'exchange'
-                          ? `<img class="exchange-field-icon" src="assets/map/ball-exchange.webp" alt="">`
-                          : s === 'item'
-                            ? `<img class="item-field-icon" src="assets/map/item-ball.png" alt="">`
-                            : s === 'wild'
-                              ? mapWildIcon()
-                              : `<svg class="node-symbol" aria-hidden="true"><use href="assets/ui-icons.svg#${s === 'wild' ? 'grass' : s}"/></svg>`;
+            s === 'mission'
+              ? '<span class="mission-node-icon" aria-hidden="true">📜</span>'
+              : s === 'goal' && isSafari()
+                ? `<img class="map-grass" src="${MAP_ASSETS.grass}" alt="特別な出会い">`
+                : s === 'goal' && activeMap().boss?.wild
+                  ? `<span class="boss-portrait"><img src="${pokemonPortrait(activeBossId())}" alt=""></span>`
+                  : s === 'start'
+                    ? `<img class="center-icon" src="${MAP_ASSETS.center}" alt="">`
+                    : s === 'goal' && activeMap().boss?.icon
+                      ? `<span class="boss-portrait"><img src="${activeMap().boss.icon}" alt=""></span>`
+                      : s === 'trainer' && trainerTileProfile(state, i)?.icon
+                        ? `<img class="trainer-portrait" src="${trainerTileProfile(state, i).icon}" alt="${trainerTileProfile(state, i).name}">`
+                        : s === 'kurt'
+                          ? `<img class="exchange-field-icon kurt-field-icon" src="${KURT_CONFIG.house}" alt="">`
+                          : s === 'exchange'
+                            ? `<img class="exchange-field-icon" src="assets/map/ball-exchange.webp" alt="">`
+                            : s === 'item'
+                              ? `<img class="item-field-icon" src="assets/map/item-ball.png" alt="">`
+                              : s === 'wild'
+                                ? mapWildIcon()
+                                : `<svg class="node-symbol" aria-hidden="true"><use href="assets/ui-icons.svg#${s === 'wild' ? 'grass' : s}"/></svg>`;
         return `<div class="tile node-${s} ${i === state.pos ? 'current' : ''} ${i < state.pos ? 'visited' : ''}" style="left:${p[0]}%;top:${p[1]}%" aria-label="${i + 1}マス目 ${tileLabel(s)}${i === state.pos ? ' 現在地' : ''}"><span class="node-number">${String(i + 1).padStart(2, '0')}</span>${portrait}<small>${tileLabel(s)}</small>${i === state.pos ? `<span class="player-marker">ここ！</span><img class="player-pawn" src="${MAP_ASSETS.player}" alt="主人公のコマ">` : ''}</div>`;
       })
       .join('')
@@ -671,6 +676,7 @@ function render() {
   renderDex();
   $('#roll').disabled = busy || mapArtLoading;
   renderJourney();
+  window.PokekoroResearch?.render();
   save();
 }
 function pokemonStrengthMarkup(mon) {
@@ -799,6 +805,10 @@ async function rollDice() {
     showRevisitCompletion();
     return;
   }
+  if (window.PokekoroResearch?.encounter()) {
+    window.PokekoroResearch.open();
+    return;
+  }
   if (rainbowExitReady()) {
     leaveRainbow();
     return;
@@ -818,14 +828,25 @@ async function rollDice() {
   render();
   const epoch = diceEpoch,
     mapId = state.mapId;
-  let n = window.PokekoroDebug?.diceValue?.() || 1 + Math.floor(Math.random() * 6);
+  const oldRoll = window.PokekoroResearch?.pendingRoll();
+  let n = oldRoll?.raw || window.PokekoroDebug?.diceValue?.() || 1 + Math.floor(Math.random() * 6);
+  const researchRoll = window.PokekoroResearch?.reserve(n);
   if (!(await mapDiceDrop(n)) || epoch !== diceEpoch || mapId !== state.mapId) return;
+  n = await (window.PokekoroResearch?.chooseRoll(n) || Promise.resolve(n));
+  if (!Number.isInteger(n)) {
+    busy = false;
+    render();
+    return;
+  }
+  if (epoch !== diceEpoch || mapId !== state.mapId) return;
+  $('#dice').dataset.value = n;
+  $('#dice').setAttribute('aria-label', `サイコロ ${n}`);
   if (state.pos === 14) {
     state.pos = 0;
     state.lap++;
     render();
   }
-  let target = Math.min(14, state.pos + n);
+  let target = Math.min(14, (researchRoll?.from ?? state.pos) + n);
   $('#message').textContent = `${n}が出た！ マスを進んでいます…`;
   while (state.pos < target) {
     await new Promise((resolve) => setTimeout(resolve, 300));
@@ -843,6 +864,15 @@ async function rollDice() {
   tone(520, 0.06);
   await new Promise((resolve) => setTimeout(resolve, 450));
   if (epoch !== diceEpoch || mapId !== state.mapId) return;
+  const researchEncounter = window.PokekoroResearch?.arrive();
+  if (researchEncounter) {
+    openBattle(false, false, null, false, researchEncounter);
+    return;
+  }
+  if (s === 'mission') {
+    window.PokekoroResearch?.offer();
+    return;
+  }
   if (s === 'kurt') {
     window.PokekoroKurt?.open();
     return;
@@ -858,7 +888,7 @@ async function rollDice() {
   } else openBattle(s === 'trainer' || s === 'goal', s === 'goal');
 }
 // 1回分のバトル状態を作り直す。HPや報酬を前の相手から持ち越さない。
-function openBattle(trainer, boss, continuation = null, practice = false) {
+function openBattle(trainer, boss, continuation = null, practice = false, research = null) {
   const tutorial = practice && !!window.PokekoroOpening?.canPractice();
   window.PokekoroBattleFX?.reset();
   if (!tutorial && partyTypeError(state.party)) {
@@ -904,26 +934,31 @@ function openBattle(trainer, boss, continuation = null, practice = false) {
   if (isSafari() || activeMap().boss?.wild) trainer = false;
   const series = trainer ? continuation || createTrainerEncounter(state, activeMap(), boss) : null;
   const member = series?.team[series.index];
-  const id = tutorial
-    ? 25
-    : member
-      ? member.id
-      : isSafari() && boss
-        ? SAFARI_RULES.finalIds[Math.floor(Math.random() * SAFARI_RULES.finalIds.length)]
-        : boss
-          ? activeBossId()
-          : pickEncounterId();
+  const id = research
+    ? research.pokemonId
+    : tutorial
+      ? 25
+      : member
+        ? member.id
+        : isSafari() && boss
+          ? SAFARI_RULES.finalIds[Math.floor(Math.random() * SAFARI_RULES.finalIds.length)]
+          : boss
+            ? activeBossId()
+            : pickEncounterId();
   let m = mons[id - 1];
   if (isSafari() && boss)
     m = { ...m, label: { 115: 'ガルーラ', 113: 'ラッキー', 128: 'ケンタロス' }[id] };
   if (!tutorial) markPokemonSeen(id);
   // 通常の野生は番号の剰余ではなく種族値で差を付ける。トレーナーのレベル・エース補正は維持。
-  const baseHP = member?.hp ?? (boss ? 620 : isSafari() ? 300 + ((m.id - 1) % 3) * 65 : 365);
+  const baseHP = research
+    ? 620
+    : (member?.hp ?? (boss ? 620 : isSafari() ? 300 + ((m.id - 1) % 3) * 65 : 365));
   const normalHP = tutorial ? 1 : isSafari() ? baseHP : PokemonBattleStats.enemyHP(m, baseHP);
   const assisted = !tutorial && boss && !isSafari() && !isRainbow() && bossAssistActive();
   const totalHP = assisted ? Math.max(1, Math.round(normalHP * 0.9)) : normalHP;
   battle = {
     tutorial,
+    researchMissionId: research?.missionId || null,
     assisted,
     m,
     trainer,
@@ -974,6 +1009,7 @@ function openBattle(trainer, boss, continuation = null, practice = false) {
     $('#weakness-tip').textContent +=
       ` · ${battle.puzzleTypes.length}属性 ×${typeDiversityBonus(battle.puzzleTypes.length).toFixed(2)}`;
   if (assisted) $('#weakness-tip').textContent = '経験を いかそう！ 相手のHP −10％';
+  if (research) $('#kind').textContent = '📜 オーキドの 調査・特別な出会い';
   $('#enemyname').textContent = m.label;
   $('#enemyimg').src = pokemonPortrait(m.id);
   $('#enemyimg').alt = m.label;
@@ -988,11 +1024,13 @@ function openBattle(trainer, boss, continuation = null, practice = false) {
   updateHP();
   updateCharge();
   draw();
-  $('#encounter-label').textContent = boss
-    ? 'ボスが あらわれた！'
-    : trainer
-      ? 'トレーナーと しょうぶ！'
-      : '野生のポケモンが あらわれた！';
+  $('#encounter-label').textContent = research
+    ? '調査の ポケモンを はっけん！'
+    : boss
+      ? 'ボスが あらわれた！'
+      : trainer
+        ? 'トレーナーと しょうぶ！'
+        : '野生のポケモンが あらわれた！';
   $('#encounter-name').textContent = m.label;
   $('#encounter-img').src = pokemonPortrait(m.id);
   $('#encounter-silhouette').src = pokemonPortrait(m.id);
@@ -1311,11 +1349,12 @@ function canTravel() {
     !busy &&
     !capturePending &&
     !isRainbow() &&
+    !window.PokekoroResearch?.locked() &&
     !window.PokekoroOpening?.pending() &&
     !document.querySelector('dialog[open]')
   );
 }
-function revisitMap(id) {
+function revisitMap(id, { restart = false } = {}) {
   if (revisitClearReady()) {
     showRevisitCompletion();
     return;
@@ -1324,7 +1363,7 @@ function revisitMap(id) {
     !canTravel() ||
     !MAP_ORDER.includes(id) ||
     !state.clearedMaps.includes(id) ||
-    id === state.mapId
+    (id === state.mapId && !restart)
   )
     return;
   if (!state.mapReturn)
@@ -1540,6 +1579,7 @@ function endBattle(win) {
   drag = false;
   cancelAnimationFrame(raf);
   $('#battle').close();
+  window.PokekoroResearch?.battleEnd(win);
   const cloudBoss = isRainbow() && battle.boss;
   if (cloudBoss) state.rainbowVisit.exitPending = true;
   if (!win) {
@@ -1616,7 +1656,10 @@ function endBattle(win) {
     $('#' + b.id).onclick = () => catchMon(b.id, ballCatchChance(b, base, battle.m));
   });
   window.PokekoroKurt?.bindCapture();
-  $('#skip').onclick = done;
+  $('#skip').onclick = () => {
+    window.PokekoroResearch?.finish('seen');
+    done();
+  };
 }
 
 async function playCaptureThrow(ball, mon) {
@@ -1692,6 +1735,7 @@ async function catchMon(ballId, chance, thrown = false) {
     if (state.mapId === 'cerulean-cave' && battle.boss)
       state.caveBossId = nextCaveLegendary(state.owned, battle.m.id);
   }
+  window.PokekoroResearch?.finish(ok ? 'caught' : 'escaped');
   render();
   showCaptureOutcome(battle.m, ok, duplicate);
   if (ok) {
@@ -1985,7 +2029,10 @@ async function showEncounter(immediate) {
   go.disabled = dialog.dataset.phase !== 'revealed';
   name.textContent = go.disabled ? 'だれかな？' : battle.m.label;
   image.alt = go.disabled ? '' : battle.m.label;
-  if (go.disabled) $('#encounter-label').textContent = 'くさむらが ゆれている…';
+  if (go.disabled)
+    $('#encounter-label').textContent = battle.researchMissionId
+      ? 'このあたりに いるはず…！'
+      : 'くさむらが ゆれている…';
   dialog.showModal();
   if (battle.trainer && immediate) {
     go.disabled = true;
@@ -2001,7 +2048,9 @@ async function showEncounter(immediate) {
   await wait(600);
   if (epoch !== battleEpoch || !dialog.open) return;
   dialog.dataset.phase = 'silhouette';
-  $('#encounter-label').textContent = 'ポケモンの けはい！';
+  $('#encounter-label').textContent = battle.researchMissionId
+    ? '調査の ポケモンの けはい！'
+    : 'ポケモンの けはい！';
   tone(440, 0.08);
   await Promise.all([
     wait(activeMap().badge ? ENCOUNTER_TIMING.gymSendMs : ENCOUNTER_TIMING.sendMs),
@@ -2009,7 +2058,9 @@ async function showEncounter(immediate) {
   ]);
   if (epoch !== battleEpoch || !dialog.open) return;
   dialog.dataset.phase = 'revealed';
-  $('#encounter-label').textContent = '野生のポケモンが あらわれた！';
+  $('#encounter-label').textContent = battle.researchMissionId
+    ? '調査の ポケモンを はっけん！'
+    : '野生のポケモンが あらわれた！';
   name.textContent = battle.m.label;
   image.alt = battle.m.label;
   go.disabled = false;

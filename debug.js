@@ -308,6 +308,7 @@
       }
     }
     next.hallOfFame = HallOfFameRules.normalize(saved?.hallOfFame);
+    next.research = ResearchRules.normalize(saved?.research);
     normalizeTypeBalls(next);
     normalizeTrainerState(next);
     forceTickets = force.checked;

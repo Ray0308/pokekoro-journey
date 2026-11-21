@@ -1,0 +1,212 @@
+#research-hud {
+  width: 100%;
+  min-height: 32px;
+  padding: 4px 7px;
+  margin: 3px 0;
+  background: #fff2bd;
+  color: #51451e;
+  border: 1px solid #d5b965;
+  border-radius: 8px;
+  font-size: 11px;
+  line-height: 1.4;
+}
+#research-hud[hidden] {
+  display: none;
+}
+#map .node-mission {
+  background: #ffe59a;
+  border-color: #fff1ba;
+}
+.mission-node-icon {
+  font-size: clamp(14px, 3vw, 30px);
+  line-height: 1;
+}
+#map .research-target {
+  box-shadow:
+    0 0 0 4px #f6c140,
+    0 0 14px 7px #ffd764;
+}
+.research-target-label {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 2px 5px;
+  border-radius: 6px;
+  background: #5d4210;
+  color: #fff;
+  font-size: 10px;
+  white-space: nowrap;
+  z-index: 8;
+}
+#research-dialog {
+  width: min(460px, calc(100vw - 24px));
+  max-height: calc(var(--app-height, 100dvh) - 24px);
+  padding: 0;
+  border: 3px solid #d9bd67;
+  border-radius: 16px;
+  color: #29494a;
+  background: #fffced;
+  overflow: hidden;
+}
+#research-dialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+#research-dialog::backdrop {
+  background: #182f45c9;
+}
+.research-body {
+  overflow-y: auto;
+  min-height: 0;
+  padding: 15px;
+  text-align: center;
+}
+#research-heading {
+  color: #3d5574;
+  font-size: 23px;
+  margin: 7px 0;
+  outline: none;
+}
+.research-body p {
+  font-size: 14px;
+  line-height: 1.7;
+}
+.research-mon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.research-mon img {
+  width: 85px;
+  height: 85px;
+  object-fit: contain;
+}
+.research-silhouette {
+  filter: brightness(0);
+  opacity: 0.7;
+}
+.research-place {
+  background: #e7f1df;
+  padding: 7px;
+  border-radius: 10px;
+  font-weight: 800;
+}
+.research-place b {
+  font-size: 26px;
+}
+#research-dialog footer {
+  flex-shrink: 0;
+  display: grid;
+  gap: 6px;
+  padding: 10px;
+  border-top: 1px solid #d4d7ba;
+}
+#research-dialog footer button {
+  min-height: 44px;
+  font-size: 15px;
+}
+#research-dialog .research-small {
+  font-size: 12px;
+  min-height: 32px;
+  background: #f3f3e8;
+}
+#research-dialog[data-mode='roll'] footer {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+#research-dialog [data-research-die] {
+  padding: 6px;
+  font-size: 12px;
+}
+#research-dialog [data-research-die] b {
+  display: block;
+  font-size: 32px;
+}
+#research-dialog [data-research-die] small {
+  display: block;
+  font-size: 10px;
+}
+@media (min-width: 600px) and (max-height: 450px) {
+  .research-body {
+    padding: 8px 14px;
+  }
+  #research-heading {
+    margin: 4px;
+    font-size: 21px;
+  }
+  .research-mon img {
+    height: 48px;
+    width: 48px;
+  }
+  .research-body p {
+    margin: 5px 0;
+    font-size: 12px;
+  }
+  .research-place b {
+    font-size: 20px;
+  }
+  #research-dialog footer {
+    padding: 6px 10px;
+    gap: 4px;
+  }
+}
+/* 依頼欄には専用の行を確保し、手持ちやサイコロと重ねない。 */
+#map:has(#research-hud:not([hidden])) aside {
+  height: 180px;
+  min-height: 180px;
+  grid-template-rows: 126px 32px;
+}
+#map:has(#research-hud:not([hidden])) aside .panel:first-child {
+  grid-template-rows: 20px 54px 44px;
+}
+#map #research-hud {
+  grid-column: 1 / -1;
+  grid-row: 3;
+  min-height: 44px;
+  height: 44px;
+  margin: 0;
+}
+@media (max-height: 650px) {
+  #map:has(#research-hud:not([hidden])) aside {
+    height: 172px;
+    min-height: 172px;
+    grid-template-rows: 122px 29px;
+  }
+  #map:has(#research-hud:not([hidden])) aside .panel:first-child {
+    grid-template-rows: 18px 52px 44px;
+  }
+}
+@media (min-width: 600px) and (max-height: 450px) {
+  #map:has(#research-hud:not([hidden])) > .layout {
+    flex-direction: row;
+  }
+  #map:has(#research-hud:not([hidden])) .mapcard {
+    position: relative;
+  }
+  #map:has(#research-hud:not([hidden])) .scene-frame {
+    top: 60px;
+    bottom: 26px;
+  }
+  #map:has(#research-hud:not([hidden])) aside {
+    width: 280px;
+    min-width: 280px;
+    height: auto;
+    min-height: 0;
+    grid-template-columns: 1fr;
+    grid-template-rows: 148px 48px;
+    align-content: center;
+    padding: 10px;
+  }
+  #map:has(#research-hud:not([hidden])) aside .panel:first-child {
+    grid-template-rows: 38px 58px 44px;
+  }
+  #map:has(#research-hud:not([hidden])) aside .panel:first-child #message {
+    height: auto;
+    white-space: normal;
+    line-height: 16px;
+  }
+  #map:has(#research-hud:not([hidden])) aside .panel:nth-child(2) {
+    grid-column: 1;
+  }
+}
