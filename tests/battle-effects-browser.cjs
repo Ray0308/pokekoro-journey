@@ -160,7 +160,11 @@ const server = spawn('python', ['-m', 'http.server', '8850', '--bind', '127.0.0.
       );
       await p.close();
     }
-    const p = await b.newPage({ viewport: { width: 390, height: 664 }, reducedMotion: 'reduce' });
+    const p = await b.newPage({
+      viewport: { width: 390, height: 664 },
+      reducedMotion: 'reduce',
+      ignoreHTTPSErrors: true,
+    });
     await p.goto(process.env.PUBLIC_URL || 'http://127.0.0.1:8850');
     await p.waitForFunction(() => $('#boot-screen').hidden);
     const seen = await p.evaluate(async () => {
