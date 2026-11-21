@@ -2,7 +2,7 @@ const assert = require('node:assert/strict');
 const rules = require('../opening-rules.js');
 for (const id of rules.starters) {
   const state = rules.fresh();
-  assert.deepEqual(state.party, [446]);
+  assert.deepEqual(state.party, []);
   state.opening.starterId = id;
   state.opening.stage = 'depart';
   assert.equal(rules.complete(state), true);
@@ -41,7 +41,7 @@ console.log(
 
 // 新規だけ名前経路へ進め、旧版の途中セーブは従来経路を維持する。
 const named = rules.fresh();
-assert.equal(named.opening.version, 3);
+assert.equal(named.opening.version, 4);
 named.opening.stage = 'friend';
 assert.equal(rules.nextStage(named), 'oakGreeting');
 for (const stage of ['meet', 'friend', 'lab', 'world', 'choose', 'practice', 'complete']) {
@@ -88,3 +88,44 @@ assert.equal(rules.normalize(learningSaved, true).opening.stage, 'partyLesson');
 assert.equal(rules.complete(learningSaved), false);
 assert.equal(learningSaved.balls, 8);
 assert.equal(learningSaved.super, 2);
+
+// 研究所での紹介と同行の選択より前に、ゴンベを勝手に所持させない。
+const intro = rules.fresh();
+assert.equal(intro.opening.stage, 'oakGreeting');
+assert.deepEqual(intro.owned, []);
+assert.equal(rules.awaitingCompanion(intro), true);
+intro.opening.stage = 'oakResearch';
+assert.equal(rules.nextStage(intro), 'nameLead');
+intro.opening.stage = 'nameLead';
+assert.equal(rules.nextStage(intro), 'nameChoice');
+assert.deepEqual(rules.nameChoices, ['じぶんできめる', 'グリーン', 'レッド', 'レン']);
+intro.opening.stage = 'nameJourney';
+assert.equal(rules.nextStage(intro), 'oakGonbe');
+intro.opening.stage = 'oakFriend';
+assert.equal(rules.nextStage(intro), 'companionInvite');
+assert.equal(rules.acceptCompanion(intro), false);
+intro.opening.stage = 'companionInvite';
+assert.equal(rules.acceptCompanion(intro), true);
+assert.deepEqual(intro.owned, [446]);
+assert.deepEqual(intro.party, [446]);
+assert.equal(intro.opening.stage, 'nameGift');
+assert.equal(rules.acceptCompanion(intro), false);
+assert.equal(rules.awaitingCompanion(intro), false);
+const keyboard = require('../opening-name.js');
+assert.equal(keyboard.append('レ', 'ン', 8), 'レン');
+assert.equal(keyboard.append('12345678', '9', 8), null);
+assert.equal(keyboard.mark('カ', '゛'), 'ガ');
+assert.equal(keyboard.mark('ガ', '゛'), 'カ');
+assert.equal(keyboard.mark('ハ', '゜'), 'パ');
+assert.equal(keyboard.mark('パ', '゛'), 'バ');
+assert.equal(keyboard.mark('う', '゛'), 'ゔ');
+assert.equal(keyboard.mark('A', '゛'), null);
+assert.equal(keyboard.erase('か\u3099'), '');
+assert.equal(keyboard.erase('レン'), 'レ');
+assert.equal(keyboard.append('か'.repeat(7), 'か\u3099', 8), 'か'.repeat(7) + 'が');
+console.log(
+  'PASS laboratory invitation, explicit companion joining, preset names and kana editing',
+);
+
+assert.equal(keyboard.toHiragana('ー'), 'ー');
+assert.equal(keyboard.toHiragana('ァ'), 'ぁ');

@@ -30,14 +30,17 @@
       return;
     }
     const [speaker, words] = OPENING_STORY[current];
-    const forest = ['meet', 'friend'].includes(current);
+    const companion = ['oakGonbe', 'oakFriend', 'companionInvite'].includes(current);
     const dex = ['dex', 'register'].includes(current);
     dialog.dataset.stage = current;
-    dialog.dataset.scene = forest ? 'forest' : dex ? 'dex' : 'lab';
+    dialog.setAttribute(
+      'aria-labelledby',
+      current === 'nameInput' ? 'opening-name-title' : 'opening-speaker',
+    );
+    dialog.dataset.scene = dex ? 'dex' : 'lab';
     const chosen = preview || state.opening.starterId;
-    let scene = forest
-      ? `${portrait(446, 'opening-companion')}<span class="opening-snack" aria-hidden="true">🍪</span>`
-      : `<img class="opening-oak" src="assets/opening/oak.webp" alt="オーキド博士">`;
+    let scene = `<img class="opening-oak" src="assets/opening/oak.webp" alt="オーキド博士">`;
+    if (companion) scene += portrait(446, 'opening-partner');
     if (['chosen', 'borrow', 'practice', 'caught'].includes(current))
       scene += portrait(
         current === 'borrow' || current === 'practice' ? 32 : current === 'caught' ? 25 : chosen,
@@ -47,47 +50,50 @@
       scene = `<div class="opening-dex"><i></i><strong>ポケモンずかん</strong><div class="opening-dex-screen">${current === 'register' ? [446, state.opening.starterId, 25].map((id) => portrait(id)).join('') : '<span>POKÉDEX<br>READY</span>'}</div><small>${current === 'register' ? '3びき とうろく！' : 'あたらしい ぼうけんの きろく'}</small></div>`;
     if (current === 'depart')
       scene = `<div class="opening-team">${[446, state.opening.starterId, 25].map((id) => `<div>${portrait(id)}<span>${mons[id - 1].label}</span></div>`).join('')}</div>`;
-    dialog.innerHTML = `<div class="opening-heading"><span>はじめての ぼうけん</span><small>${forest ? 'ゴンベとの であい' : 'オーキドけんきゅうじょ'}</small></div><div class="opening-scene">${scene}</div><div class="opening-message"><h2 id="opening-speaker">${speaker}</h2><p></p></div><div class="opening-actions"></div>`;
+    dialog.innerHTML = `<div class="opening-heading"><span>はじめての ぼうけん</span><small>${current === 'nameInput' ? 'なまえを きめる' : 'オーキドけんきゅうじょ'}</small></div><div class="opening-scene">${scene}</div><div class="opening-message"><h2 id="opening-speaker">${speaker}</h2><p></p></div><div class="opening-actions"></div>`;
     // 名前はHTMLとして挿入せず、台詞のテキストとして表示する。
     dialog.querySelector('.opening-message p').textContent = words.replace(
       '{playerName}',
       () => state.playerName || OpeningRules.normalizeName(state.opening.nameDraft),
     );
     const actions = dialog.querySelector('.opening-actions');
-    if (current === 'nameInput') {
-      actions.innerHTML =
-        '<form id="opening-name-form"><label for="opening-name">なまえ（8もじまで）</label><input id="opening-name" name="playerName" type="text" autocomplete="off" enterkeyhint="done" aria-describedby="opening-name-help opening-name-error"><small id="opening-name-help">ひらがな・カタカナ・かんじ・えいすうじが つかえるよ</small><p id="opening-name-error" role="alert" hidden></p><button class="primary" type="submit">なまえを かくにん</button></form>';
-      let composing = false;
-      const input = actions.querySelector('input');
-      const error = actions.querySelector('#opening-name-error');
-      input.value = typeof state.opening.nameDraft === 'string' ? state.opening.nameDraft : '';
-      input.addEventListener('compositionstart', () => (composing = true));
-      input.addEventListener('compositionend', () => (composing = false));
-      input.onkeydown = (event) => {
-        // 日本語変換の確定Enterを、名前の送信として扱わない。
-        if (event.key === 'Enter' && (composing || event.isComposing || event.keyCode === 229))
-          event.preventDefault();
-      };
-      input.oninput = () => {
-        state.opening.nameDraft = input.value;
-        error.hidden = true;
-        input.removeAttribute('aria-invalid');
-        save();
-      };
-      actions.querySelector('form').onsubmit = (event) => {
-        event.preventDefault();
-        if (composing) return;
-        const message = OpeningRules.nameError(input.value);
-        if (message) {
-          error.textContent = message;
-          error.hidden = false;
-          input.setAttribute('aria-invalid', 'true');
-          input.focus();
-          return;
-        }
-        state.opening.nameDraft = OpeningRules.normalizeName(input.value);
-        move('nameConfirm');
-      };
+    if (current === 'nameChoice') {
+      const menu = document.createElement('div');
+      menu.className = 'opening-name-choices';
+      for (const [index, name] of OpeningRules.nameChoices.entries()) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = name;
+        button.dataset.nameChoice = String(index);
+        button.onclick = () => {
+          state.opening.nameSource = index === 0 ? 'custom' : 'preset';
+          if (index !== 0) state.opening.nameDraft = name;
+          move(index === 0 ? 'nameInput' : 'nameConfirm');
+        };
+        menu.append(button);
+      }
+      actions.append(menu);
+    } else if (current === 'nameInput') {
+      OpeningNameEntry.render(actions, {
+        draft: typeof state.opening.nameDraft === 'string' ? state.opening.nameDraft : '',
+        mode: state.opening.nameMode || 'katakana',
+        limit: OpeningRules.nameLimit,
+        onChange: (value) => {
+          state.opening.nameDraft = value;
+          sfx('tap');
+          save();
+        },
+        onMode: (value) => {
+          state.opening.nameMode = value;
+          save();
+        },
+        onDone: (value) => {
+          state.opening.nameDraft = OpeningRules.normalizeName(value);
+          state.opening.nameSource = 'custom';
+          move('nameConfirm');
+        },
+        onBack: () => move('nameChoice'),
+      });
     } else if (current === 'nameConfirm') {
       actions.innerHTML =
         '<div class="opening-name-confirm"><button class="primary" id="opening-name-yes">はい</button><button id="opening-name-no">いいえ</button></div>';
@@ -96,7 +102,20 @@
         save();
         show();
       };
-      actions.querySelector('#opening-name-no').onclick = () => move('nameInput');
+      actions.querySelector('#opening-name-no').onclick = () =>
+        move(state.opening.nameSource === 'preset' ? 'nameChoice' : 'nameInput');
+    } else if (current === 'companionInvite') {
+      const button = document.createElement('button');
+      button.className = 'primary';
+      button.id = 'opening-invite';
+      button.textContent = 'ゴンベ、いっしょに いこう！';
+      button.onclick = () => {
+        if (!OpeningRules.acceptCompanion(state)) return;
+        sfx('success');
+        save();
+        show();
+      };
+      actions.append(button);
     } else if (current === 'choose') {
       actions.innerHTML = `<div class="opening-starters">${OpeningRules.starters
         .map(
@@ -160,7 +179,7 @@
     if (!dialog.open) dialog.showModal();
     document.dispatchEvent(new CustomEvent('opening:scene'));
     actions
-      .querySelector(current === 'nameInput' ? 'input' : 'button')
+      .querySelector(current === 'nameInput' ? '[data-name-char]' : 'button')
       ?.focus({ preventScroll: true });
   }
   function practice() {

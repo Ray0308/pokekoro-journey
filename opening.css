@@ -51,13 +51,6 @@
   object-fit: contain;
   z-index: 1;
 }
-.opening-snack {
-  position: absolute;
-  bottom: 12%;
-  right: 16%;
-  font-size: 40px;
-  transform: rotate(-15deg);
-}
 .opening-partner {
   position: absolute;
   height: 65%;
@@ -224,31 +217,6 @@
   white-space: pre-line;
   overflow-wrap: anywhere;
 }
-#opening-name-form {
-  display: grid;
-  gap: 10px;
-  min-width: 0;
-}
-#opening-name-form input {
-  box-sizing: border-box;
-  width: 100%;
-  min-width: 0;
-  padding: 12px;
-  font: inherit;
-  font-size: 18px;
-  color: inherit;
-  background: #fffef7;
-  border: 2px solid #b8c6b3;
-  border-radius: 10px;
-}
-#opening-name-form button,
-.opening-name-confirm button {
-  min-height: 50px;
-}
-#opening-name-error {
-  margin: 0;
-  color: #9c332a;
-}
 .opening-name-confirm {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -278,5 +246,216 @@
   #opening[data-stage='register'] .opening-dex,
   #opening[data-stage='register'] .opening-dex-screen img {
     animation: none;
+  }
+}
+
+/* 名前は文字をタップして決める。カタカナの縦並びは提供された初代風の配置。 */
+#opening[data-stage='nameInput'] .opening-scene,
+#opening[data-stage='nameInput'] .opening-message {
+  display: none;
+}
+#opening[data-stage='nameInput'] .opening-heading {
+  padding: 9px 12px;
+  font-size: 12px;
+}
+#opening[data-stage='nameInput'] .opening-actions {
+  padding: 10px;
+}
+#opening[data-stage='nameChoice'] .opening-scene {
+  height: clamp(100px, 22dvh, 150px);
+}
+#opening[data-stage='nameChoice'] .opening-message p {
+  min-height: 0;
+}
+.opening-name-choices {
+  display: grid;
+  gap: 3px;
+  border: 4px double #433c42;
+  border-radius: 3px;
+  background: #fff7eb;
+  padding: 7px;
+}
+.opening-name-choices button {
+  min-height: 44px;
+  text-align: left;
+  padding: 7px 10px 7px 30px;
+  color: #332f39;
+  border: 0;
+  border-radius: 2px;
+  background: transparent;
+  box-shadow: none;
+  position: relative;
+  font-size: 16px;
+}
+.opening-name-choices button:focus-visible,
+.opening-name-choices button:hover {
+  background: #eae0cf;
+}
+.opening-name-choices button:focus-visible::before {
+  content: '▶';
+  position: absolute;
+  left: 8px;
+}
+#opening-name-form.name-screen {
+  display: grid;
+  gap: 8px;
+  padding: 10px;
+  background: #fff6e9;
+  border: 4px double #403843;
+  border-radius: 3px;
+  color: #302b35;
+  font-family: 'Noto Sans JP', monospace;
+}
+.name-entry-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px;
+  padding: 4px 0 9px;
+}
+.name-entry-heading strong {
+  font-size: 12px;
+  line-height: 1.5;
+}
+#opening-name {
+  display: flex;
+  white-space: nowrap;
+  font: 700 clamp(12px, 3.7vw, 19px) / 1.5 monospace;
+}
+#opening-name span {
+  display: inline-block;
+  min-width: 1em;
+  text-align: center;
+}
+.name-mode {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 3px;
+}
+#opening .name-mode button {
+  min-height: 34px;
+  padding: 3px;
+  border: 1px solid #b0a5ac;
+  border-radius: 2px;
+  background: #fffaf2;
+  color: inherit;
+  box-shadow: none;
+  font-size: 11px;
+}
+#opening .name-mode button[aria-pressed='true'] {
+  background: #403843;
+  color: #fff9ec;
+  border-color: #403843;
+}
+.name-characters {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 2px;
+  padding: 5px 0;
+  border-block: 2px solid #403843;
+}
+#opening .name-characters button {
+  min-width: 0;
+  min-height: 39px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  background: transparent;
+  color: inherit;
+  box-shadow: none;
+  font-size: clamp(14px, 4.4vw, 20px);
+  font-weight: 600;
+  touch-action: manipulation;
+}
+#opening .name-characters button:focus-visible {
+  border-color: #403843;
+  outline: 2px solid #403843;
+  outline-offset: -2px;
+}
+#opening .name-characters button:hover,
+#opening .name-characters button:active {
+  background: #e4daca;
+}
+.name-edit {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4px;
+}
+#opening .name-edit button {
+  min-width: 0;
+  min-height: 44px;
+  padding: 3px;
+  border: 1px solid #8c8089;
+  border-radius: 2px;
+  color: inherit;
+  background: #fffaf2;
+  box-shadow: none;
+  font-size: 14px;
+}
+#opening .name-edit button small {
+  display: block;
+  font-size: 8px;
+  color: inherit;
+}
+#opening #opening-name-done {
+  background: #403843;
+  color: #fff9ec;
+  font-weight: 800;
+}
+#opening #opening-name-back {
+  min-height: 32px;
+  padding: 4px;
+  border: 0;
+  background: transparent;
+  color: #544952;
+  box-shadow: none;
+  font-size: 11px;
+  text-decoration: underline;
+}
+#opening-name-error {
+  margin: 0;
+  font-size: 12px;
+  color: #9b302b;
+}
+@media (max-height: 450px) and (min-width: 600px) {
+  #opening[data-stage='nameInput'] {
+    max-width: 540px;
+  }
+  #opening .name-characters button {
+    min-height: 29px;
+  }
+  #opening-name-form.name-screen {
+    gap: 4px;
+    padding: 6px;
+  }
+}
+@media (max-height: 450px) and (min-width: 600px) {
+  #opening[data-stage='nameInput'] .opening-heading {
+    display: none;
+  }
+  #opening[data-stage='nameInput'] .opening-actions {
+    padding: 6px;
+  }
+  #opening .name-entry-heading {
+    padding: 1px 0;
+  }
+  #opening #opening-name {
+    font-size: 14px;
+  }
+  #opening .name-mode button {
+    min-height: 28px;
+  }
+  #opening .name-characters {
+    padding: 2px 0;
+  }
+  #opening .name-characters button {
+    min-height: 24px;
+    font-size: 16px;
+  }
+  #opening .name-edit button {
+    min-height: 36px;
+  }
+  #opening #opening-name-back {
+    min-height: 24px;
   }
 }

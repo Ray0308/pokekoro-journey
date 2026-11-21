@@ -19,7 +19,7 @@ try {
     s &&
     Array.isArray(s.owned) &&
     Array.isArray(s.party) &&
-    s.party.length &&
+    (s.party.length || (s.owned.length === 0 && OpeningRules.awaitingCompanion(s))) &&
     s.party.length <= PARTY_SIZE &&
     s.party.every((id) => validPokemonId(id) && s.owned.includes(id)) &&
     Number.isInteger(s.pos) &&

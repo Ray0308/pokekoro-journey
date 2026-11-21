@@ -17,22 +17,27 @@ const server = spawn('python', ['-m', 'http.server', '8832', '--bind', '127.0.0.
     await p.waitForFunction(() => $('#boot-screen').hidden);
     await p.locator('#title-tap-prompt').click();
     await p.locator('#enter-game').click();
-    assert.equal(await p.evaluate(() => state.opening.stage), 'meet');
-    for (let i = 0; i < 20 && (await p.evaluate(() => state.opening.stage)) !== 'nameInput'; i++)
+    assert.equal(await p.evaluate(() => state.opening.stage), 'oakGreeting');
+    for (let i = 0; i < 20 && (await p.evaluate(() => state.opening.stage)) !== 'nameChoice'; i++)
       await p.locator('#opening-next').click();
-    assert.equal(await p.evaluate(() => state.opening.stage), 'nameInput');
-    await p.locator('#opening-name').fill('  ');
-    await p.locator('#opening-name-form button').click();
+    await p.locator('[data-name-choice="0"]').click();
+    await p.locator('#opening-name-done').click();
     assert(await p.locator('#opening-name-error').isVisible());
-    await p.locator('#opening-name').fill('テスト');
-    await p.locator('#opening-name-form button').click();
+    for (const char of ['テ', 'ス', 'ト']) await p.locator(`[data-name-char="${char}"]`).click();
+    await p.locator('#opening-name-done').click();
     await p.locator('#opening-name-no').click();
-    await p.locator('#opening-name').fill('あおい');
-    await p.locator('#opening-name-form button').click();
+    for (let i = 0; i < 3; i++) await p.locator('#opening-name-delete').click();
+    await p.locator('[data-name-mode="hiragana"]').click();
+    for (const char of ['あ', 'お', 'い']) await p.locator(`[data-name-char="${char}"]`).click();
+    await p.locator('#opening-name-done').click();
     await p.locator('#opening-name-yes').click();
     assert.equal(await p.evaluate(() => state.playerName), 'あおい');
-    for (let i = 0; i < 10 && (await p.evaluate(() => state.opening.stage)) !== 'choose'; i++)
-      await p.locator('#opening-next').click();
+    assert.deepEqual(await p.evaluate(() => state.party), []);
+    for (let i = 0; i < 12 && (await p.evaluate(() => state.opening.stage)) !== 'choose'; i++) {
+      if (await p.locator('#opening-invite').count()) await p.locator('#opening-invite').click();
+      else await p.locator('#opening-next').click();
+    }
+    assert.deepEqual(await p.evaluate(() => state.party), [446]);
     await p.locator('[data-starter="4"]').click();
     await p.locator('#opening-confirm').click();
     await p.screenshot({ path: '/tmp/audit76/start-chosen.png' });
@@ -40,7 +45,7 @@ const server = spawn('python', ['-m', 'http.server', '8832', '--bind', '127.0.0.
     await p.waitForFunction(() => $('#boot-screen').hidden);
     assert.equal(await p.evaluate(() => state.playerName), 'あおい');
     assert.equal(await p.evaluate(() => state.opening.starterId), 4);
-    console.log('PASS real title, meet, Oak/name validation/redo, starter and reload');
+    console.log('PASS real title, laboratory/name panel/redo, invitation, starter and reload');
     await p.evaluate(() => {
       state.opening.stage = 'complete';
       state.party = [1, 4, 7];
