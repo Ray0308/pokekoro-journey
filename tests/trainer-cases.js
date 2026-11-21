@@ -169,3 +169,35 @@ assert.deepEqual(
   'Zero weight is an exclusion, not a fallback to 1',
 );
 assert.equal(MAPS['indigo-champion'].nextMap, 'cerulean-cave');
+
+// リーグの一般戦は組織の団員や水着の職業表示ではなく挑戦者として案内する。
+for (const mapId of [
+  'indigo-lorelei',
+  'indigo-bruno',
+  'indigo-agatha',
+  'indigo-lance',
+  'indigo-champion',
+]) {
+  const save = { mapId, pos: 4, tour: 1 };
+  const e = createTrainerEncounter(save, MAPS[mapId], false, () => 0.5);
+  assert.equal(e.profile.name, 'リーグ挑戦者');
+  assert.ok(!e.profile.image.includes('rocket') && !e.profile.image.includes('swimmer'));
+}
+for (let i = 0; i < 40; i++) {
+  const e = createTrainerEncounter(
+    { mapId: 'indigo-agatha', pos: 4, tour: 1 },
+    MAPS['indigo-agatha'],
+    false,
+    random,
+  );
+  assert.ok(
+    e.team.every((m) => POKEDEX[m.id - 1].types.some((t) => POKEMON_TYPE_NAMES[t] === 'ゴースト')),
+  );
+}
+assert.deepEqual(trainerBossNames('pokemon-tower'), [
+  'ロケットだんいん',
+  'ムサシとコジロウとニャース',
+]);
+assert.deepEqual(trainerBossNames('pewter-gym'), ['タケシ']);
+assert.deepEqual(trainerBossNames('ss-anne'), [TRAINER_ROSTERS.rival.name]);
+assert.deepEqual(trainerBossNames('cerulean-cave'), []);

@@ -154,6 +154,22 @@ const server = spawn('python', ['-m', 'http.server', '8838', '--bind', '127.0.0.
       assert.equal(await page.evaluate(() => state.pendingMapId), null);
       await page.evaluate(() => {
         done();
+        state.pos = 14;
+        state.mapReturn = { mapId: 'cerulean-city', pos: 6, lap: 1, pendingMapId: null };
+        openBattle(false, true);
+        $('#encounter').close();
+        endBattle(false);
+        done();
+      });
+      assert.equal(
+        await page.evaluate(() => state.pos),
+        14,
+        'revisited Safari abort stays at challenge',
+      );
+      assert.equal(await page.evaluate(() => state.pendingMapId), null);
+      assert.equal(await page.evaluate(() => battle.safariCompleted), false);
+      await page.evaluate(() => {
+        state.mapReturn = null;
         openBattle(false, true);
         $('#encounter').close();
         battle.damage = battle.total;

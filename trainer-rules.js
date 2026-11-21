@@ -50,9 +50,9 @@ function trainerClassAt(save, pos = save.pos) {
 function trainerProfile(classId, mapId, variant = 0) {
   const job = TRAINER_ROSTERS.classes[classId],
     map = TRAINER_ROSTERS.maps[mapId];
-  const look = classId === 'gym-trainee' ? TRAINER_ROSTERS.classes[map.appearanceClass] : job;
+  const look = map.appearanceClass ? TRAINER_ROSTERS.classes[map.appearanceClass] : job;
   return {
-    name: job.name,
+    name: map.trainerName || job.name,
     image: look.image,
     icon: look.icon,
     ball: 'assets/poke-ball.jpg',
@@ -60,6 +60,19 @@ function trainerProfile(classId, mapId, variant = 0) {
     quote: job.quote,
     ...(job.variants?.[variant % job.variants.length] || {}),
   };
+}
+// 実際の編成元から案内用の候補名を返す。抽選を実行したり保存を書き換えたりしない。
+function trainerBossNames(mapId) {
+  if (['mid', 'late'].some((phase) => TRAINER_ROSTERS.rival[phase].mapId === mapId))
+    return [TRAINER_ROSTERS.rival.name];
+  if (TRAINER_ROSTERS.bosses[mapId]) return [MAPS[mapId].boss.name];
+  return [
+    ...new Set(
+      (TRAINER_ROSTERS.maps[mapId]?.bossClasses || []).map(
+        (id) => TRAINER_ROSTERS.classes[id].name,
+      ),
+    ),
+  ];
 }
 function trainerTileProfile(save, pos) {
   const classId = trainerClassAt(save, pos);

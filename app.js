@@ -1168,7 +1168,7 @@ function renderJourney() {
     const map = MAPS[id],
       current = id === state.mapId,
       done = cleared.has(id);
-    return `<li class="${current ? 'journey-current' : ''} ${done ? 'journey-cleared' : ''}" ${current ? 'aria-current="step"' : ''}><span class="journey-step">${String(i + 1).padStart(2, '0')}</span><div><strong>${map.name}</strong><small>${map.boss.role}：${id === 'cerulean-cave' && state.owned.includes(150) ? (state.mapId === id ? mons[activeBossId() - 1].label : '伝説のポケモン') : map.boss.name}</small>${done && !current ? `<button data-revisit="${id}">このマップへ 行く</button>` : ''}</div><span class="journey-status">${current ? 'いまここ' : done ? '✓ クリア' : 'これから'}</span></li>`;
+    return `<li class="${current ? 'journey-current' : ''} ${done ? 'journey-cleared' : ''}" ${current ? 'aria-current="step"' : ''}><span class="journey-step">${String(i + 1).padStart(2, '0')}</span><div><strong>${map.name}</strong><small>${map.boss.role}：${id === 'cerulean-cave' && state.owned.includes(150) ? (state.mapId === id ? mons[activeBossId() - 1].label : '伝説のポケモン') : trainerBossNames(id).join('／') || map.boss.name}</small>${done && !current ? `<button data-revisit="${id}">このマップへ 行く</button>` : ''}</div><span class="journey-status">${current ? 'いまここ' : done ? '✓ クリア' : 'これから'}</span></li>`;
   }).join('');
   if (state.mapReturn)
     $('#journey-summary').innerHTML +=
@@ -1273,7 +1273,12 @@ function done() {
     advanceMap();
     return;
   }
-  if (state.mapReturn && battle?.boss && battle.rewardResolved && (battle.victory || battle.safari))
+  if (
+    state.mapReturn &&
+    battle?.boss &&
+    battle.rewardResolved &&
+    (battle.victory || battle.safariCompleted)
+  )
     state.pos = 0;
   resetDicePresentation();
   busy = false;

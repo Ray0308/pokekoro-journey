@@ -66,6 +66,7 @@ async function resolveSafari() {
 function endSafari(completed) {
   if (!battle || battle.rewardResolved) return;
   battle.rewardResolved = true;
+  battle.safariCompleted = !!completed;
   battleEpoch++;
   preparing = false;
   running = false;

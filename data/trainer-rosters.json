@@ -1388,6 +1388,104 @@
         901
       ],
       "quote": "ジムリーダーに あうまえに しょうぶだ！"
+    },
+    "league-ghost": {
+      "name": "リーグ挑戦者",
+      "image": "assets/trainers/lady.webp",
+      "icon": "assets/trainers/lady-field.webp",
+      "quote": "ゴーストの ちからを ためしてみよう！",
+      "count": [
+        2,
+        4
+      ],
+      "pool": [
+        {
+          "id": 92,
+          "stage": 0
+        },
+        {
+          "id": 93,
+          "stage": 1
+        },
+        {
+          "id": 94,
+          "stage": 2
+        },
+        {
+          "id": 200,
+          "stage": 0
+        },
+        {
+          "id": 429,
+          "stage": 2
+        },
+        {
+          "id": 353,
+          "stage": 0
+        },
+        {
+          "id": 354,
+          "stage": 2
+        },
+        {
+          "id": 425,
+          "stage": 0
+        },
+        {
+          "id": 426,
+          "stage": 2
+        },
+        {
+          "id": 607,
+          "stage": 0
+        },
+        {
+          "id": 608,
+          "stage": 1
+        },
+        {
+          "id": 609,
+          "stage": 2
+        },
+        {
+          "id": 708,
+          "stage": 0
+        },
+        {
+          "id": 709,
+          "stage": 2
+        },
+        {
+          "id": 769,
+          "stage": 0
+        },
+        {
+          "id": 770,
+          "stage": 2
+        },
+        {
+          "id": 854,
+          "stage": 0
+        },
+        {
+          "id": 855,
+          "stage": 2
+        },
+        {
+          "id": 971,
+          "stage": 0
+        },
+        {
+          "id": 972,
+          "stage": 2
+        }
+      ],
+      "reserveIds": [
+        92,
+        93,
+        94,
+        200
+      ]
     }
   },
   "maps": {
@@ -2026,7 +2124,9 @@
         1,
         3,
         8
-      ]
+      ],
+      "trainerName": "リーグ挑戦者",
+      "appearanceClass": "lady"
     },
     "indigo-bruno": {
       "jobs": [
@@ -2041,11 +2141,13 @@
         1,
         3,
         8
-      ]
+      ],
+      "trainerName": "リーグ挑戦者",
+      "appearanceClass": "black-belt"
     },
     "indigo-agatha": {
       "jobs": [
-        "rocket-grunt"
+        "league-ghost"
       ],
       "levelRange": [
         49,
@@ -2056,7 +2158,9 @@
         1,
         3,
         8
-      ]
+      ],
+      "trainerName": "リーグ挑戦者",
+      "appearanceClass": "lady"
     },
     "indigo-lance": {
       "jobs": [
@@ -2072,7 +2176,9 @@
         1,
         3,
         8
-      ]
+      ],
+      "trainerName": "リーグ挑戦者",
+      "appearanceClass": "black-belt"
     },
     "indigo-champion": {
       "jobs": [
@@ -2088,7 +2194,9 @@
         1,
         3,
         8
-      ]
+      ],
+      "trainerName": "リーグ挑戦者",
+      "appearanceClass": "black-belt"
     }
   },
   "bosses": {
