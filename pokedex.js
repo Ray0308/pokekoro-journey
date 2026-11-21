@@ -168,6 +168,9 @@
     if (seen) image.src = pokemonPortrait(selected);
     else image.removeAttribute('src');
     image.alt = seen ? mon.label : '';
+    const strength = document.querySelector('#device-strength');
+    strength.hidden = !seen;
+    strength.innerHTML = seen ? pokemonStrengthMarkup(mon) : '';
     document.querySelector('#device-type').textContent = !seen
       ? 'タイプ：—'
       : mon.type === null
@@ -496,6 +499,16 @@
     }
   });
   document.querySelector('#device-party').onclick = () => {
+    if (
+      !state.party.includes(selected) &&
+      state.party.length >= PARTY_SIZE &&
+      state.owned.includes(selected) &&
+      !busy
+    ) {
+      dialog.close();
+      choosePartyReplacement(selected);
+      return;
+    }
     const message = togglePokemonParty(selected);
     renderEntry();
     if (message) status(message);

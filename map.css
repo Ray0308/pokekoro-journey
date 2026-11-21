@@ -3265,3 +3265,40 @@ body[data-game-view='party'] .app-version {
     bottom: 10%;
   }
 }
+/* 背景とマスの画像をデコードしてから、まとまって表示する。 */
+#map .map-scene {
+  background: #e4edda;
+}
+#map .map-scene.map-loading::after {
+  content: 'マップを よみこみ中…';
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-content: center;
+  background: #e4edda;
+  color: #34564a;
+  font-size: 15px;
+  font-weight: 800;
+  pointer-events: none;
+}
+#map #route.map-art-pending {
+  opacity: 0;
+  pointer-events: none;
+}
+#map #route.map-art-enter {
+  animation: map-art-enter 0.3s ease-out;
+}
+@keyframes map-art-enter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #map #route.map-art-enter {
+    animation: none;
+  }
+}

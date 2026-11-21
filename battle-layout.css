@@ -532,3 +532,21 @@
   min-height: 48px;
   width: 100%;
 }
+/* OSの端操作を避ける余白。簡易アクセス自体の無効化はWebからできない。 */
+#battle {
+  padding-bottom: max(28px, calc(env(safe-area-inset-bottom) + 10px));
+  overscroll-behavior: none;
+}
+#mock-practice {
+  overscroll-behavior: none;
+  padding-bottom: max(16px, env(safe-area-inset-bottom));
+}
+#battle #board,
+#mock-practice canvas {
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+body:has(#battle[open]) {
+  overscroll-behavior: none;
+}

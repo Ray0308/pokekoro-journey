@@ -539,6 +539,52 @@ function routePath(last = routePoints.length - 1) {
   }
   return d;
 }
+let mapArtLoading = false;
+let mapArtEpoch = 0;
+const readyMapArt = new Set();
+function revealMapArtwork() {
+  const route = $('#route'),
+    image = route.querySelector('.map-art');
+  const token = ++mapArtEpoch;
+  const url = image.getAttribute('src');
+  if (readyMapArt.has(url)) {
+    mapArtLoading = false;
+    route.closest('.map-scene').classList.remove('map-loading');
+    route.classList.remove('map-art-pending');
+    return;
+  }
+  mapArtLoading = true;
+  route.classList.remove('map-art-enter');
+  route.classList.add('map-art-pending');
+  route.closest('.map-scene').classList.add('map-loading');
+  $('#roll').disabled = true;
+  const decoded = (img) =>
+    new Promise((resolve) => {
+      const finish = async () => {
+        if (img.naturalWidth) {
+          try {
+            await img.decode();
+          } catch {}
+        }
+        resolve();
+      };
+      if (img.complete) void finish();
+      else {
+        img.addEventListener('load', finish, { once: true });
+        img.addEventListener('error', finish, { once: true });
+      }
+    });
+  Promise.all([...route.querySelectorAll('img')].map(decoded)).then(() => {
+    if (token !== mapArtEpoch || !image.isConnected) return;
+    mapArtLoading = false;
+    route.closest('.map-scene').classList.remove('map-loading');
+    route.classList.remove('map-art-pending');
+    route.classList.add('map-art-enter');
+    if (image.naturalWidth) readyMapArt.add(url);
+    else $('#message').textContent = 'マップ画像を よみこめませんでした。通信を たしかめてね。';
+    $('#roll').disabled = busy;
+  });
+}
 function drawRoute() {
   const d = routePath();
   let svg = `<svg class="route-lines" viewBox="0 0 900 900" preserveAspectRatio="none" aria-hidden="true"><path d="${d}" fill="none" stroke="var(--map-roadEdge)" stroke-opacity=".5" stroke-width="33" stroke-linecap="round" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="var(--map-road)" stroke-width="25" stroke-linecap="round" stroke-linejoin="round"/><path d="${routePath(state.pos)}" fill="none" stroke="#f6bf4e" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
@@ -605,6 +651,7 @@ function render() {
           : 'おして はなして ころがそう！';
   $('#lap').textContent = `${state.tour}周目 · ${state.pos + 1}/15`;
   $('#route').innerHTML = drawRoute();
+  revealMapArtwork();
   $('#inventory').innerHTML = BALLS.map(
     (b) =>
       `<span aria-label="${b.name} ${state[b.key]}個"><img class="ball-icon" src="${b.image}" alt=""> ${state[b.key]}</span>`,
@@ -615,9 +662,22 @@ function render() {
       : `<span class="party-empty" aria-label="空き枠">＋</span>`,
   ).join('');
   renderDex();
-  $('#roll').disabled = busy;
+  $('#roll').disabled = busy || mapArtLoading;
   renderJourney();
   save();
+}
+function pokemonStrengthMarkup(mon) {
+  const power = Math.round(PokemonBattleStats.power(mon));
+  return `<span class="pokemon-strength" title="ブロック1個の基本パワー。相性や技で変わるよ"><span>⚔ こうげき <b>${power}</b><meter min="0" max="30" value="${power}" aria-label="こうげきパワー ${power}"></meter></span><small>ゲージ：${PokemonBattleStats.gaugeLabel(mon)}</small></span>`;
+}
+let pendingPartyAddition = null;
+function choosePartyReplacement(id) {
+  if (busy || capturePending || !state.owned.includes(id) || state.party.includes(id)) return;
+  pendingPartyAddition = id;
+  showTab('party');
+  renderDex();
+  $('#party-add-choice').scrollIntoView({ block: 'nearest' });
+  $('#party-add-choice button').focus({ preventScroll: true });
 }
 // パーティーの6枠を描画する。入れ替えの候補選択は図鑑側に委譲する。
 function renderDex() {
@@ -625,6 +685,16 @@ function renderDex() {
   $('#count').textContent = `${state.party.length} / ${PARTY_SIZE}匹`;
   $('.party-hint').textContent =
     `${partyTypes(state.party).length}属性 · チャージ ×${typeDiversityBonus(partyTypes(state.party).length).toFixed(2)}`;
+  const choice = $('#party-add-choice');
+  choice.hidden = !pendingPartyAddition;
+  if (pendingPartyAddition) {
+    const candidate = POKEDEX[pendingPartyAddition - 1];
+    choice.innerHTML = `<img src="${pokemonPortrait(candidate.id)}" alt=""><div><strong>${candidate.label}を いれよう！</strong><p>だれと いれかえる？<br>下の なかまを えらんでね。</p></div><button type="button">やめる</button>`;
+    choice.querySelector('button').onclick = () => {
+      pendingPartyAddition = null;
+      renderDex();
+    };
+  }
   $('#cards').innerHTML = Array.from({ length: PARTY_SIZE }, (_, slot) => {
     const id = state.party[slot],
       mon = id ? mons[id - 1] : null;
@@ -639,7 +709,7 @@ function renderDex() {
                   )
                   .join('')
               : '<span class="party-type type-unknown">未登録</span>'
-          }</span></span>`
+          }</span>${pokemonStrengthMarkup(mon)}</span>`
         : '<span class="party-vacant">＋ あき</span>'
     }</button><button class="party-replace" data-party-slot="${slot}">${mon ? '入れ替える' : 'えらぶ'}</button></article>`;
   }).join('');
@@ -665,6 +735,25 @@ function togglePokemonParty(id) {
 }
 $('#cards').onclick = (e) => {
   const swap = e.target.closest('[data-party-slot]');
+  if (pendingPartyAddition && !busy) {
+    const article = e.target.closest('.party-slot');
+    if (!article) return;
+    const slot = [...$('#cards').children].indexOf(article),
+      next = [...state.party];
+    next[slot] = pendingPartyAddition;
+    const error = partyTypeError(next);
+    if (error) {
+      $('.party-hint').textContent = error;
+      sfx('dexError');
+      return;
+    }
+    state.party = next;
+    pendingPartyAddition = null;
+    render();
+    $('.party-hint').textContent = 'いれかえたよ！ 外した なかまも 図鑑に いるよ。';
+    sfx('dexPage');
+    return;
+  }
   if (swap && !busy) {
     window.PokekoroDex?.openPicker(Number(swap.dataset.partySlot));
     return;
@@ -674,6 +763,10 @@ $('#cards').onclick = (e) => {
 };
 function showTab(name) {
   if (!['map', 'party', 'journey'].includes(name)) return;
+  if (name !== 'party') {
+    pendingPartyAddition = null;
+    $('#party-add-choice').hidden = true;
+  }
   document
     .querySelectorAll('[data-tab]')
     .forEach((button) => button.classList.toggle('active', button.dataset.tab === name));
@@ -694,7 +787,7 @@ document.querySelectorAll('[data-tab]').forEach(
 $('#help').onclick = () => $('#guide').showModal();
 // 出目の決定 → サイコロ演出 → 1マスずつ移動 → 到着イベント、の順で進める。
 async function rollDice() {
-  if (busy) return;
+  if (busy || mapArtLoading) return;
   if (rainbowExitReady()) {
     leaveRainbow();
     return;
@@ -2018,7 +2111,7 @@ function cancelDiceHold() {
 }
 const rollButton = $('#roll');
 rollButton.onpointerdown = (e) => {
-  if (busy || e.button !== 0 || !e.isPrimary) return;
+  if (busy || mapArtLoading || e.button !== 0 || !e.isPrimary) return;
   if (window.PokekoroDebug?.chooseRoll?.()) {
     e.preventDefault();
     return;

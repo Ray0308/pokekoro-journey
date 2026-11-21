@@ -103,6 +103,7 @@
           showTab('journey');
           document.querySelector('#journey').scrollTop = 0;
         } else if (action === 'settings') document.querySelector('#title-options').showModal();
+        else if (action === 'title') document.querySelector('#back-title').click();
       }),
   );
   document.querySelector('#item-bag-back').onclick = () => bag.close();

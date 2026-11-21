@@ -818,3 +818,73 @@
     gap: 4px;
   }
 }
+.pokemon-strength {
+  display: block;
+  margin-top: 5px;
+  color: #28454c;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.pokemon-strength > span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  justify-content: center;
+}
+.pokemon-strength b {
+  color: #914c24;
+  font-size: 17px;
+  font-variant-numeric: tabular-nums;
+}
+.pokemon-strength meter {
+  width: 50px;
+  height: 10px;
+}
+.pokemon-strength small {
+  display: block;
+  font-size: 11px;
+}
+#device-strength {
+  background: #fffdf0;
+  border: 1px solid #bccfbd;
+  border-radius: 10px;
+  padding: 3px 7px;
+  margin-top: 6px;
+}
+#party-add-choice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 2px solid #e8b13f;
+  border-radius: 12px;
+  padding: 8px;
+  background: #fff5cd;
+  margin-bottom: 10px;
+}
+#party-add-choice[hidden] {
+  display: none;
+}
+#party-add-choice img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+}
+#party-add-choice > div {
+  flex: 1;
+}
+#party-add-choice p {
+  margin: 4px 0;
+  font-size: 13px;
+}
+#party-add-choice button {
+  min-height: 44px;
+  font-size: 13px;
+}
+.party-member .pokemon-strength > span {
+  justify-content: flex-start;
+}
+@media (max-width: 350px) {
+  .party-member .pokemon-strength meter {
+    display: none;
+  }
+}

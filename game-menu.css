@@ -610,3 +610,60 @@ body.at-title #title-options #back-title {
     padding: 7px;
   }
 }
+
+/* 情報が増えてもカードを潰さず、編成画面の中をスクロールできる。 */
+#party .party-panel {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+#party .party-heading,
+#party-type-warning,
+#party-add-choice,
+#party .party-hint {
+  flex-shrink: 0;
+}
+#party #cards {
+  flex: 0 0 auto;
+  grid-template-rows: repeat(3, minmax(180px, auto));
+}
+#party-add-choice {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+}
+#party-add-choice strong {
+  font-size: 14px;
+}
+#party-add-choice p {
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 2px 0;
+}
+#party-add-choice button {
+  flex: 0 0 58px;
+  padding: 4px;
+}
+#party:has(#party-add-choice:not([hidden])) #party-type-warning {
+  display: none;
+}
+@media (max-height: 650px) {
+  #party #cards {
+    grid-template-rows: repeat(3, minmax(155px, auto));
+  }
+}
+@media (min-aspect-ratio: 4/3) and (max-height: 500px) {
+  #party #cards {
+    grid-template-rows: repeat(2, minmax(140px, auto));
+  }
+}
+
+#party .party-member img {
+  flex-shrink: 0;
+  height: 52px;
+}
+#party .party-member {
+  flex: 1 0 auto;
+}
+#party .party-replace {
+  flex-shrink: 0;
+}
