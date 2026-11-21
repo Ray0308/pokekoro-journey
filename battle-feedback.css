@@ -493,3 +493,220 @@
 #battle[data-league='champion'] #battle-location {
   color: #986416;
 }
+
+/* 攻撃は盤面外のステータス行で宣言し、発射元→命中→数値を同じ順に見せる。 */
+#battle #battle-turn-status.is-action {
+  color: #243a4b;
+  background: color-mix(in srgb, var(--action-color, #f2d37d) 22%, #fffdf3);
+  border-inline-start: 4px solid var(--action-color, #c3a24e);
+  border-radius: 4px;
+  font-size: clamp(10px, 3vw, 13px);
+  line-height: 18px;
+  padding: 2px 4px;
+  text-wrap: balance;
+}
+.enemy-counter-effect.is-attack {
+  width: 34px;
+  height: 34px;
+  margin: -17px;
+  border: 2px solid #ffffffe8;
+  box-shadow: 0 0 7px 2px var(--counter-color);
+}
+.enemy-counter-effect.is-attack::before {
+  content: '';
+  position: absolute;
+  width: 40px;
+  height: 11px;
+  top: 9px;
+  right: 50%;
+  background: linear-gradient(90deg, transparent, var(--counter-color));
+  transform-origin: right center;
+  transform: rotate(var(--shot-angle));
+  opacity: 0.65;
+}
+.enemy-counter-effect[data-kind='wind'] {
+  border-radius: 65% 15%;
+  border: 3px double white;
+}
+.enemy-counter-effect[data-kind='fist'] {
+  border-radius: 30% 30% 12% 12%;
+  border: 3px solid #fff1dc;
+}
+.enemy-counter-effect[data-kind='ground'] {
+  border-radius: 15%;
+  border: 3px dashed #fff6de;
+}
+.enemy-counter-effect[data-kind='bug'] {
+  border-radius: 70% 70% 20% 20%;
+  border: 3px double white;
+}
+.enemy-counter-effect[data-kind='poison'] {
+  border-radius: 50% 50% 40% 40%;
+  border: 3px dotted white;
+}
+.enemy-counter-effect[data-kind='dragon'] {
+  border-radius: 5% 70% 30% 70%;
+  border: 3px solid #e9ddff;
+}
+.enemy-counter-effect[data-kind='dark'] {
+  border-radius: 50%;
+  border: 4px solid #44394e;
+}
+.battle-hit-ring {
+  position: absolute;
+  z-index: 42;
+  pointer-events: none;
+  width: 66px;
+  height: 66px;
+  margin: -33px;
+  border: 5px solid var(--skill-color);
+  border-radius: 50%;
+  box-sizing: border-box;
+  box-shadow:
+    inset 0 0 0 2px #fff9,
+    0 0 9px var(--skill-color);
+}
+.battle-hit-ring[data-kind='flame'] {
+  border-radius: 60% 15% 60% 35%;
+  border-width: 8px 3px;
+}
+.battle-hit-ring[data-kind='drop'] {
+  border-style: double;
+  border-width: 9px;
+  transform: scaleX(1.25);
+}
+.battle-hit-ring[data-kind='bolt'] {
+  border-radius: 5%;
+  clip-path: polygon(
+    0 20%,
+    35% 30%,
+    50% 0,
+    65% 35%,
+    100% 20%,
+    80% 55%,
+    100% 90%,
+    60% 75%,
+    40% 100%,
+    30% 65%,
+    0 75%,
+    20% 50%
+  );
+  background: var(--skill-color);
+}
+.battle-hit-ring[data-kind='ice'],
+.battle-hit-ring[data-kind='star'] {
+  border-radius: 8%;
+  transform: rotate(45deg);
+}
+.battle-hit-ring[data-kind='leaf'],
+.battle-hit-ring[data-kind='bug'] {
+  border-radius: 80% 10%;
+}
+.battle-hit-ring[data-kind='psychic'],
+.battle-hit-ring[data-kind='ghost'] {
+  border-style: double;
+  border-width: 10px;
+}
+.battle-hit-ring[data-kind='rock'],
+.battle-hit-ring[data-kind='metal'],
+.battle-hit-ring[data-kind='ground'] {
+  border-radius: 20% 35% 15% 25%;
+  border-style: dashed;
+}
+.battle-hit-ring.is-guard {
+  border-radius: 35% 35% 50% 50%;
+  border-style: double;
+  border-width: 8px;
+  background: #87def433;
+}
+.battle-type-particle {
+  position: absolute;
+  pointer-events: none;
+  z-index: 43;
+  width: 11px;
+  height: 17px;
+  margin: -8px -5px;
+  border: 1px solid #fff9;
+  background: var(--skill-color);
+  border-radius: 30%;
+}
+.battle-type-particle[data-kind='leaf'],
+.battle-type-particle[data-kind='bug'] {
+  border-radius: 80% 0;
+}
+.battle-type-particle[data-kind='flame'],
+.battle-type-particle[data-kind='drop'] {
+  border-radius: 70% 10% 60% 50%;
+}
+.battle-type-particle[data-kind='bolt'],
+.battle-type-particle[data-kind='wind'] {
+  width: 5px;
+  height: 24px;
+}
+.battle-type-particle[data-kind='ice'],
+.battle-type-particle[data-kind='star'] {
+  border-radius: 0;
+  transform: rotate(45deg);
+}
+.battle-type-particle[data-kind='psychic'],
+.battle-type-particle[data-kind='ghost'],
+.battle-type-particle[data-kind='dark'] {
+  border-radius: 50%;
+  background: transparent;
+  border: 3px solid var(--skill-color);
+}
+.battle-effect-label {
+  position: absolute;
+  z-index: 46;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  max-width: 136px;
+  padding: 3px 7px;
+  color: #243341;
+  border: 2px solid var(--skill-color);
+  border-radius: 7px;
+  background: #fffef4f5;
+  font:
+    900 12px/1.25 'Noto Sans JP',
+    sans-serif;
+  font-style: normal;
+  text-align: center;
+  white-space: nowrap;
+  box-shadow: 0 2px 3px #26374b33;
+}
+.battle-effect-label:empty {
+  display: none;
+}
+.enemy-skill-effect.skill-shield::after {
+  content: '✓';
+  color: #227a9b;
+  font: 900 30px/48px sans-serif;
+  display: block;
+  text-align: center;
+}
+.enemy-skill-effect.skill-revive::after {
+  content: '＋';
+  color: #338450;
+  font: 900 30px/40px sans-serif;
+  display: block;
+  text-align: center;
+}
+.enemy-skill-effect[data-category='support'].skill-orb {
+  width: 22px;
+  height: 22px;
+  margin: -11px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .enemy-counter-effect.is-attack::before {
+    display: none;
+  }
+}
+
+@media (max-height: 450px) and (min-width: 600px) {
+  #battle.turn-battle #battle-turn-status.is-action {
+    font-size: 10px;
+    line-height: 13px;
+    padding: 0 3px;
+    text-overflow: ellipsis;
+  }
+}

@@ -311,18 +311,34 @@
     await wait(180);
     if (epoch !== battleEpoch) return;
     sfx('release', tier);
-    await wait(160);
+    const sources = battle.combat.members
+      .filter((member) => !member.fainted)
+      .map((member) => {
+        const mon = POKEDEX[member.id - 1];
+        const usedType = pokemonTypes(mon)
+          .filter((t) => (battle.typeCharge[t] || 0) > 0)
+          .sort((a, b) => battle.typeCharge[b] - battle.typeCharge[a])[0];
+        return {
+          node: roster.querySelector(`[data-battle-member="${member.id}"]`),
+          type: usedType,
+        };
+      })
+      .filter((entry) => entry.node && entry.type !== undefined);
+    await window.PokekoroBattleFX?.groupAttack(sources, type, battle.damage);
     if (epoch !== battleEpoch) return;
     battle.attackTotal += battle.damage;
     battle.hp = Math.max(0, battle.hp - battle.damage);
     $('#battle').classList.add('attack-release');
-    window.PokekoroBattleFX?.impact(tier);
+    if (battle.damage > 0) {
+      window.PokekoroBattleFX?.damage(battle.damage, type);
+      window.PokekoroBattleFX?.impact(tier);
+    }
     updateHP();
     if (battle.hp === 0) {
       markBattleVictory();
       if (!hasNextTrainerPokemon()) $('#leave').disabled = true;
     }
-    await wait(260);
+    await wait(420);
     if (epoch !== battleEpoch) return;
     if (battle.hp === 0) {
       await finish(epoch);
@@ -366,8 +382,29 @@
     const recipients = ['boost', 'guard'].includes(outcome.skill.category)
       ? rules.alive(battle.combat)
       : outcome.affected;
+    let applied = false;
+    const applyDamage = () => {
+      if (applied || epoch !== battleEpoch) return;
+      applied = true;
+      if (outcome.damage) {
+        battle.hp = Math.max(0, battle.hp - outcome.damage);
+        battle.attackTotal += outcome.damage;
+        window.PokekoroBattleFX?.impact(1);
+        updateHP();
+        if (battle.hp === 0) {
+          markBattleVictory();
+          if (!hasNextTrainerPokemon()) $('#leave').disabled = true;
+        }
+      }
+    };
     await window.PokekoroBattleFX?.skill({
       category: outcome.skill.category,
+      name: outcome.skill.name,
+      actor: POKEDEX[selected - 1].label,
+      damage: outcome.damage || 0,
+      amount: outcome.skill.amount || 0,
+      multiplier: outcome.skill.multiplier || 1,
+      onImpact: applyDamage,
       type:
         outcome.skill.category === 'attack'
           ? PokemonSkillRules.attackType(outcome.skill, POKEDEX[selected - 1])
@@ -381,16 +418,7 @@
         .filter((index) => index >= 0),
     });
     if (epoch !== battleEpoch) return;
-    if (outcome.damage) {
-      battle.hp = Math.max(0, battle.hp - outcome.damage);
-      battle.attackTotal += outcome.damage;
-      window.PokekoroBattleFX?.impact(1);
-      updateHP();
-      if (battle.hp === 0) {
-        markBattleVictory();
-        if (!hasNextTrainerPokemon()) $('#leave').disabled = true;
-      }
-    }
+    applyDamage();
     if (epoch !== battleEpoch) return;
     $('#turn-next').disabled = false;
     if (battle.hp === 0) {

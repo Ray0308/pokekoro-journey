@@ -4,6 +4,7 @@
 (() => {
   const dialog = document.querySelector('#battle'),
     motion = matchMedia('(prefers-reduced-motion: reduce)');
+  let generation = 0;
   let timers = new Set(),
     highestCombo = 0,
     highestCharge = 0;
@@ -18,10 +19,14 @@
   const effectAnimations = new Set();
   const sound = (name, value) => window.PokekoroSfx?.play(name, value);
   function reset() {
+    generation++;
+    document.querySelector('#battle-turn-status')?.classList.remove('is-action');
     for (const animation of effectAnimations) animation.cancel();
     effectAnimations.clear();
     document
-      .querySelectorAll('.enemy-counter-effect,.enemy-skill-effect')
+      .querySelectorAll(
+        '.enemy-counter-effect,.enemy-skill-effect,.battle-hit-ring,.battle-type-particle,.battle-effect-label',
+      )
       .forEach((node) => node.remove());
     for (const t of timers) clearTimeout(t);
     timers.clear();
@@ -130,6 +135,172 @@
     effectAnimations.add(animation);
     return animation.finished.catch(() => {}).finally(() => effectAnimations.delete(animation));
   }
+  const TYPE_KINDS = [
+    'leaf',
+    'flame',
+    'drop',
+    'poison',
+    'wind',
+    'impact',
+    'bolt',
+    'ice',
+    'fist',
+    'ground',
+    'psychic',
+    'bug',
+    'rock',
+    'ghost',
+    'dragon',
+    'dark',
+    'metal',
+    'star',
+  ];
+  const typeKind = (type) => TYPE_KINDS[type] || 'impact';
+  function pointAt(target, host = dialog) {
+    const r = target.getBoundingClientRect(),
+      h = host.getBoundingClientRect();
+    return {
+      x: r.left + r.width / 2 - h.left + host.scrollLeft - host.clientLeft,
+      y: r.top + r.height / 2 - h.top + host.scrollTop - host.clientTop,
+    };
+  }
+  function effectNode(target, className, color, host = dialog) {
+    const n = document.createElement('i'),
+      p = pointAt(target, host);
+    n.className = className;
+    n.setAttribute('aria-hidden', 'true');
+    n.style.left = p.x + 'px';
+    n.style.top = p.y + 'px';
+    n.style.setProperty('--skill-color', color);
+    n.style.setProperty('--counter-color', color);
+    host.append(n);
+    return n;
+  }
+  async function transient(node, frames, ms, readable = false) {
+    try {
+      await effectAnimate(
+        node,
+        motion.matches
+          ? readable
+            ? [{ opacity: 1 }, { opacity: 1 }]
+            : [{ opacity: 0 }, { opacity: 1 }, { opacity: 0 }]
+          : frames,
+        motion.matches && !readable ? 120 : ms,
+      );
+    } finally {
+      node.remove();
+    }
+  }
+  function announce(text, color) {
+    const line = document.querySelector('#battle-turn-status');
+    if (!line || line.hidden) return;
+    line.classList.add('is-action');
+    line.style.setProperty('--action-color', color);
+    line.textContent = text;
+  }
+  function label(target, text, color, host = dialog) {
+    const node = effectNode(target, 'battle-effect-label', color, host);
+    node.textContent = text;
+    // 長い名前や画面端の仲間でも、文字をdialog内に収める。
+    const p = pointAt(target, host),
+      half = Math.min(68, host.clientWidth / 2 - 8);
+    node.style.left = Math.max(half, Math.min(host.clientWidth - half, p.x)) + 'px';
+    return transient(
+      node,
+      [
+        { translate: '0 5px', opacity: 0 },
+        { translate: '0 -8px', opacity: 1, offset: 0.2 },
+        { translate: '0 -13px', opacity: 1, offset: 0.8 },
+        { translate: '0 -18px', opacity: 0 },
+      ],
+      520,
+      true,
+    );
+  }
+  function typedImpact(target, type, host = dialog, blocked = false) {
+    const color = blocked ? '#56b7da' : POKEMON_TYPE_COLORS[type] || '#efd188';
+    const ring = effectNode(target, 'battle-hit-ring' + (blocked ? ' is-guard' : ''), color, host);
+    ring.dataset.kind = typeKind(type);
+    const tasks = [
+      transient(
+        ring,
+        [
+          { scale: '.4', opacity: 0 },
+          { scale: '1', opacity: 1, offset: 0.25 },
+          { scale: blocked ? '1.2' : '1.6', opacity: 0 },
+        ],
+        240,
+      ),
+    ];
+    if (!motion.matches && !blocked)
+      for (let i = 0; i < 6; i++) {
+        const n = effectNode(target, 'battle-type-particle', color, host),
+          angle = (i / 6) * Math.PI * 2;
+        n.dataset.kind = typeKind(type);
+        tasks.push(
+          transient(
+            n,
+            [
+              { translate: '0 0', scale: '.7', opacity: 1 },
+              {
+                translate: Math.cos(angle) * 35 + 'px ' + Math.sin(angle) * 27 + 'px',
+                scale: '.4',
+                rotate: i * 55 + 'deg',
+                opacity: 0,
+              },
+            ],
+            250,
+          ),
+        );
+      }
+    return Promise.all(tasks);
+  }
+  async function typedFlight(source, target, type, host = dialog) {
+    if (!host.open || !source?.isConnected || !target?.isConnected) return;
+    const a = pointAt(source, host),
+      b = pointAt(target, host),
+      color = POKEMON_TYPE_COLORS[type] || '#efd188';
+    const node = effectNode(target, 'enemy-counter-effect is-attack', color, host);
+    node.dataset.type = String(type);
+    node.dataset.kind = typeKind(type);
+    const cell = TYPE_SYMBOL_CELLS[type] ?? TYPE_SYMBOL_CELLS[5],
+      symbol = document.createElement('b');
+    symbol.className = 'counter-symbol';
+    symbol.style.backgroundPosition = `${((cell % 6) / 5) * 100}% ${(Math.floor(cell / 6) / 2) * 100}%`;
+    node.append(symbol);
+    node.style.setProperty(
+      '--shot-angle',
+      (Math.atan2(b.y - a.y, b.x - a.x) * 180) / Math.PI + 'deg',
+    );
+    await transient(
+      node,
+      [
+        { translate: a.x - b.x + 'px ' + (a.y - b.y) + 'px', scale: '.7', opacity: 0 },
+        { opacity: 1, offset: 0.12 },
+        { translate: '0 0', scale: '1.25', opacity: 1 },
+      ],
+      300,
+    );
+  }
+  async function groupAttack(sources = [], type = 5, damage = 0) {
+    const token = generation,
+      enemy = dialog.querySelector('#enemyimg');
+    if (!dialog.open || !enemy) return;
+    const color = POKEMON_TYPE_COLORS[type] || '#efd188';
+    announce(damage > 0 ? 'みんなで アタック！' : '攻撃パワーが たまっていない！', color);
+    if (damage <= 0) return;
+    await Promise.all(
+      sources.map(({ node }) =>
+        effectAnimate(node, [{ scale: '1' }, { scale: '1.09', offset: 0.5 }, { scale: '1' }], 160),
+      ),
+    );
+    if (token !== generation || !dialog.open) return;
+    await Promise.all(
+      (sources.length ? sources : [{ node: document.querySelector('.attack-charge'), type }]).map(
+        ({ node, type: t }) => typedFlight(node, enemy, t ?? type),
+      ),
+    );
+  }
   function counterWindup(host = dialog, enemy = host.querySelector('#enemyimg')) {
     if (!host.open || !enemy || motion.matches) return;
     void effectAnimate(
@@ -150,6 +321,7 @@
     type = 5,
   ) {
     if (!host.open || !target || !enemy) return;
+    const token = generation;
     const bounds = host.getBoundingClientRect();
     const center = (node) => {
       const r = node.getBoundingClientRect();
@@ -158,31 +330,16 @@
         y: r.top + r.height / 2 - bounds.top + host.scrollTop - host.clientTop,
       };
     };
+    if (host === dialog)
+      announce(
+        `${POKEMON_TYPE_NAMES[type] || ''}の反撃 → ${blocked ? 'みんなをガード' : POKEDEX[Number(target.dataset.battleMember) - 1]?.label || '仲間'}`,
+        POKEMON_TYPE_COLORS[type],
+      );
     const from = center(enemy),
       to = center(target);
     const effect = document.createElement('i');
     effect.className = 'enemy-counter-effect' + (blocked ? ' is-guard' : '');
-    const kind =
-      [
-        'leaf',
-        'flame',
-        'drop',
-        'poison',
-        'wind',
-        'impact',
-        'bolt',
-        'ice',
-        'impact',
-        'ground',
-        'psychic',
-        'leaf',
-        'rock',
-        'ghost',
-        'dragon',
-        'dark',
-        'metal',
-        'star',
-      ][type] || 'impact';
+    const kind = typeKind(type);
     effect.dataset.kind = kind;
     effect.dataset.type = String(type);
     effect.style.setProperty('--counter-color', POKEMON_TYPE_COLORS[type] || '#ffd76b');
@@ -222,6 +379,18 @@
             ],
         motion.matches ? 90 : 280,
       );
+      effect.remove();
+      if (token === generation && host.open && target.isConnected) {
+        await Promise.all([
+          typedImpact(target, type, host, blocked),
+          label(
+            target,
+            blocked ? 'ガード！' : '命中！',
+            blocked ? '#3693b9' : POKEMON_TYPE_COLORS[type],
+            host,
+          ),
+        ]);
+      }
     } finally {
       effect.remove();
     }
@@ -236,8 +405,16 @@
     enemy = host.querySelector('#enemyimg'),
     board = host.querySelector('#board'),
     changed = [],
+    name = '',
+    actor = '',
+    damage = 0,
+    amount = 0,
+    multiplier = 1,
+    onImpact = () => {},
   }) {
     if (!host.open || !source) return;
+    const token = generation;
+    const valid = () => token === generation && host.open && source.isConnected;
     const color =
       category === 'revive'
         ? '#76cf9c'
@@ -248,6 +425,11 @@
             : category === 'support'
               ? '#c19af7'
               : POKEMON_TYPE_COLORS[type] || '#fff2a6';
+    if (host === dialog)
+      announce(
+        `${actor ? actor + 'の ' : ''}${name || PokemonSkillRules.categoryNames[category]}！`,
+        color,
+      );
     const point = (target) => {
       const r = target.getBoundingClientRect(),
         h = host.getBoundingClientRect();
@@ -260,6 +442,7 @@
       const node = document.createElement('i'),
         p = point(target);
       node.className = 'enemy-skill-effect ' + kind;
+      node.dataset.category = category;
       node.setAttribute('aria-hidden', 'true');
       node.style.left = p.x + 'px';
       node.style.top = p.y + 'px';
@@ -289,6 +472,7 @@
         360,
       );
     const fly = async (target) => {
+      if (category === 'attack') return typedFlight(source, target, type, host);
       const a = point(source),
         b = point(target);
       await play(
@@ -303,17 +487,25 @@
     };
     await pulse(source, 'skill-cast');
     // 撤退・交代のresetでキャンセルされた古い演出は続けない。
-    if (!host.open || !source.isConnected) return;
+    if (!valid()) return;
     if (category === 'attack' && enemy) {
       await fly(enemy);
-      if (host.open && source.isConnected) await pulse(enemy, 'skill-impact');
+      if (valid()) {
+        onImpact();
+        await Promise.all([
+          typedImpact(enemy, type, host),
+          label(enemy, damage > 0 ? '-' + damage.toLocaleString() : 'こうかなし', color, host),
+        ]);
+      }
     } else if (category === 'guard') {
-      await Promise.all(
-        (targets.length ? targets : [source]).map((target) => pulse(target, 'skill-shield')),
-      );
+      await Promise.all([
+        label(host.querySelector('#battle-party') || source, 'ガード待機', color, host),
+        ...(targets.length ? targets : [source]).map((target) => pulse(target, 'skill-shield')),
+      ]);
     } else if (category === 'boost') {
-      await Promise.all(
-        (targets.length ? targets : [source]).map((target) =>
+      await Promise.all([
+        label(host.querySelector('#battle-party') || source, `次の攻撃×${multiplier}`, color, host),
+        ...(targets.length ? targets : [source]).map((target) =>
           play(
             make(target, 'skill-rise'),
             [
@@ -324,18 +516,32 @@
             380,
           ),
         ),
-      );
+      ]);
     } else if (category === 'support') {
       await Promise.all(
-        targets.map(async (target) => {
+        targets.map(async (target, index) => {
           await fly(target);
-          if (host.open && source.isConnected) await pulse(target);
+          if (valid())
+            await Promise.all([
+              pulse(target),
+              index === 0
+                ? label(
+                    targets.length > 1 ? host.querySelector('#battle-party') || target : target,
+                    `ゲージ＋${amount}`,
+                    color,
+                    host,
+                  )
+                : Promise.resolve(),
+            ]);
         }),
       );
     } else if (category === 'revive') {
       await Promise.all(
         targets.map(async (target) => {
-          const glow = pulse(target, 'skill-revive');
+          const glow = Promise.all([
+            pulse(target, 'skill-revive'),
+            label(target, 'ふっかつ！', color, host),
+          ]);
           await effectAnimate(
             target,
             motion.matches
@@ -402,5 +608,16 @@
     counterWindup,
     counterHit,
     skill: skillEffect,
+    groupAttack,
+    damage: (value, type = 5) => {
+      if (dialog.open) {
+        void typedImpact(dialog.querySelector('#enemyimg'), type);
+        void label(
+          dialog.querySelector('#enemyimg'),
+          value > 0 ? '-' + value.toLocaleString() : 'パワーなし',
+          POKEMON_TYPE_COLORS[type],
+        );
+      }
+    },
   });
 })();
