@@ -1324,6 +1324,7 @@ function tick(now) {
 }
 
 function renderJourney() {
+  window.PokekoroKanto?.render();
   renderRainbowHub();
   const cleared = new Set(state.clearedMaps),
     gyms = MAP_ORDER.filter((id) => MAPS[id].badge),

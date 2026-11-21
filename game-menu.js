@@ -99,7 +99,10 @@
           showTab('party');
           renderDex();
         } else if (action === 'bag') showBag();
-        else if (action === 'badges') {
+        else if (action === 'kanto') {
+          showTab('journey');
+          document.querySelector('#kanto-map').scrollIntoView({ block: 'start' });
+        } else if (action === 'badges') {
           showTab('journey');
           document.querySelector('#journey').scrollTop = 0;
         } else if (action === 'settings') document.querySelector('#title-options').showModal();

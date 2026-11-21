@@ -1,0 +1,156 @@
+#kanto-map {
+  margin: 20px 0;
+  color: #29483e;
+}
+#kanto-map h3 {
+  margin: 0;
+  font-size: 19px;
+}
+.kanto-help,
+.kanto-key {
+  font-size: 12px;
+  margin: 8px 0;
+}
+.kanto-chart {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  max-width: 680px;
+  margin: auto;
+  border: 3px solid #60816b;
+  border-radius: 18px;
+  background: #80cbe5;
+  overflow: hidden;
+  box-shadow: 0 3px 0 #456356;
+}
+.kanto-chart svg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  inset: 0;
+}
+.kanto-chart text {
+  font: 24px sans-serif;
+  fill: #4a6449;
+  paint-order: stroke;
+  stroke: #e6efd3;
+  stroke-width: 4px;
+}
+.kanto-pin {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  overflow: visible;
+  color: #244536;
+  box-shadow: none;
+  z-index: 1;
+  cursor: pointer;
+}
+.kanto-pin i {
+  display: block;
+  width: 17px;
+  height: 17px;
+  margin: 0 auto;
+  border: 2px solid #faffed;
+  border-radius: 5px;
+  background: #65786e;
+  box-shadow: 0 1px 3px #354d43;
+  font-size: 12px;
+  font-style: normal;
+  color: white;
+  line-height: 13px;
+}
+.kanto-pin span {
+  position: absolute;
+  top: 31px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: clamp(8px, 2.1vw, 12px);
+  font-weight: 800;
+  line-height: 13px;
+  color: #233e33;
+  text-shadow:
+    1px 1px #f0f9dc,
+    -1px -1px #f0f9dc,
+    1px -1px #f0f9dc,
+    -1px 1px #f0f9dc;
+}
+.kanto-pin.is-cleared i {
+  background: #bc493d;
+}
+.kanto-pin.is-current i {
+  background: #ffcc4c;
+  color: #193f3b;
+  outline: 3px solid #fff5bd;
+}
+.kanto-pin[aria-pressed='true'] {
+  outline: 2px solid #285e74;
+  border-radius: 9px;
+  background: #ffffed55;
+}
+.kanto-pin:focus-visible {
+  outline: 3px solid #172c75;
+}
+.kanto-key span {
+  display: block;
+  color: #5b7061;
+  margin-top: 4px;
+}
+.kanto-destinations {
+  padding: 14px;
+  border: 2px solid #b5c8ac;
+  border-radius: 14px;
+  background: #f8fbef;
+}
+.kanto-destinations h4 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+.kanto-destinations > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 0;
+  border-top: 1px solid #d9e2cb;
+  font-size: 14px;
+}
+.kanto-destinations small {
+  display: block;
+  font-size: 11px;
+  margin-top: 4px;
+  color: #5b7061;
+}
+.kanto-destinations button {
+  min-height: 44px;
+  flex-shrink: 0;
+  padding: 8px 12px;
+  background: #ffdc7b;
+  border: 1px solid #bc9c43;
+  border-radius: 9px;
+  color: #334839;
+  font-weight: 800;
+}
+.kanto-locked {
+  font-size: 10px;
+  max-width: 75px;
+  color: #77816c;
+}
+/* 小画面では隣接する町名を上下にずらし、地理を保ったまま読みやすくする。 */
+.kanto-pin span {
+  font-size: clamp(10px, 2.1vw, 12px);
+}
+.kanto-pin[data-kanto-place='moon'] span,
+.kanto-pin[data-kanto-place='rock'] span,
+.kanto-pin[data-kanto-place='forest'] span,
+.kanto-pin[data-kanto-place='saffron'] span {
+  top: 44px;
+}
+.kanto-pin[data-kanto-place='route23'] span {
+  top: 0;
+}
