@@ -8,14 +8,14 @@
   mapHelp.id = 'map-lesson-guide';
   mapHelp.setAttribute('aria-labelledby', 'map-lesson-title');
   mapHelp.innerHTML =
-    '<h2 id="map-lesson-title">マップの すすみかた</h2><p>サイコロを おして はなすと、出た目の数だけ 道のマスをすすむよ。</p><p><strong>草むら</strong>：ポケモンとの出会い<br><strong>トレーナー</strong>：対戦<br><strong>道具</strong>：アイテム発見<br><strong>交換所</strong>：ボールの交換</p><p>いちばん奥の <strong>ボス</strong>を倒して、つぎのマップを目指そう！</p><button id="practice-map-understood" class="primary" type="button">マップに もどる</button>';
+    '<h2 id="map-lesson-title">トキワのもりへ ようこそ！</h2><div class="map-lesson-icons"><figure><img src="assets/map/pokemon-center.webp" alt=""><figcaption>スタート<br>ここから！</figcaption></figure><figure><img src="assets/map/grass.webp" alt=""><figcaption>草むら<br>であう</figcaption></figure><figure><img src="assets/trainers/youngster-field.webp" alt=""><figcaption>トレーナー<br>しょうぶ</figcaption></figure><figure><img src="assets/map/item-ball.png" alt=""><figcaption>どうぐ<br>ゲット！</figcaption></figure><figure><img src="assets/map/ball-exchange.webp" alt=""><figcaption>交換所<br>こうかん</figcaption></figure><figure><img src="assets/map/viridian-boss.webp" alt=""><figcaption>ボス<br>ゴール！</figcaption></figure></div><div class="map-dice-demo"><b>⚄</b><span>→ ① → ② → ③ → ④ → ⑤</span></div><p>サイコロを おして はなそう！<br>出た目の数だけ マスをすすむよ。</p><button id="practice-map-understood" class="primary" type="button">サイコロを ためす ▶</button>';
   document.body.append(mapHelp);
-  mapHelp.querySelector('button').onclick = () => {
+  mapHelp.querySelector('button').onclick = () => mapHelp.close();
+  mapHelp.addEventListener('close', () => {
     state.opening.mapIntroSeen = true;
     save();
-    mapHelp.close();
     if (active()) refresh();
-  };
+  });
   let highlighted = null;
   const stage = () => state.opening.stage;
   const active = () =>
@@ -48,8 +48,13 @@
       coach.innerHTML =
         '<div><strong>出た目の数だけ 道をすすもう！</strong><small>いちばん奥の ボスがゴール。</small></div><button id="practice-map-help" type="button">マップの説明</button>';
       coach.querySelector('button').onclick = () => {
-        if (!busy) mapHelp.showModal();
+        if (!busy) {
+          window.PokekoroTutorialVisuals.hide();
+          mapHelp.showModal();
+        }
       };
+      if (!mapHelp.open)
+        window.PokekoroTutorialVisuals.show(document.body, $('#roll'), '▼ おして はなそう！');
     }
   }
   function show() {
@@ -58,6 +63,11 @@
     showTab(stage() === 'partyLesson' ? 'party' : 'map');
     render();
     refresh();
+    if (stage() === 'diceLesson' && !state.opening.mapIntroSeen && !mapHelp.open) {
+      window.PokekoroTutorialVisuals.hide();
+      mapHelp.querySelector('figure img').src = MAP_ASSETS.center;
+      mapHelp.showModal();
+    }
   }
   function allowed(target) {
     if (stage() === 'partyLesson')
@@ -77,6 +87,8 @@
           event.stopImmediatePropagation();
           return;
         }
+        if (type === 'pointerdown' && event.target.closest('#roll'))
+          window.PokekoroTutorialVisuals.hide();
         if (type !== 'click') return;
         // 子要素の本編ハンドラーが完了した後、実際の編成結果を検証する。
         setTimeout(() => {
@@ -102,6 +114,7 @@
   });
   document.addEventListener('map:arrived', (event) => {
     if (!active() || stage() !== 'diceLesson' || state.pos <= 0) return;
+    window.PokekoroTutorialVisuals.hide();
     state.opening.stage = 'complete';
     state.opening.mapIntroSeen = true;
     delete state.opening.practiceStep;

@@ -58,7 +58,7 @@
       scene = `<div class="opening-dex"><i></i><strong>ポケモンずかん</strong><div class="opening-dex-screen">${current === 'register' ? [446, state.opening.starterId, 25].map((id) => portrait(id)).join('') : '<span>POKÉDEX<br>READY</span>'}</div><small>${current === 'register' ? '3びき とうろく！' : 'あたらしい ぼうけんの きろく'}</small></div>`;
     if (current === 'depart')
       scene = `<div class="opening-team">${[446, state.opening.starterId, 25].map((id) => `<div>${portrait(id)}<span>${mons[id - 1].label}</span></div>`).join('')}</div>`;
-    dialog.innerHTML = `<div class="opening-heading"><span>はじめての ぼうけん</span><small>${current === 'nameInput' ? 'なまえを きめる' : 'オーキドけんきゅうじょ'}</small></div><div class="opening-scene">${scene}</div><div class="opening-message"><h2 id="opening-speaker">${speaker}</h2><p></p></div><div class="opening-actions"></div>`;
+    dialog.innerHTML = `<div class="opening-heading"><span>${current === 'oakGreeting' ? 'けんきゅうじょに とうちゃく！' : 'はじめての ぼうけん'}</span><small>${current === 'nameInput' ? 'なまえを きめる' : 'オーキドけんきゅうじょ'}</small></div><div class="opening-scene">${scene}</div><div class="opening-message"><h2 id="opening-speaker">${speaker}</h2><p></p></div><div class="opening-actions"></div>`;
     // 名前はHTMLとして挿入せず、台詞のテキストとして表示する。
     dialog.querySelector('.opening-message p').textContent = words.replace(
       '{playerName}',

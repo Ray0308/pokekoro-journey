@@ -1,0 +1,454 @@
+/* 矢印と光の案内はタッチを受け取らない。操作対象を覆っても入力を奪わない。 */
+.tutorial-spotlight {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  pointer-events: none;
+}
+.tutorial-hole {
+  position: fixed;
+  border: 3px solid #ffe38a;
+  border-radius: 14px;
+  box-shadow:
+    0 0 0 9999px #102f42a6,
+    0 0 18px #ffe38a;
+  box-sizing: border-box;
+}
+.tutorial-cue {
+  position: fixed;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  background: #fff9dd;
+  border: 2px solid #d5a43b;
+  border-radius: 12px;
+  color: #243d43;
+  font-size: 15px;
+  font-weight: 900;
+  text-align: center;
+  line-height: 1.5;
+  box-shadow: 0 4px 12px #102f4255;
+}
+.tutorial-cue::before {
+  content: '▼';
+  position: absolute;
+  left: calc(50% - 9px);
+  bottom: -23px;
+  color: #ffe38a;
+  font-size: 25px;
+  animation: tutorial-arrow 1s ease-in-out infinite;
+}
+.tutorial-cue[data-side='below']::before {
+  content: '▲';
+  bottom: auto;
+  top: -27px;
+}
+.tutorial-hole svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.tutorial-hole svg path {
+  stroke: #fff4a1;
+  stroke-width: 5;
+  fill: none;
+  stroke-dasharray: 7 6;
+}
+.tutorial-hole svg circle {
+  stroke: #fff9d6;
+  stroke-width: 3;
+  fill: none;
+}
+.tutorial-hand {
+  position: absolute;
+  font-size: 32px;
+  top: 45%;
+  left: 6%;
+  filter: drop-shadow(0 2px 1px #2b3649);
+  animation: tutorial-trace 2s ease-in-out infinite;
+}
+@keyframes tutorial-trace {
+  0%,
+  15% {
+    left: 6%;
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  75% {
+    left: 76%;
+    opacity: 1;
+  }
+  100% {
+    left: 76%;
+    opacity: 0;
+  }
+}
+@keyframes tutorial-arrow {
+  50% {
+    transform: translateY(4px);
+  }
+}
+/* 会話は話者と本文の面を分け、背景の上に直接細字を置かない。 */
+#opening .opening-message {
+  margin: 12px 12px 0;
+  padding: 14px 16px;
+  border: 2px solid #a9bbb0;
+  border-radius: 14px;
+  background: #fffef7;
+  box-shadow: 0 3px 0 #cbd8ca;
+}
+#opening .opening-message h2 {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 7px;
+  background: #315f69;
+  color: #fff;
+  font-size: 14px;
+  margin: 0 0 9px;
+}
+#opening .opening-message p {
+  color: #213b43;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.8;
+  min-height: 0;
+  white-space: pre-line;
+}
+#opening[data-stage='oakGreeting'] .opening-scene {
+  animation: lab-reveal 1s ease-out both;
+}
+#opening[data-stage='oakGreeting'] .opening-oak {
+  animation: oak-arrive 1.1s 0.2s ease-out both;
+}
+#opening[data-stage='oakGreeting'] .opening-message {
+  animation: lab-reveal 0.6s 0.6s ease-out both;
+}
+@keyframes lab-reveal {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes oak-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(26px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+#mock-practice #mock-hint {
+  padding: 8px 10px;
+  border: 2px solid #a5b9b2;
+  border-radius: 10px;
+  background: #fffef7;
+  color: #213b43;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 0;
+}
+#mock-practice #mock-result {
+  color: #344f57;
+  font-size: 13px;
+}
+/* 本編と練習で共通の技カード。属性は色とマーク、ゲージは量と数字で伝える。 */
+.skill-hero {
+  --skill-color: #5e9d80;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 12px;
+  border: 2px solid var(--skill-color);
+  background: linear-gradient(120deg, #fff, #eef4e8);
+  box-shadow: 0 3px 0 #1739421a;
+  color: #213b43;
+}
+.skill-hero > img {
+  width: 58px;
+  height: 58px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 2px #203f4322);
+}
+.skill-hero > div {
+  flex: 1;
+  min-width: 0;
+}
+.skill-hero strong {
+  display: block;
+  font-size: 16px;
+}
+.skill-hero span {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  margin: 3px 0 5px;
+}
+.skill-hero small {
+  font-size: 12px;
+  font-weight: 800;
+}
+.skill-gauge {
+  height: 9px;
+  background: #d8e2dc;
+  border: 1px solid #8da99c;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.skill-gauge i {
+  display: block;
+  height: 100%;
+  background: var(--skill-color);
+}
+#turn-actions {
+  padding: 10px;
+  border: 3px solid var(--skill-color, #8da99c);
+  border-radius: 14px;
+  background: linear-gradient(#fffef7, #edf3e8);
+  box-shadow:
+    inset 0 0 0 2px #fff,
+    0 4px 12px #203f4344;
+}
+#turn-skill-name {
+  display: block;
+  font-size: 18px;
+  color: #213b43;
+  margin: 10px 0 7px;
+  line-height: 1.5;
+}
+#turn-skill-help {
+  color: #3b5861;
+  font-size: 12px;
+  line-height: 1.6;
+}
+#turn-skill-options .turn-skill-description {
+  border-left: 4px solid var(--skill-color);
+  padding: 9px 11px;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 14px;
+  color: #243d43;
+  line-height: 1.7;
+}
+#turn-actions #turn-use-skill,
+#mock-skill #mock-use {
+  color: #243b44;
+  border: 2px solid #c69732;
+  background: linear-gradient(110deg, #ffe9a2, #ffbd47);
+  border-radius: 10px;
+  box-shadow: 0 3px 0 #b98725;
+  min-height: 46px;
+  font-size: 16px;
+}
+#turn-actions .turn-skill-footer {
+  padding-top: 8px;
+  background: #f9fcf3;
+  border-top: 1px solid #c4d2c5;
+}
+#mock-practice #mock-skill {
+  border: 3px solid #b09b58;
+  border-radius: 12px;
+  padding: 10px;
+  background: linear-gradient(#fffef7, #edf3e8);
+}
+#mock-skill h3 {
+  margin: 8px 0;
+  color: #213b43;
+}
+#mock-skill p {
+  margin: 7px 0;
+}
+#mock-skill .skill-hero {
+  padding: 5px 8px;
+}
+#mock-skill .skill-hero > img {
+  width: 42px;
+  height: 42px;
+}
+#mock-skill .skill-hero strong {
+  font-size: 14px;
+}
+.map-lesson-icons {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+}
+.map-lesson-icons figure {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 8px;
+  border: 1px solid #b8cbbd;
+  border-radius: 10px;
+  background: #fffef7;
+}
+.map-lesson-icons img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.map-lesson-icons figcaption {
+  font-size: 13px;
+  font-weight: 800;
+  color: #243d43;
+  line-height: 1.5;
+}
+.map-dice-demo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 12px;
+  border-radius: 10px;
+  background: #fff0b8;
+  color: #624d20;
+  padding: 8px;
+}
+.map-dice-demo b {
+  font-size: 38px;
+  line-height: 1;
+}
+.map-dice-demo span {
+  font-size: 16px;
+  font-weight: 800;
+}
+#map-lesson-guide {
+  width: min(94vw, 500px);
+  box-sizing: border-box;
+  max-height: 92dvh;
+  overflow: auto;
+}
+#map-lesson-guide h2 {
+  font-size: 20px;
+  color: #243d43;
+}
+#map-lesson-guide > p {
+  font-size: 15px;
+  color: #243d43;
+  line-height: 1.7;
+}
+#map-lesson-guide > button {
+  min-height: 46px;
+  width: 100%;
+}
+@media (max-width: 350px) {
+  #opening .opening-message p {
+    font-size: 15px;
+  }
+  .map-lesson-icons img {
+    width: 32px;
+    height: 32px;
+  }
+  .map-lesson-icons figure {
+    padding: 5px;
+    gap: 5px;
+  }
+  .map-lesson-icons figcaption {
+    font-size: 12px;
+  }
+  .skill-hero > img {
+    width: 42px;
+    height: 42px;
+  }
+}
+@media (min-width: 600px) and (max-height: 450px) {
+  #mock-practice #mock-hint {
+    font-size: 12px;
+    padding: 4px 7px;
+  }
+  #mock-practice #mock-result {
+    font-size: 11px;
+  }
+  .map-lesson-icons {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  #map-lesson-guide {
+    width: min(94vw, 700px);
+    padding: 12px;
+  }
+  #map-lesson-guide h2 {
+    margin: 0 0 8px;
+  }
+  .map-dice-demo {
+    margin-top: 8px;
+    padding: 4px;
+  }
+  #map-lesson-guide > p {
+    margin: 7px 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tutorial-hand,
+  .tutorial-cue::before,
+  #opening[data-stage='oakGreeting'] .opening-scene,
+  #opening[data-stage='oakGreeting'] .opening-oak,
+  #opening[data-stage='oakGreeting'] .opening-message {
+    animation: none;
+  }
+}
+@media (max-width: 599px) {
+  #mock-practice #mock-hint {
+    box-sizing: border-box;
+    min-height: calc(3.2em + 20px);
+  }
+}
+@media (min-width: 600px) and (max-height: 450px) {
+  #opening[data-stage='oakGreeting'][open] {
+    display: grid;
+    width: min(94vw, 780px);
+    height: min(90dvh, 340px);
+    grid-template-columns: 40% 60%;
+    grid-template-rows: 46px minmax(0, 1fr) auto;
+    overflow: hidden;
+  }
+  #opening[data-stage='oakGreeting'] .opening-heading {
+    grid-column: 1/-1;
+  }
+  #opening[data-stage='oakGreeting'] .opening-scene {
+    grid-column: 1;
+    grid-row: 2/4;
+    height: 100%;
+  }
+  #opening[data-stage='oakGreeting'] .opening-message {
+    grid-column: 2;
+    grid-row: 2;
+    align-self: center;
+  }
+  #opening[data-stage='oakGreeting'] .opening-actions {
+    grid-column: 2;
+    grid-row: 3;
+  }
+}
+/* 技カードは正方形盤面の高さを引き継がず、画面の残りへ収める。本文だけスクロール。 */
+#battle.in-skill-break .puzzle-stage,
+#battle.in-skill-break[data-skill-targeted='true'] .puzzle-stage {
+  height: auto;
+  min-height: 0;
+  max-height: 100%;
+}
+@media (min-height: 451px), (max-width: 599px) {
+  #battle.in-skill-break .puzzle-stage {
+    flex: 1 1 0;
+  }
+}
+@media (min-height: 451px), (max-width: 599px) {
+  #battle.in-skill-break .enemy,
+  #battle.in-skill-break.turn-battle .enemy {
+    flex: 0 0 108px;
+    min-height: 108px;
+    max-height: 108px;
+  }
+}
+.skill-hero {
+  line-height: 1.35;
+}
+.skill-hero span {
+  line-height: 1.4;
+}

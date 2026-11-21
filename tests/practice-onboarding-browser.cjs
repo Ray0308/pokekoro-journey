@@ -136,6 +136,8 @@ const server = spawn('python', ['-m', 'http.server', '8810', '--bind', '127.0.0.
       await press('[data-dex-id="4"]');
       await p.waitForFunction(() => state.opening.stage === 'diceLesson');
       assert.deepEqual(await p.evaluate(() => state.party), [4, 446, 25]);
+      if (await p.locator('#map-lesson-guide').isVisible())
+        await p.locator('#practice-map-understood').click();
       if (touch) {
         await p.locator('#roll').tap();
       } else {

@@ -70,6 +70,9 @@ const server = spawn('python', ['-m', 'http.server', '8861', '--bind', '127.0.0.
         assert(g.mapWidth > viewport.width * 0.6 || viewport.width > 600, JSON.stringify(g));
         assert(g.coachHeight < g.viewHeight * 0.38, JSON.stringify(g));
       }
+      assert(await p.locator('#map-lesson-guide').isVisible());
+      assert.equal(await p.locator('.map-lesson-icons img').count(), 6);
+      await p.locator('#practice-map-understood').tap();
       await check();
       if (process.env.MAP_SCREENSHOTS)
         await p.screenshot({
@@ -84,7 +87,7 @@ const server = spawn('python', ['-m', 'http.server', '8861', '--bind', '127.0.0.
         assert.equal(await p.locator('#map-lesson-guide').isVisible(), false);
         await check();
       }
-      // 説明を閉じなくても、本当に指でサイコロを押して着地イベントまで進める。
+      // 絵付き説明を閉じ、矢印付きの実サイコロから着地まで進める。
       await p.locator('#roll').tap();
       await p.waitForFunction(() => state.opening.stage === 'complete' && state.pos > 0, null, {
         timeout: 15000,
@@ -119,6 +122,8 @@ const server = spawn('python', ['-m', 'http.server', '8861', '--bind', '127.0.0.
     assert.match(await p.locator('#practice-coach').innerText(), /マップの説明/);
     assert.equal(await p.locator('#map > .layout > #practice-coach').count(), 1);
     console.log('PASS legacy partyLesson -> map instructions retained');
+    if (await p.locator('#map-lesson-guide').isVisible())
+      await p.locator('#practice-map-understood').tap();
     await p.locator('#roll').tap();
     await p.waitForFunction(() => state.opening.stage === 'complete', null, { timeout: 15000 });
     await p.close();
@@ -139,6 +144,7 @@ const server = spawn('python', ['-m', 'http.server', '8861', '--bind', '127.0.0.
     await fresh.locator('#opening-next').tap();
     assert.equal(await fresh.evaluate(() => state.opening.stage), 'diceLesson');
     assert.equal(await fresh.evaluate(() => state.balls), 8);
+    await fresh.locator('#practice-map-understood').tap();
     await fresh.locator('#roll').tap();
     await fresh.waitForFunction(() => state.opening.stage === 'complete' && state.pos > 0, null, {
       timeout: 15000,

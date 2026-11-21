@@ -148,14 +148,21 @@
     const preview = rules.inspectSkill(combat, mon.id, skillContext());
     const damage =
       skill.category === 'attack' ? rules.attackDamage(mon.id, battle.m, combat, battle.hp) : 0;
-    $('#turn-skill-name').textContent = `${mon.label}の ${skill.name}`;
-    $('#turn-skill-help').textContent =
-      `${PokemonSkillRules.categoryNames[skill.category]} ｜ ゲージ${member.gauge}/${skill.cost} ｜ ${preview.ok ? '使えるよ！ 温存もできるよ' : preview.reason}`;
+    panel.querySelector('.skill-hero')?.remove();
+    panel
+      .querySelector('.turn-skill-body')
+      .prepend(window.PokekoroTutorialVisuals.skillHero(mon, skill, member.gauge));
+    panel.style.setProperty('--skill-color', POKEMON_TYPE_COLORS[mon.type]);
+    $('#turn-skill-name').textContent = skill.name;
+    $('#turn-skill-help').textContent = preview.ok
+      ? targeted
+        ? 'つかう なかまを えらぼう！'
+        : 'わざを つかう？ とじても OK！'
+      : preview.reason;
     $('#turn-skill-options').innerHTML =
-      `<p class="turn-skill-description">${PokemonSkillRules.description(mon.id)}</p>` +
       (targeted
         ? `<div class="turn-target-label">${skill.category === 'revive' ? '復活させる仲間' : skill.category === 'board' ? 'ブロックの属性を選ぼう' : 'ゲージを渡す仲間'}</div><div class="turn-targets">${candidates.map((m) => `<button type="button" data-skill-target="${m.id}" aria-pressed="${targetId === m.id}"><img src="${pokemonPortrait(m.id)}" alt=""><span>${POKEDEX[m.id - 1].label}<small>${m.fainted ? 'ひんし' : skill.category === 'board' ? types[POKEDEX[m.id - 1].type] : m.gauge + '/' + rules.skillCost(m.id)}</small></span></button>`).join('') || '<span>対象になる仲間がいないよ</span>'}</div>`
-        : '');
+        : '') + `<p class="turn-skill-description">${PokemonSkillRules.description(mon.id)}</p>`;
     const use = $('#turn-use-skill');
     use.dataset.battleSkill = String(skill.id);
     use.dataset.skillCategory = skill.category;
@@ -164,7 +171,12 @@
     const label = document.createElement('strong'),
       hint = document.createElement('small');
     label.textContent = skill.name + 'を使う';
-    hint.textContent = skill.category === 'attack' ? damage + 'ダメージ' : 'ゲージ' + skill.cost;
+    hint.textContent =
+      targeted && targetId
+        ? '→ ' + POKEDEX[targetId - 1].label
+        : skill.category === 'attack'
+          ? damage + 'ダメージ'
+          : 'ゲージ' + skill.cost;
     use.append(label, hint);
     $('#turn-next').textContent = 'とじる';
   }

@@ -96,6 +96,32 @@
     $m('#mock-finish').hidden = model.phase !== 'done' || locked;
     canvas.classList.toggle('is-ready', ['ready', 'done'].includes(model.phase));
     draw();
+    guide();
+  }
+  function guide() {
+    const v = window.PokekoroTutorialVisuals;
+    v.hide();
+    if (!active() || running || locked || window.PokekoroBattlePause.paused) return;
+    if (!$m('#mock-skill').hidden)
+      return v.show(dialog, $m('#mock-skill'), '▼ きいろの ボタンで わざ！');
+    if (model.phase === 'trace')
+      return v.show(
+        dialog,
+        canvas,
+        '① → ② → ③ なぞって はなそう！',
+        (r) => ({
+          left: r.left,
+          top: r.top + r.height * 0.4,
+          width: r.width / 2,
+          height: r.height / 5,
+        }),
+        true,
+      );
+    if (model.phase === 'done') return v.show(dialog, $m('#mock-finish'), '▼ できた！ つぎへ');
+    const ready = model.combat.members.find((m) => rules.inspect(model, m.id).ok);
+    if (ready && model.rounds > 0)
+      return v.show(dialog, $m(`[data-mock-member="${ready.id}"]`), '▼ 光る なかまを タッチ！');
+    if (model.phase === 'ready') v.show(dialog, $m('#mock-start'), '▼ ここから スタート！');
   }
   const wait = (ms) => new Promise((r) => setTimeout(r, ms));
   function cancelPointer() {
@@ -230,7 +256,7 @@
         if (lastClear) lastClear += duration;
         running = true;
         raf = requestAnimationFrame(tick);
-      }
+      } else guide();
     },
   });
   function tick(now) {
@@ -248,6 +274,7 @@
     $m('#mock-skill').hidden = true;
     locked = true;
     render();
+    window.PokekoroTutorialVisuals.hide();
     const token = generation;
     const badge = $m('#mock-countdown');
     badge.hidden = false;
@@ -284,10 +311,21 @@
     $m('#mock-skill p').textContent = PokemonSkillRules.description(id);
     $m('#mock-use').textContent = skill.name + 'を つかう';
     $m('#mock-skill').hidden = false;
+    $m('#mock-skill .skill-hero')?.remove();
+    $m('#mock-skill').prepend(
+      window.PokekoroTutorialVisuals.skillHero(
+        POKEDEX[id - 1],
+        skill,
+        model.combat.members.find((m) => m.id === id).gauge,
+      ),
+    );
+    $m('#mock-use').scrollIntoView({ block: 'nearest' });
+    guide();
   };
   $m('#mock-skill-back').onclick = () => {
     $m('#mock-skill').hidden = true;
     selected = null;
+    guide();
   };
   $m('#mock-use').onclick = async () => {
     if (locked || !selected) return;
@@ -330,6 +368,7 @@
     generation++;
     cancelAnimationFrame(raf);
     window.PokekoroBattleFX?.reset();
+    window.PokekoroTutorialVisuals.hide();
     dialog.close();
     model = null;
     delete state.opening.mockBattle;
@@ -337,6 +376,9 @@
     window.PokekoroOpening.practiceComplete();
   };
   dialog.addEventListener('cancel', (e) => e.preventDefault());
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && active()) requestAnimationFrame(guide);
+  });
   window.PokekoroMockPractice = Object.freeze({
     open() {
       if (
@@ -359,6 +401,7 @@
       checkpoint();
       render();
       dialog.showModal();
+      guide();
       document.dispatchEvent(new CustomEvent('opening:scene'));
       document.dispatchEvent(new CustomEvent('battle:audiofocus', { detail: { active: true } }));
     },
