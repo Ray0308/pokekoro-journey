@@ -365,6 +365,7 @@ function leagueStage() {
 }
 // マップの色・背景・凡例を一括反映する。ルートと背景は同じ座標系を共有する。
 function applyMapTheme() {
+  $('#map').toggleAttribute('data-late-map', MAP_ORDER.indexOf(state.mapId) >= 13);
   let exchangeLegend = $('#map .exchange-legend');
   if (!exchangeLegend) {
     exchangeLegend = document.createElement('span');
