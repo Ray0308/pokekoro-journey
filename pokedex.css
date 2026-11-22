@@ -888,3 +888,93 @@
     display: none;
   }
 }
+#device-habitat {
+  margin-top: 7px;
+  padding: 8px;
+  min-height: 44px;
+  border: 1px solid #77946a;
+  border-radius: 7px;
+  background: #f4f7df;
+  color: #294e3c;
+  font-weight: 800;
+}
+#device-habitat[hidden] {
+  display: none;
+}
+#pokemon-habitat-dialog {
+  width: min(94vw, 480px);
+  max-height: calc(100dvh - 24px);
+  padding: 0;
+  border: 3px solid #668f66;
+  border-radius: 16px;
+  background: #f7fae8;
+  color: #294e3c;
+  overflow: hidden;
+}
+#pokemon-habitat-dialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+#pokemon-habitat-dialog::backdrop {
+  background: #193b46bb;
+}
+.habitat-body {
+  padding: 16px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  min-height: 0;
+}
+.habitat-body h2 {
+  font-size: 19px;
+  margin: 0 0 10px;
+}
+.habitat-body p {
+  font-size: 12px;
+  line-height: 1.7;
+}
+.habitat-body section {
+  padding: 12px;
+  border: 1px solid #bfd1a9;
+  border-radius: 10px;
+  margin: 10px 0;
+  background: white;
+}
+.habitat-body section strong,
+.habitat-body section small,
+.habitat-body section span {
+  display: block;
+}
+.habitat-body section small,
+.habitat-body section span {
+  font-size: 11px;
+  margin-top: 6px;
+}
+#pokemon-habitat-dialog button {
+  min-height: 44px;
+  border: 1px solid #9ba56b;
+  border-radius: 8px;
+  padding: 10px;
+  background: #ffe29b;
+  color: #294e3c;
+  font-weight: 800;
+}
+.habitat-body section button {
+  margin-top: 8px;
+  width: 100%;
+}
+#pokemon-habitat-dialog footer {
+  padding: 10px 16px;
+  border-top: 1px solid #bfd1a9;
+  flex-shrink: 0;
+}
+#habitat-close {
+  width: 100%;
+}
+#pokedex-device[data-view='detail'] .dex-machine {
+  max-height: calc(var(--app-height, 100dvh) - 24px);
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+#pokemon-habitat-dialog button {
+  font-size: 14px;
+}

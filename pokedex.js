@@ -157,6 +157,47 @@
     dialog.classList.remove('is-speaking');
     updateSpeechButton();
   }
+  const habitatDialog = document.createElement('dialog');
+  habitatDialog.id = 'pokemon-habitat-dialog';
+  habitatDialog.setAttribute('aria-labelledby', 'habitat-heading');
+  document.body.append(habitatDialog);
+  function showHabitats() {
+    if (!pokemonSeen(selected)) return;
+    const places = PokemonHabitats.find(selected, state);
+    const labels = {
+      wild: '野生で 出会いやすい場所',
+      safari: '最後の 出会いの 候補',
+      mewtwo: '最深部・捕獲前の ミュウツー',
+      cave: '最深部・ミュウツー捕獲後の 候補',
+      rainbow: '虹チケットで 行ける 特別な場所',
+    };
+    habitatDialog.innerHTML = `<div class="habitat-body"><h2 id="habitat-heading">${POKEDEX[selected - 1].label}の 生息地</h2><p>出会いやすい場所から 最大3か所。<br>出会えるかは サイコロと 抽選しだいだよ。</p>${places.map((p) => `<section><strong>${MAPS[p.mapId]?.name || 'にじのくも'}</strong><small>${labels[p.kind]}</small>${p.mapId === state.mapId ? '<button data-habitat-current>いまの マップを みる</button>' : state.clearedMaps.includes(p.mapId) ? `<button data-habitat-travel="${p.mapId}">ここへ 探しに行く</button>` : p.kind === 'rainbow' ? '<span>虹チケットを 手に入れよう</span>' : '<span>クリアしたら 移動できるよ</span>'}${p.kind !== 'rainbow' ? `<button data-habitat-world="${p.mapId}">全体マップで みる</button>` : ''}</section>`).join('') || '<p>いつもの 草むらでは 見つからないようだ。</p>'}<p class="habitat-note">${RESEARCH_CATALOG.finalIds.includes(selected) || RESEARCH_CATALOG.legendIds.includes(selected) ? '殿堂入り後の 調査依頼でも 出会うことがあるよ。<br>' : ''}野生の候補は 現在の捕獲状況で 順番が変わるよ。<br>特別な出会いは 上の順番と 別のしくみだよ。</p></div><footer><button id="habitat-close">図鑑に もどる</button></footer>`;
+    habitatDialog.querySelector('#habitat-close').onclick = () => habitatDialog.close();
+    habitatDialog.querySelectorAll('[data-habitat-travel], [data-habitat-current]').forEach(
+      (button) =>
+        (button.onclick = () => {
+          const target = button.dataset.habitatTravel;
+          habitatDialog.close();
+          dialog.close();
+          if (target) revisitMap(target);
+          else showTab('map');
+        }),
+    );
+    habitatDialog.querySelectorAll('[data-habitat-world]').forEach(
+      (button) =>
+        (button.onclick = () => {
+          habitatDialog.close();
+          dialog.close();
+          window.PokekoroKanto.focusMap(button.dataset.habitatWorld);
+        }),
+    );
+    habitatDialog.showModal();
+    habitatDialog.querySelector('#habitat-close').focus({ preventScroll: true });
+  }
+  document.querySelector('#device-habitat').onclick = showHabitats;
+  habitatDialog.addEventListener('close', () => {
+    if (dialog.open) document.querySelector('#device-habitat').focus({ preventScroll: true });
+  });
   function renderEntry() {
     const mon = POKEDEX[selected - 1],
       owned = state.owned.includes(selected),
@@ -181,6 +222,7 @@
     document.querySelector('#device-description').textContent = !seen
       ? 'まだ であっていません。'
       : mon.description || 'せつめいは まだ とうろくされていません。';
+    document.querySelector('#device-habitat').hidden = !seen || replaceSlot !== null;
     const stats = document.querySelector('#device-stats');
     stats.hidden = !seen;
     // 未遭遇の種族値・役割は出さない。開閉状態も次の個体へ持ち越さない。

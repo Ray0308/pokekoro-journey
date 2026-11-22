@@ -91,6 +91,17 @@ const KANTO_PLACES = Object.freeze([
     }
     if (e.target.closest('[data-kanto-current]')) showTab('map');
   });
-  window.PokekoroKanto = Object.freeze({ render });
+  window.PokekoroKanto = Object.freeze({
+    render,
+    focusMap(id) {
+      const place = KANTO_PLACES.find((p) => p.maps.includes(id));
+      if (!place) return false;
+      selected = place.id;
+      showTab('journey');
+      render();
+      host.scrollIntoView({ block: 'start' });
+      return true;
+    },
+  });
   render();
 })();
