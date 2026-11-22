@@ -679,9 +679,9 @@ function render() {
   window.PokekoroResearch?.render();
   save();
 }
-function pokemonStrengthMarkup(mon) {
+function pokemonStrengthMarkup(mon, skillHelp = false) {
   const power = Math.round(PokemonBattleStats.power(mon));
-  return `<span class="pokemon-strength" title="ブロック1個の基本パワー。相性や技で変わるよ"><span>⚔ こうげき <b>${power}</b><meter min="0" max="30" value="${power}" aria-label="こうげきパワー ${power}"></meter></span><small>ゲージ：${PokemonBattleStats.gaugeLabel(mon)}</small><small class="pokemon-role">${PokemonSkillRules.role(mon.id)}</small></span>`;
+  return `<span class="pokemon-strength" title="ブロック1個の基本パワー。相性や技で変わるよ"><span>⚔ こうげき <b>${power}</b><meter min="0" max="30" value="${power}" aria-label="こうげきパワー ${power}"></meter>${skillHelp ? `<button type="button" class="pokemon-skill-help" aria-label="${mon.label}のわざを説明する">わざ ⓘ</button>` : ''}</span><small>ゲージ：${PokemonBattleStats.gaugeLabel(mon)}</small><small class="pokemon-role">${PokemonSkillRules.role(mon.id)}</small></span>`;
 }
 let pendingPartyAddition = null;
 function choosePartyReplacement(id) {

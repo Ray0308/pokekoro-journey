@@ -163,6 +163,7 @@
   document.body.append(habitatDialog);
   function showHabitats() {
     if (!pokemonSeen(selected)) return;
+    stopReading();
     const places = PokemonHabitats.find(selected, state);
     const labels = {
       wild: '野生で 出会いやすい場所',
@@ -198,6 +199,26 @@
   habitatDialog.addEventListener('close', () => {
     if (dialog.open) document.querySelector('#device-habitat').focus({ preventScroll: true });
   });
+  const skillInfoDialog = document.createElement('dialog');
+  skillInfoDialog.id = 'pokemon-skill-info';
+  skillInfoDialog.setAttribute('aria-labelledby', 'skill-info-heading');
+  document.body.append(skillInfoDialog);
+  function showSkillInfo() {
+    if (!pokemonSeen(selected)) return;
+    stopReading();
+    const mon = POKEDEX[selected - 1],
+      skill = PokemonSkillRules.forPokemon(selected);
+    skillInfoDialog.innerHTML = `<div class="skill-info-body"><img src="${pokemonPortrait(selected)}" alt="${mon.label}"><small>${mon.label}の わざ</small><h2 id="skill-info-heading">${skill.name}</h2><strong>${PokemonSkillRules.role(selected)}</strong><p class="skill-info-cost">⚡ ゲージ ${skill.cost}で つかえる</p><p class="skill-info-description">${PokemonSkillRules.description(selected)}</p><p class="skill-info-note">同じ仲間の わざは 1ターンに1回。<br>「こうげき」の数字は ブロック1個の基本パワーだよ。</p></div><footer><button id="skill-info-close">図鑑に もどる</button></footer>`;
+    skillInfoDialog.querySelector('#skill-info-close').onclick = () => skillInfoDialog.close();
+    skillInfoDialog.showModal();
+    skillInfoDialog.querySelector('#skill-info-close').focus({ preventScroll: true });
+  }
+  document.querySelector('#device-strength').addEventListener('click', (e) => {
+    if (e.target.closest('.pokemon-skill-help')) showSkillInfo();
+  });
+  skillInfoDialog.addEventListener('close', () => {
+    if (dialog.open) document.querySelector('.pokemon-skill-help')?.focus({ preventScroll: true });
+  });
   function renderEntry() {
     const mon = POKEDEX[selected - 1],
       owned = state.owned.includes(selected),
@@ -211,7 +232,7 @@
     image.alt = seen ? mon.label : '';
     const strength = document.querySelector('#device-strength');
     strength.hidden = !seen;
-    strength.innerHTML = seen ? pokemonStrengthMarkup(mon) : '';
+    strength.innerHTML = seen ? pokemonStrengthMarkup(mon, true) : '';
     document.querySelector('#device-type').textContent = !seen
       ? 'タイプ：—'
       : mon.type === null

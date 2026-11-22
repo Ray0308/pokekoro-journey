@@ -978,3 +978,90 @@
 #pokemon-habitat-dialog button {
   font-size: 14px;
 }
+#device-strength .pokemon-skill-help {
+  min-width: 54px;
+  min-height: 44px;
+  padding: 5px 8px;
+  margin-left: 4px;
+  border: 1px solid #6b8e75;
+  border-radius: 9px;
+  background: #e1efd0;
+  color: #28483d;
+  font-size: 12px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+#pokemon-skill-info {
+  width: min(94vw, 440px);
+  max-height: calc(100dvh - 24px);
+  padding: 0;
+  border: 3px solid #6b8e75;
+  border-radius: 16px;
+  background: #f4f8e4;
+  color: #294b40;
+  overflow: hidden;
+}
+#pokemon-skill-info[open] {
+  display: flex;
+  flex-direction: column;
+}
+#pokemon-skill-info::backdrop {
+  background: #193b46bb;
+}
+.skill-info-body {
+  padding: 18px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  min-height: 0;
+  text-align: center;
+}
+.skill-info-body > img {
+  width: 96px;
+  height: 96px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto 8px;
+}
+.skill-info-body > small,
+.skill-info-body > strong {
+  display: block;
+  font-size: 13px;
+}
+.skill-info-body h2 {
+  font-size: 23px;
+  margin: 8px 0;
+}
+.skill-info-cost {
+  font-size: 15px;
+  font-weight: 800;
+}
+.skill-info-description {
+  text-align: left;
+  padding: 14px;
+  background: #fff;
+  border: 1px solid #c4d2ac;
+  border-radius: 10px;
+  font-size: 15px;
+  line-height: 1.8;
+}
+.skill-info-note {
+  font-size: 11px;
+  line-height: 1.7;
+  color: #5b7461;
+}
+#pokemon-skill-info footer {
+  padding: 10px 16px;
+  border-top: 1px solid #c4d2ac;
+  flex-shrink: 0;
+}
+#skill-info-close {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px;
+  border: 1px solid #a9995a;
+  border-radius: 8px;
+  background: #ffe29b;
+  color: #294e3c;
+  font-size: 14px;
+  font-weight: 800;
+}
