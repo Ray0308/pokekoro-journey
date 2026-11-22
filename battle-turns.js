@@ -319,6 +319,7 @@
     panel.hidden = false;
     $('#puzzle-tip').textContent = '技を使うか、とじてスタートしよう';
     render();
+    panel.querySelector('.turn-skill-body').scrollTop = 0;
   }
   async function resolve() {
     if (!enabled() || !['charging', 'ready'].includes(battle.phase)) return;

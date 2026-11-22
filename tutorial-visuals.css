@@ -724,3 +724,60 @@
     animation: none;
   }
 }
+/* 技カードが余白を取り切って説明を押しつぶさない。長い内容は本文全体をスクロール。 */
+#turn-actions .turn-skill-body {
+  gap: 6px;
+  scroll-padding-bottom: 12px;
+}
+#turn-actions .turn-skill-body > * {
+  flex-shrink: 0;
+}
+#turn-actions .skill-hero {
+  flex: 0 0 auto;
+  min-height: 0;
+  gap: 4px;
+  padding: 8px;
+}
+#turn-actions .skill-picture {
+  flex: 0 0 auto;
+}
+#turn-actions .skill-actor img {
+  height: clamp(100px, 14vh, 140px);
+}
+#turn-actions .skill-recipient img {
+  height: 70px;
+}
+#turn-actions .skill-status {
+  font-size: 14px;
+  padding: 3px 10px;
+}
+#turn-actions .turn-skill-footer {
+  flex: 0 0 auto;
+}
+#turn-actions #turn-skill-options {
+  flex: 0 0 auto;
+  min-height: min-content;
+}
+#turn-actions #turn-skill-options .turn-skill-description {
+  margin: 4px 0 10px;
+  padding: 9px;
+  line-height: 1.6;
+}
+#turn-actions #turn-skill-name {
+  margin: 2px 0 3px;
+}
+@media (max-height: 650px) {
+  #turn-actions .skill-hero {
+    padding: 6px;
+    gap: 3px;
+  }
+  #turn-actions .skill-actor img {
+    height: 100px;
+  }
+  #turn-actions .skill-recipient img {
+    height: 60px;
+  }
+  #turn-actions .skill-status {
+    font-size: 13px;
+  }
+}
