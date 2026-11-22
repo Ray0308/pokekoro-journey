@@ -229,7 +229,7 @@
     if (Number(stats.dataset.pokemon) !== selected) stats.open = false;
     stats.dataset.pokemon = String(selected);
     document.querySelector('#device-battle-style').textContent = seen
-      ? `${PokemonBattleStats.style(mon)} ｜ わざの溜まり：${PokemonBattleStats.gaugeLabel(mon)}`
+      ? `${PokemonSkillRules.role(mon.id)} ｜ ${PokemonBattleStats.style(mon)} ｜ わざの溜まり：${PokemonBattleStats.gaugeLabel(mon)}`
       : '';
     document.querySelector('#device-skill').textContent = seen
       ? `${PokemonSkillRules.forPokemon(selected).name}（ゲージ${PokemonSkillRules.cost(selected)}）：${PokemonSkillRules.description(selected)}`

@@ -105,7 +105,7 @@ const PokemonSkillRules = (() => {
     }
     if (context.enemyHP <= 0 && !context.hasNextEnemy) return fail('バトルは もう終わっているよ');
     if (skill.category === 'boost') {
-      if (combat.nextBoost > 1) return fail('次の攻撃は もう強化されているよ');
+      if (combat.nextBoost >= skill.multiplier) return fail('次の攻撃は もう強化されているよ');
       return { ok: true, skill };
     }
     if (skill.category === 'guard') {
@@ -193,6 +193,28 @@ const PokemonSkillRules = (() => {
           ? 'ブロックを ぜんぶ入れ替えた！'
           : `${POKEMON_TYPE_NAMES[plan.type]}ブロックが ${plan.board.filter((t, i) => t !== before[i]).length}個ふえた！`;
     }
+    // 複合効果は主効果が成立したときだけ。自己チャージ・ひんし・満タンは除外。
+    const bonus = skill.bonus;
+    if (bonus?.kind === 'boost') {
+      combat.nextBoost = Math.max(combat.nextBoost, bonus.multiplier);
+      detail += ` 次のパズル攻撃が ×${combat.nextBoost}！`;
+    }
+    if (bonus?.kind === 'chargeLowest' || bonus?.kind === 'chargeAll') {
+      const candidates = combat.members.filter(
+        (m) => m.id !== id && !m.fainted && m.gauge < cost(m.id),
+      );
+      const recipients =
+        bonus.kind === 'chargeAll'
+          ? candidates
+          : [...candidates].sort((a, b) => a.gauge / cost(a.id) - b.gauge / cost(b.id)).slice(0, 1);
+      for (const recipient of recipients) {
+        const gain = Math.min(bonus.amount, cost(recipient.id) - recipient.gauge);
+        recipient.gauge += gain;
+        if (recipient.gauge === cost(recipient.id)) recipient.gaugeProgress = 0;
+        affected.push(recipient.id);
+        detail += ` ${POKEDEX[recipient.id - 1].label}の ゲージ＋${gain}！`;
+      }
+    }
     member.gauge -= skill.cost;
     member.usedTurn = combat.turn;
     if (skill.category === 'attack' && skill.mode === 'sacrifice') {
@@ -202,7 +224,46 @@ const PokemonSkillRules = (() => {
     }
     return { ...result, affected, message: `${POKEDEX[id - 1].label}の ${skill.name}！${detail}` };
   }
+  function role(id) {
+    const s = forPokemon(id);
+    if (s.category === 'attack') {
+      if (s.bonus) return '攻撃＆ゲージ支援';
+      if (s.mode === 'counter' || s.mode === 'fainted') return '逆転アタッカー';
+      if (s.mode === 'percent') return 'HPけずり';
+      if (s.mode === 'sacrifice') return '捨て身の一撃';
+      return s.cost <= 8
+        ? '速攻アタッカー'
+        : s.cost >= 18
+          ? '大技アタッカー'
+          : 'バランスアタッカー';
+    }
+    if (s.category === 'guard')
+      return s.bonus?.kind === 'boost'
+        ? '防御＆強化'
+        : s.bonus
+          ? '防御＆ゲージ支援'
+          : s.cost <= 10
+            ? 'すばやい守り'
+            : '守り役';
+    if (s.category === 'support')
+      return s.target === 'allAllies' ? '全体ゲージ支援' : '単体ゲージ支援';
+    return { boost: 'パワー強化', board: 'パズル補助', revive: '復活サポート' }[s.category];
+  }
   function description(id) {
+    const skill = forPokemon(id),
+      base = baseDescription(id);
+    if (skill.bonus?.kind === 'chargeLowest')
+      return (
+        base +
+        ` 攻撃が当たると、自分以外でゲージの割合が一番少ない生存仲間1匹に＋${skill.bonus.amount}。`
+      );
+    if (skill.bonus?.kind === 'chargeAll')
+      return base + ` さらに、ほかの生存仲間みんなのゲージ＋${skill.bonus.amount}。`;
+    if (skill.bonus?.kind === 'boost')
+      return base + ` 次のパズル攻撃も×${skill.bonus.multiplier}。より強い強化はそのまま。`;
+    return base;
+  }
+  function baseDescription(id) {
     const skill = forPokemon(id),
       mon = POKEDEX[id - 1];
     if (skill.category === 'attack') {
@@ -236,5 +297,6 @@ const PokemonSkillRules = (() => {
     inspect,
     use,
     description,
+    role,
   });
 })();

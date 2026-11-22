@@ -22,6 +22,21 @@ function validate(data) {
       if (!Number.isFinite(skill[key]) || skill[key] <= 0)
         throw Error(`Invalid move ${key}: ${skill.id}`);
     };
+    if (skill.bonus !== undefined) {
+      const b = skill.bonus;
+      if (!b || !['chargeLowest', 'chargeAll', 'boost'].includes(b.kind))
+        throw Error('Invalid bonus kind');
+      if (
+        (b.kind === 'chargeLowest' && skill.category !== 'attack') ||
+        (b.kind !== 'chargeLowest' && skill.category !== 'guard')
+      )
+        throw Error('Invalid bonus category');
+      if (b.kind === 'boost') {
+        if (!Number.isFinite(b.multiplier) || b.multiplier <= 1 || b.multiplier > 2)
+          throw Error('Invalid bonus boost');
+      } else if (!Number.isInteger(b.amount) || b.amount < 1 || b.amount > 3)
+        throw Error('Invalid bonus charge');
+    }
     if (skill.category === 'attack') {
       positive('power');
       if (

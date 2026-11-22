@@ -681,7 +681,7 @@ function render() {
 }
 function pokemonStrengthMarkup(mon) {
   const power = Math.round(PokemonBattleStats.power(mon));
-  return `<span class="pokemon-strength" title="ブロック1個の基本パワー。相性や技で変わるよ"><span>⚔ こうげき <b>${power}</b><meter min="0" max="30" value="${power}" aria-label="こうげきパワー ${power}"></meter></span><small>ゲージ：${PokemonBattleStats.gaugeLabel(mon)}</small></span>`;
+  return `<span class="pokemon-strength" title="ブロック1個の基本パワー。相性や技で変わるよ"><span>⚔ こうげき <b>${power}</b><meter min="0" max="30" value="${power}" aria-label="こうげきパワー ${power}"></meter></span><small>ゲージ：${PokemonBattleStats.gaugeLabel(mon)}</small><small class="pokemon-role">${PokemonSkillRules.role(mon.id)}</small></span>`;
 }
 let pendingPartyAddition = null;
 function choosePartyReplacement(id) {

@@ -671,3 +671,12 @@
 #mock-practice:has(#mock-skill:not([hidden]) .skill-recipient) .mock-opponent {
   visibility: hidden;
 }
+/* 仲間の役割は小画面でも隠さない。技の使いどころを短く示す。 */
+.skill-hero .skill-summary > .skill-role {
+  display: block;
+  font-size: 11px;
+  line-height: 1.4;
+  margin: 4px 0;
+  color: #36574b;
+  overflow-wrap: anywhere;
+}
