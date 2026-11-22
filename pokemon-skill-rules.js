@@ -31,6 +31,13 @@ const PokemonSkillRules = (() => {
       );
     let multiplier = skill.power;
     if (skill.mode === 'dice') multiplier += (context.diceFace ?? 3.5) * skill.diceStep;
+    if (skill.mode === 'critical')
+      multiplier *=
+        context.diceFace === undefined ? 1.1 : context.diceFace >= 5 ? skill.criticalMultiplier : 1;
+    if (skill.mode === 'risky') {
+      if (context.diceFace !== undefined && context.diceFace <= 2) return 0;
+      if (context.diceFace === undefined) multiplier *= 2 / 3;
+    }
     if (skill.mode === 'counter' && combat.lastCounterFainted) multiplier = skill.enhancedPower;
     if (skill.mode === 'fainted')
       multiplier = Math.min(
@@ -140,19 +147,32 @@ const PokemonSkillRules = (() => {
     if (!result.ok) return result;
     const member = combat.members.find((m) => m.id === id),
       skill = result.skill;
-    if (skill.mode === 'dice') {
+    if (['dice', 'critical', 'risky'].includes(skill.mode)) {
       const roll = Math.max(
         0,
         Math.min(1 - Number.EPSILON, Number((context.rng || Math.random)()) || 0),
       );
       result.diceFace = 1 + Math.floor(roll * 6);
-      result.multiplier = skill.power + result.diceFace * skill.diceStep;
+      result.critical = skill.mode === 'critical' && result.diceFace >= 5;
+      result.missed = skill.mode === 'risky' && result.diceFace <= 2;
+      result.multiplier =
+        skill.mode === 'dice'
+          ? skill.power + result.diceFace * skill.diceStep
+          : result.missed
+            ? 0
+            : skill.power * (result.critical ? skill.criticalMultiplier : 1);
       result.damage = attackDamage(combat, member, { ...context, diceFace: result.diceFace });
     }
     if (skill.category === 'boost') combat.nextBoost = skill.multiplier;
     if (skill.category === 'guard') combat.guard = true;
     const affected = [];
-    let detail = result.diceFace ? ` サイコロ${result.diceFace}！ 威力×${result.multiplier}！` : '';
+    let detail = result.missed
+      ? ' はずれた！ 0ダメージ！'
+      : result.critical
+        ? ' 急所に あたった！ ダメージ1.3倍！'
+        : result.diceFace
+          ? ` サイコロ${result.diceFace}！ 威力×${result.multiplier}！`
+          : '';
     if (skill.category === 'support') {
       for (const recipient of result.recipients) {
         const before = recipient.gauge;
@@ -237,6 +257,8 @@ const PokemonSkillRules = (() => {
   function role(id) {
     const s = forPokemon(id);
     if (s.category === 'attack') {
+      if (s.mode === 'critical') return '急所ねらい';
+      if (s.mode === 'risky') return '一発勝負アタッカー';
       if (s.mode === 'dice') return 'サイコロアタッカー';
       if (s.bonus) return '攻撃＆ゲージ支援';
       if (s.mode === 'counter' || s.mode === 'fainted') return '逆転アタッカー';
@@ -278,6 +300,10 @@ const PokemonSkillRules = (() => {
     const skill = forPokemon(id),
       mon = POKEDEX[id - 1];
     if (skill.category === 'attack') {
+      if (skill.mode === 'critical')
+        return `威力×${skill.power}の攻撃。サイコロ5・6で急所！ダメージ1.3倍。1〜4は通常ダメージ。`;
+      if (skill.mode === 'risky')
+        return `威力×${skill.power}の大技！サイコロ1・2ではずれて0ダメージ（ゲージは使う）。3〜6で命中！`;
       if (skill.mode === 'dice')
         return `サイコロを1回ふって、威力×（${skill.power}＋出目×${skill.diceStep}）の攻撃。1なら×${skill.power + skill.diceStep}、6なら×${skill.power + 6 * skill.diceStep}！`;
       if (skill.mode === 'percent')

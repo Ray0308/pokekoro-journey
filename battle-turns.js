@@ -192,7 +192,7 @@
       : targeted && targetId
         ? '→ ' + POKEDEX[targetId - 1].label
         : skill.category === 'attack'
-          ? skill.mode === 'dice'
+          ? ['dice', 'critical', 'risky'].includes(skill.mode)
             ? PokemonSkillRules.damageRange(combat, mon.id, skillContext()).join('〜') +
               'ダメージ 🎲'
             : damage + 'ダメージ'
@@ -405,10 +405,15 @@
       if (epoch !== battleEpoch) return;
       dice.classList.remove('is-rolling');
       dice.dataset.face = String(outcome.diceFace);
-      dice.innerHTML = `<b>${['', '⚀', '⚁', '⚂', '⚃', '⚄', '⚅'][outcome.diceFace]}</b><strong>${outcome.diceFace}が でた！</strong><small>${outcome.skill.power}＋${outcome.diceFace}×${outcome.skill.diceStep}＝威力${outcome.multiplier}倍</small>`;
+      dice.dataset.result = outcome.missed ? 'miss' : outcome.critical ? 'critical' : 'hit';
+      dice.innerHTML = `<b>${['', '⚀', '⚁', '⚂', '⚃', '⚄', '⚅'][outcome.diceFace]}</b><strong>${outcome.diceFace}が でた！</strong><small>${outcome.missed ? 'はずれた！ 0ダメージ' : outcome.critical ? '急所に あたった！ 1.3倍！' : outcome.skill.mode === 'dice' ? `${outcome.skill.power}＋${outcome.diceFace}×${outcome.skill.diceStep}＝威力${outcome.multiplier}倍` : `命中！ 威力×${outcome.multiplier}`}</small>`;
       await new Promise((resolve) => setTimeout(resolve, reduceMotion ? 350 : 850));
       if (epoch !== battleEpoch) return;
       dice.remove();
+    }
+    if (outcome.missed) {
+      prepare(!!battle.counterPending);
+      return;
     }
     sfx(
       outcome.skill.category === 'attack'

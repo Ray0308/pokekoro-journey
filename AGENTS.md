@@ -1,6 +1,6 @@
 # 開発引き継ぎガイド
 
-更新日: 2026-11-21。アプリの確認済み公開版: **0.9.3.5**。
+更新日: 2026-11-21。アプリの確認済み公開版: **0.9.3.6**。
 
 ## 最初に読む資料
 
@@ -125,3 +125,5 @@ UI変更では390×664、320×568、844×390を基準に、必要に応じて実
 0.9.3.4: 技の第一弾見直しはdocs/SKILL_ROLES_AUDIT.md。編集元data/pokemon-skills.jsonに20技/8匹変更、生成コマンド必須。任意bonusは攻撃chargeLowest/防御boost・chargeAllのみ、ビルダーで範囲制限。無効時は副効果/ゲージ消費なし、自己/ひんし/満タンへ配布禁止。強化は最大値（乗算しない）、弱い強化から強い技への更新を許可。role(id)は実データからUIへ共通表示。支援1合間1回・復活1戦闘1回・連戦持ち越しを維持。以後の技差別化は今回のベータ評価を見て追加する。
 
 0.9.3.5: diceモードの5技はdata/pokemon-skills.jsonから生成。power＋出目×diceStepで倍率。PokemonSkillRules.useでinspect成功後だけ1回抽選、結果diceFace/multiplier/damageを固定。inspect/attackDamage/damageRangeは乱数を消費しない。UIはダメージ範囲、結果ダイス表示→攻撃を順番に実行、await後はepoch確認。マップサイコロ/依頼の回数に混ぜない。
+
+0.9.3.6: criticalは出目5/6で1.3倍、riskyは1/2で外れ0・3〜6命中。対象はdata/pokemon-skills.json、生成必須。riskyの3技はpower24。useは検査成功後1回抽選してcritical/missedを固定、外れでもコスト/usedTurnを確定。battle-turnsは外れ時に命中FX/HP適用を呼ばず待機へ戻す。無効相性は失敗扱いで消費/抽選なし。範囲プレビューは乱数なし。

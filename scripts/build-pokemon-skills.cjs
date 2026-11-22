@@ -41,7 +41,16 @@ function validate(data) {
       positive('power');
       if (
         !['physical', 'special', 'best'].includes(skill.damageClass) ||
-        !['scaled', 'percent', 'counter', 'fainted', 'sacrifice', 'dice'].includes(skill.mode) ||
+        ![
+          'scaled',
+          'percent',
+          'counter',
+          'fainted',
+          'sacrifice',
+          'dice',
+          'critical',
+          'risky',
+        ].includes(skill.mode) ||
         !['self', 'move'].includes(skill.attackType)
       )
         throw Error('Invalid attack mode');
@@ -53,6 +62,10 @@ function validate(data) {
           skill.power + 6 * skill.diceStep > 30)
       )
         throw Error('Invalid dice scale');
+      if (skill.mode === 'critical' && skill.criticalMultiplier !== 1.3)
+        throw Error('Invalid critical multiplier');
+      if (skill.mode === 'risky' && skill.bonus)
+        throw Error('Risky attack cannot grant a bonus on miss');
       if (skill.mode === 'percent') {
         positive('percent');
         positive('damageCap');
