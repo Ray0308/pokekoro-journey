@@ -97,20 +97,15 @@ const server = spawn('python', ['-m', 'http.server', '8890', '--bind', '127.0.0.
       assert.equal(await p.evaluate(() => JSON.stringify(state.mapReturn)), origin);
       assert.equal(await p.locator('.research-target').count(), 1);
       await p.evaluate(() => {
-        window.PokekoroDebug = { ...PokekoroDebug, diceValue: () => 3 };
+        window.PokekoroDebug = { ...PokekoroDebug, diceValue: () => 4 };
       });
       await p.locator('#roll').tap();
-      await p.waitForSelector('[data-research-die="4"]');
-      assert.equal(await p.evaluate(() => state.research.active.left), 4);
-      await p.screenshot({ path: `/workspace/research-dice-${viewport.width}.png` });
+      await p.waitForFunction(() => state.research.active?.pending?.raw === 4);
+      assert.equal(await p.locator('[data-research-die]').count(), 0);
       await p.reload();
       await p.waitForFunction(() => $('#boot-screen').hidden);
       await p.evaluate(() => document.dispatchEvent(new CustomEvent('title:start')));
       await p.locator('#research-resume').tap();
-      await p.waitForSelector('[data-research-die="4"]');
-      assert.equal(await p.evaluate(() => state.research.active.left), 4);
-      assert.equal(await p.evaluate(() => state.research.active.pending.raw), 3);
-      await p.locator('[data-research-die="4"]').tap();
       await p.waitForFunction(() => battle?.researchMissionId === 1);
       assert.deepEqual(
         await p.evaluate(() => [
@@ -121,7 +116,7 @@ const server = spawn('python', ['-m', 'http.server', '8890', '--bind', '127.0.0.
           state.research.active.left,
           state.research.active.adjusted,
         ]),
-        [150, false, false, 4, 4, true],
+        [150, false, false, 4, 4, false],
       );
       assert.equal(await p.evaluate(() => state.hallOfFame.count), 1);
       await p.reload();
@@ -140,6 +135,7 @@ const server = spawn('python', ['-m', 'http.server', '8890', '--bind', '127.0.0.
       await p.locator('#skip').tap();
       assert.equal(await p.evaluate(() => state.research.active), null);
       assert.equal(await p.evaluate(() => state.research.completed), 1);
+      assert(await p.locator('#research-hud').isHidden());
       assert.equal(await p.evaluate(() => JSON.stringify(state.mapReturn)), origin);
       await p.evaluate(() => {
         window.PokekoroDebug = { ...PokekoroDebug, diceValue: () => 1 };
@@ -161,9 +157,10 @@ const server = spawn('python', ['-m', 'http.server', '8890', '--bind', '127.0.0.
       await p.waitForFunction(() => state.research.last?.outcome === 'expired');
       assert.equal(await p.evaluate(() => state.research.active), null);
       assert.equal(await p.evaluate(() => state.research.completed), 1);
+      assert(await p.locator('#research-hud').isHidden());
       assert.deepEqual(errors, []);
       console.log(
-        'PASS unlock/tile offer, accept only, travel/bookmark, target mark, real dice adjustment, reload-stable deadline/die/encounter, rare capture flow and expiry',
+        'PASS unlock/tile offer, accept only, travel/bookmark, target mark, raw dice without adjustment, reload-stable deadline/die/encounter, rare capture flow and expiry',
         viewport.width,
       );
       await p.close();

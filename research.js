@@ -13,13 +13,12 @@
   hud.type = 'button';
   hud.hidden = true;
   $('#inventory').before(hud);
-  let rollResolve = null;
   const kind = (m) =>
     RESEARCH_CATALOG.legendIds.includes(m.pokemonId)
       ? 'でんせつの ポケモン'
       : 'さいしゅうしんかの ポケモン';
   function renderHUD() {
-    hud.hidden = !unlocked();
+    hud.hidden = !unlocked() || !(active() || data().offer);
     if (!unlocked()) return;
     const m = active();
     hud.textContent = m
@@ -28,12 +27,7 @@
         : `${MAPS[m.mapId].name} ${m.pos + 1}マス目・あと${m.left}回 📜`
       : data().offer
         ? '📜 いらいが とどいているよ'
-        : data().last
-          ? '📜 ' +
-            (data().last.outcome === 'expired'
-              ? '期限ぎれ。つぎの いらいを さがそう'
-              : '調査おしまい！ つぎの いらいへ')
-          : '📜 いらいマスを さがそう！';
+        : '';
     hud.setAttribute('aria-label', hud.textContent + '。依頼をみる');
     $('#route')
       .querySelectorAll('.research-target-label')
@@ -68,7 +62,7 @@
   }
   function offerMarkup(m) {
     const known = pokemonSeen(m.pokemonId);
-    return `<small>オーキドはかせの 調査</small><h2 id="research-heading">${active() ? 'いらいを かくにん' : 'めずらしい はんのう！'}</h2><div class="research-mon"><img src="${pokemonPortrait(m.pokemonId)}" alt="${known ? POKEDEX[m.pokemonId - 1].label : 'だれかな？'}" class="${known ? '' : 'research-silhouette'}"><strong>${known ? POKEDEX[m.pokemonId - 1].label : kind(m)}</strong></div><p class="research-place">${MAPS[m.mapId].name}<br><b>${m.pos + 1}マス目</b></p><p>${active() ? `あと <strong>${m.left}回</strong> サイコロを ふるまで！<br>${m.adjusted ? '出目の ちょうせいは 使用ずみ' : '1回だけ 出目を ±1できるよ。'}` : `引き受けてから サイコロ${ResearchRules.budget}回で<br>ぴったり とまって さがしてみよう！<br>間に合えば かならず あえるよ。`}</p>`;
+    return `<small>オーキドはかせの 調査</small><h2 id="research-heading">${active() ? 'いらいを かくにん' : 'めずらしい はんのう！'}</h2><div class="research-mon"><img src="${pokemonPortrait(m.pokemonId)}" alt="${known ? POKEDEX[m.pokemonId - 1].label : 'だれかな？'}" class="${known ? '' : 'research-silhouette'}"><strong>${known ? POKEDEX[m.pokemonId - 1].label : kind(m)}</strong></div><p class="research-place">${MAPS[m.mapId].name}<br><b>${m.pos + 1}マス目</b></p><p>${active() ? `あと <strong>${m.left}回</strong> サイコロを ふるまで！<br>出た目の ぶんだけ すすむよ。` : `引き受けてから サイコロ${ResearchRules.budget}回で<br>ぴったり とまって さがしてみよう！<br>間に合えば かならず あえるよ。`}</p>`;
   }
   function view() {
     if (!unlocked() || capturePending) return;
@@ -137,35 +131,14 @@
     return p;
   }
   function chooseRoll(raw) {
-    if (!unlocked()) return Promise.resolve(raw);
-    const m = active(),
-      p = m?.pending;
+    const p = unlocked() ? active()?.pending : null;
     if (!p) return Promise.resolve(raw);
-    if (p.value !== null) return Promise.resolve(p.value);
-    paint(
-      `<small>あと ${m.left}回の チャンス</small><h2 id="research-heading">${raw}が でた！</h2><p>1回だけ 出目を ±1できるよ。<br>そのままなら ちょうせいを のこせるよ。</p><strong>${MAPS[m.mapId].name} ${m.pos + 1}マス目を めざそう！</strong>`,
-      [raw - 1, raw, raw + 1]
-        .filter((n) => n >= 1 && n <= 6)
-        .map(
-          (n) =>
-            `<button class="${n === raw ? 'primary' : ''}" data-research-die="${n}">${n === raw ? 'そのまま' : 'かえる'}<b>${n}</b><small>${Math.min(14, p.from + n) + 1}マス目へ${state.mapId === m.mapId && Math.min(14, p.from + n) === m.pos ? ' ★ここ！' : ''}</small></button>`,
-        )
-        .join(''),
-      'roll',
-    );
-    return new Promise((resolve) => {
-      rollResolve = resolve;
-      for (const button of dialog.querySelectorAll('[data-research-die]'))
-        button.onclick = () => {
-          const value = Number(button.dataset.researchDie);
-          if (ResearchRules.select(data(), value)) {
-            save();
-            rollResolve = null;
-            dialog.close();
-            resolve(value);
-          }
-        };
-    });
+    // 旧版で確定済みの出目は途中移動の再開用に保持。新しい出目の調整はしない。
+    if (p.value === null) {
+      p.value = p.raw;
+      save();
+    }
+    return Promise.resolve(p.value);
   }
   function arrive() {
     if (!unlocked() || !active()?.pending) return null;
@@ -217,16 +190,8 @@
   hud.onclick = () => {
     if (!busy) view();
   };
-  dialog.addEventListener('close', () => {
-    if (rollResolve) {
-      const resolve = rollResolve;
-      rollResolve = null;
-      resolve(null);
-    }
-  });
   dialog.addEventListener('cancel', (e) => {
     e.preventDefault();
-    if (dialog.dataset.mode === 'roll') return;
     close();
   });
   document.addEventListener('title:start', () => {

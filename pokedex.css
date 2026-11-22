@@ -1065,3 +1065,29 @@
   font-size: 14px;
   font-weight: 800;
 }
+#device-ownership {
+  display: flex;
+  gap: 5px;
+  margin: 6px 0;
+  flex-shrink: 0;
+}
+#device-ownership[hidden] {
+  display: none;
+}
+#device-ownership button {
+  flex: 1;
+  min-height: 44px;
+  padding: 7px 3px;
+  border: 1px solid #8d3340;
+  border-radius: 8px;
+  background: #f6e6c7;
+  color: #5d3038;
+  font-size: 13px;
+  font-weight: 800;
+}
+#device-ownership button[aria-pressed='true'] {
+  background: #dfecc4;
+  color: #254b3c;
+  outline: 2px solid #4f7755;
+  outline-offset: -3px;
+}

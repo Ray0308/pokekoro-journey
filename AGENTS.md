@@ -1,6 +1,6 @@
 # 開発引き継ぎガイド
 
-更新日: 2026-11-21。アプリの確認済み公開版: **0.9.3.7**。
+更新日: 2026-11-21。アプリの確認済み公開版: **0.9.3.8**。
 
 ## 最初に読む資料
 
@@ -129,3 +129,5 @@ UI変更では390×664、320×568、844×390を基準に、必要に応じて実
 0.9.3.6: criticalは出目5/6で1.3倍、riskyは1/2で外れ0・3〜6命中。対象はdata/pokemon-skills.json、生成必須。riskyの3技はpower24。useは検査成功後1回抽選してcritical/missedを固定、外れでもコスト/usedTurnを確定。battle-turnsは外れ時に命中FX/HP適用を呼ばず待機へ戻す。無効相性は失敗扱いで消費/抽選なし。範囲プレビューは乱数なし。
 
 0.9.3.7: 図鑑こうげき横の「わざ ⓘ」はpokemonStrengthMarkup(mon,true)のみ。手持ちカードはbutton内なので既定では子buttonを作らない。pokemon-skill-infoは現行ルール由来の説明/コストを表示。map-audioのcanPlay除外とthemeへ生息地/技説明の2dialogを登録し、図鑑曲を継続。両dialogはmap-audio初期化前に生成してopen監視対象とする。消音と読み上げ終了時の音量復帰を維持。
+
+0.9.3.8: ユーザー指定で依頼の±1調整を廃止。新規reserveはvalue=raw、chooseRollは画面を出さず保存値で続行。既存の確定済み途中移動のみ旧valueを保持し、再抽選/巻き戻ししない。HUDはactive/offerがある場合だけ、lastの終了案内を常設しない。図鑑ownershipはall/owned/missing。名前/タイプと併用、所持・未遭遇の秘匿を維持。partyとdexは別フィルター状態、pickerでは所有切替を隠す。過去の±1仕様の記載よりこのユーザー訂正を優先。

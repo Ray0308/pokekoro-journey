@@ -137,23 +137,14 @@ const ResearchRules = (() => {
     if (m.pending) return m.pending;
     if (m.left <= 0) return null;
     m.left--;
-    m.pending = { mapId, from, raw, value: m.adjusted ? raw : null };
+    m.pending = { mapId, from, raw, value: raw };
     return m.pending;
   }
   function select(research, value) {
     const m = research.active,
       p = m?.pending;
     if (p?.value !== null && p?.value !== undefined) return value === p.value;
-    if (
-      !p ||
-      !Number.isInteger(value) ||
-      value < 1 ||
-      value > 6 ||
-      Math.abs(value - p.raw) > 1 ||
-      (m.adjusted && value !== p.raw)
-    )
-      return false;
-    if (value !== p.raw) m.adjusted = true;
+    if (!p || !Number.isInteger(value) || value < 1 || value > 6 || value !== p.raw) return false;
     p.value = value;
     return true;
   }

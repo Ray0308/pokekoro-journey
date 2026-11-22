@@ -47,3 +47,13 @@ for (let type = 0; type < 18; type++) {
 console.log(
   'PASS: kana normalization, prefix + both-type filtering, owned-only picker and unseen-data isolation',
 );
+assert.equal(ids({ ownership: 'owned', owned: [] }).length, 0);
+assert.deepEqual(ids({ ownership: 'owned', owned: [6, 7], seen: [1, 4] }), [6, 7]);
+assert.equal(ids({ ownership: 'missing', owned: [6, 7] }).length, 1023);
+assert(!ids({ ownership: 'missing', owned: [6, 7], seen: [1, 4] }).includes(6));
+assert.deepEqual(ids({ ownership: 'missing', type: 1, owned: [6], seen: [5, 6] }), [5]);
+assert.deepEqual(ids({ ownership: 'owned', name: 'り', type: 1, owned: [5, 6, 7] }), [5, 6]);
+assert.deepEqual(ids({ picking: true, ownership: 'missing', owned: [6, 7] }), []);
+console.log(
+  'PASS all/owned/missing filters, empty collection, combination with name/type, hidden unseen data and party eligibility',
+);

@@ -14,8 +14,8 @@
     filterPanel = null;
   // 図鑑と入れ替え候補では条件・ページを分け、詳細から戻ったときは条件を保つ。
   const listFilters = {
-    dex: { name: '', type: null, page: 0 },
-    party: { name: '', type: null, page: 0 },
+    dex: { name: '', type: null, page: 0, ownership: 'all' },
+    party: { name: '', type: null, page: 0, ownership: 'all' },
   };
   const kanaRows = [
     'あいうえお',
@@ -307,8 +307,15 @@
       replaceSlot === null
         ? `みつけた ${seen.size}　つかまえた ${owned.size}`
         : '入れ替える ポケモンを えらぼう';
-    const active = !!filter.name || filter.type !== null;
+    const active = !!filter.name || filter.type !== null || filter.ownership !== 'all';
+    document.querySelector('#device-ownership').hidden = replaceSlot !== null;
+    document
+      .querySelectorAll('[data-dex-ownership]')
+      .forEach((b) =>
+        b.setAttribute('aria-pressed', String(b.dataset.dexOwnership === filter.ownership)),
+      );
     document.querySelector('#device-filter-summary').textContent = [
+      filter.ownership === 'owned' ? '捕獲済み' : filter.ownership === 'missing' ? '未取得' : '',
       filter.name ? `「${filter.name}」ではじまる` : '',
       filter.type !== null ? `${types[filter.type]}タイプ` : '',
       active
@@ -480,10 +487,17 @@
         `<button type="button" data-filter-type="${id}" aria-pressed="false">${label}</button>`,
     )
     .join('');
+  document.querySelector('#device-ownership').onclick = (e) => {
+    const b = e.target.closest('[data-dex-ownership]');
+    if (!b) return;
+    Object.assign(currentFilter(), { ownership: b.dataset.dexOwnership, page: 0 });
+    renderList();
+    updateFilterQuery();
+  };
   document.querySelector('#device-name-filter').onclick = () => showFilterPanel('name');
   document.querySelector('#device-type-filter').onclick = () => showFilterPanel('type');
   document.querySelector('#device-filter-reset').onclick = () => {
-    Object.assign(currentFilter(), { name: '', type: null, page: 0 });
+    Object.assign(currentFilter(), { name: '', type: null, page: 0, ownership: 'all' });
     renderList();
     updateFilterQuery();
   };
