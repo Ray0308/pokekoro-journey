@@ -264,7 +264,7 @@ function activeBossId() {
     : activeMap().boss?.pokemonId || 9;
 }
 function pickEncounterId() {
-  if (!isRainbow()) return chooseMapEncounter(state.mapId);
+  if (!isRainbow()) return chooseMapEncounter(state.mapId, Math.random, state.owned);
   let pool;
   if (isRainbow()) {
     const roll = Math.random() * 100,
