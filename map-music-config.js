@@ -15,6 +15,7 @@ const MAP_MUSIC_TRACKS = Object.freeze({
   wild: 'assets/audio/grass-encounter.mp3',
   trainer: 'assets/audio/trainer-encounter.mp3',
   trainerBattle: 'assets/audio/trainer-battle.mp3',
+  bossVs: 'assets/audio/boss-vs-user-v1.mp3',
   victory: 'assets/audio/battle-victory.mp3',
   trainerVictory: 'assets/audio/trainer-victory.mp3',
   gym: 'assets/audio/map-gym-chip-v1.mp3',
@@ -68,6 +69,7 @@ const MAP_MUSIC_LEVELS = Object.freeze({
   wild: 0.26,
   trainer: 0.405,
   trainerBattle: 0.225,
+  bossVs: 0.18,
   victory: 0.61,
   trainerVictory: 0.74,
   gym: 0.304,
@@ -89,8 +91,23 @@ const MAP_MUSIC_CUE = Object.freeze({
   victory: 0.47,
   trainerVictory: 0.77,
 });
-const MAP_MUSIC_TAIL = Object.freeze({ field: 4.0, trainer: 0.47, trainerVictory: 0.95 });
+const MAP_MUSIC_TAIL = Object.freeze({
+  field: 4.0,
+  trainer: 0.47,
+  trainerVictory: 0.95,
+  bossVs: 5.1,
+});
 function mapMusicBounds(key, duration) {
   const start = Math.min(MAP_MUSIC_CUE[key] ?? 0, Math.max(0, duration - 0.1));
   return { start, end: Math.max(start + 0.05, duration - (MAP_MUSIC_TAIL[key] ?? 0)) };
+}
+
+// ジムの一般トレーナーやロケット団ボスは通常曲。チャンピオンはライバルとして対象。
+function trainerMusicTheme(mapId, b, fighting = false) {
+  if (
+    b?.boss &&
+    (MAPS[mapId]?.badge || b.series?.classId === 'rival' || mapId.startsWith('indigo-'))
+  )
+    return 'bossVs';
+  return fighting ? 'trainerBattle' : 'trainer';
 }

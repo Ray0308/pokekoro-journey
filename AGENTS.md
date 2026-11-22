@@ -1,6 +1,6 @@
 # 開発引き継ぎガイド
 
-更新日: 2026-11-21。アプリの確認済み公開版: **0.9.3.9**。
+更新日: 2026-11-21。アプリの確認済み公開版: **0.9.3.10**。
 
 ## 最初に読む資料
 
@@ -133,3 +133,5 @@ UI変更では390×664、320×568、844×390を基準に、必要に応じて実
 0.9.3.8: ユーザー指定で依頼の±1調整を廃止。新規reserveはvalue=raw、chooseRollは画面を出さず保存値で続行。既存の確定済み途中移動のみ旧valueを保持し、再抽選/巻き戻ししない。HUDはactive/offerがある場合だけ、lastの終了案内を常設しない。図鑑ownershipはall/owned/missing。名前/タイプと併用、所持・未遭遇の秘匿を維持。partyとdexは別フィルター状態、pickerでは所有切替を隠す。過去の±1仕様の記載よりこのユーザー訂正を優先。
 
 0.9.3.9: 技説明見切れはtutorial-visuals.css末尾で修正。heroのflex-growを止め、本文の子要素はshrink不可、footerは本文外固定。長い説明/対象一覧はturn-skill-body全体をスクロール。openSkillsでscrollTop=0。大きいカードで説明を押しつぶすスタイルへ戻さない。393×852も検証基準へ追加。
+
+0.9.3.10: bossVs=assets/audio/boss-vs-user-v1.mp3はユーザー提供音源。trainerMusicThemeがbossかつbadge/rival/indigoの場面だけに割当てる。チャンピオンはライバルなので対象。登場/戦闘/相手交代で同じkeyを維持、victory優先。通常trainer/trainerBattleやマップ曲は保持。末尾無音をMAP_MUSIC_TAIL.bossVs=5.1で除外、音量0.18。原本の再エンコードはしていない。

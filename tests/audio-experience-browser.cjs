@@ -101,18 +101,23 @@ const server = spawn('python', ['-m', 'http.server', '8847', '--bind', '127.0.0.
       render();
       openBattle(true, true);
     });
-    await theme('trainer');
+    await theme('bossVs');
+    const introSources = await p.evaluate(() => audioNodes.filter((x) => x.node.loop).length);
     await p.waitForFunction(() => !$('#encounter-go').disabled, { timeout: 15000 });
     await p.locator('#encounter-go').click();
-    await theme('trainerBattle');
-    assert.equal(await p.evaluate(() => PokekoroMapAudio.inspect().loop.start), 0.62);
+    await theme('bossVs');
+    assert.equal(
+      await p.evaluate(() => audioNodes.filter((x) => x.node.loop).length),
+      introSources,
+    );
+    assert.equal(await p.evaluate(() => PokekoroMapAudio.inspect().loop.start), 0);
     const sourceCount = await p.evaluate(() => audioNodes.filter((x) => x.node.loop).length);
     await p.evaluate(() => {
       battle.hp = 0;
       endBattle(true);
     });
     await p.waitForFunction(() => battle.continuation && $('#battle').open);
-    assert.equal(await p.evaluate(() => PokekoroMapAudio.inspect().theme), 'trainerBattle');
+    assert.equal(await p.evaluate(() => PokekoroMapAudio.inspect().theme), 'bossVs');
     assert.equal(await p.evaluate(() => audioNodes.filter((x) => x.node.loop).length), sourceCount);
     await p.evaluate(() => {
       battle.series.index = battle.series.team.length - 1;

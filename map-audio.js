@@ -59,9 +59,11 @@
         : 'victory'
       : encounter()
         ? battle.trainer
-          ? battle.continuation || document.querySelector('#battle').open
-            ? 'trainerBattle'
-            : 'trainer'
+          ? trainerMusicTheme(
+              state.mapId,
+              battle,
+              !!battle.continuation || document.querySelector('#battle').open,
+            )
           : 'wild'
         : mapMusicTheme(state.mapId);
   }

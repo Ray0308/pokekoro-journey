@@ -1968,7 +1968,9 @@ async function showBossEncounter() {
   await Promise.all(
     [trainer, $('#encounter-img'), ball]
       .map((image) => image.decode().catch(() => {}))
-      .concat([window.PokekoroMapAudio?.prepareScene('trainer')]),
+      .concat([
+        window.PokekoroMapAudio?.prepareScene(trainerMusicTheme(state.mapId, battle, false)),
+      ]),
   );
   if (epoch !== battleEpoch || !dialog.open) return;
   await new Promise((resolve) => setTimeout(resolve, ENCOUNTER_TIMING.bossMusicLeadMs));
@@ -1994,7 +1996,7 @@ async function showBossEncounter() {
   tone(520, 0.12);
   await Promise.all([
     wait(activeMap().badge ? ENCOUNTER_TIMING.gymSendMs : ENCOUNTER_TIMING.sendMs),
-    window.PokekoroMapAudio?.prepareScene('trainerBattle'),
+    window.PokekoroMapAudio?.prepareScene(trainerMusicTheme(state.mapId, battle, true)),
   ]);
   if (epoch !== battleEpoch || !dialog.open) return;
   dialog.dataset.phase = 'revealed';
@@ -2041,7 +2043,7 @@ async function showEncounter(immediate) {
   dialog.showModal();
   if (battle.trainer && immediate) {
     go.disabled = true;
-    await window.PokekoroMapAudio?.prepareScene('trainerBattle');
+    await window.PokekoroMapAudio?.prepareScene(trainerMusicTheme(state.mapId, battle, true));
     if (epoch === battleEpoch && dialog.open) go.disabled = false;
     return;
   }
@@ -2059,7 +2061,7 @@ async function showEncounter(immediate) {
   tone(440, 0.08);
   await Promise.all([
     wait(activeMap().badge ? ENCOUNTER_TIMING.gymSendMs : ENCOUNTER_TIMING.sendMs),
-    window.PokekoroMapAudio?.prepareScene('trainerBattle'),
+    window.PokekoroMapAudio?.prepareScene(trainerMusicTheme(state.mapId, battle, true)),
   ]);
   if (epoch !== battleEpoch || !dialog.open) return;
   dialog.dataset.phase = 'revealed';
