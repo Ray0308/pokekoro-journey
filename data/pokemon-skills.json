@@ -8,7 +8,8 @@
     "apiCommit": "8a92bfa7dab2f12b84b5d151562f9857c133ff30",
     "moveClassSource": "https://raw.githubusercontent.com/PokeAPI/pokeapi/8a92bfa7dab2f12b84b5d151562f9857c133ff30/data/v2/csv/moves.csv",
     "status": "Provisional game-specific effects authorized for implementation; original moves are not faithfully reproduced.",
-    "balanceRevision": "0.9.3.4: role differentiation, 8 representative changes, 20 move adjustments; game-specific effects."
+    "balanceRevision": "0.9.3.4: role differentiation, 8 representative changes, 20 move adjustments; game-specific effects.",
+    "diceRevision": "0.9.3.5: five multi-hit moves roll one d6 after successful validation."
   },
   "moves": [
     {
@@ -30,12 +31,13 @@
       "type": 5,
       "category": "attack",
       "cost": 8,
-      "designState": "一次案",
-      "designEffect": "自分の基礎攻撃力×6のノーマルダメージ。タイプ相性を適用。",
+      "designState": "0.9.3.5 サイコロ技",
+      "designEffect": "発動時にサイコロを1回。基礎攻撃力×（基礎威力＋出目×係数）にタイプ相性を適用。プレビューでは抽選しない。",
       "damageClass": "physical",
-      "power": 6,
-      "mode": "scaled",
-      "attackType": "move"
+      "power": 3,
+      "mode": "dice",
+      "attackType": "move",
+      "diceStep": 1
     },
     {
       "id": 4,
@@ -411,13 +413,14 @@
       "name": "ミサイルばり",
       "type": 11,
       "category": "attack",
-      "cost": 8,
-      "designState": "一次案",
-      "designEffect": "自分の基礎攻撃力×6のむしダメージ。タイプ相性を適用。",
+      "cost": 12,
+      "designState": "0.9.3.5 サイコロ技",
+      "designEffect": "発動時にサイコロを1回。基礎攻撃力×（基礎威力＋出目×係数）にタイプ相性を適用。プレビューでは抽選しない。",
       "damageClass": "physical",
-      "power": 6,
-      "mode": "scaled",
-      "attackType": "move"
+      "power": 2,
+      "mode": "dice",
+      "attackType": "move",
+      "diceStep": 2
     },
     {
       "id": 43,
@@ -3235,13 +3238,14 @@
       "name": "タネマシンガン",
       "type": 0,
       "category": "attack",
-      "cost": 8,
-      "designState": "一次案",
-      "designEffect": "自分の基礎攻撃力×6のくさダメージ。タイプ相性を適用。",
+      "cost": 12,
+      "designState": "0.9.3.5 サイコロ技",
+      "designEffect": "発動時にサイコロを1回。基礎攻撃力×（基礎威力＋出目×係数）にタイプ相性を適用。プレビューでは抽選しない。",
       "damageClass": "physical",
-      "power": 6,
-      "mode": "scaled",
-      "attackType": "move"
+      "power": 2,
+      "mode": "dice",
+      "attackType": "move",
+      "diceStep": 2
     },
     {
       "id": 332,
@@ -3261,13 +3265,14 @@
       "name": "つららばり",
       "type": 7,
       "category": "attack",
-      "cost": 8,
-      "designState": "一次案",
-      "designEffect": "自分の基礎攻撃力×6のこおりダメージ。タイプ相性を適用。",
+      "cost": 12,
+      "designState": "0.9.3.5 サイコロ技",
+      "designEffect": "発動時にサイコロを1回。基礎攻撃力×（基礎威力＋出目×係数）にタイプ相性を適用。プレビューでは抽選しない。",
       "damageClass": "physical",
-      "power": 6,
-      "mode": "scaled",
-      "attackType": "move"
+      "power": 2,
+      "mode": "dice",
+      "attackType": "move",
+      "diceStep": 2
     },
     {
       "id": 334,
@@ -3445,13 +3450,14 @@
       "name": "ロックブラスト",
       "type": 12,
       "category": "attack",
-      "cost": 8,
-      "designState": "一次案",
-      "designEffect": "自分の基礎攻撃力×6のいわダメージ。タイプ相性を適用。",
+      "cost": 12,
+      "designState": "0.9.3.5 サイコロ技",
+      "designEffect": "発動時にサイコロを1回。基礎攻撃力×（基礎威力＋出目×係数）にタイプ相性を適用。プレビューでは抽選しない。",
       "damageClass": "physical",
-      "power": 6,
-      "mode": "scaled",
-      "attackType": "move"
+      "power": 2,
+      "mode": "dice",
+      "attackType": "move",
+      "diceStep": 2
     },
     {
       "id": 352,

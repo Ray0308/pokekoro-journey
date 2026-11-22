@@ -81,7 +81,8 @@ for(let id=1;id<=1025;id++){
  const candidates=s.targets(c,id);if(candidates.length)context.targetId=candidates[0].id;
  const preview=r.inspectSkill(c,id,context);assert.ok(preview.ok,id+' '+skill.name+' '+preview.reason);
  const used=r.skill(c,id,context);assert.ok(used.ok,id+' '+skill.name);assert.equal(c.members[0].gauge,0);assert.equal(c.members[0].usedTurn,c.turn);
- if(skill.category==='attack')assert.equal(used.damage,preview.damage);
+ if(skill.category==='attack'&&skill.mode!=='dice')assert.equal(used.damage,preview.damage);
+ if(skill.mode==='dice'){assert(used.diceFace>=1&&used.diceFace<=6);const range=s.damageRange(c,id,context);assert(used.damage>=range[0]&&used.damage<=range[1]);}
  assert.equal(r.skill(c,id,context).ok,false);
 }
 assert.equal(categories.size,6);

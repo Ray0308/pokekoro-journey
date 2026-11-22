@@ -149,6 +149,7 @@
     const preview = rules.inspectSkill(combat, mon.id, skillContext());
     const damage =
       skill.category === 'attack' ? rules.attackDamage(mon.id, battle.m, combat, battle.hp) : 0;
+    panel.querySelector('.skill-dice-reveal')?.remove();
     panel.querySelector('.skill-hero')?.remove();
     panel.querySelector('.turn-skill-body').prepend(
       window.PokekoroTutorialVisuals.skillHero(mon, skill, member.gauge, {
@@ -191,7 +192,10 @@
       : targeted && targetId
         ? '→ ' + POKEDEX[targetId - 1].label
         : skill.category === 'attack'
-          ? damage + 'ダメージ'
+          ? skill.mode === 'dice'
+            ? PokemonSkillRules.damageRange(combat, mon.id, skillContext()).join('〜') +
+              'ダメージ 🎲'
+            : damage + 'ダメージ'
           : 'ゲージ' + skill.cost;
     use.append(label, hint);
     $('#turn-next').textContent = 'とじる';
@@ -390,6 +394,22 @@
     $('#turn-next').disabled = true;
     $('#turn-use-skill').disabled = true;
     $('#turn-skill-help').textContent = outcome.message;
+    if (outcome.diceFace) {
+      const dice = document.createElement('div');
+      dice.className = 'skill-dice-reveal is-rolling';
+      dice.setAttribute('role', 'status');
+      dice.innerHTML = '<b>🎲</b><strong>サイコロを ふるよ！</strong>';
+      panel.append(dice);
+      sfx('step');
+      await new Promise((resolve) => setTimeout(resolve, reduceMotion ? 80 : 450));
+      if (epoch !== battleEpoch) return;
+      dice.classList.remove('is-rolling');
+      dice.dataset.face = String(outcome.diceFace);
+      dice.innerHTML = `<b>${['', '⚀', '⚁', '⚂', '⚃', '⚄', '⚅'][outcome.diceFace]}</b><strong>${outcome.diceFace}が でた！</strong><small>${outcome.skill.power}＋${outcome.diceFace}×${outcome.skill.diceStep}＝威力${outcome.multiplier}倍</small>`;
+      await new Promise((resolve) => setTimeout(resolve, reduceMotion ? 350 : 850));
+      if (epoch !== battleEpoch) return;
+      dice.remove();
+    }
     sfx(
       outcome.skill.category === 'attack'
         ? 'release'

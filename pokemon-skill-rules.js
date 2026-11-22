@@ -30,6 +30,7 @@ const PokemonSkillRules = (() => {
         ),
       );
     let multiplier = skill.power;
+    if (skill.mode === 'dice') multiplier += (context.diceFace ?? 3.5) * skill.diceStep;
     if (skill.mode === 'counter' && combat.lastCounterFainted) multiplier = skill.enhancedPower;
     if (skill.mode === 'fainted')
       multiplier = Math.min(
@@ -139,10 +140,19 @@ const PokemonSkillRules = (() => {
     if (!result.ok) return result;
     const member = combat.members.find((m) => m.id === id),
       skill = result.skill;
+    if (skill.mode === 'dice') {
+      const roll = Math.max(
+        0,
+        Math.min(1 - Number.EPSILON, Number((context.rng || Math.random)()) || 0),
+      );
+      result.diceFace = 1 + Math.floor(roll * 6);
+      result.multiplier = skill.power + result.diceFace * skill.diceStep;
+      result.damage = attackDamage(combat, member, { ...context, diceFace: result.diceFace });
+    }
     if (skill.category === 'boost') combat.nextBoost = skill.multiplier;
     if (skill.category === 'guard') combat.guard = true;
     const affected = [];
-    let detail = '';
+    let detail = result.diceFace ? ` サイコロ${result.diceFace}！ 威力×${result.multiplier}！` : '';
     if (skill.category === 'support') {
       for (const recipient of result.recipients) {
         const before = recipient.gauge;
@@ -227,6 +237,7 @@ const PokemonSkillRules = (() => {
   function role(id) {
     const s = forPokemon(id);
     if (s.category === 'attack') {
+      if (s.mode === 'dice') return 'サイコロアタッカー';
       if (s.bonus) return '攻撃＆ゲージ支援';
       if (s.mode === 'counter' || s.mode === 'fainted') return '逆転アタッカー';
       if (s.mode === 'percent') return 'HPけずり';
@@ -267,6 +278,8 @@ const PokemonSkillRules = (() => {
     const skill = forPokemon(id),
       mon = POKEDEX[id - 1];
     if (skill.category === 'attack') {
+      if (skill.mode === 'dice')
+        return `サイコロを1回ふって、威力×（${skill.power}＋出目×${skill.diceStep}）の攻撃。1なら×${skill.power + skill.diceStep}、6なら×${skill.power + 6 * skill.diceStep}！`;
       if (skill.mode === 'percent')
         return `相手の今のHPを${skill.percent}%けずる（最大${skill.damageCap}）。とどめには使えない。`;
       const type = POKEMON_TYPE_NAMES[attackType(skill, mon)];
@@ -298,5 +311,9 @@ const PokemonSkillRules = (() => {
     use,
     description,
     role,
+    damageRange(combat, id, context) {
+      const member = combat.members.find((m) => m.id === id);
+      return [1, 6].map((diceFace) => attackDamage(combat, member, { ...context, diceFace }));
+    },
   });
 })();

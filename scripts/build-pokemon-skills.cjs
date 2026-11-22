@@ -41,10 +41,18 @@ function validate(data) {
       positive('power');
       if (
         !['physical', 'special', 'best'].includes(skill.damageClass) ||
-        !['scaled', 'percent', 'counter', 'fainted', 'sacrifice'].includes(skill.mode) ||
+        !['scaled', 'percent', 'counter', 'fainted', 'sacrifice', 'dice'].includes(skill.mode) ||
         !['self', 'move'].includes(skill.attackType)
       )
         throw Error('Invalid attack mode');
+      if (
+        skill.mode === 'dice' &&
+        (!Number.isInteger(skill.diceStep) ||
+          skill.diceStep < 1 ||
+          skill.diceStep > 4 ||
+          skill.power + 6 * skill.diceStep > 30)
+      )
+        throw Error('Invalid dice scale');
       if (skill.mode === 'percent') {
         positive('percent');
         positive('damageCap');

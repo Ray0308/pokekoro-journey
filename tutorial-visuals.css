@@ -680,3 +680,47 @@
   color: #36574b;
   overflow-wrap: anywhere;
 }
+.skill-dice-reveal {
+  position: absolute;
+  z-index: 5;
+  left: 50%;
+  top: 44%;
+  transform: translate(-50%, -50%);
+  width: min(240px, 88%);
+  padding: 12px;
+  text-align: center;
+  background: #fff7cf;
+  border: 3px solid #d8a33b;
+  border-radius: 16px;
+  box-shadow: 0 5px 20px #25413b66;
+  pointer-events: none;
+  color: #3a503e;
+}
+.skill-dice-reveal b {
+  display: block;
+  font-size: 64px;
+  line-height: 1.1;
+  color: #a87313;
+}
+.skill-dice-reveal strong,
+.skill-dice-reveal small {
+  display: block;
+  font-size: 16px;
+  margin-top: 5px;
+}
+.skill-dice-reveal small {
+  font-size: 12px;
+}
+.skill-dice-reveal.is-rolling b {
+  animation: skill-dice-spin 0.18s linear infinite;
+}
+@keyframes skill-dice-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skill-dice-reveal.is-rolling b {
+    animation: none;
+  }
+}
