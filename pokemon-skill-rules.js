@@ -163,16 +163,29 @@ const PokemonSkillRules = (() => {
             : skill.power * (result.critical ? skill.criticalMultiplier : 1);
       result.damage = attackDamage(combat, member, { ...context, diceFace: result.diceFace });
     }
+    if (skill.category === 'guard') {
+      const roll = Math.max(
+        0,
+        Math.min(1 - Number.EPSILON, Number((context.rng || Math.random)()) || 0),
+      );
+      result.diceFace = 1 + Math.floor(roll * 6);
+      result.guardSucceeded = result.diceFace % 2 === 0;
+      result.effectFailed = !result.guardSucceeded;
+    }
     if (skill.category === 'boost') combat.nextBoost = skill.multiplier;
-    if (skill.category === 'guard') combat.guard = true;
+    if (skill.category === 'guard' && result.guardSucceeded) combat.guard = true;
     const affected = [];
-    let detail = result.missed
-      ? ' はずれた！ 0ダメージ！'
-      : result.critical
-        ? ' 急所に あたった！ ダメージ1.3倍！'
-        : result.diceFace
-          ? ` サイコロ${result.diceFace}！ 威力×${result.multiplier}！`
-          : '';
+    let detail = result.effectFailed
+      ? ' まもり失敗！ 効果は出なかった。'
+      : result.guardSucceeded
+        ? ' まもり成功！ 次の反撃を1回ふせぐ！'
+        : result.missed
+          ? ' はずれた！ 0ダメージ！'
+          : result.critical
+            ? ' 急所に あたった！ ダメージ1.3倍！'
+            : result.diceFace
+              ? ` サイコロ${result.diceFace}！ 威力×${result.multiplier}！`
+              : '';
     if (skill.category === 'support') {
       for (const recipient of result.recipients) {
         const before = recipient.gauge;
@@ -224,7 +237,7 @@ const PokemonSkillRules = (() => {
           : `${POKEMON_TYPE_NAMES[plan.type]}ブロックが ${plan.board.filter((t, i) => t !== before[i]).length}個ふえた！`;
     }
     // 複合効果は主効果が成立したときだけ。自己チャージ・ひんし・満タンは除外。
-    const bonus = skill.bonus;
+    const bonus = result.effectFailed ? null : skill.bonus;
     if (bonus?.kind === 'boost') {
       combat.nextBoost = Math.max(combat.nextBoost, bonus.multiplier);
       detail += ` 次のパズル攻撃が ×${combat.nextBoost}！`;
@@ -291,9 +304,9 @@ const PokemonSkillRules = (() => {
         ` 攻撃が当たると、自分以外でゲージの割合が一番少ない生存仲間1匹に＋${skill.bonus.amount}。`
       );
     if (skill.bonus?.kind === 'chargeAll')
-      return base + ` さらに、ほかの生存仲間みんなのゲージ＋${skill.bonus.amount}。`;
+      return base + ` 成功時はさらに、ほかの生存仲間みんなのゲージ＋${skill.bonus.amount}。`;
     if (skill.bonus?.kind === 'boost')
-      return base + ` 次のパズル攻撃も×${skill.bonus.multiplier}。より強い強化はそのまま。`;
+      return base + ` 成功時は次のパズル攻撃も×${skill.bonus.multiplier}。より強い強化はそのまま。`;
     return base;
   }
   function baseDescription(id) {
@@ -316,7 +329,8 @@ const PokemonSkillRules = (() => {
     }
     if (skill.category === 'boost')
       return `次の10秒パズルの通常攻撃を×${skill.multiplier}。使った仲間が倒れても効果は残る。`;
-    if (skill.category === 'guard') return '次の反撃を1回ふせぐ。';
+    if (skill.category === 'guard')
+      return 'サイコロ2・4・6で成功し、次の反撃を1回ふせぐ。1・3・5は不発（ゲージは消費）。';
     if (skill.category === 'support')
       return `${skill.target === 'allAllies' ? 'ほかの生存仲間みんな' : 'ほかの仲間1匹'}の技ゲージを+${skill.amount}。サポートはパズルの合間に1回。`;
     if (skill.category === 'revive')

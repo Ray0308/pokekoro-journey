@@ -17,7 +17,7 @@ for (const file of [
   vm.runInContext(fs.readFileSync(file, 'utf8'), c);
 vm.runInContext(
   `
-const r=BattleTurnRules, team=[1,446,11], combat=r.create(team),ctx={enemy:POKEDEX[94],enemyHP:5000};
+const r=BattleTurnRules, team=[1,446,11], combat=r.create(team),ctx={enemy:POKEDEX[94],enemyHP:5000,rng:()=>.2};
 assert.equal(r.config.seconds,10);assert.equal(r.config.maxTurns,undefined);
 r.charge(combat,0,100);assert.equal(combat.members[0].gauge,10);
 assert.equal(r.skill(combat,1,ctx).damage,189);assert.equal(combat.members[0].gauge,0);

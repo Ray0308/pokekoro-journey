@@ -1,6 +1,6 @@
 # 開発引き継ぎガイド
 
-更新日: 2026-11-21。アプリの確認済み公開版: **0.9.3.10**。
+更新日: 2026-11-21。アプリの確認済み公開版: **0.9.3.11**。
 
 ## 最初に読む資料
 
@@ -135,3 +135,5 @@ UI変更では390×664、320×568、844×390を基準に、必要に応じて実
 0.9.3.9: 技説明見切れはtutorial-visuals.css末尾で修正。heroのflex-growを止め、本文の子要素はshrink不可、footerは本文外固定。長い説明/対象一覧はturn-skill-body全体をスクロール。openSkillsでscrollTop=0。大きいカードで説明を押しつぶすスタイルへ戻さない。393×852も検証基準へ追加。
 
 0.9.3.10: bossVs=assets/audio/boss-vs-user-v1.mp3はユーザー提供音源。trainerMusicThemeがbossかつbadge/rival/indigoの場面だけに割当てる。チャンピオンはライバルなので対象。登場/戦闘/相手交代で同じkeyを維持、victory優先。通常trainer/trainerBattleやマップ曲は保持。末尾無音をMAP_MUSIC_TAIL.bossVs=5.1で除外、音量0.18。原本の再エンコードはしていない。
+
+0.9.3.11: ユーザー指定で防御を弱体化。全guard技activation=even・cost＋4（14/18/20）。useの検査後だけ1回抽選、偶数guardSucceededなら防御とbonus、奇数effectFailedなら消費/usedTurnのみ。防御中等の検査失敗は抽選/消費なし。UIはguard/guard-failedの出目表示、不発時は成功FXを呼ばない。過去の防御が必ず成功する記載よりこの訂正を優先。テストは成功ケースでrngを固定し、guard-diceで全代表の6出目と失敗時の副効果なしを検査する。

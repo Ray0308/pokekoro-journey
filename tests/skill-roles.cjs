@@ -36,7 +36,7 @@ for (const f of [
   vm.runInContext(fs.readFileSync(f, 'utf8'), c, { filename: f });
 vm.runInContext(
   `
-const r=BattleTurnRules,s=PokemonSkillRules,enemy={...POKEDEX[0],types:[],type:null},base={enemy,enemyHP:5000,hasNextEnemy:false};
+const r=BattleTurnRules,s=PokemonSkillRules,enemy={...POKEDEX[0],types:[],type:null},base={enemy,enemyHP:5000,hasNextEnemy:false,rng:()=>.2};
 const ready=ids=>{const c=r.create(ids);r.begin(c);for(const m of c.members)m.gauge=s.cost(m.id);return c;};
 assert.equal(s.role(19),'速攻アタッカー');assert.equal(s.role(130),'大技アタッカー');assert.equal(s.role(43),'攻撃＆ゲージ支援');assert.equal(s.role(153),'防御＆強化');assert.equal(s.role(181),'防御＆ゲージ支援');assert.equal(s.role(113),'単体ゲージ支援');assert.equal(s.role(242),'全体ゲージ支援');assert.equal(s.role(923),'復活サポート');
 let a=ready([43,7,6,19]);a.members[1].gauge=2;a.members[2].gauge=3;a.members[3].gauge=0;a.members[3].fainted=true;let before=JSON.stringify(a);const preview=r.inspectSkill(a,43,base);assert(preview.ok);assert.equal(JSON.stringify(a),before);const hit=r.skill(a,43,base);assert.deepEqual(hit.affected,[6]);assert.equal(a.members[2].gauge,4);assert.equal(a.members[1].gauge,2);assert.equal(a.members[0].gauge,0);assert.equal(hit.damage,preview.damage);assert.equal(a.members[3].gauge,0);before=JSON.stringify(a);assert(!r.skill(a,43,base).ok);assert.equal(JSON.stringify(a),before);

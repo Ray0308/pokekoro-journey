@@ -40,6 +40,7 @@ const s = spawn('python', ['-m', 'http.server', '8818', '--bind', '127.0.0.1'], 
           const m = battle.combat.members.find((m) => m.id === id);
           m.gauge = PokemonSkillRules.cost(id);
           if (category === 'revive') battle.combat.members.find((m) => m.id !== id).fainted = true;
+          if (category === 'guard') Math.random = () => 0.2;
           PokekoroTurns.prepare();
         },
         { id, category },

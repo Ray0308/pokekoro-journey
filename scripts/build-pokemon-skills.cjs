@@ -77,6 +77,10 @@ function validate(data) {
         positive('powerCap');
       }
     }
+    if (skill.category === 'guard' && skill.activation !== 'even')
+      throw Error('Invalid guard activation');
+    if (skill.category !== 'guard' && skill.activation !== undefined)
+      throw Error('Unexpected activation');
     if (skill.category === 'boost') {
       positive('multiplier');
       if (skill.multiplier <= 1) throw Error('Invalid boost');

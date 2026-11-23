@@ -72,6 +72,10 @@ const server = spawn('python', ['-m', 'http.server', '8895', '--bind', '127.0.0.
           }),
         );
         await p.screenshot({ path: `/workspace/skill-role-${id}-${viewport.width}.png` });
+        await p.evaluate(() => {
+          window.roleTestRng = Math.random;
+          Math.random = () => 0.2;
+        });
         await p.locator('#turn-use-skill').tap();
         await p.waitForFunction(() => battle.phase === 'ready');
         const stateAfter = await p.evaluate(() => ({
@@ -95,6 +99,9 @@ const server = spawn('python', ['-m', 'http.server', '8895', '--bind', '127.0.0.
         }
         await p.locator(`[data-battle-member="${id}"]`).tap();
         assert(await p.locator('#turn-use-skill').isDisabled());
+        await p.evaluate(() => {
+          Math.random = window.roleTestRng;
+        });
       }
       assert.deepEqual(errors, []);
       console.log(

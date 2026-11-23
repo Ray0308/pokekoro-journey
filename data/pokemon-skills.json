@@ -10,7 +10,8 @@
     "status": "Provisional game-specific effects authorized for implementation; original moves are not faithfully reproduced.",
     "balanceRevision": "0.9.3.4: role differentiation, 8 representative changes, 20 move adjustments; game-specific effects.",
     "diceRevision": "0.9.3.5: five multi-hit moves roll one d6 after successful validation.",
-    "criticalAccuracyRevision": "0.9.3.6: 9 high-critical moves (5/6 x1.3) and 3 risky moves (1/2 miss, power15->24)."
+    "criticalAccuracyRevision": "0.9.3.6: 9 high-critical moves (5/6 x1.3) and 3 risky moves (1/2 miss, power15->24).",
+    "guardRevision": "0.9.3.11: all guard moves +4 cost, only even d6 activates guard and secondary effects."
   },
   "moves": [
     {
@@ -472,18 +473,20 @@
       "name": "うたう",
       "type": 5,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 48,
       "name": "ちょうおんぱ",
       "type": 5,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 49,
@@ -503,9 +506,10 @@
       "name": "かなしばり",
       "type": 5,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 51,
@@ -551,9 +555,10 @@
       "name": "しろいきり",
       "type": 7,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 55,
@@ -853,18 +858,20 @@
       "name": "しびれごな",
       "type": 0,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 79,
       "name": "ねむりごな",
       "type": 0,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 80,
@@ -884,9 +891,10 @@
       "name": "いとをはく",
       "type": 11,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 82,
@@ -932,9 +940,10 @@
       "name": "でんじは",
       "type": 6,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 87,
@@ -1032,9 +1041,10 @@
       "name": "さいみんじゅつ",
       "type": 10,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 96,
@@ -1106,9 +1116,10 @@
       "name": "かげぶんしん",
       "type": 5,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 105,
@@ -1126,76 +1137,84 @@
       "name": "かたくなる",
       "type": 5,
       "category": "guard",
-      "cost": 10,
-      "designState": "0.9.3.4 調整",
-      "designEffect": "ゲージ10で次の反撃を1回防ぐ。"
+      "cost": 14,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 ゲージ14で次の反撃を1回防ぐ。",
+      "activation": "even"
     },
     {
       "id": 107,
       "name": "ちいさくなる",
       "type": 5,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 108,
       "name": "えんまく",
       "type": 5,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 109,
       "name": "あやしいひかり",
       "type": 13,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 110,
       "name": "からにこもる",
       "type": 2,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 111,
       "name": "まるくなる",
       "type": 5,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 112,
       "name": "バリアー",
       "type": 10,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 113,
       "name": "ひかりのかべ",
       "type": 10,
       "category": "guard",
-      "cost": 16,
-      "designState": "0.9.3.4 調整",
-      "designEffect": "次の反撃を1回防ぎ、次のパズル攻撃を1.25倍。既存のより強い強化は維持。",
+      "cost": 20,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の反撃を1回防ぎ、次のパズル攻撃を1.25倍。既存のより強い強化は維持。",
       "bonus": {
         "kind": "boost",
         "multiplier": 1.25
-      }
+      },
+      "activation": "even"
     },
     {
       "id": 114,
@@ -1213,13 +1232,14 @@
       "name": "リフレクター",
       "type": 10,
       "category": "guard",
-      "cost": 16,
-      "designState": "0.9.3.4 調整",
-      "designEffect": "次の反撃を1回防ぎ、次のパズル攻撃を1.25倍。既存のより強い強化は維持。",
+      "cost": 20,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の反撃を1回防ぎ、次のパズル攻撃を1.25倍。既存のより強い強化は維持。",
       "bonus": {
         "kind": "boost",
         "multiplier": 1.25
-      }
+      },
+      "activation": "even"
     },
     {
       "id": 116,
@@ -1415,18 +1435,20 @@
       "name": "ドわすれ",
       "type": 10,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 134,
       "name": "スプーンまげ",
       "type": 10,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 135,
@@ -1457,9 +1479,10 @@
       "name": "へびにらみ",
       "type": 5,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 138,
@@ -1522,9 +1545,10 @@
       "name": "あくまのキッス",
       "type": 5,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 144,
@@ -1568,9 +1592,10 @@
       "name": "キノコのほうし",
       "type": 0,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 150,
@@ -1587,9 +1612,10 @@
       "name": "とける",
       "type": 3,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 152,
@@ -1771,9 +1797,10 @@
       "name": "クモのす",
       "type": 11,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 170,
@@ -1853,9 +1880,10 @@
       "name": "わたほうし",
       "type": 0,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 181,
@@ -1875,9 +1903,10 @@
       "name": "まもる",
       "type": 5,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 183,
@@ -1897,9 +1926,10 @@
       "name": "こわいかお",
       "type": 5,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 185,
@@ -1919,9 +1949,10 @@
       "name": "てんしのキッス",
       "type": 17,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 187,
@@ -2039,9 +2070,10 @@
       "name": "みきり",
       "type": 8,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 198,
@@ -2113,9 +2145,10 @@
       "name": "あまえる",
       "type": 17,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 205,
@@ -2185,18 +2218,20 @@
       "name": "くろいまなざし",
       "type": 5,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 213,
       "name": "メロメロ",
       "type": 5,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 214,
@@ -2622,9 +2657,10 @@
       "name": "いちゃもん",
       "type": 15,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 260,
@@ -2654,9 +2690,10 @@
       "name": "このゆびとまれ",
       "type": 5,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 267,
@@ -2685,9 +2722,10 @@
       "name": "ちょうはつ",
       "type": 15,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 270,
@@ -2738,18 +2776,20 @@
       "name": "ねをはる",
       "type": 0,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 277,
       "name": "マジックコート",
       "type": 10,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 279,
@@ -2783,9 +2823,10 @@
       "name": "あくび",
       "type": 5,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 284,
@@ -2805,9 +2846,10 @@
       "name": "ふういん",
       "type": 10,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 287,
@@ -2921,18 +2963,20 @@
       "name": "フェザーダンス",
       "type": 4,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 298,
       "name": "フラフラダンス",
       "type": 5,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 299,
@@ -2952,9 +2996,10 @@
       "name": "どろあそび",
       "type": 9,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 301,
@@ -3147,18 +3192,20 @@
       "name": "くすぐる",
       "type": 5,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 322,
       "name": "コスモパワー",
       "type": 10,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 323,
@@ -3284,18 +3331,20 @@
       "name": "てっぺき",
       "type": 16,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 335,
       "name": "とおせんぼう",
       "type": 5,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 336,
@@ -3413,9 +3462,10 @@
       "name": "みずあそび",
       "type": 2,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 347,
@@ -3667,9 +3717,10 @@
       "name": "さしおさえ",
       "type": 15,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 374,
@@ -3712,9 +3763,10 @@
       "name": "かいふくふうじ",
       "type": 10,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 379,
@@ -3731,18 +3783,20 @@
       "name": "いえき",
       "type": 3,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 381,
       "name": "おまじない",
       "type": 5,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 382,
@@ -3781,9 +3835,10 @@
       "name": "なやみのタネ",
       "type": 0,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 389,
@@ -4538,9 +4593,10 @@
       "name": "ぼうぎょしれい",
       "type": 11,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 457,
@@ -4684,9 +4740,10 @@
       "name": "ワイドガード",
       "type": 12,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 471,
@@ -4750,9 +4807,10 @@
       "name": "いかりのこな",
       "type": 11,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 478,
@@ -4963,9 +5021,10 @@
       "name": "ファストガード",
       "type": 8,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 503,
@@ -5055,9 +5114,10 @@
       "name": "さきおくり",
       "type": 15,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 512,
@@ -5346,13 +5406,14 @@
       "name": "コットンガード",
       "type": 0,
       "category": "guard",
-      "cost": 16,
-      "designState": "0.9.3.4 調整",
-      "designEffect": "次の反撃を1回防ぎ、自分以外の生存仲間のゲージを2増やす。満タン超過なし。",
+      "cost": 20,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の反撃を1回防ぎ、自分以外の生存仲間のゲージを2増やす。満タン超過なし。",
       "bonus": {
         "kind": "chargeAll",
         "amount": 2
-      }
+      },
+      "activation": "even"
     },
     {
       "id": 539,
@@ -5580,9 +5641,10 @@
       "name": "たたみがえし",
       "type": 8,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 562,
@@ -5614,9 +5676,10 @@
       "name": "ねばねばネット",
       "type": 11,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 565,
@@ -5661,9 +5724,10 @@
       "name": "おたけび",
       "type": 5,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 569,
@@ -5784,18 +5848,20 @@
       "name": "トリックガード",
       "type": 17,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 579,
       "name": "フラワーガード",
       "type": 17,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 580,
@@ -5890,27 +5956,30 @@
       "name": "フェアリーロック",
       "type": 17,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 588,
       "name": "キングシールド",
       "type": 16,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 589,
       "name": "なかよくする",
       "type": 5,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 591,
@@ -5982,27 +6051,30 @@
       "name": "ニードルガード",
       "type": 0,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 597,
       "name": "アロマミスト",
       "type": 17,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 598,
       "name": "かいでんぱ",
       "type": 6,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 599,
@@ -6078,9 +6150,10 @@
       "name": "つぶらなひとみ",
       "type": 17,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 609,
@@ -6202,9 +6275,10 @@
       "name": "トーチカ",
       "type": 3,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 662,
@@ -6324,9 +6398,10 @@
       "name": "どくのいと",
       "type": 3,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 674,
@@ -6558,9 +6633,10 @@
       "name": "オーロラベール",
       "type": 7,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 704,
@@ -6697,9 +6773,10 @@
       "name": "なみだめ",
       "type": 5,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 716,
@@ -6892,9 +6969,10 @@
       "name": "たこがため",
       "type": 8,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 754,
@@ -7087,9 +7165,10 @@
       "name": "ブロッキング",
       "type": 15,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 793,
@@ -7380,9 +7459,10 @@
       "name": "たてこもる",
       "type": 16,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 846,
@@ -7449,9 +7529,10 @@
       "name": "スレッドトラップ",
       "type": 11,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 853,
@@ -7802,9 +7883,10 @@
       "name": "しっぽきり",
       "type": 5,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 882,
@@ -8045,9 +8127,10 @@
       "name": "かえんのまもり",
       "type": 1,
       "category": "guard",
-      "cost": 14,
-      "designState": "一次案",
-      "designEffect": "次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。"
+      "cost": 18,
+      "designState": "0.9.3.11 防御バランス",
+      "designEffect": "サイコロの偶数（2/4/6）のときだけ防御と追加効果が発動。奇数では不発、ゲージと当ターンの使用権は消費。 次の相手の反撃を1回無効にし、仲間のひんしを防ぐ。",
+      "activation": "even"
     },
     {
       "id": 909,
