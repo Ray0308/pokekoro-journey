@@ -1,6 +1,6 @@
 # 開発状況・引き継ぎ
 
-更新日: **2026-11-21**。ゲームの確認済み公開版: **0.9.3.11**。
+更新日: **2026-11-21**。ゲームの確認済み公開版: **0.9.3.12**。
 
 このファイルを、進捗・残タスク共有の入口として更新する。「公開済み」「ローカル実装済み・未公開」「未着手」「未確認」を区別し、予定を実装済みとして扱わない。0.9.2.53の機能公開に合わせて更新した。
 
@@ -625,3 +625,5 @@ debug-secret-browser.cjsで390×664/320×568/844×390の実タッチ、不可視
 0.9.3.10: bossVs=assets/audio/boss-vs-user-v1.mp3はユーザー提供音源。trainerMusicThemeがbossかつbadge/rival/indigoの場面だけに割当てる。チャンピオンはライバルなので対象。登場/戦闘/相手交代で同じkeyを維持、victory優先。通常trainer/trainerBattleやマップ曲は保持。末尾無音をMAP_MUSIC_TAIL.bossVs=5.1で除外、音量0.18。原本の再エンコードはしていない。
 
 0.9.3.11: ユーザー指定で防御を弱体化。全guard技activation=even・cost＋4（14/18/20）。useの検査後だけ1回抽選、偶数guardSucceededなら防御とbonus、奇数effectFailedなら消費/usedTurnのみ。防御中等の検査失敗は抽選/消費なし。UIはguard/guard-failedの出目表示、不発時は成功FXを呼ばない。過去の防御が必ず成功する記載よりこの訂正を優先。テストは成功ケースでrngを固定し、guard-diceで全代表の6出目と失敗時の副効果なしを検査する。
+
+0.9.3.12: ガード中のてっぺき再開の報告を受け、満タン防御役がわざOK表示で使えない技画面へ入る経路を遮断。openSkillsでguard既存かつcategory guardなら待機と案内へ。renderはis-guard-held/ガード中を表示。prepare/initはturn-next.disabledを解除。tests/guard-reopen-browser.cjsで247/366同技・再充填・連打・別技画面からの切替と反撃後の実パズル開始を検証。倍率/消費/偶数判定は変更しない。

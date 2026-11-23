@@ -572,3 +572,12 @@
     animation: none;
   }
 }
+#battle-party button.is-guard-held {
+  border-color: #8fa7b2;
+  background: #e7f1f3;
+  box-shadow: none;
+}
+#battle-party button.is-guard-held > span {
+  color: #426578;
+  font-weight: 800;
+}

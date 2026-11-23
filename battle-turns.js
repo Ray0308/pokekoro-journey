@@ -115,8 +115,9 @@
         const mon = POKEDEX[m.id - 1],
           cap = rules.skillCost(m.id),
           used = m.usedTurn === combat.turn,
-          ready = m.gauge >= cap && !used;
-        return `<button type="button" data-battle-member="${m.id}" style="--ready-type:${POKEMON_TYPE_COLORS[mon.type]}" class="${m.fainted ? 'is-fainted' : ready ? 'skill-ready' : ''}" ${!['ready', 'skills'].includes(battle.phase) ? 'disabled' : ''} aria-pressed="${selected === m.id}" aria-label="${mon.label} ${pokemonTypes(
+          guardHeld = combat.guard && rules.skillFor(m.id).category === 'guard',
+          ready = m.gauge >= cap && !used && !guardHeld;
+        return `<button type="button" data-battle-member="${m.id}" style="--ready-type:${POKEMON_TYPE_COLORS[mon.type]}" class="${m.fainted ? 'is-fainted' : guardHeld ? 'is-guard-held' : ready ? 'skill-ready' : ''}" ${!['ready', 'skills'].includes(battle.phase) ? 'disabled' : ''} aria-pressed="${selected === m.id}" aria-label="${mon.label} ${pokemonTypes(
           mon,
         )
           .map(
@@ -124,7 +125,7 @@
           )
           .join(
             '、',
-          )} の技 ${m.fainted ? 'ひんし' : used ? 'このターンは使用済み' : '技ゲージ' + m.gauge + '/' + cap}"><span class="battle-member-portrait" aria-hidden="true"><img src="${pokemonPortrait(m.id)}" alt="">${typeBadges(mon)}</span><span>${m.fainted ? 'ひんし' : used ? '使用ずみ' : ready ? 'わざ OK' : m.gauge + '/' + cap}</span><i><b style="width:${(100 * m.gauge) / cap}%"></b></i></button>`;
+          )} の技 ${m.fainted ? 'ひんし' : guardHeld ? 'ガード中。スタートで次へ進めるよ' : used ? 'このターンは使用済み' : '技ゲージ' + m.gauge + '/' + cap}"><span class="battle-member-portrait" aria-hidden="true"><img src="${pokemonPortrait(m.id)}" alt="">${typeBadges(mon)}</span><span>${m.fainted ? 'ひんし' : guardHeld ? 'ガード中' : used ? '使用ずみ' : ready ? 'わざ OK' : m.gauge + '/' + cap}</span><i><b style="width:${(100 * m.gauge) / cap}%"></b></i></button>`;
       })
       .join('');
     if (battle.phase !== 'skills') return;
@@ -288,6 +289,7 @@
     battle.phase = 'ready';
     battle.counterPending = counterPending;
     selected = targetId = null;
+    $('#turn-next').disabled = false;
     panel.hidden = true;
     $('#battle').classList.remove('in-skill-break', 'resolving', 'attack-release');
     window.PokekoroBattleFX?.reset();
@@ -312,6 +314,13 @@
   }
   function openSkills(id) {
     if (!enabled() || !['ready', 'skills'].includes(battle.phase)) return;
+    if (battle.combat.guard && rules.skillFor(id).category === 'guard') {
+      if (battle.phase === 'skills') prepare(!!battle.counterPending);
+      $('#puzzle-tip').textContent = 'ガードは じゅんびずみ！ スタートで つづけよう';
+      $('#start').focus({ preventScroll: true });
+      render();
+      return;
+    }
     $('#battle').classList.add('in-skill-break');
     $('#ready-overlay').hidden = true;
     battle.phase = 'skills';
