@@ -67,7 +67,12 @@ assert.equal(rules.attackDamage(446, POKEDEX[93]), 0);
 for (const mon of POKEDEX) {
   assert.ok(Object.values(mon.stats).every(n => Number.isInteger(n) && n > 0 && n <= 255));
   const hp = s.enemyHP(mon, 365);
-  assert.ok(Number.isInteger(hp) && hp >= 274 && hp <= 584);
+  // 全1025種、野生/依頼/一般/ジム/強化リーグの基準で旧HPの90％を保証。
+  for (const baseHP of [1, 365, 620, 850, 1250, 4050]) {
+    const oldHP = Math.max(1, Math.round(baseHP * Math.max(0.75, Math.min(1.6, 0.7 + mon.stats.hp / 240))));
+    assert.equal(s.enemyHP(mon, baseHP), Math.max(1, Math.round(oldHP * 0.9)));
+  }
+  assert.ok(Number.isInteger(hp) && hp >= 247 && hp <= 526);
   assert.ok(s.gaugeUnits(mon) >= 850 && s.gaugeUnits(mon) <= 1400);
   for (const enemy of [onix, gonbe, POKEDEX[241], POKEDEX[212]]) {
     assert.ok(Number.isFinite(s.power(mon, enemy)) && s.power(mon, enemy) > 0);

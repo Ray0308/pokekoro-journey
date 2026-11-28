@@ -55,6 +55,10 @@ const server = spawn('python', ['-m', 'http.server', '8882', '--bind', '127.0.0.
           );
           return {
             hp: battle.total,
+            previousHP: Math.max(
+              1,
+              Math.round(member.hp * Math.max(0.75, Math.min(1.6, 0.7 + battle.m.stats.hp / 240))),
+            ),
             old: PokemonBattleStats.enemyHP(battle.m, oldBase),
             wild: PokemonBattleStats.enemyHP(battle.m, 365),
             expected: PokemonBattleStats.enemyHP(battle.m, member.hp),
@@ -64,6 +68,7 @@ const server = spawn('python', ['-m', 'http.server', '8882', '--bind', '127.0.0.
         [mapId, boss],
       );
       assert.equal(result.hp, result.expected);
+      assert.equal(result.hp, Math.max(1, Math.round(result.previousHP * 0.9)));
       assert(result.hp > result.old * 1.8);
       assert(result.hp > result.wild);
       assert.equal(result.duration, 10);
@@ -116,10 +121,10 @@ const server = spawn('python', ['-m', 'http.server', '8882', '--bind', '127.0.0.
       await p.evaluate(
         () => !battle.series && battle.total === PokemonBattleStats.enemyHP(battle.m, 365),
       ),
-      'wild tuning unchanged',
+      'wild uses the same reduced HP rule',
     );
     assert.deepEqual(errors, []);
-    console.log('PASS extra battle turn, ace HP, carried gauge/guard, unchanged wild');
+    console.log('PASS extra battle turn, ace HP, carried gauge/guard, reduced wild');
   } finally {
     await browser.close();
     server.kill();

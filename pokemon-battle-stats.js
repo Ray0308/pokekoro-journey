@@ -4,6 +4,7 @@
 const PokemonBattleStats = (() => {
   const config = Object.freeze({
     power: 11,
+    enemyHpScale: 0.9,
     hpMin: 0.75,
     hpMax: 1.6,
     defenseMin: 0.55,
@@ -27,10 +28,11 @@ const PokemonBattleStats = (() => {
     return config.power * (0.5 + offense / 160) * resistance;
   }
   function enemyHP(mon, baseHP) {
-    return Math.max(
-      1,
-      Math.round(baseHP * clamp(0.7 + mon.stats.hp / 240, config.hpMin, config.hpMax)),
+    // 種族値・レベル・再戦補正の後に一度だけ適用。味方の火力や種族値は変えない。
+    const normalHP = Math.round(
+      baseHP * clamp(0.7 + mon.stats.hp / 240, config.hpMin, config.hpMax),
     );
+    return Math.max(1, Math.round(normalHP * config.enemyHpScale));
   }
   // 1個あたりの蓄積を1000分率で扱い、消去を分割しても丸めによる損失を出さない。
   function gaugeUnits(mon) {
