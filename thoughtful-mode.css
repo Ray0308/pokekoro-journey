@@ -1,0 +1,154 @@
+.puzzle-mode-setting {
+  display: grid;
+  gap: 8px;
+  margin: 14px 0;
+  text-align: left;
+}
+#puzzle-mode {
+  width: 100%;
+  min-height: 48px;
+  padding: 8px;
+  font: inherit;
+  color: #263e36;
+  background: #fffdf0;
+  border: 2px solid #728e6c;
+  border-radius: 10px;
+}
+.puzzle-mode-setting small {
+  line-height: 1.5;
+}
+#thoughtful-panel {
+  order: 6;
+  flex: 0 0 auto;
+  padding: 5px 7px;
+  border: 2px solid #97bba1;
+  border-radius: 9px;
+  background: #f1f7e5;
+  color: #284838;
+  font-size: 12px;
+}
+#thoughtful-panel[hidden] {
+  display: none;
+}
+.thoughtful-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+#thoughtful-hint {
+  min-width: 76px;
+  min-height: 44px;
+  padding: 4px;
+  font-size: 12px;
+}
+#thoughtful-goal {
+  line-height: 1.45;
+  font-weight: bold;
+}
+#thoughtful-choices {
+  display: flex;
+  gap: 5px;
+  margin-top: 4px;
+}
+#thoughtful-choices button {
+  flex: 1;
+  min-height: 44px;
+  padding: 4px;
+  font-size: 12px;
+  border: 2px solid #9eac8f;
+  border-radius: 7px;
+}
+#thoughtful-choices button[aria-pressed='true'] {
+  background: #ffe49a;
+  border-color: #a77d27;
+  color: #3f381d;
+}
+#thoughtful-choices button:disabled {
+  opacity: 1;
+}
+#battle.thoughtful-battle .combo-track,
+#battle.thoughtful-battle .battleinfo {
+  display: none;
+}
+#battle.thoughtful-battle.in-skill-break #thoughtful-panel {
+  display: none;
+}
+#battle.thoughtful-battle #clock {
+  min-width: 76px;
+  white-space: nowrap;
+}
+@media (max-height: 650px) {
+  #thoughtful-panel {
+    font-size: 11px;
+    padding: 2px 5px;
+  }
+  .thoughtful-heading strong {
+    font-size: 11px;
+  }
+  #thoughtful-choices {
+    margin-top: 1px;
+  }
+}
+@media (min-width: 600px) and (max-height: 450px) {
+  #thoughtful-panel {
+    grid-column: 1;
+    font-size: 11px;
+  }
+}
+
+#thoughtful-choices > span {
+  display: block;
+  padding: 3px 6px;
+  border-radius: 5px;
+  color: #57471f;
+  background: #fff0b9;
+  font-size: 11px;
+}
+@media (max-height: 450px) and (min-width: 600px) {
+  #battle.thoughtful-battle:not(.in-skill-break) {
+    grid-template-rows: 28px 80px 42px 12px 25px minmax(0, 1fr);
+    gap: 3px 12px;
+    align-content: stretch;
+  }
+  #battle.thoughtful-battle .battlehead {
+    grid-row: 1;
+  }
+  #battle.thoughtful-battle .enemy {
+    grid-row: 2;
+    min-height: 76px;
+  }
+  #battle.thoughtful-battle #battle-party {
+    grid-row: 3;
+  }
+  #battle.thoughtful-battle #battle-turn-status {
+    grid-row: 4;
+  }
+  #battle.thoughtful-battle .attack-charge {
+    grid-row: 5;
+    min-height: 25px;
+    height: 25px;
+    padding: 2px 6px;
+  }
+  #battle.thoughtful-battle #thoughtful-panel {
+    grid-column: 1;
+    grid-row: 6;
+    align-self: start;
+  }
+  #battle.thoughtful-battle .weakness-tip,
+  #battle.thoughtful-battle .time-track,
+  #battle.thoughtful-battle .puzzle-instruction {
+    display: none;
+  }
+  #battle.thoughtful-battle .puzzle-stage {
+    grid-row: 1 / 7;
+    align-self: center;
+    margin-top: 0;
+  }
+}
+
+@media (min-height: 451px), (max-width: 599px) {
+  #battle.thoughtful-battle:not(.in-skill-break) .enemy {
+    min-height: clamp(96px, 18dvh, 150px);
+  }
+}

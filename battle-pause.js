@@ -8,7 +8,7 @@
   dialog.id = 'battle-pause';
   dialog.setAttribute('aria-labelledby', 'battle-pause-title');
   dialog.innerHTML =
-    '<h2 id="battle-pause-title">ひとやすみ中</h2><p>のこり時間は とまっているよ。<br>準備ができたら つづけよう！</p><button class="primary">▶ つづける</button>';
+    '<h2 id="battle-pause-title">ひとやすみ中</h2><p>パズルは とまっているよ。<br>準備ができたら つづけよう！</p><button class="primary">▶ つづける</button>';
   document.body.append(dialog);
   dialog.addEventListener('cancel', (e) => e.preventDefault());
   function delay(ms) {

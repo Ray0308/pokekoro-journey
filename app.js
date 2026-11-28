@@ -1028,6 +1028,7 @@ function openBattle(trainer, boss, continuation = null, practice = false, resear
   updateHP();
   updateCharge();
   draw();
+  window.PokekoroThoughtful?.ready();
   $('#encounter-label').textContent = research
     ? '調査の ポケモンを はっけん！'
     : boss
@@ -1161,14 +1162,18 @@ canvas.onpointerup = (e) => {
   activePuzzlePointer = null;
   if (!drag) return;
   drag = false;
-  if (running && performance.now() - startAt >= battleDuration() * 1000) {
+  if (running && !battle.thoughtfulMode && performance.now() - startAt >= battleDuration() * 1000) {
     path = [];
     resolveAttack();
     return;
   }
   if (running && path.length >= 3) {
     let now = performance.now();
-    combo = lastClear && now - lastClear <= 2000 ? combo + 1 : 1;
+    combo = battle.thoughtfulMode
+      ? battle.thoughtful.used + 1
+      : lastClear && now - lastClear <= 2000
+        ? combo + 1
+        : 1;
     maxCombo = Math.max(maxCombo, combo);
     lastClear = now;
     let t = grid[path[0]],
@@ -1180,9 +1185,13 @@ canvas.onpointerup = (e) => {
     const effectiveness = battleTypeMultiplier(t, battle);
     let damage = Math.round(
       puzzleCharge(power, path.length, combo, effectiveness, battle.puzzleTypes.length) *
-        (battle.combat?.boost || 1),
+        (battle.combat?.boost || 1) *
+        (battle.thoughtfulMode ? ThoughtfulPuzzleRules.config.powerScale : 1),
     );
-    window.PokekoroTurns?.charge(t, path.length);
+    window.PokekoroTurns?.charge(
+      t,
+      path.length * (battle.thoughtfulMode ? ThoughtfulPuzzleRules.config.gaugeScale : 1),
+    );
     battle.damage += damage;
     battle.typeCharge[t] = (battle.typeCharge[t] || 0) + damage;
     if (damage > 0) flyCharge(path.slice(), t, damage);
@@ -1192,7 +1201,9 @@ canvas.onpointerup = (e) => {
     if (power === 0 && battle.combat) {
       $('#puzzle-tip').textContent = 'どの属性も 消せるよ。戦える仲間の 属性で攻撃！';
     }
+    const clearedCount = path.length;
     refillPuzzle(path);
+    window.PokekoroThoughtful?.commit(clearedCount, t);
   }
   if (path.length > 0 && path.length < 3)
     $('#puzzle-tip').textContent = '3つ以上つなぐと パワーがたまるよ！';
@@ -1221,7 +1232,11 @@ $('#start').onclick = async () => {
   const epoch = battleEpoch;
   // 経過ターンは連戦全体で共有するが、カウントダウンは相手1匹ごとの初回に行う。
   // 同じ相手との次ターンだけGOに短縮し、新しい相手の登場では必ず3・2・1を見せる。
-  const countdown = battle.puzzleStarted ? ['GO!'] : ['3', '2', '1', 'GO!'];
+  const countdown = battle.thoughtfulMode
+    ? []
+    : battle.puzzleStarted
+      ? ['GO!']
+      : ['3', '2', '1', 'GO!'];
   battle.puzzleStarted = true;
   for (const n of countdown) {
     if (epoch !== battleEpoch) return;
@@ -1258,7 +1273,7 @@ function refreshBattlePuzzle(automatic = false) {
     (!automatic && performance.now() - lastPuzzleRefreshAt < 600)
   )
     return;
-  if (performance.now() - startAt >= battleDuration() * 1000) {
+  if (!battle.thoughtfulMode && performance.now() - startAt >= battleDuration() * 1000) {
     void resolveAttack();
     return;
   }
@@ -1291,6 +1306,12 @@ $('#puzzle-refresh').onclick = () => refreshBattlePuzzle();
 function tick(now) {
   syncPuzzleRefresh();
   if (!running) return;
+  if (battle.thoughtfulMode) {
+    // じっくりでは時間・コンボ期限・自動ヒントを進めない。詰みだけ即並べ直す。
+    if (!drag && !puzzleHintPath(grid).length) refreshBattlePuzzle(true);
+    raf = requestAnimationFrame(tick);
+    return;
+  }
   elapsed = (now - startAt) / 1000;
   let left = Math.max(0, battleDuration() - elapsed);
   $('#clock').textContent = left.toFixed(1);
@@ -2172,11 +2193,15 @@ function updateCharge(value = battle.damage) {
     ? p >= 1
       ? 'なかよし目標 達成！ もっとためて 捕獲率アップ！'
       : `あと ${Math.max(0, target - value)} で なかよし目標！`
-    : p >= 1
-      ? battle.trainer
-        ? '撃破ライン突破！ もっとためて 全力アタック！'
-        : '撃破ライン突破！ もっとためて捕獲率アップ！'
-      : `あと ${Math.max(0, target - value)} パワーで撃破ライン！`;
+    : battle.thoughtfulMode
+      ? p >= 1
+        ? '撃破ライン突破！ 3手でアタック！'
+        : `あと ${Math.max(0, target - value)} パワー。長くつなぐと強いよ！`
+      : p >= 1
+        ? battle.trainer
+          ? '撃破ライン突破！ もっとためて 全力アタック！'
+          : '撃破ライン突破！ もっとためて捕獲率アップ！'
+        : `あと ${Math.max(0, target - value)} パワーで撃破ライン！`;
 }
 // サファリは従来のなかよし処理、戦闘は10秒ターンのコントローラーへ渡す。
 async function resolveAttack() {

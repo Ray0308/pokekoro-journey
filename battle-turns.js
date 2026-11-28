@@ -70,6 +70,7 @@
     if (current.series) current.series.combat = current.combat;
     resumeAfterCounter = false;
     startConfirm.close();
+    window.PokekoroThoughtful?.init(current);
     current.attackTotal = 0;
     selected = null;
     targetId = null;
@@ -90,6 +91,7 @@
       .join('');
   }
   function render() {
+    window.PokekoroThoughtful?.render();
     roster.hidden = !enabled();
     $('#battle-turn-status').hidden = !enabled();
     if (!enabled()) return;
@@ -109,7 +111,7 @@
         combat.members.find((m) => !m.fainted)?.id ??
         null;
     $('#battle-turn-status').textContent =
-      `${Math.max(1, combat.turn)}ターン目・${rules.config.seconds}秒 ｜ のこり${rules.alive(combat).length}匹${combat.guard ? ' ｜ ガード待機' : ''}${combat.nextBoost > 1 ? ' ｜ 次は×' + combat.nextBoost : ''}${combat.boost > 1 && battle.phase === 'charging' ? ' ｜ 攻撃×' + combat.boost : ''}${combat.reviveUsed ? ' ｜ 復活済み' : ''}`;
+      `${Math.max(1, combat.turn)}ターン目・${battle.thoughtfulMode ? '時間なし・3手' : rules.config.seconds + '秒'} ｜ のこり${rules.alive(combat).length}匹${combat.guard ? ' ｜ ガード待機' : ''}${combat.nextBoost > 1 ? ' ｜ 次は×' + combat.nextBoost : ''}${combat.boost > 1 && battle.phase === 'charging' ? ' ｜ 攻撃×' + combat.boost : ''}${combat.reviveUsed ? ' ｜ 復活済み' : ''}`;
     roster.innerHTML = combat.members
       .map((m) => {
         const mon = POKEDEX[m.id - 1],
@@ -178,7 +180,8 @@
     $('#turn-skill-options').innerHTML =
       (targeted
         ? `<div class="turn-target-label">${skill.category === 'revive' ? '復活させる仲間' : skill.category === 'board' ? 'ブロックの属性を選ぼう' : 'ゲージを渡す仲間'}</div><div class="turn-targets">${candidates.map((m) => `<button type="button" data-skill-target="${m.id}" aria-pressed="${targetId === m.id}"><img src="${pokemonPortrait(m.id)}" alt=""><span>${POKEDEX[m.id - 1].label}<small>${m.fainted ? 'ひんし' : skill.category === 'board' ? types[POKEDEX[m.id - 1].type] : m.gauge + '/' + rules.skillCost(m.id)}</small></span></button>`).join('') || '<span>対象になる仲間がいないよ</span>'}</div>`
-        : '') + `<p class="turn-skill-description">${PokemonSkillRules.description(mon.id)}</p>`;
+        : '') +
+      `<p class="turn-skill-description">${PokemonSkillRules.description(mon.id).replace('次の10秒パズル', battle.thoughtfulMode ? '次の3手パズル' : '次の10秒パズル')}</p>`;
     const use = $('#turn-use-skill');
     use.dataset.battleSkill = String(skill.id);
     use.dataset.skillCategory = skill.category;
@@ -306,6 +309,8 @@
       : '仲間をタップで技。準備ができたらスタート！';
     $('#start').hidden = false;
     $('#start').textContent = '▶ スタート';
+    window.PokekoroThoughtful?.prepare();
+    window.PokekoroThoughtful?.ready();
     updateCharge();
     render();
   }
@@ -342,7 +347,7 @@
     battle.phase = 'resolving';
     $('#battle').classList.remove('hurry');
     $('#battle').classList.add('resolving');
-    $('#clock').textContent = '0.0';
+    $('#clock').textContent = battle.thoughtfulMode ? 'アタック' : '0.0';
     $('#timebar').style.width = '0%';
     $('#ready-overlay').hidden = false;
     $('#ready-overlay').innerHTML =
